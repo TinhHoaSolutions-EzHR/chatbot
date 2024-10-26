@@ -1,0 +1,141 @@
+/* Copy this file into '.vscode/launch.json' or merge its contents into your existing configurations. */
+
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Run All Danswer Services",
+      "configurations": [
+        "Web Server",
+        "Model Server",
+        "API Server",
+        "Indexing",
+        "Background Jobs",
+        "Slack Bot",
+      ],
+    },
+  ],
+  "configurations": [
+    {
+      "name": "Web Server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}/web",
+      "runtimeExecutable": "npm",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+    },
+    {
+      "name": "Model Server",
+      "consoleName": "Model Server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+      },
+      "args": ["model_server.main:app", "--reload", "--port", "9000"],
+    },
+    {
+      "name": "API Server",
+      "consoleName": "API Server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "LOG_DANSWER_MODEL_INTERACTIONS": "True",
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+      },
+      "args": ["danswer.main:app", "--reload", "--port", "8080"],
+    },
+    {
+      "name": "Indexing",
+      "consoleName": "Indexing",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "danswer/background/update.py",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "ENABLE_MULTIPASS_INDEXING": "false",
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": ".",
+      },
+    },
+    // Celery and all async jobs, usually would include indexing as well but this is handled separately above for dev
+    {
+      "name": "Background Jobs",
+      "consoleName": "Background Jobs",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "scripts/dev_run_background_jobs.py",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "LOG_DANSWER_MODEL_INTERACTIONS": "True",
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": ".",
+      },
+      "args": ["--no-indexing"],
+    },
+    // For the listner to access the Slack API,
+    // DANSWER_BOT_SLACK_APP_TOKEN & DANSWER_BOT_SLACK_BOT_TOKEN need to be set in .env file located in the root of the project
+    {
+      "name": "Slack Bot",
+      "consoleName": "Slack Bot",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "danswer/danswerbot/slack/listener.py",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": ".",
+      },
+    },
+    {
+      "name": "Pytest",
+      "consoleName": "Pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.vscode/.env",
+      "env": {
+        "LOG_LEVEL": "DEBUG",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": ".",
+      },
+      "args": [
+        "-v",
+        // Specify a sepcific module/test to run or provide nothing to run all tests
+        //"tests/unit/danswer/llm/answering/test_prune_and_merge.py"
+      ],
+    },
+    {
+      "name": "Clear and Restart External Volumes and Containers",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "${workspaceFolder}/backend/scripts/restart_containers.sh",
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopOnEntry": true,
+    },
+  ],
+}
