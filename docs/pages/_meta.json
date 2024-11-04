@@ -1,0 +1,13 @@
+{
+  "index": "Introduction",
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "mailto:dinhminhchinh3357@gmail.com",
+    "newWindow": true
+  }
+}
