@@ -1,23 +1,33 @@
 from fastapi import FastAPI
 
-from databases.postgres import PostgresConnector
 from utils import logger
 from routers import base
-from routers.v1 import chat, embedding_model
+from routers.v1 import embedding_model
 from settings import Constants
 
-logger = logger.LoggerFactory(__name__).get_logger()
+logger = logger.LoggerFactory().get_logger(__name__)
 
-app = FastAPI(
-    title=Constants.API_NAME,
-    version=Constants.API_VERSION,
-    description=Constants.API_DESCRIPTION,
-)
 
-postgres_instance = PostgresConnector.get_instance()
+def create_app() -> FastAPI:
+    """
+    Construct and configure the FastAPI application
+    """
+    # Initialize FastAPI application
+    app = FastAPI(
+        title=Constants.API_NAME,
+        version=Constants.API_VERSION,
+        description=Constants.API_DESCRIPTION,
+    )
 
-logger.info(f"API {Constants.API_NAME} {Constants.API_VERSION} started successfully")
+    logger.info(
+        f"API {Constants.API_NAME} {Constants.API_VERSION} started successfully"
+    )
 
-app.include_router(base.router)
-app.include_router(chat.router, prefix=Constants.API_PREFIX)
-app.include_router(embedding_model.router, prefix=Constants.API_PREFIX)
+    # Include application routers
+    app.include_router(router=base.router)
+    app.include_router(router=embedding_model.router, prefix=Constants.API_PREFIX)
+
+    return app
+
+
+app = create_app()
