@@ -3,8 +3,8 @@ from typing import List, Tuple
 
 from models.embedding_model import EmbeddingModel
 from models.api import APIError
-
 from utils.logger import LoggerFactory
+from utils.error_handler import ErrorCodesMappingNumber
 
 logger = LoggerFactory().get_logger(__name__)
 
@@ -22,7 +22,9 @@ class EmbeddingModelRepository:
             return embedding_models, None
         except Exception as e:
             logger.error(f"Error getting embedding models: {e}")
-            return [], APIError(err_code=20001)
+            return [], APIError(
+                kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value
+            )
 
     def get_embedding_model(self, id: int) -> Tuple[EmbeddingModel, APIError | None]:
         """
@@ -37,7 +39,9 @@ class EmbeddingModelRepository:
             return embedding_model, None
         except Exception as e:
             logger.error(f"Error getting embedding model: {e}")
-            return None, APIError(err_code=20001)
+            return None, APIError(
+                kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value
+            )
 
     def create_embedding_model(
         self, embedding_model: EmbeddingModel
@@ -52,7 +56,7 @@ class EmbeddingModelRepository:
         except Exception as e:
             logger.error(f"Error creating embedding model: {e}")
             self.db_session.rollback()
-            return APIError(err_code=20001)
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_embedding_model(
         self, id: int, embedding_model: EmbeddingModel
@@ -69,7 +73,7 @@ class EmbeddingModelRepository:
         except Exception as e:
             logger.error(f"Error updating embedding model: {e}")
             self.db_session.rollback()
-            return APIError(err_code=20001)
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_embedding_model(self, id: int) -> APIError | None:
         """
@@ -84,4 +88,4 @@ class EmbeddingModelRepository:
         except Exception as e:
             logger.error(f"Error deleting embedding model: {e}")
             self.db_session.rollback()
-            return APIError(err_code=20001)
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

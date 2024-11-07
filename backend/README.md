@@ -30,8 +30,11 @@ export POSTGRES_PORT=5432
 Ensure Python 3.10 or later is installed. Install dependencies and start the server as follows:
 
 ```bash
+# Install dependencies
 pip install -r requirements.txt
-uvicorn main:app --reload
+
+# Run the server
+uvicorn main:app --reload --port 5000
 ```
 
 ## Project Structure

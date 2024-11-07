@@ -1,30 +1,12 @@
-from fastapi import status
-from typing import Dict, Tuple
+from enum import Enum
 
-from models.api import APIError
 from settings import Constants
 
-ERROR_CODES_MAPPING: Dict[int, str] = {
-    20001: "Invalid request",
-    20002: "Unauthorized request",
-    20003: "Forbidden request",
-    20004: "Not found",
-    20005: "Internal server error",
-}
 
+class ErrorCodesMappingNumber(Enum):
 
-def handle_error(err: APIError) -> Tuple[int, str]:
-    """
-    Handle error on error code. Return status code and message
-    """
-    err_code = err.err_code
-    if err.err_code not in ERROR_CODES_MAPPING:
-        return 500, Constants.NOT_EXISTING_ERROR
-    match err_code:
-        case err_code if err_code < 20004:
-            return status.HTTP_400_BAD_REQUEST, ERROR_CODES_MAPPING[err_code]
-        case _:
-            return (
-                status.HTTP_500_INTERNAL_SERVER_ERROR,
-                ERROR_CODES_MAPPING[err_code],
-            )
+    INVALID_REQUEST = (400, Constants.INVALID_REQUEST_MESSAGE)
+    UNAUTHORIZED_REQUEST = (401, Constants.UNAUTHORIZED_REQUEST_MESSAGE)
+    FORBIDDEN_REQUEST = (403, Constants.FORBIDDEN_REQUEST_MESSAGE)
+    NOT_FOUND = (404, Constants.NOT_FOUND_MESSAGE)
+    INTERNAL_SERVER_ERROR = (500, Constants.INTERNAL_SERVER_ERROR_MESSAGE)

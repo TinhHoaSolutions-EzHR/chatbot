@@ -1,16 +1,18 @@
 import logging
 import sys
 
+from settings import Constants
+
 
 class LoggerFactory:
     def __init__(
         self,
-        log_level: str | int = logging.INFO,
-        log_to_console: bool = True,
-        log_to_file: bool = False,
-        log_file_path: str = "api.log",
-        max_bytes: int = 10485760,
-        backup_count: int = 5,
+        log_level: str | int = Constants.LOGGER_LOG_LEVEL,
+        log_to_console: bool = Constants.LOGGER_LOG_TO_CONSOLE,
+        log_to_file: bool = Constants.LOGGER_LOG_TO_FILE,
+        log_file_path: str = Constants.LOGGER_LOG_FILE_PATH,
+        max_bytes: int = Constants.LOGGER_MAX_BYTES,
+        backup_count: int = Constants.LOGGER_BACKUP_COUNT,
     ):
         self.log_level = log_level
         self.log_to_console = log_to_console

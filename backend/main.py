@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-from utils import logger
+from utils.logger import LoggerFactory
 from routers import base
 from routers.v1 import embedding_model
 from settings import Constants
 
-logger = logger.LoggerFactory().get_logger(__name__)
+logger = LoggerFactory().get_logger(__name__)
 
 
 def create_app() -> FastAPI:
@@ -14,18 +14,18 @@ def create_app() -> FastAPI:
     """
     # Initialize FastAPI application
     app = FastAPI(
-        title=Constants.API_NAME,
-        version=Constants.API_VERSION,
-        description=Constants.API_DESCRIPTION,
+        title=Constants.FASTAPI_NAME,
+        version=Constants.FASTAPI_VERSION,
+        description=Constants.FASTAPI_DESCRIPTION,
     )
 
     logger.info(
-        f"API {Constants.API_NAME} {Constants.API_VERSION} started successfully"
+        f"API {Constants.FASTAPI_NAME} {Constants.FASTAPI_VERSION} started successfully"
     )
 
     # Include application routers
     app.include_router(router=base.router)
-    app.include_router(router=embedding_model.router, prefix=Constants.API_PREFIX)
+    app.include_router(router=embedding_model.router, prefix=Constants.FASTAPI_PREFIX)
 
     return app
 

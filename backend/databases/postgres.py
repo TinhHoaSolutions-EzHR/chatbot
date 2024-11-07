@@ -28,18 +28,25 @@ class PostgresConnector:
             cls._instance = cls().__create_engine()
         return cls._instance
 
-    @staticmethod
-    def __create_engine():
+    @classmethod
+    def __create_engine(cls):
         """
         Create the database connection if there is no any existing connection
         """
         try:
+            uri = Constants.POSTGRES_CONNECTOR_URI.format(
+                user=Secrets.POSTGRES_USER,
+                password=Secrets.POSTGRES_PASSWORD,
+                host=Secrets.POSTGRES_HOST,
+                port=Secrets.POSTGRES_PORT,
+                name=Secrets.POSTGRES_NAME,
+            )
             return create_engine(
-                Secrets.POSTGRES_URI,
-                pool_size=Constants.POOL_SIZE,
-                max_overflow=Constants.MAX_OVERFLOW,
-                pool_timeout=Constants.POOL_TIMEOUT,
-                pool_recycle=Constants.POOL_RECYCLE,
+                uri,
+                pool_size=Constants.POSTGRES_POOL_SIZE,
+                max_overflow=Constants.POSTGRES_MAX_OVERFLOW,
+                pool_timeout=Constants.POSTGRES_POOL_TIMEOUT,
+                pool_recycle=Constants.POSTGRES_POOL_RECYCLE,
             )
         except Exception as e:
             logger.error(f"Error initializing database: {e}")
@@ -53,7 +60,7 @@ engine = PostgresConnector.get_instance()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_session():
+def get_session() -> Session:
     """
     Generate a database session for the applications
     """

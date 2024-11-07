@@ -5,6 +5,7 @@ from repositories.embeding_model import EmbeddingModelRepository
 from models.embedding_model import EmbeddingModel
 from models.api import APIError
 from utils.logger import LoggerFactory
+from utils.error_handler import ErrorCodesMappingNumber
 
 logger = LoggerFactory().get_logger(__name__)
 
@@ -50,7 +51,7 @@ class EmbeddingModelService:
             # Rollback transaction
             self.db_session.rollback()
             logger.error(f"Error creating embedding model: {e}")
-            err = APIError(err_code=20001)
+            err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
         return err
 
     def update_embedding_model(
@@ -74,7 +75,7 @@ class EmbeddingModelService:
             # Rollback transaction
             self.db_session.rollback()
             logger.error(f"Error updating embedding model: {e}")
-            err = APIError(err_code=20001)
+            err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
         return err
 
     def delete_embedding_model(self, id: int) -> APIError | None:
@@ -95,5 +96,5 @@ class EmbeddingModelService:
             # Rollback transaction
             self.db_session.rollback()
             logger.error(f"Error deleting embedding model: {e}")
-            err = APIError(err_code=20001)
+            err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
         return err

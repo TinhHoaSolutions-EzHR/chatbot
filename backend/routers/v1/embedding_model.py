@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from services.embedding_model import EmbeddingModelService
@@ -9,15 +9,15 @@ from models.embedding_model import (
     EmbeddingModelResponse,
 )
 from models.api import APIResponse
+from utils.api_response import BackendAPIResponse
 from utils.logger import LoggerFactory
-from utils.api_response import handle_api_response
-
+from settings import Constants
 
 logger = LoggerFactory().get_logger(__name__)
 router = APIRouter(prefix="/embedding_model", tags=["embedding_model"])
 
 
-@router.get("/", response_model=APIResponse)
+@router.get("/", response_model=APIResponse, status_code=status.HTTP_200_OK)
 async def get_embedding_models(db_session: Session = Depends(get_session)):
     """
     Get all embedding models
@@ -26,15 +26,31 @@ async def get_embedding_models(db_session: Session = Depends(get_session)):
     embedding_models, err = EmbeddingModelService(
         db_session=db_session
     ).get_embedding_models()
-    return handle_api_response(
-        data=embedding_models,
-        err=err,
-        success_status_code=status.HTTP_200_OK,
-        model_response=EmbeddingModelResponse,
+
+    # Handle API error
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse embedding models
+    data = (
+        [
+            EmbeddingModelResponse.model_validate(embedding_model)
+            for embedding_model in embedding_models
+        ]
+        if embedding_models
+        else []
+    )
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
     )
 
 
-@router.get("/{id}", response_model=APIResponse)
+@router.get("/{id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 async def get_embedding_model_by_id(
     id: int, db_session: Session = Depends(get_session)
 ):
@@ -45,15 +61,28 @@ async def get_embedding_model_by_id(
     embedding_model, err = EmbeddingModelService(
         db_session=db_session
     ).get_embedding_model(id=id)
-    return handle_api_response(
-        data=embedding_model,
-        err=err,
-        success_status_code=status.HTTP_200_OK,
-        model_response=EmbeddingModelResponse,
+
+    # Handle API error
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse embedding model
+    data = (
+        EmbeddingModelResponse.model_validate(embedding_model)
+        if embedding_model
+        else None
+    )
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
     )
 
 
-@router.post("/", response_model=APIResponse)
+@router.post("/", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 async def create_embedding_model(
     embedding_model_request: EmbeddingModelRequest,
     db_session: Session = Depends(get_session),
@@ -72,15 +101,28 @@ async def create_embedding_model(
     err = EmbeddingModelService(db_session=db_session).create_embedding_model(
         embedding_model
     )
-    return handle_api_response(
-        data=embedding_model,
-        err=err,
-        success_status_code=status.HTTP_201_CREATED,
-        model_response=EmbeddingModelResponse,
+
+    # Handle API error
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse embedding model
+    data = (
+        EmbeddingModelResponse.model_validate(embedding_model)
+        if embedding_model
+        else None
+    )
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
     )
 
 
-@router.put("/{id}", response_model=APIResponse)
+@router.put("/{id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 async def update_embedding_model(
     id: int,
     embedding_model_request: EmbeddingModelRequest,
@@ -100,24 +142,36 @@ async def update_embedding_model(
     err = EmbeddingModelService(db_session=db_session).update_embedding_model(
         id=id, embedding_model=embedding_model
     )
-    return handle_api_response(
-        data=embedding_model,
-        err=err,
-        success_status_code=status.HTTP_200_OK,
-        model_response=EmbeddingModelResponse,
+
+    # Handle API error
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse embedding model
+    data = (
+        EmbeddingModelResponse.model_validate(embedding_model)
+        if embedding_model
+        else None
+    )
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
     )
 
 
-@router.delete("/{id}", response_model=APIResponse)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_embedding_model(id: int, db_session: Session = Depends(get_session)):
     """
     Delete embedding model by id
     """
     # Delete embedding model by id
     err = EmbeddingModelService(db_session=db_session).delete_embedding_model(id=id)
-    return handle_api_response(
-        data=None,
-        err=err,
-        success_status_code=status.HTTP_204_NO_CONTENT,
-        model_response=None,
-    )
+
+    # Handle API error
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)

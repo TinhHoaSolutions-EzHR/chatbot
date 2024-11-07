@@ -1,14 +1,14 @@
-from fastapi import status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional, Any
+
+from utils.error_handler import ErrorCodesMappingNumber
 
 
 class APIResponse(BaseModel):
-    status_code: int = Field(default=status.HTTP_200_OK)
     message: str = "Success"
     headers: Optional[Any] = None
     data: Optional[Any] = None
 
 
 class APIError(BaseModel):
-    err_code: int
+    kind: Any
