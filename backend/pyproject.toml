@@ -4,9 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 authors = [
-  { name = "Chinh Dinh", email = "chinhdinh@kms-technology.com" },
-  { name = "Nguyen Ho", email = "nguyenho@kms-technology.com" },
-  { name = "Tai Tran", email = "taitran@kms-technology.com" },
+  { name = "lelouvincx", email = "dinhminhchinh3357@gmail.com" },
+  { name = "greyyT" },
+  { name = "ImTrungLe" },
+  { name = "lekiet1214" },
+  { name = "TranThang0801" },
+  { name = "tuantran0910" },
 ]
 name = "chatbot"
 version = "v0.0.0"
