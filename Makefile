@@ -4,9 +4,14 @@
 DEEPEVAL := ${PWD}/.venv/bin/deepeval
 DOCKER_COMPOSE ?= docker-compose  # Allows overriding the docker-compose executable
 COMPOSE_FILE := docker-compose.yml
+YARN ?= yarn
 
 # Docker Compose commands
-.PHONY: up down restart build logs log-chainlit ps stop start clean test clear-cache help
+.PHONY: docs-dev up down restart build logs log-chainlit ps stop start clean test clear-cache help
+
+docs-dev:
+	@echo "Starting docs dev..."
+	@$(YARN) --cwd docs dev
 
 up:  ## Start services in detached mode
 	@echo "Services are starting..."

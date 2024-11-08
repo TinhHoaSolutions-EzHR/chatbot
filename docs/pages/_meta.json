@@ -1,6 +1,18 @@
 {
-  "index": "Introduction",
+  "index": "[BLANK] Introduction",
+  "roadmap": "Roadmap",
+  "user-guide": "[BLANK] User Guide",
+  "development-guide": "[BLANK] Development Guide",
+  "api-reference": "[BLANK] API Reference",
   "high-level-architecture": "High-level Architecture",
+  "configuration": "[BLANK] Configuration",
+  "testing-guide": "[BLANK] Testing Guide",
+  "deployment-guide": "[BLANK] Deployment Guide",
+  "contributing": "[BLANK] Contributing",
+  "changelog": "[BLANK] Change Log",
+  "faq": "[BLANK] FAQ",
+  "glossary": "[BLANK] Glossary",
+  "resourcing": "[BLANK] Resourcing",
   "about": {
     "title": "About",
     "type": "page"
