@@ -471,9 +471,9 @@ export function HorizontalSourceSelector({
           icon={<FiBook size={16} />}
           defaultDisplay="Sets"
           resetValues={resetDocuments}
-          width="w-fit max-w-24 etext-llipsis truncate"
+          width="w-fit max-w-24 ellipsis truncate"
           dropdownWidth="max-w-36 w-fit"
-          optionClassName="truncate w-full break-all"
+          optionClassName="truncate break-all ellipsis"
         />
       )}
 
@@ -506,7 +506,7 @@ export function HorizontalSourceSelector({
           resetValues={resetTags}
           width="w-fit max-w-24 ellipsis truncate"
           dropdownWidth="max-w-80 w-fit"
-          optionClassName="truncate w-full break-all ellipsis"
+          optionClassName="truncate break-all ellipsis"
         />
       )}
     </div>

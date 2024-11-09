@@ -5,14 +5,14 @@ import { WelcomeModal } from "@/components/initialSetup/welcome/WelcomeModalWrap
 import { ChatProvider } from "@/components/context/ChatContext";
 import { fetchChatData } from "@/lib/chat/fetchChatData";
 import WrappedChat from "./WrappedChat";
-import { cookies } from "next/headers";
-
+import Cookies from "js-cookie"
 export default async function Page(props: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
   const searchParams = await props.searchParams;
   noStore();
-  const requestCookies = await cookies();
+  // const requestCookies = await cookies();
+  const requestCookies = Cookies.get();
   const data = await fetchChatData(searchParams);
 
   if ("redirect" in data) {

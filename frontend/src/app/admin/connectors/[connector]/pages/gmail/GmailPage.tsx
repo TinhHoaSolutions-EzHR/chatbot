@@ -109,16 +109,12 @@ export const GmailMain = () => {
   const gmailPublicCredential: Credential<GmailCredentialJson> | undefined =
     credentialsData.find(
       (credential) =>
-        (credential.credential_json?.google_service_account_key ||
-          credential.credential_json?.google_tokens) &&
-        credential.admin_public
+        credential.credential_json?.gmail_tokens && credential.admin_public
     );
   const gmailServiceAccountCredential:
     | Credential<GmailServiceAccountCredentialJson>
     | undefined = credentialsData.find(
-    (credential) =>
-      credential.credential_json?.google_service_account_key &&
-      credential.source === "gmail"
+    (credential) => credential.credential_json?.gmail_service_account_key
   );
   const gmailConnectorIndexingStatuses: ConnectorIndexingStatus<
     GmailConfig,

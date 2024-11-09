@@ -45,7 +45,7 @@ async function Page(props: { params: Promise<{ id: string }> }) {
   const allSlackBotConfigs =
     (await slackBotsResponse.json()) as SlackBotConfig[];
   const slackBotConfig = allSlackBotConfigs.find(
-    (config) => config.id.toString() === params.id
+    (config) => config.id.toString() === params.id,
   );
   if (!slackBotConfig) {
     return (

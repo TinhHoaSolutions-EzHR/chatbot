@@ -30,13 +30,13 @@ export const POST = async (request: NextRequest) => {
   if (!setCookieHeader) {
     return NextResponse.redirect(
       new URL("/auth/error", getDomain(request)),
-      SEE_OTHER_REDIRECT_STATUS
+      SEE_OTHER_REDIRECT_STATUS,
     );
   }
 
   const redirectResponse = NextResponse.redirect(
     new URL("/", getDomain(request)),
-    SEE_OTHER_REDIRECT_STATUS
+    SEE_OTHER_REDIRECT_STATUS,
   );
   redirectResponse.headers.set("set-cookie", setCookieHeader);
   return redirectResponse;

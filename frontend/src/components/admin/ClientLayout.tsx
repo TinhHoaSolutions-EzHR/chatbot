@@ -148,15 +148,15 @@ export function ClientLayout({
                   },
                   ...(!isCurator
                     ? [
-                        {
-                          name: (
-                            <div className="flex">
-                              <SlackIconSkeleton className="text-icon-settings-sidebar" />
-                              <div className="ml-1">Slack Bots</div>
-                            </div>
-                          ),
-                          link: "/admin/bot",
-                        },
+                        // {
+                        //   name: (
+                        //     <div className="flex">
+                        //       <SlackIconSkeleton className="text-icon-settings-sidebar" />
+                        //       <div className="ml-1">Slack Bots</div>
+                        //     </div>
+                        //   ),
+                        //   link: "/admin/bot",
+                        // },
                         {
                           name: (
                             <div className="flex">

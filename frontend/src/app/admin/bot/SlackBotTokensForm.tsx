@@ -14,10 +14,10 @@ interface SlackBotTokensFormProps {
 }
 
 export const SlackBotTokensForm = ({
-  onClose,
-  setPopup,
-  existingTokens,
-}: SlackBotTokensFormProps) => {
+                                     onClose,
+                                     setPopup,
+                                     existingTokens,
+                                   }: SlackBotTokensFormProps) => {
   return (
     <CardSection>
       <Formik

@@ -29,11 +29,11 @@ import { StandardAnswerCategoryResponse } from "@/components/standardAnswers/get
 import { StandardAnswerCategoryDropdownField } from "@/components/standardAnswers/StandardAnswerCategoryDropdown";
 
 export const SlackBotCreationForm = ({
-  documentSets,
-  personas,
-  standardAnswerCategoryResponse,
-  existingSlackBotConfig,
-}: {
+                                       documentSets,
+                                       personas,
+                                       standardAnswerCategoryResponse,
+                                       existingSlackBotConfig,
+                                     }: {
   documentSets: DocumentSet[];
   personas: Persona[];
   standardAnswerCategoryResponse: StandardAnswerCategoryResponse;
@@ -46,7 +46,7 @@ export const SlackBotCreationForm = ({
     ? !isPersonaASlackBotPersona(existingSlackBotConfig.persona)
     : false;
   const [usingPersonas, setUsingPersonas] = useState(
-    existingSlackBotUsesPersona
+    existingSlackBotUsesPersona,
   );
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
@@ -80,12 +80,12 @@ export const SlackBotCreationForm = ({
               existingSlackBotConfig?.channel_config?.follow_up_tags !==
               undefined,
             follow_up_tags:
-              existingSlackBotConfig?.channel_config?.follow_up_tags,
+            existingSlackBotConfig?.channel_config?.follow_up_tags,
             document_sets:
               existingSlackBotConfig && existingSlackBotConfig.persona
                 ? existingSlackBotConfig.persona.document_sets.map(
-                    (documentSet) => documentSet.id
-                  )
+                  (documentSet) => documentSet.id,
+                )
                 : ([] as number[]),
             // prettier-ignore
             persona_id:
@@ -122,12 +122,12 @@ export const SlackBotCreationForm = ({
             const cleanedValues = {
               ...values,
               channel_names: values.channel_names.filter(
-                (channelName) => channelName !== ""
+                (channelName) => channelName !== "",
               ),
               respond_member_group_list: values.respond_member_group_list,
               usePersona: usingPersonas,
               standard_answer_categories: values.standard_answer_categories.map(
-                (category) => category.id
+                (category) => category.id,
               ),
             };
             if (!cleanedValues.still_need_help_enabled) {
@@ -141,7 +141,7 @@ export const SlackBotCreationForm = ({
             if (isUpdate) {
               response = await updateSlackBotConfig(
                 existingSlackBotConfig.id,
-                cleanedValues
+                cleanedValues,
               );
             } else {
               response = await createSlackBotConfig(cleanedValues);
@@ -228,7 +228,7 @@ export const SlackBotCreationForm = ({
                             <div className="mb-3 mt-2 flex gap-2 flex-wrap text-sm">
                               {documentSets.map((documentSet) => {
                                 const ind = values.document_sets.indexOf(
-                                  documentSet.id
+                                  documentSet.id,
                                 );
                                 const isSelected = ind !== -1;
 
@@ -286,7 +286,7 @@ export const SlackBotCreationForm = ({
                       <BooleanFormField
                         name="still_need_help_enabled"
                         removeIndent
-                        label={'Give a "Still need help?" button'}
+                        label={"Give a \"Still need help?\" button"}
                         tooltip={`DanswerBot's response will include a button at the bottom 
                       of the response that asks the user if they still need help.`}
                       />

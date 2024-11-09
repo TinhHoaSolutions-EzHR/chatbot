@@ -6,7 +6,7 @@ each request type >:( */
 
 export async function GET(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -14,7 +14,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -22,7 +22,7 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -30,7 +30,7 @@ export async function PUT(
 
 export async function PATCH(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -38,7 +38,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -46,7 +46,7 @@ export async function DELETE(
 
 export async function HEAD(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -54,7 +54,7 @@ export async function HEAD(
 
 export async function OPTIONS(
   request: NextRequest,
-  props: { params: Promise<{ path: string[] }> }
+  props: { params: Promise<{ path: string[] }> },
 ) {
   const params = await props.params;
   return handleRequest(request, params.path);
@@ -67,7 +67,7 @@ async function handleRequest(request: NextRequest, path: string[]) {
         message:
           "This API is only available in development mode. In production, something else (e.g. nginx) should handle this.",
       },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -118,7 +118,7 @@ async function handleRequest(request: NextRequest, path: string[]) {
         error:
           error instanceof Error ? error.message : "An unknown error occurred",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

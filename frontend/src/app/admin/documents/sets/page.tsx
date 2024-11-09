@@ -191,15 +191,19 @@ const DocumentSetTable = ({
                   </TableCell>
                   <TableCell>
                     {documentSet.is_up_to_date ? (
-                      <Badge variant="success" icon={FiCheckCircle}>
+                      <Badge size="md" variant="success" icon={FiCheckCircle}>
                         Up to Date
                       </Badge>
                     ) : documentSet.cc_pair_descriptors.length > 0 ? (
-                      <Badge variant="in_progress" icon={FiClock}>
+                      <Badge size="md" variant="in_progress" icon={FiClock}>
                         Syncing
                       </Badge>
                     ) : (
-                      <Badge variant="destructive" icon={FiAlertTriangle}>
+                      <Badge
+                        size="md"
+                        variant="destructive"
+                        icon={FiAlertTriangle}
+                      >
                         Deleting
                       </Badge>
                     )}
@@ -207,6 +211,7 @@ const DocumentSetTable = ({
                   <TableCell>
                     {documentSet.is_public ? (
                       <Badge
+                        size="md"
                         variant={isEditable ? "success" : "default"}
                         icon={FiUnlock}
                       >
@@ -214,6 +219,7 @@ const DocumentSetTable = ({
                       </Badge>
                     ) : (
                       <Badge
+                        size="md"
                         variant={isEditable ? "in_progress" : "outline"}
                         icon={FiLock}
                       >

@@ -29,10 +29,10 @@ import { Button } from "@/components/ui/button";
 const numToDisplay = 50;
 
 const SlackBotConfigsTable = ({
-  slackBotConfigs,
-  refresh,
-  setPopup,
-}: {
+                                slackBotConfigs,
+                                refresh,
+                                setPopup,
+                              }: {
   slackBotConfigs: SlackBotConfig[];
   refresh: () => void;
   setPopup: (popupSpec: PopupSpec | null) => void;
@@ -102,8 +102,8 @@ const SlackBotConfigsTable = ({
                       {slackBotConfig.persona &&
                       slackBotConfig.persona.document_sets.length > 0
                         ? slackBotConfig.persona.document_sets
-                            .map((documentSet) => documentSet.name)
-                            .join(", ")
+                          .map((documentSet) => documentSet.name)
+                          .join(", ")
                         : "-"}
                     </div>
                   </TableCell>
@@ -113,7 +113,7 @@ const SlackBotConfigsTable = ({
                       className="cursor-pointer"
                       onClick={async () => {
                         const response = await deleteSlackBotConfig(
-                          slackBotConfig.id
+                          slackBotConfig.id,
                         );
                         if (response.ok) {
                           setPopup({

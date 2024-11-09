@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest) => {
   if (!response.ok) {
     console.log(
       `Error in ${connector} callback:`,
-      (await response.json()).detail
+      (await response.json()).detail,
     );
     return NextResponse.redirect(new URL("/auth/error", getDomain(request)));
   }
@@ -36,7 +36,7 @@ export const GET = async (request: NextRequest) => {
 
   if (requestCookies.get(authCookieName)?.value?.toLowerCase() === "true") {
     return NextResponse.redirect(
-      new URL(`/admin/connectors/${connector}`, getDomain(request))
+      new URL(`/admin/connectors/${connector}`, getDomain(request)),
     );
   }
 

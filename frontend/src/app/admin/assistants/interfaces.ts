@@ -3,6 +3,7 @@ import { DocumentSet, MinimalUserSnapshot } from "@/lib/types";
 
 export interface StarterMessage {
   name: string;
+  description: string | null;
   message: string;
 }
 

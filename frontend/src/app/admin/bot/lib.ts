@@ -22,7 +22,7 @@ interface SlackBotConfigCreationRequest {
 }
 
 const buildFiltersFromCreationRequest = (
-  creationRequest: SlackBotConfigCreationRequest
+  creationRequest: SlackBotConfigCreationRequest,
 ): string[] => {
   const answerFilters = [] as string[];
   if (creationRequest.answer_validity_check_enabled) {
@@ -35,7 +35,7 @@ const buildFiltersFromCreationRequest = (
 };
 
 const buildRequestBodyFromCreationRequest = (
-  creationRequest: SlackBotConfigCreationRequest
+  creationRequest: SlackBotConfigCreationRequest,
 ) => {
   return JSON.stringify({
     channel_names: creationRequest.channel_names,
@@ -54,7 +54,7 @@ const buildRequestBodyFromCreationRequest = (
 };
 
 export const createSlackBotConfig = async (
-  creationRequest: SlackBotConfigCreationRequest
+  creationRequest: SlackBotConfigCreationRequest,
 ) => {
   return fetch("/api/manage/admin/slack-bot/config", {
     method: "POST",
@@ -67,7 +67,7 @@ export const createSlackBotConfig = async (
 
 export const updateSlackBotConfig = async (
   id: number,
-  creationRequest: SlackBotConfigCreationRequest
+  creationRequest: SlackBotConfigCreationRequest,
 ) => {
   return fetch(`/api/manage/admin/slack-bot/config/${id}`, {
     method: "PATCH",

@@ -8,7 +8,6 @@ interface UserPreferences {
   visible_assistants: number[];
   hidden_assistants: number[];
   default_model: string | null;
-  recent_assistants: number[];
 }
 
 export enum UserStatus {

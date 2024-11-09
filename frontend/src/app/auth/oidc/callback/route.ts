@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
 
   if (response.status === 401) {
     return NextResponse.redirect(
-      new URL("/auth/create-account", getDomain(request))
+      new URL("/auth/create-account", getDomain(request)),
     );
   }
 
@@ -25,7 +25,7 @@ export const GET = async (request: NextRequest) => {
   const redirectUrl = response.headers.get("location") || "/";
 
   const redirectResponse = NextResponse.redirect(
-    new URL(redirectUrl, getDomain(request))
+    new URL(redirectUrl, getDomain(request)),
   );
 
   redirectResponse.headers.set("set-cookie", setCookieHeader);
