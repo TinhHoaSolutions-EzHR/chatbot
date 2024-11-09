@@ -167,3 +167,4 @@ docs/.next
 # Nextjs build output
 .next
 out
+/.idea/
