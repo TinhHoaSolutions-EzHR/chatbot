@@ -163,3 +163,7 @@ cython_debug/
 node_modules
 yarn.lock
 docs/.next
+
+# Nextjs build output
+.next
+out
