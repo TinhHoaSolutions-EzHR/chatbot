@@ -1,6 +1,28 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:prettier/recommended" // Add this line
+  ],
+  "plugins": ["prettier"], // Ensure this is present
   "rules": {
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": true,
+        "trailingComma": "all",
+        "singleQuote": true,
+        "printWidth": 120,
+        "tabWidth": 2,
+        "arrowParens": "avoid",
+        "bracketSameLine": false
+      }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": ["debug", "error"]
+      }
+    ]
   }
 }

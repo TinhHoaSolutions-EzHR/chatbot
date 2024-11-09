@@ -14,9 +14,9 @@
         "API Server",
         "Indexing",
         "Background Jobs",
-        "Slack Bot",
-      ],
-    },
+        "Slack Bot"
+      ]
+    }
   ],
   "configurations": [
     {
@@ -27,7 +27,7 @@
       "runtimeExecutable": "npm",
       "envFile": "${workspaceFolder}/.vscode/.env",
       "runtimeArgs": ["run", "dev"],
-      "console": "integratedTerminal",
+      "console": "integratedTerminal"
     },
     {
       "name": "Model Server",
@@ -39,9 +39,9 @@
       "envFile": "${workspaceFolder}/.vscode/.env",
       "env": {
         "LOG_LEVEL": "DEBUG",
-        "PYTHONUNBUFFERED": "1",
+        "PYTHONUNBUFFERED": "1"
       },
-      "args": ["model_server.main:app", "--reload", "--port", "9000"],
+      "args": ["model_server.main:app", "--reload", "--port", "9000"]
     },
     {
       "name": "API Server",
@@ -54,9 +54,9 @@
       "env": {
         "LOG_DANSWER_MODEL_INTERACTIONS": "True",
         "LOG_LEVEL": "DEBUG",
-        "PYTHONUNBUFFERED": "1",
+        "PYTHONUNBUFFERED": "1"
       },
-      "args": ["danswer.main:app", "--reload", "--port", "8080"],
+      "args": ["danswer.main:app", "--reload", "--port", "8080"]
     },
     {
       "name": "Indexing",
@@ -70,8 +70,8 @@
         "ENABLE_MULTIPASS_INDEXING": "false",
         "LOG_LEVEL": "DEBUG",
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": ".",
-      },
+        "PYTHONPATH": "."
+      }
     },
     // Celery and all async jobs, usually would include indexing as well but this is handled separately above for dev
     {
@@ -86,9 +86,9 @@
         "LOG_DANSWER_MODEL_INTERACTIONS": "True",
         "LOG_LEVEL": "DEBUG",
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": ".",
+        "PYTHONPATH": "."
       },
-      "args": ["--no-indexing"],
+      "args": ["--no-indexing"]
     },
     // For the listner to access the Slack API,
     // DANSWER_BOT_SLACK_APP_TOKEN & DANSWER_BOT_SLACK_BOT_TOKEN need to be set in .env file located in the root of the project
@@ -103,8 +103,8 @@
       "env": {
         "LOG_LEVEL": "DEBUG",
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": ".",
-      },
+        "PYTHONPATH": "."
+      }
     },
     {
       "name": "Pytest",
@@ -117,13 +117,13 @@
       "env": {
         "LOG_LEVEL": "DEBUG",
         "PYTHONUNBUFFERED": "1",
-        "PYTHONPATH": ".",
+        "PYTHONPATH": "."
       },
       "args": [
-        "-v",
+        "-v"
         // Specify a sepcific module/test to run or provide nothing to run all tests
         //"tests/unit/danswer/llm/answering/test_prune_and_merge.py"
-      ],
+      ]
     },
     {
       "name": "Clear and Restart External Volumes and Containers",
@@ -131,11 +131,11 @@
       "request": "launch",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
-        "${workspaceFolder}/backend/scripts/restart_containers.sh",
+        "${workspaceFolder}/backend/scripts/restart_containers.sh"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
-      "stopOnEntry": true,
-    },
-  ],
+      "stopOnEntry": true
+    }
+  ]
 }
