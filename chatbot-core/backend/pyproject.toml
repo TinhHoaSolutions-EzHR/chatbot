@@ -11,7 +11,7 @@ authors = [
   { name = "TranThang0801" },
   { name = "tuantran0910" },
 ]
-name = "chatbot"
+name = "chatbot_core"
 version = "v0.0.0"
 description = ""
 readme = "README.md"
