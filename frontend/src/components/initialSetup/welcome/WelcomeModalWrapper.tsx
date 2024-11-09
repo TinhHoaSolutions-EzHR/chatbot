@@ -1,18 +1,15 @@
-import { cookies } from "next/headers";
 import {
   _CompletedWelcomeFlowDummyComponent,
   _WelcomeModal,
 } from "./WelcomeModal";
 import { COMPLETED_WELCOME_FLOW_COOKIE } from "./constants";
 import { User } from "@/lib/types";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
-export function hasCompletedWelcomeFlowSS(
-  requestCookies: ReadonlyRequestCookies
-) {
+export function hasCompletedWelcomeFlowSS(requestCookies: {
+  [key: string]: string;
+}) {
   return (
-    requestCookies.get(COMPLETED_WELCOME_FLOW_COOKIE)?.value?.toLowerCase() ===
-    "true"
+    requestCookies[COMPLETED_WELCOME_FLOW_COOKIE]?.toLowerCase() === "true"
   );
 }
 
@@ -21,7 +18,7 @@ export function WelcomeModal({
   requestCookies,
 }: {
   user: User | null;
-  requestCookies: ReadonlyRequestCookies;
+  requestCookies: { [key: string]: string };
 }) {
   const hasCompletedWelcomeFlow = hasCompletedWelcomeFlowSS(requestCookies);
   if (hasCompletedWelcomeFlow) {
