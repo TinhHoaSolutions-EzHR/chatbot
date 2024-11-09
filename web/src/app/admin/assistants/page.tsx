@@ -4,10 +4,60 @@ import Link from "next/link";
 import Text from "@/components/ui/text";
 import Title from "@/components/ui/title";
 import { Separator } from "@/components/ui/separator";
-import { AssistantsIcon } from "@/components/icons/icons";
+import { AssistantsIcon, RobotIcon } from "@/components/icons/icons";
 import { AdminPageTitle } from "@/components/admin/Title";
+import { fetchAssistantEditorInfoSS } from "@/lib/assistants/fetchPersonaEditorInfoSS";
+import { ErrorCallout } from "@/components/ErrorCallout";
+import CardSection from "@/components/admin/CardSection";
+import { AssistantEditor } from "@/app/admin/assistants/AssistantEditor";
+import { SuccessfulPersonaUpdateRedirectType } from "@/app/admin/assistants/enums";
+import { DeletePersonaButton } from "@/app/admin/assistants/DeletePersonaButton";
+import { BackButton } from "@/components/BackButton";
 
-export default async function Page() {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  if (params.id) {
+    const [values, error] = await fetchAssistantEditorInfoSS(params.id);
+    let body;
+
+    if (!values) {
+      body = (
+        <ErrorCallout errorTitle="Something went wrong :(" errorMsg={error} />
+      );
+    } else {
+      body = (
+        <>
+          <CardSection>
+            <AssistantEditor
+              {...values}
+              defaultPublic={true}
+              redirectType={SuccessfulPersonaUpdateRedirectType.ADMIN}
+            />
+          </CardSection>
+
+          <div className="mt-12">
+            <Title>Delete Assistant</Title>
+
+            <div className="flex mt-6">
+              <DeletePersonaButton
+                personaId={values.existingPersona!.id}
+                redirectType={SuccessfulPersonaUpdateRedirectType.ADMIN}
+              />
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <div className="w-full">
+        <BackButton />
+        <AdminPageTitle title="Edit Assistant" icon={<RobotIcon size={32} />} />
+        {body}
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto container">
       <AdminPageTitle icon={<AssistantsIcon size={32} />} title="Assistants" />

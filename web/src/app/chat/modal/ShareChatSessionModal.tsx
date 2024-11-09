@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 
 function buildShareLink(chatSessionId: string) {
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  return `${baseUrl}/chat/shared/${chatSessionId}`;
+  return `${baseUrl}/chat/shared/?id=${chatSessionId}`;
 }
 
 async function generateShareLink(chatSessionId: string) {
