@@ -15,4 +15,3 @@ docs/.next
 docs/node_modules
 node_modules
 yarn-error.log
-.vscode/settings.json
