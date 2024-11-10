@@ -10,6 +10,8 @@ import {
 import { ChevronDownIcon } from "./icons/icons";
 import { FiCheck, FiChevronDown } from "react-icons/fi";
 import { Popover } from "./popover/Popover";
+import cn from "classnames";
+
 
 export interface Option<T> {
   name: string;
@@ -218,22 +220,26 @@ export const CustomDropdown = ({
     };
   }, []);
 
-  return (
-    <div className="relative inline-block text-left w-full" ref={dropdownRef}>
-      <div onClick={() => setIsOpen(!isOpen)}>{children}</div>
+    return (
+        <div className="relative inline-block text-left w-full" ref={dropdownRef}>
+            <div onClick={() => setIsOpen(!isOpen)}>{children}</div>
 
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(!isOpen)}
-          className={`absolute ${
-            direction === "up" ? "bottom-full pb-2" : "pt-2"
-          } w-full z-30 box-shadow`}
-        >
-          {dropdown}
+            {isOpen && (
+                <div
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={cn(
+                        "absolute w-full z-30 box-shadow",
+                        {
+                            "bottom-full pb-2": direction === "up",
+                            "pt-2": direction !== "up"
+                        }
+                    )}
+                >
+                    {dropdown}
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export function DefaultDropdownElement({
