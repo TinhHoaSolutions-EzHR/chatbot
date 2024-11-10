@@ -2009,7 +2009,6 @@ export function ChatPage({
                                 <ChatIntro selectedPersona={liveAssistant} />
 
                                 <div
-                                  key={-4}
                                   className={`
                                       mx-auto 
                                       px-4 
