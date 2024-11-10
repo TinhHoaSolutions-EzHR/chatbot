@@ -276,12 +276,10 @@ export const GmailJsonUploadSection = ({
         >
           here
         </a>{" "}
-        to either (1) setup a google OAuth App in your company workspace or (2)
-        create a Service Account.
+        to setup a google OAuth App in your company workspace.
         <br />
         <br />
-        Download the credentials JSON if choosing option (1) or the Service
-        Account key JSON if chooosing option (2), and upload it here.
+        Download the credentials JSON and upload it here.
       </p>
       <DriveJsonUpload setPopup={setPopup} />
     </div>
@@ -346,13 +344,23 @@ export const GmailAuthSection = ({
   if (serviceAccountKeyData?.service_account_email) {
     return (
       <div>
+        <p className="text-sm mb-2">
+          When using a Gmail Service Account, you must specify the email of the
+          primary admin that you would like the service account to impersonate.
+          <br />
+          <br />
+          For this connector to index all users Gmail, the primary admin email
+          should be an owner/admin of the Google Organization that being
+          indexed.
+        </p>
+
         <CardSection>
           <Formik
             initialValues={{
-              google_primary_admin: user?.email || "",
+              gmail_primary_admin: user?.email || "",
             }}
             validationSchema={Yup.object().shape({
-              google_primary_admin: Yup.string().required(),
+              gmail_primary_admin: Yup.string().required(),
             })}
             onSubmit={async (values, formikHelpers) => {
               formikHelpers.setSubmitting(true);
@@ -365,7 +373,7 @@ export const GmailAuthSection = ({
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    google_primary_admin: values.google_primary_admin,
+                    gmail_primary_admin: values.gmail_primary_admin,
                   }),
                 }
               );
@@ -388,7 +396,7 @@ export const GmailAuthSection = ({
             {({ isSubmitting }) => (
               <Form>
                 <TextFormField
-                  name="google_primary_admin"
+                  name="gmail_primary_admin"
                   label="Primary Admin Email:"
                   subtext="You must provide an admin/owner account to retrieve all org emails."
                 />
@@ -449,8 +457,8 @@ export const GmailAuthSection = ({
   // case where no keys have been uploaded in step 1
   return (
     <p className="text-sm">
-      Please upload an OAuth or Service Account Credential JSON in Step 1 before
-      moving onto Step 2.
+      Please upload a OAuth Client Credential JSON in Step 1 before moving onto
+      Step 2.
     </p>
   );
 };

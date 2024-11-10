@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
 import { User } from "./types";
 import { buildUrl } from "./utilsSS";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { AuthType, SERVER_SIDE_ONLY__CLOUD_ENABLED } from "./constants";
+import Cookies from "js-cookie";
 
 export interface AuthTypeMetadata {
   authType: AuthType;
@@ -143,9 +143,8 @@ export const getCurrentUserSS = async (): Promise<User | null> => {
       credentials: "include",
       next: { revalidate: 0 },
       headers: {
-        cookie: (await cookies())
-          .getAll()
-          .map((cookie) => `${cookie.name}=${cookie.value}`)
+        cookie: Object.entries(Cookies.get())
+          .map(([name, value]) => `${name}=${value}`)
           .join("; "),
       },
     });

@@ -3,9 +3,9 @@ import { Persona } from "../../app/admin/assistants/interfaces";
 import { SettingsContext } from "../settings/SettingsProvider";
 
 export function StarterMessages({
-  currentPersona,
-  onSubmit,
-}: {
+                                  currentPersona,
+                                  onSubmit,
+                                }: {
   currentPersona: Persona;
   onSubmit: (messageOverride: string) => void;
 }) {
@@ -18,10 +18,10 @@ export function StarterMessages({
         mx-auto
         w-full
         ${
-          isMobile
-            ? "gap-x-2 w-2/3 justify-between"
-            : "justify-center max-w-[750px] items-start"
-        }
+        isMobile
+          ? "gap-x-2 w-2/3 justify-between"
+          : "justify-center max-w-[750px] items-start"
+      }
         flex
         mt-6
       `}

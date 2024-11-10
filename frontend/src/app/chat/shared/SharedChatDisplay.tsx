@@ -2,13 +2,13 @@
 import Prism from "prismjs";
 
 import { humanReadableFormat } from "@/lib/time";
-import { BackendChatSession } from "../../interfaces";
+import { BackendChatSession } from "../interfaces";
 import {
   buildLatestMessageChain,
   getCitedDocumentsFromMessage,
   processRawChatHistory,
-} from "../../lib";
-import { AIMessage, HumanMessage } from "../../message/Messages";
+} from "../lib";
+import { AIMessage, HumanMessage } from "../message/Messages";
 import { Callout } from "@/components/ui/callout";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";

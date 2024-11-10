@@ -360,12 +360,22 @@ export const DriveAuthSection = ({
   if (serviceAccountKeyData?.service_account_email) {
     return (
       <div>
+        <p className="text-sm mb-6">
+          When using a Google Drive Service Account, you must specify the email
+          of the primary admin that you would like the service account to
+          impersonate.
+          <br />
+          <br />
+          Ideally, this account should be an owner/admin of the Google
+          Organization that owns the Google Drive(s) you want to index.
+        </p>
+
         <Formik
           initialValues={{
-            google_primary_admin: user?.email || "",
+            google_drive_primary_admin: user?.email || "",
           }}
           validationSchema={Yup.object().shape({
-            google_primary_admin: Yup.string().required(
+            google_drive_primary_admin: Yup.string().required(
               "User email is required"
             ),
           })}
@@ -379,7 +389,7 @@ export const DriveAuthSection = ({
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  google_primary_admin: values.google_primary_admin,
+                  google_drive_primary_admin: values.google_drive_primary_admin,
                 }),
               }
             );
@@ -402,9 +412,9 @@ export const DriveAuthSection = ({
           {({ isSubmitting }) => (
             <Form>
               <TextFormField
-                name="google_primary_admin"
+                name="google_drive_primary_admin"
                 label="Primary Admin Email:"
-                subtext="Enter the email of an admin/owner of the Google Organization that owns the Google Drive(s) you want to index."
+                subtext="Enter the email of the user whose Google Drive access you want to delegate to the service account."
               />
               <div className="flex">
                 <TremorButton type="submit" disabled={isSubmitting}>

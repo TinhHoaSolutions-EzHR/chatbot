@@ -1,5 +1,4 @@
-import { DefaultDropdownElement } from '../Dropdown';
-
+import { DefaultDropdownElement } from "../Dropdown";
 export function TimeRangeSelector({
   value,
   onValueChange,
@@ -14,7 +13,7 @@ export function TimeRangeSelector({
 }) {
   return (
     <div className={className}>
-      {timeRangeValues.map(timeRangeValue => (
+      {timeRangeValues.map((timeRangeValue) => (
         <DefaultDropdownElement
           key={timeRangeValue.label}
           name={timeRangeValue.label}

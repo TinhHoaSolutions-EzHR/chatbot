@@ -5,8 +5,8 @@ import { HeaderWrapper } from "@/components/header/HeaderWrapper";
 import { AssistantEditor } from "@/app/admin/assistants/AssistantEditor";
 import { SuccessfulPersonaUpdateRedirectType } from "@/app/admin/assistants/enums";
 import { fetchAssistantEditorInfoSS } from "@/lib/assistants/fetchPersonaEditorInfoSS";
-import { DeletePersonaButton } from "@/app/admin/assistants/[id]/DeletePersonaButton";
-import { LargeBackButton } from "../../LargeBackButton";
+import { DeletePersonaButton } from "@/app/admin/assistants/DeletePersonaButton";
+import { LargeBackButton } from "../LargeBackButton";
 import Title from "@/components/ui/title";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
