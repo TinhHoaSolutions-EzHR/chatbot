@@ -481,3 +481,7 @@ ul > li > p {
   display: inline;
   /* Make paragraphs inline to reduce vertical space */
 }
+
+.dropdown-popup {
+  transform: translateY(calc(-100% - 5px));
+}

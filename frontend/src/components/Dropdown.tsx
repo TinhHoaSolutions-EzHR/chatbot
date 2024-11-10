@@ -444,6 +444,7 @@ export function ControlledPopup({
       {isOpen && (
         <div
           className={`
+            dropdown-popup
             absolute 
             top-0 
             bg-background 
@@ -453,7 +454,6 @@ export function ControlledPopup({
             rounded 
             text-emphasis 
             shadow-lg`}
-          style={{ transform: "translateY(calc(-100% - 5px))" }}
         >
           {popupContent}
         </div>
