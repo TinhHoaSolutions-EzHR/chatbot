@@ -19,9 +19,7 @@ def create_app() -> FastAPI:
         description=Constants.FASTAPI_DESCRIPTION,
     )
 
-    logger.info(
-        f"API {Constants.FASTAPI_NAME} {Constants.FASTAPI_VERSION} started successfully"
-    )
+    logger.info(f"API {Constants.FASTAPI_NAME} {Constants.FASTAPI_VERSION} started successfully")
 
     # Include application routers
     app.include_router(router=base.router)

@@ -32,9 +32,7 @@ class LoggerFactory:
         logger.setLevel(self.log_level)
 
         if not logger.hasHandlers():
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
             if self.log_to_console:
                 console_handler = logging.StreamHandler(sys.stdout)

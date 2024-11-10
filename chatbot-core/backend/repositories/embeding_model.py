@@ -22,30 +22,20 @@ class EmbeddingModelRepository:
             return embedding_models, None
         except Exception as e:
             logger.error(f"Error getting embedding models: {e}")
-            return [], APIError(
-                kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value
-            )
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def get_embedding_model(self, id: int) -> Tuple[EmbeddingModel, APIError | None]:
         """
         Get embedding model by id
         """
         try:
-            embedding_model = (
-                self.db_session.query(EmbeddingModel)
-                .filter(EmbeddingModel.id == id)
-                .first()
-            )
+            embedding_model = self.db_session.query(EmbeddingModel).filter(EmbeddingModel.id == id).first()
             return embedding_model, None
         except Exception as e:
             logger.error(f"Error getting embedding model: {e}")
-            return None, APIError(
-                kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value
-            )
+            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def create_embedding_model(
-        self, embedding_model: EmbeddingModel
-    ) -> APIError | None:
+    def create_embedding_model(self, embedding_model: EmbeddingModel) -> APIError | None:
         """
         Create embedding model
         """
@@ -58,16 +48,12 @@ class EmbeddingModelRepository:
             self.db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_embedding_model(
-        self, id: int, embedding_model: EmbeddingModel
-    ) -> APIError | None:
+    def update_embedding_model(self, id: int, embedding_model: EmbeddingModel) -> APIError | None:
         """
         Update embedding model
         """
         try:
-            self.db_session.query(EmbeddingModel).filter(
-                EmbeddingModel.id == id
-            ).update(embedding_model.model_dump())
+            self.db_session.query(EmbeddingModel).filter(EmbeddingModel.id == id).update(embedding_model.model_dump())
             self.db_session.commit()
             return None
         except Exception as e:
@@ -80,9 +66,7 @@ class EmbeddingModelRepository:
         Delete embedding model
         """
         try:
-            self.db_session.query(EmbeddingModel).filter(
-                EmbeddingModel.id == id
-            ).delete()
+            self.db_session.query(EmbeddingModel).filter(EmbeddingModel.id == id).delete()
             self.db_session.commit()
             return None
         except Exception as e:

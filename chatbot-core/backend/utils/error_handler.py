@@ -4,7 +4,6 @@ from settings import Constants
 
 
 class ErrorCodesMappingNumber(Enum):
-
     INVALID_REQUEST = (400, Constants.INVALID_REQUEST_MESSAGE)
     UNAUTHORIZED_REQUEST = (401, Constants.UNAUTHORIZED_REQUEST_MESSAGE)
     FORBIDDEN_REQUEST = (403, Constants.FORBIDDEN_REQUEST_MESSAGE)

@@ -23,9 +23,7 @@ async def get_embedding_models(db_session: Session = Depends(get_session)):
     Get all embedding models
     """
     # Get embedding models
-    embedding_models, err = EmbeddingModelService(
-        db_session=db_session
-    ).get_embedding_models()
+    embedding_models, err = EmbeddingModelService(db_session=db_session).get_embedding_models()
 
     # Handle API error
     if err:
@@ -34,33 +32,21 @@ async def get_embedding_models(db_session: Session = Depends(get_session)):
 
     # Parse embedding models
     data = (
-        [
-            EmbeddingModelResponse.model_validate(embedding_model)
-            for embedding_model in embedding_models
-        ]
+        [EmbeddingModelResponse.model_validate(embedding_model) for embedding_model in embedding_models]
         if embedding_models
         else []
     )
 
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.get("/{id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
-async def get_embedding_model_by_id(
-    id: int, db_session: Session = Depends(get_session)
-):
+async def get_embedding_model_by_id(id: int, db_session: Session = Depends(get_session)):
     """
     Get embedding model by id
     """
     # Get embedding model by id
-    embedding_model, err = EmbeddingModelService(
-        db_session=db_session
-    ).get_embedding_model(id=id)
+    embedding_model, err = EmbeddingModelService(db_session=db_session).get_embedding_model(id=id)
 
     # Handle API error
     if err:
@@ -68,18 +54,9 @@ async def get_embedding_model_by_id(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse embedding model
-    data = (
-        EmbeddingModelResponse.model_validate(embedding_model)
-        if embedding_model
-        else None
-    )
+    data = EmbeddingModelResponse.model_validate(embedding_model) if embedding_model else None
 
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.post("/", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
@@ -98,9 +75,7 @@ async def create_embedding_model(
     )
 
     # Create embedding model
-    err = EmbeddingModelService(db_session=db_session).create_embedding_model(
-        embedding_model
-    )
+    err = EmbeddingModelService(db_session=db_session).create_embedding_model(embedding_model)
 
     # Handle API error
     if err:
@@ -108,18 +83,9 @@ async def create_embedding_model(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse embedding model
-    data = (
-        EmbeddingModelResponse.model_validate(embedding_model)
-        if embedding_model
-        else None
-    )
+    data = EmbeddingModelResponse.model_validate(embedding_model) if embedding_model else None
 
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.put("/{id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -139,9 +105,7 @@ async def update_embedding_model(
     )
 
     # Update embedding model
-    err = EmbeddingModelService(db_session=db_session).update_embedding_model(
-        id=id, embedding_model=embedding_model
-    )
+    err = EmbeddingModelService(db_session=db_session).update_embedding_model(id=id, embedding_model=embedding_model)
 
     # Handle API error
     if err:
@@ -149,18 +113,9 @@ async def update_embedding_model(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse embedding model
-    data = (
-        EmbeddingModelResponse.model_validate(embedding_model)
-        if embedding_model
-        else None
-    )
+    data = EmbeddingModelResponse.model_validate(embedding_model) if embedding_model else None
 
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)

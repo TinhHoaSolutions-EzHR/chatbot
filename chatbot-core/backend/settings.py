@@ -17,9 +17,7 @@ class Constants:
     POSTGRES_MAX_OVERFLOW = 20
     POSTGRES_POOL_TIMEOUT = 30
     POSTGRES_POOL_RECYCLE = 3600
-    POSTGRES_CONNECTOR_URI = (
-        "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
-    )
+    POSTGRES_CONNECTOR_URI = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
 
     # Error Handler
     API_SUCCESS = "Success"
