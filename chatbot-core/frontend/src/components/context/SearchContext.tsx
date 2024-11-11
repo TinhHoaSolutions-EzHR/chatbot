@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext } from "react";
-import { CCPairBasicInfo, DocumentSet, Tag } from "@/lib/types";
-import { Persona } from "@/app/admin/assistants/interfaces";
-import { ChatSession } from "@/app/chat/interfaces";
+import React, { createContext, useContext } from 'react';
+import { CCPairBasicInfo, DocumentSet, Tag } from '@/lib/types';
+import { Persona } from '@/app/admin/assistants/interfaces';
+import { ChatSession } from '@/app/chat/interfaces';
 
 interface SearchContextProps {
   querySessions: ChatSession[];
@@ -24,15 +24,13 @@ export const SearchProvider: React.FC<{
   value: SearchContextProps;
   children: React.ReactNode;
 }> = ({ value, children }) => {
-  return (
-    <SearchContext.Provider value={value}>{children}</SearchContext.Provider>
-  );
+  return <SearchContext.Provider value={value}>{children}</SearchContext.Provider>;
 };
 
 export const useSearchContext = (): SearchContextProps => {
   const context = useContext(SearchContext);
   if (!context) {
-    throw new Error("useSearchContext must be used within a SearchProvider");
+    throw new Error('useSearchContext must be used within a SearchProvider');
   }
   return context;
 };
