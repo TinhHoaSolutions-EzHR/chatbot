@@ -7,9 +7,10 @@ const config: DocsThemeConfig = {
     link: "https://github.com/TinhHoaSolutions-EzHR/chatbot",
   },
   chat: {},
-  docsRepositoryBase: "https://github.com/shuding/nextra-docs-template",
+  docsRepositoryBase:
+    "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs",
   footer: {
-    text: "EzHR Chatbot Docs",
+    content: "EzHR Chatbot Docs",
   },
 };
 
