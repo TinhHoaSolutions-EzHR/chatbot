@@ -20,7 +20,8 @@
     "nextra-theme-docs": "^3.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "swagger-ui-react": "^5.18.2"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.5",
