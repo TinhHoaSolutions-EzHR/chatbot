@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "@components/icons";
+import { ArrowRightIcon } from "@/components/icons";
 import cn from "clsx";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -6,13 +6,13 @@ import type { ReactNode } from "react";
 import styles from "./style.module.css";
 
 export function Feature({
-  large,
-  centered,
-  children,
-  lightOnly,
-  className,
-  href,
-  index,
+  large: large = false,
+  centered: centered = false,
+  children: children = null,
+  lightOnly: lightOnly = false,
+  className: className = "",
+  href: href = "",
+  index: index = 0,
   ...props
 }) {
   return (

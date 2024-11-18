@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "clsx": "^2.1.1",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "pre-commit": "^1.2.2"
   }
 }

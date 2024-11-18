@@ -1,4 +1,4 @@
-export default function Video({ src }) {
+export default function Video({ src: src = "" }) {
   return (
     <video
       muted
