@@ -1,6 +1,7 @@
 {
   "name": "ezhr-chatbot-docs",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,7 +19,8 @@
     "nextra": "^3.2.3",
     "nextra-theme-docs": "^3.2.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.5",
