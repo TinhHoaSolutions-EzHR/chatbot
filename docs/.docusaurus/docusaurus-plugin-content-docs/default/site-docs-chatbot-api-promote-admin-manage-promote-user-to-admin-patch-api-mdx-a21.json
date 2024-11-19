@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/promote-admin-manage-promote-user-to-admin-patch",
+  "title": "Promote Admin",
+  "description": "Promote Admin",
+  "source": "@site/docs/chatbot-api/promote-admin-manage-promote-user-to-admin-patch.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/promote-admin-manage-promote-user-to-admin-patch",
+  "permalink": "/docs/chatbot-api/promote-admin-manage-promote-user-to-admin-patch",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "promote-admin-manage-promote-user-to-admin-patch",
+    "title": "Promote Admin",
+    "description": "Promote Admin",
+    "sidebar_label": "Promote Admin",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJyVVN9v2jAQ/lfQPZvCuj3ljXaVWnXTUEv3giJ0JAdxSWLXdtpGUf736ewAAUq3vYBzvp/fd58bUJoMOqnKuxQi0EYVytEC00KWiwJLXNNia6wsmYVT3aVGl2QgwNBLRdZdqbSGqIFElY5Kx0fUOpeJTz56tqpkm00yKpBP2nBpJ8nyl89NBcqcv1ytCSKwzshyDQKcdDkbniyZwY33aluxdVPLZ0pc14o0lEI07yeMDxNc1dsMbT/EmYq8wWpV2tDV5XjMfynZxEjNg0AEj1WSkLWrKh88dM4g/nnu1pf9dnl5mvg35jL1YYMbY5T5j6xHaKbkOiSlo8KeOuQqObjFsv61gmh+DH0rdhZZOlqTgTbeI4/GYN3j54cKDUIroLDrz6j8SdbimmCX7LyrB2Mw49u/sc5zhdKdX4/7PbwB3fNjfA/wfVRs63I7m01PEgZuLSWVka72cE6md/dUXyu1kQTRPG5jccT6NKhrMGFVcfPkMuW12AlMo8sgglFQ46hT45AXfOjUELs4S+aVjPVVK5NDBJlzOhqNcpVgninroq/j8Ri4g22Lj7w/YSMOG92RgVreE2MjudckXAsoseDbFVqHWnIrFiuXech4OR/2j8LNOxY6p2OR7zcMZLlSvmSH7aMPGFxhsqEyBQE8VwBrfDG++MIxWllXoBdB18sxjgco7+Zx9O5GOkfpd9Tj1HQIzyEgzJB/iHEsgGFkz6ZZoqUnk7ctm18qMsx3LOAVjcRlHsgWkBGmZDwpG6ohguug6KFfZ3bPq4DzkbpZeSFikiSk3ae+cW9tppPZ9S0IWHYPcqFSDjL4xlrBN4gABCgPjGfe2xrIsVxXPH4EISlz6Uk92IaN34bu0HswsKx7LZ4shuiG4d/eo3IY1TRh3dp25x+uzkZ08G69mdW4bds/nlZagA==",
+    "sidebar_class_name": "patch api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Create Deletion Attempt For Connector Id",
+    "permalink": "/docs/chatbot-api/create-deletion-attempt-for-connector-id-manage-admin-deletion-attempt-post"
+  },
+  "next": {
+    "title": "List All Users",
+    "permalink": "/docs/chatbot-api/list-all-users-manage-users-get"
+  }
+}

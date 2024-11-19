@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/set-message-as-latest-chat-set-message-as-latest-put",
+  "title": "Set Message As Latest",
+  "description": "Set Message As Latest",
+  "source": "@site/docs/chatbot-api/set-message-as-latest-chat-set-message-as-latest-put.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/set-message-as-latest-chat-set-message-as-latest-put",
+  "permalink": "/docs/chatbot-api/set-message-as-latest-chat-set-message-as-latest-put",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "set-message-as-latest-chat-set-message-as-latest-put",
+    "title": "Set Message As Latest",
+    "description": "Set Message As Latest",
+    "sidebar_label": "Set Message As Latest",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJyVVMlu2zAQ/RVjznKspj3plrQBaiRFg8TpxTCMsTS2GFMiQ46SGIb+vRhS3uMuF5vi7O+94RqMJYesTD0sIANPPK3Ie1zQFP1UI5PnaV4iTz822YYhAUcvDXm+NsUKsjXkpmaqWY5orVZ5KDB49qaWO5+XVKGcrJPyrMjL1ya7KuSLV5YgA1UzLchBAqxYy82P6NYbFtC2ycbPzJ4p3/SiHBWQjfczTnYJvpbIXZJhQTWruSIHrSTbBbNrKFx4a2ofG7xMU/kryOdOWZkJMnhs8py8nze699A5Q/LPELSh7JfLy9PEv1CrIoT1bpwz7j+yHgFbEKPSclJMlT910CY/sGK9+jmHbLxlwbNT9QLa5ISXdrLjAJ3D1R5TdyY2CG0ClV/ssdrlOyEVtsnOuwYweiOx/o1/mSuW7vz2VLCDN6J7foxvEb6Pim1cvo9G9ycJI7ee8sYpXgU4r+6Ht7T6asxSEWTjSTtJjuVE3Nso/Mr37sKayRDEpZEVjRtnkUvIYCCrOfDE/U7qffR9vYnx5F7J+VC5cRoyKJltNhhok6Mujefsc5qmIF1s2nwUDUVVHDa7JQStuiXBR0m/eTQnUGMl1jl6RqsaT85jw2WATQT6sHsjbt6xspqOdz5tJefchFodsI/Bs3eN+ZLqAhKQgSJS6UV68Ulos8ZzhWEDuibOgXgA9XYgpnceWI0qCDUAte4AHoMAHKD8COJJAoKi+K3XM/T05HTbyvVLQ04onyTwik7hTEe+EygJC3KBkyWt5DmKS90PihZ33USYjxZcli9GXOU5Wf6j72RPMfdPI0hg1j3OlSkkxOGbLAu+QQaQgAmgBNrD3Ro01otGVjKDmFKIDIweSGEZpNAd9l4MrFd7DZ6oIulGkd+9V+Uwar2OWmvbrX80nY3owN14C6OTtm1/Az2AX4g=",
+    "sidebar_class_name": "put api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Handle New Chat Message",
+    "permalink": "/docs/chatbot-api/handle-new-chat-message-chat-send-message-post"
+  },
+  "next": {
+    "title": "Create Chat Feedback",
+    "permalink": "/docs/chatbot-api/create-chat-feedback-chat-create-chat-message-feedback-post"
+  }
+}

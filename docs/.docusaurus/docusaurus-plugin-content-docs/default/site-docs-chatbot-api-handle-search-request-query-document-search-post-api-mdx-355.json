@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/handle-search-request-query-document-search-post",
+  "title": "Handle Search Request",
+  "description": "Simple search endpoint, does not create a new message or records in the DB",
+  "source": "@site/docs/chatbot-api/handle-search-request-query-document-search-post.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/handle-search-request-query-document-search-post",
+  "permalink": "/docs/chatbot-api/handle-search-request-query-document-search-post",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "handle-search-request-query-document-search-post",
+    "title": "Handle Search Request",
+    "description": "Simple search endpoint, does not create a new message or records in the DB",
+    "sidebar_label": "Handle Search Request",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "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",
+    "sidebar_class_name": "post api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Regenerate Existing Api Key",
+    "permalink": "/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch"
+  },
+  "next": {
+    "title": "Get Answer With Quote",
+    "permalink": "/docs/chatbot-api/get-answer-with-quote-query-answer-with-quote-post"
+  }
+}

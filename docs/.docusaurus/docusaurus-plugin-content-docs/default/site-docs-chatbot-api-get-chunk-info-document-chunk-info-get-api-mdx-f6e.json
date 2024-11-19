@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/get-chunk-info-document-chunk-info-get",
+  "title": "Get Chunk Info",
+  "description": "Get Chunk Info",
+  "source": "@site/docs/chatbot-api/get-chunk-info-document-chunk-info-get.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/get-chunk-info-document-chunk-info-get",
+  "permalink": "/docs/chatbot-api/get-chunk-info-document-chunk-info-get",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "get-chunk-info-document-chunk-info-get",
+    "title": "Get Chunk Info",
+    "description": "Get Chunk Info",
+    "sidebar_label": "Get Chunk Info",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJy1lEtv2zAMx7+KwdMGeE3W7eRb1xZd0D2KNtslCAJVZmI1tqRKcjHD8HcfKNmOXTfdMGCXPCSKjx//ZA1Ko2FOKLlIIYEdug3PSrnfCLlVm1TxskA5Otuhgxg0M6xAh8ZCsqrB4GMpDKaQOFNiDJZnWDBIanCVRkjAOiPkDmJwwuV0cNG6jhYpNDFIVtBpH1CkEIOQkMBjiaaCJv6LIEI63KEZRDmnvMch2lKe+1/HYNBqJS1acnk6n9NXipYboQkQJHBXco7Wbss8um2NIQaupEPpyJxpnQvuec4eLL2pB2lqQ7SdCBEGz45BOm9NKPuy2Di1R2lfLfhbWUTLYNY0cWen7h+QU9sOCFd9/JHv9TN2C7lV0DTk6+Pp6ZTIT5aL1NcbXRqjzL/jSNExkdMv4bCwU4Nc8dEtk9X3rVffGB9J5RmfZn1gwYxh1YDYFxUSJMiF3b3Wjq9oLdsh9M6Om3oY0ZJu/9QHqiuEbu0GPTjgDXSPl3ER8L0UrDP5vFzeTByG3lrkpRGu8jjPbhbXWJ0rtRcIyWpNszHu+hW6qB0t0kcMBbpMtQvEbweXQQKzbpxnfujeiWBs0Tx1i6M0OSSQOaeT2SxXnOWZsi75MJ/P/Ux2id2RaoIOxun1LWBaXGPVTTUP1/3Ub5l1TIvSorGsdJkH5fMhDy2gO1boHKNPjO9R0oKgNEPF85P5yXvCr5V1BfNKbl1PYIxY9fk5/OVmOmfCK83XXbegVv3eo/E5oFrHQDTIoK7vmcUfJm8aOg5LiwCmwrL7nJS0ZbnFSfR+GuHNbSu6txHEL2e1x2qyhJ9YXpKln6v/EG2wjw+h1vTHCIrlFRhDhixF40sO7844R+0GrybLhrz0wry6XEIMvvUjzey9Ztofg2XCZDXwPZFPlz19DhbO+FVdB1E2TW8fro6+aKvsrInTumma38/Dm0w=",
+    "sidebar_class_name": "get api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Get Document Info",
+    "permalink": "/docs/chatbot-api/get-document-info-document-document-size-info-get"
+  },
+  "next": {
+    "title": "Admin Search",
+    "permalink": "/docs/chatbot-api/admin-search-admin-search-post"
+  }
+}

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-localDevelopmentGuide/roadmap" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.6.1">
+<title data-rh="true">Roadmap | EzHR Chatbot Local Development Guide</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Roadmap | EzHR Chatbot Local Development Guide"><meta data-rh="true" name="description" content="A milestone plan for the development of a full-stack LLM application, from ideation to public launch."><meta data-rh="true" property="og:description" content="A milestone plan for the development of a full-stack LLM application, from ideation to public launch."><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap"><link data-rh="true" rel="alternate" href="https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap" hreflang="en"><link data-rh="true" rel="alternate" href="https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="EzHR Chatbot Local Development Guide RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="EzHR Chatbot Local Development Guide Atom Feed"><link rel="stylesheet" href="/assets/css/styles.79893576.css">
+<script src="/assets/js/runtime~main.1c0403e4.js" defer="defer"></script>
+<script src="/assets/js/main.f080413c.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const n=new URLSearchParams(window.location.search).entries();for(var[t,e]of n)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="EzHR Chatbot Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="EzHR Chatbot Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">EzHR Chatbot</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/intro">Local Development Guide</a><a class="navbar__item navbar__link" href="/blog">Blog</a><a class="navbar__item navbar__link" href="/docs/chatbot-api/sample-backend">Chatbot API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/TinhHoaSolutions-EzHR/chatbot" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite" aria-pressed="false"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><div class="navbar__search searchBarContainer_NW3z" dir="ltr"><input placeholder="Search" aria-label="Search" class="navbar__search-input"><div class="loadingRing_RJI3 searchBarLoadingRing_YnHq"><div></div><div></div><div></div><div></div></div></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/intro">Getting Started</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" href="/docs/category/local-development-guide">Local Development Guide</a><button aria-label="Collapse sidebar category &#x27;Local Development Guide&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/localDevelopmentGuide/highLevelArchitecture">Architecture</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/localDevelopmentGuide/namingConvention">Naming Conventions</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/localDevelopmentGuide/roadmap">Roadmap</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/chatbot-api">Chatbot API</a><button aria-label="Expand sidebar category &#x27;Chatbot API&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav><button type="button" title="Collapse sidebar" aria-label="Collapse sidebar" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_xLCN"><div class="docItemContainer_jfFK"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/local-development-guide"><span itemprop="name">Local Development Guide</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Roadmap</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><div class="row"><div class="col col--12 markdown"><header><h1>Milestone Plan for LLM Application Development</h1></header>
+<p>This milestone plan is structured to guide the development of a full-stack LLM application from ideation to full public launch, focusing on core functionality, testing, and iterative feedback.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="summary-table-of-milestones">Summary Table of Milestones<a href="#summary-table-of-milestones" class="hash-link" aria-label="Direct link to Summary Table of Milestones" title="Direct link to Summary Table of Milestones">​</a></h2>
+<table><thead><tr><th>Milestone</th><th>Goal</th><th>Key Deliverables</th></tr></thead><tbody><tr><td>1. Discovery and Planning</td><td>Define scope and architecture</td><td>Requirements doc, architecture diagram</td></tr><tr><td>2. Core Infrastructure Setup</td><td>Set up essential infrastructure</td><td>Storage, databases, task queue</td></tr><tr><td>3. Prototype Completion</td><td>Develop basic LLM functionality</td><td>Basic functional prototype</td></tr><tr><td>4. Core Features Developed</td><td>Add document processing, caching, search</td><td>Feature-complete system</td></tr><tr><td>5. Alpha Release</td><td>Internal testing and feedback</td><td>Stable alpha version</td></tr><tr><td>6. Beta Release</td><td>Limited user testing and feedback</td><td>Beta version, user feedback</td></tr><tr><td>7. Performance Optimization</td><td>Optimize performance and security</td><td>Optimized, secure application</td></tr><tr><td>8. Public Launch Prep</td><td>Finalize for public release</td><td>Launch-ready product, documentation</td></tr><tr><td>9. Public Launch</td><td>Release to all users</td><td>Publicly accessible application</td></tr><tr><td>10. Post-Launch Improvements</td><td>Minor enhancements and bug fixes</td><td>Improved version with fixes</td></tr><tr><td>11. Scaling and Maintenance</td><td>Ensure scalability and plan future growth</td><td>Scalable, maintained application</td></tr></tbody></table>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-1-discovery-and-planning">Milestone 1: Discovery and Planning<a href="#milestone-1-discovery-and-planning" class="hash-link" aria-label="Direct link to Milestone 1: Discovery and Planning" title="Direct link to Milestone 1: Discovery and Planning">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Define project requirements, key objectives, and architecture.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Conduct research on user needs, LLM capabilities, and expected system load.</li>
+<li>Define project scope, including the primary features and user stories.</li>
+<li>Outline initial system architecture (frontend, backend, cache, databases).</li>
+<li>Set up project repository, CI/CD pipelines, and preliminary development environment.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Requirements document, architecture diagram, project timeline, and initial codebase setup.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-2-core-infrastructure-setup">Milestone 2: Core Infrastructure Setup<a href="#milestone-2-core-infrastructure-setup" class="hash-link" aria-label="Direct link to Milestone 2: Core Infrastructure Setup" title="Direct link to Milestone 2: Core Infrastructure Setup">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Establish core infrastructure, including storage, databases, and background processing.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Set up and configure Document Storage (AWS S3 or MinIO), Vector Database (Qdrant), and Relational Database (SQL Server).</li>
+<li>Configure the background task queue (Celery on AWS Step Functions or similar) for asynchronous tasks like embedding documents.</li>
+<li>Establish serverless or managed services for storage and databases to reduce costs and improve scalability.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Functional infrastructure with integration tests confirming connectivity and data storage.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-3-prototype-completion">Milestone 3: Prototype Completion<a href="#milestone-3-prototype-completion" class="hash-link" aria-label="Direct link to Milestone 3: Prototype Completion" title="Direct link to Milestone 3: Prototype Completion">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Develop a functional prototype with basic LLM and embedding model integration.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Integrate the LLM API (e.g., OpenAI API) and embedding model (GPT or PhoBERT) for basic query processing.</li>
+<li>Build a simple frontend UI (NextJS) for users to submit queries and receive responses.</li>
+<li>Implement a basic API server (FastAPI on AWS Lambda) with reverse proxy (Nginx).</li>
+<li>Test end-to-end flow from user input to LLM response and back.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Basic functional prototype enabling user queries and AI-generated responses.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-4-core-features-developed">Milestone 4: Core Features Developed<a href="#milestone-4-core-features-developed" class="hash-link" aria-label="Direct link to Milestone 4: Core Features Developed" title="Direct link to Milestone 4: Core Features Developed">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Implement essential features like document processing, caching, and vector search.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Implement background tasks for document embedding and storage in the Vector Database.</li>
+<li>Add caching (Redis) for frequently accessed queries to improve response times.</li>
+<li>Build vector-based search functionality for finding similar documents based on embeddings.</li>
+<li>Refine UI and backend to support these features with scalability in mind.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Feature-complete application with document embedding, caching, and search.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-5-alpha-release-internal-testing">Milestone 5: Alpha Release (Internal Testing)<a href="#milestone-5-alpha-release-internal-testing" class="hash-link" aria-label="Direct link to Milestone 5: Alpha Release (Internal Testing)" title="Direct link to Milestone 5: Alpha Release (Internal Testing)">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Launch an internal version for testing core functionalities and performance.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Deploy to a test environment with restricted access for internal team members.</li>
+<li>Conduct usability testing for UI, API reliability, and system stability.</li>
+<li>Run initial performance tests to check if response times and throughput meet expectations.</li>
+<li>Collect internal feedback to refine UX and resolve major issues.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Stable alpha version with feedback from internal testing and an updated backlog.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-6-beta-release-limited-user-testing">Milestone 6: Beta Release (Limited User Testing)<a href="#milestone-6-beta-release-limited-user-testing" class="hash-link" aria-label="Direct link to Milestone 6: Beta Release (Limited User Testing)" title="Direct link to Milestone 6: Beta Release (Limited User Testing)">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Release a beta version for a limited audience to gather real user feedback.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Deploy to a production-like environment with limited access for select users.</li>
+<li>Implement logging and monitoring to capture usage patterns, errors, and bottlenecks.</li>
+<li>Integrate a feedback system to gather insights on user experience and response accuracy.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Beta version with logging and analytics, and documented user feedback.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-7-performance-and-security-optimization">Milestone 7: Performance and Security Optimization<a href="#milestone-7-performance-and-security-optimization" class="hash-link" aria-label="Direct link to Milestone 7: Performance and Security Optimization" title="Direct link to Milestone 7: Performance and Security Optimization">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Optimize the system for speed, efficiency, and security.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Optimize caching for frequently accessed responses.</li>
+<li>Review and optimize vector database queries for faster results.</li>
+<li>Conduct a security audit focused on data protection, authentication, and permissions.</li>
+<li>Run load testing to confirm system scalability.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Performance-optimized, secure application ready for a wider release, with testing reports.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-8-public-launch-preparation">Milestone 8: Public Launch Preparation<a href="#milestone-8-public-launch-preparation" class="hash-link" aria-label="Direct link to Milestone 8: Public Launch Preparation" title="Direct link to Milestone 8: Public Launch Preparation">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Finalize all details for a successful public release.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Complete final testing, including UAT (User Acceptance Testing), to ensure functional readiness.</li>
+<li>Finalize documentation for users and developers, including API docs and setup guides.</li>
+<li>Prepare marketing and user onboarding materials, if needed.</li>
+<li>Establish support channels for post-launch user queries.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Launch-ready product, comprehensive documentation, and user onboarding resources.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-9-version-10---public-launch">Milestone 9: Version 1.0 - Public Launch<a href="#milestone-9-version-10---public-launch" class="hash-link" aria-label="Direct link to Milestone 9: Version 1.0 - Public Launch" title="Direct link to Milestone 9: Version 1.0 - Public Launch">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Release the application to all intended users.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Officially launch the application with monitoring for critical issues.</li>
+<li>Monitor user activity and metrics for the first 24-48 hours to ensure stability.</li>
+<li>Provide support for major issues with a rapid response plan.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Full public release with active user support and monitoring.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-10-post-launch-improvements-version-11">Milestone 10: Post-Launch Improvements (Version 1.1)<a href="#milestone-10-post-launch-improvements-version-11" class="hash-link" aria-label="Direct link to Milestone 10: Post-Launch Improvements (Version 1.1)" title="Direct link to Milestone 10: Post-Launch Improvements (Version 1.1)">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Address post-launch feedback and add minor improvements.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Collect and analyze public feedback to identify improvement areas.</li>
+<li>Resolve post-launch issues or bugs based on user reports and monitoring.</li>
+<li>Implement minor feature enhancements or optimizations.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Improved version with bug fixes, optimizations, and minor enhancements.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="milestone-11-scaling-and-maintenance-ongoing">Milestone 11: Scaling and Maintenance (Ongoing)<a href="#milestone-11-scaling-and-maintenance-ongoing" class="hash-link" aria-label="Direct link to Milestone 11: Scaling and Maintenance (Ongoing)" title="Direct link to Milestone 11: Scaling and Maintenance (Ongoing)">​</a></h2>
+<ul>
+<li><strong>Goal</strong>: Ensure the application is scalable and well-maintained.</li>
+<li><strong>Details</strong>:<!-- -->
+<ul>
+<li>Review performance under varying loads to identify scaling needs.</li>
+<li>Set up maintenance plans for databases, storage, and serverless resources to optimize costs.</li>
+<li>Prioritize future feature requests for competitive advantage.</li>
+</ul>
+</li>
+<li><strong>Deliverables</strong>: Scalable, well-maintained application with a roadmap for future updates.</li>
+</ul>
+<hr>
+<p>This plan provides a structured path from initial development to launch and ongoing maintenance, helping ensure that each stage is well-prepared and aligned with the project’s goals.</p></div></div></div><div class="row"><div class="col col--12"><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/roadmap.mdx" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"></div></div></footer></div></div></article><div class="row"><div class="col col--12"><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/localDevelopmentGuide/namingConvention"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Naming Conventions</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/category/chatbot-api"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Chatbot API</div></a></nav></div></div></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#summary-table-of-milestones" class="table-of-contents__link toc-highlight">Summary Table of Milestones</a></li><li><a href="#milestone-1-discovery-and-planning" class="table-of-contents__link toc-highlight">Milestone 1: Discovery and Planning</a></li><li><a href="#milestone-2-core-infrastructure-setup" class="table-of-contents__link toc-highlight">Milestone 2: Core Infrastructure Setup</a></li><li><a href="#milestone-3-prototype-completion" class="table-of-contents__link toc-highlight">Milestone 3: Prototype Completion</a></li><li><a href="#milestone-4-core-features-developed" class="table-of-contents__link toc-highlight">Milestone 4: Core Features Developed</a></li><li><a href="#milestone-5-alpha-release-internal-testing" class="table-of-contents__link toc-highlight">Milestone 5: Alpha Release (Internal Testing)</a></li><li><a href="#milestone-6-beta-release-limited-user-testing" class="table-of-contents__link toc-highlight">Milestone 6: Beta Release (Limited User Testing)</a></li><li><a href="#milestone-7-performance-and-security-optimization" class="table-of-contents__link toc-highlight">Milestone 7: Performance and Security Optimization</a></li><li><a href="#milestone-8-public-launch-preparation" class="table-of-contents__link toc-highlight">Milestone 8: Public Launch Preparation</a></li><li><a href="#milestone-9-version-10---public-launch" class="table-of-contents__link toc-highlight">Milestone 9: Version 1.0 - Public Launch</a></li><li><a href="#milestone-10-post-launch-improvements-version-11" class="table-of-contents__link toc-highlight">Milestone 10: Post-Launch Improvements (Version 1.1)</a></li><li><a href="#milestone-11-scaling-and-maintenance-ongoing" class="table-of-contents__link toc-highlight">Milestone 11: Scaling and Maintenance (Ongoing)</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/intro">Local Development Guide</a></li><li class="footer__item"><a class="footer__link-item" href="/docs/chatbot-api/sample-backend">Chatbot API</a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/blog">Blog</a></li><li class="footer__item"><a href="https://github.com/TinhHoaSolutions-EzHR/chatbot" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 EzHR Chatbot.</div></div></div></footer></div>
+</body>
+</html>

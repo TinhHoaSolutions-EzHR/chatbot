@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/rename-chat-session-chat-rename-chat-session-put",
+  "title": "Rename Chat Session",
+  "description": "Rename Chat Session",
+  "source": "@site/docs/chatbot-api/rename-chat-session-chat-rename-chat-session-put.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/rename-chat-session-chat-rename-chat-session-put",
+  "permalink": "/docs/chatbot-api/rename-chat-session-chat-rename-chat-session-put",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "rename-chat-session-chat-rename-chat-session-put",
+    "title": "Rename Chat Session",
+    "description": "Rename Chat Session",
+    "sidebar_label": "Rename Chat Session",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJydVU1P4zAQ/SvRnAPNsnvKDVikRewHasteUITcZNqYOraxHUoU5b+vxk7TlBZYcWnd8cx43ps30xaURsMcV/K6gBQMSlbhQ14y92DRWq5k+HHsQtcOYjD4VKN1F6poIG0hV9KhdHRkWgue++STR6sk2WxeYsXopA097ThaHzZOzAsyuUYjpMClwxUaiMFxJ8hyWTIXzYJvdF1AFwMVN4qxznC5GoX8pvuui7cOavGI+bZ6brCA9P6ghmz/yamnYBrgQkfZdtHO1OgNVitpA6azJKGvAm1uuCYaIIVZnedo7bIW0bR3hvizrEncPHwIHTfRf8Efko1wB8yEvud7qLnzBHw7OzuE+JcJXngA0ZUxynweX4GOcUEn7rCyhw5C5Xu3TDZ/lpDev6ajiw/01GU7PpgxrBlx9lOFAklalV29R+8vtJatEIZkb7t6MqI53X7UC8IVnu79Rj3Z0RvYfRvG90Dfsce2Lj/m89uDhKG3FvPacNd4Os9vr2+wuVRqzRHS+6zL4lddD1KJxsNJENCVijZLWBaauRJSmNCoTcJOOaHziR0iLJpnNNa/WhsBKZTO6XQyESpnolTWpV+TJAGqYFvijPQTFLFf6NAMpvkNEjecas3D9XZvwJJZxzSvLRrLald6ykic091yu3phlRZ4dFklQ6ZBb8DlUvkCeqZnPjy6YPkaZQExEMpAXXKanH6hGK2sq5gfiT7fcVb3mB8wOnxxEy0Y97r13LU942G5eZEdcp7FQLSSV9sumMU7I7qOzE81Gup/FsMzM5wtRGh+DCWyAo1v0hob2pBhwk+8vMld1IH3V9NOkxgizvMctXvXNxsJ6PZuDjEs+r+ZShUUYtiGQLENpAAxKE+J14G3tSCYXNU0nymElNRZ3+I9bay9NvrDaH0w2YwKPJBJ3EOhz9GK2Y9q2yC+rhv8w9WbET25W2/qZ9Z13T9G7KRf",
+    "sidebar_class_name": "put api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Create New Chat Session",
+    "permalink": "/docs/chatbot-api/create-new-chat-session-chat-create-chat-session-post"
+  },
+  "next": {
+    "title": "Delete Chat Session By Id",
+    "permalink": "/docs/chatbot-api/delete-chat-session-by-id-chat-delete-chat-session-session-id-delete"
+  }
+}

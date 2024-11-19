@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
+  "title": "Regenerate Existing Api Key",
+  "description": "Regenerate Existing Api Key",
+  "source": "@site/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
+  "permalink": "/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "regenerate-existing-api-key-admin-api-key-api-key-id-patch",
+    "title": "Regenerate Existing Api Key",
+    "description": "Regenerate Existing Api Key",
+    "sidebar_label": "Regenerate Existing Api Key",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJydVE1v2zAM/SsGTxugLVm3k29dW6BFN6xo012CIGBtJlZjW6okFzUM/feB8kfspemKnSxLpPT4HvkaUJoMOqnKqxRiMLSlkjdoTS/SOllu16jlekf1GtNClsPfsJDpeq3RJRkI0GiwIEfGQrxswNBTJQ2lEDtTkQCbZFQgxA24WhPEIEtHWzIgwEmX886pltE11dFVCl5AiQVv7p8CAbKEGDS6DPxKgCGrVWnJ8q0n8zl/UrKJkZqLghjuqiQhazdVHt12wSAgUaWj0nE4ap3LJHAwe7Sc04yQasMMOdm+MELy/ir6pFRanWM9yrTOyHL7SuJ5F7rPfkcWR1eWzBTdEL1RpkAHMVRVILLPvrdkAlIv+hz18EiJAzFScDlV4e+a9i+vJriuqT7v5FAGvOdHvp2cHMr0G3OZBhGiC2OU+X+NUnIoc15JR4U9DMhVMjnFsv61CQ07pcyLA4n9ak8SGhMK76v9oVqALENht28J9pOsxS3BcNnx0EBGtODTfwnEdbVPd3EjKfb0tuweL+O8pe+1x/qQy8Xi5uDCVltLSWWkqwOdpzdX11SfKbWTBPFyxQM7Vf128JvoovObqO9mAQW5TKXtuHf+4jKIYRasaIZaftpRPWv2nemBIZjn3oEqk0MMmXM6ns1ylWCeKevir/P5PNhHD/eOe6ntjinoQRgMvdz7T9IeDw61QetQS54BixV7k+fIjQo3dLTdYaFzir5jsqOSh4hhtjzMP88/f2FRtLKuwNDf3dVvUzShcwDr6MXNdI4yNGMgoenIW0Igrx1hpg8ExKPRXglgijiwaR7Q0r3Jveftp4oM67oS8IxG4gMXtWwglZbXKcQbzC0dYBrGGD7cdt36MQLxOtae7ZJxPWNe8R8ICA44tqAwiRlhSiagaANOk4S0G6UeGAerPvTVzeni7JKpYMkmWrfEdIuRNUyBHcjeA90FNz6S1TRtM3k/xLdHRzO6Ovtopmrlvf8DyFqkCg==",
+    "sidebar_class_name": "patch api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Delete Api Key",
+    "permalink": "/docs/chatbot-api/delete-api-key-admin-api-key-api-key-id-delete"
+  },
+  "next": {
+    "title": "Handle Search Request",
+    "permalink": "/docs/chatbot-api/handle-search-request-query-document-search-post"
+  }
+}

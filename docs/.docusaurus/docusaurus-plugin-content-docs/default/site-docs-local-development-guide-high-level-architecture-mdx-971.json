@@ -1,0 +1,27 @@
+{
+  "id": "localDevelopmentGuide/highLevelArchitecture",
+  "title": "Architecture",
+  "description": "High-level architecture overview of the Large Language Model (LLM) application for intelligent query responses.",
+  "source": "@site/docs/localDevelopmentGuide/highLevelArchitecture.mdx",
+  "sourceDirName": "localDevelopmentGuide",
+  "slug": "/localDevelopmentGuide/highLevelArchitecture",
+  "permalink": "/docs/localDevelopmentGuide/highLevelArchitecture",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/highLevelArchitecture.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Architecture",
+    "description": "High-level architecture overview of the Large Language Model (LLM) application for intelligent query responses."
+  },
+  "sidebar": "localDevelopmentGuideSidebar",
+  "previous": {
+    "title": "Local Development Guide",
+    "permalink": "/docs/category/local-development-guide"
+  },
+  "next": {
+    "title": "Naming Conventions",
+    "permalink": "/docs/localDevelopmentGuide/namingConvention"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/create-persona-admin-persona-post",
+  "title": "Create Persona",
+  "description": "Create Persona",
+  "source": "@site/docs/chatbot-api/create-persona-admin-persona-post.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/create-persona-admin-persona-post",
+  "permalink": "/docs/chatbot-api/create-persona-admin-persona-post",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "create-persona-admin-persona-post",
+    "title": "Create Persona",
+    "description": "Create Persona",
+    "sidebar_label": "Create Persona",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "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",
+    "sidebar_class_name": "post api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Build Final Template Prompt",
+    "permalink": "/docs/chatbot-api/build-final-template-prompt-persona-utils-prompt-explorer-get"
+  },
+  "next": {
+    "title": "Delete Persona",
+    "permalink": "/docs/chatbot-api/delete-persona-admin-persona-persona-id-delete"
+  }
+}
