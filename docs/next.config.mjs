@@ -15,6 +15,11 @@ const withNextra = nextra({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = withNextra({});
+const nextConfig = withNextra({
+  "output": "export",
+  images: {
+    unoptimized: true,
+  }
+});
 
 export default nextConfig;
