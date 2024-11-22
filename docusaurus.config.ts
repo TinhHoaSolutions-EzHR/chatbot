@@ -51,9 +51,7 @@ const config: Config = {
             },
           },
           onInlineAuthors: 'ignore',
-          onUntruncatedBlogPosts: 'ignore',
-          rehypePlugins: [rehypeKatex],
-          remarkPlugins: [remarkMath],
+          onUntruncatedBlogPosts: 'ignore'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
