@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "framer-motion": "^11.11.17",
-    "next": "14.2.5",
+    "next": "14.2.10",
     "nextra": "^3.2.3",
     "nextra-theme-docs": "^3.2.3",
     "react": "^18",
