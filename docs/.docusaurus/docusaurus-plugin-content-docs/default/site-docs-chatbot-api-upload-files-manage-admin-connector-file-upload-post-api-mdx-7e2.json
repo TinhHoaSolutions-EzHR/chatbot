@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/upload-files-manage-admin-connector-file-upload-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/upload-files-manage-admin-connector-file-upload-post",
-  "permalink": "/docs/chatbot-api/upload-files-manage-admin-connector-file-upload-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/upload-files-manage-admin-connector-file-upload-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Admin Google Drive Auth",
-    "permalink": "/docs/chatbot-api/admin-google-drive-auth-manage-admin-connector-google-drive-authorize-credential-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/admin-google-drive-auth-manage-admin-connector-google-drive-authorize-credential-id-get"
   },
   "next": {
     "title": "Get Connector Indexing Status",
-    "permalink": "/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get"
   }
 }

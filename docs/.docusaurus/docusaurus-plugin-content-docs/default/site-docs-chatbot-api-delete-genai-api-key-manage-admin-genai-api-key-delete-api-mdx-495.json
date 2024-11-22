@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete",
-  "permalink": "/docs/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Store Genai Api Key",
-    "permalink": "/docs/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put"
   },
   "next": {
     "title": "Create Deletion Attempt For Connector Id",
-    "permalink": "/docs/chatbot-api/create-deletion-attempt-for-connector-id-manage-admin-deletion-attempt-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-deletion-attempt-for-connector-id-manage-admin-deletion-attempt-post"
   }
 }

@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/connector-run-once-manage-admin-connector-run-once-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/connector-run-once-manage-admin-connector-run-once-post",
-  "permalink": "/docs/chatbot-api/connector-run-once-manage-admin-connector-run-once-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/connector-run-once-manage-admin-connector-run-once-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Update Connector From Model",
-    "permalink": "/docs/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch"
   },
   "next": {
     "title": "Gmail Auth",
-    "permalink": "/docs/chatbot-api/gmail-auth-manage-connector-gmail-authorize-credential-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/gmail-auth-manage-connector-gmail-authorize-credential-id-get"
   }
 }

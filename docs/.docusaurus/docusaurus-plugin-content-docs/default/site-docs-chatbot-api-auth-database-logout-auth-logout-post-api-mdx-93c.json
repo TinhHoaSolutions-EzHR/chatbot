@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/auth-database-logout-auth-logout-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/auth-database-logout-auth-logout-post",
-  "permalink": "/docs/chatbot-api/auth-database-logout-auth-logout-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/auth-database-logout-auth-logout-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Oauth:Google.Database.Callback",
-    "permalink": "/docs/chatbot-api/oauth-google-database-callback-auth-oauth-callback-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/oauth-google-database-callback-auth-oauth-callback-get"
   },
   "next": {
     "title": "Get User Chat Sessions",
-    "permalink": "/docs/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get"
   }
 }

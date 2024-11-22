@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/build-final-template-prompt-persona-utils-prompt-explorer-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/build-final-template-prompt-persona-utils-prompt-explorer-get",
-  "permalink": "/docs/chatbot-api/build-final-template-prompt-persona-utils-prompt-explorer-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/build-final-template-prompt-persona-utils-prompt-explorer-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Persona",
-    "permalink": "/docs/chatbot-api/get-persona-persona-persona-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-persona-persona-persona-id-get"
   },
   "next": {
     "title": "Create Persona",
-    "permalink": "/docs/chatbot-api/create-persona-admin-persona-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-persona-admin-persona-post"
   }
 }

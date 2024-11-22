@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/gpt-search-gpts-gpt-document-search-post",
-  "permalink": "/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Document Ingestion",
-    "permalink": "/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post"
   },
   "next": {
     "title": "List User Groups",
-    "permalink": "/docs/chatbot-api/list-user-groups-manage-admin-user-group-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-user-groups-manage-admin-user-group-get"
   }
 }

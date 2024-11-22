@@ -1,5 +1,5 @@
 {
-  "blogBasePath": "/blog",
+  "blogBasePath": "/https://ezhrchatbot.pages.dev/blog",
   "blogTitle": "Blog",
-  "authorsListPath": "/blog/authors"
+  "authorsListPath": "/https://ezhrchatbot.pages.dev/blog/authors"
 }

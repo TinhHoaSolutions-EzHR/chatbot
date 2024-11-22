@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/create-user-group-manage-admin-user-group-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/create-user-group-manage-admin-user-group-post",
-  "permalink": "/docs/chatbot-api/create-user-group-manage-admin-user-group-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-user-group-manage-admin-user-group-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "List User Groups",
-    "permalink": "/docs/chatbot-api/list-user-groups-manage-admin-user-group-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-user-groups-manage-admin-user-group-get"
   },
   "next": {
     "title": "Delete User Group",
-    "permalink": "/docs/chatbot-api/delete-user-group-manage-admin-user-group-user-group-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-user-group-manage-admin-user-group-user-group-id-delete"
   }
 }

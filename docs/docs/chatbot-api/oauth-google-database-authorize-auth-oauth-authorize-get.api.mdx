@@ -1,0 +1,71 @@
+---
+id: oauth-google-database-authorize-auth-oauth-authorize-get
+title: "Oauth:Google.Database.Authorize"
+description: "Oauth:Google.Database.Authorize"
+sidebar_label: "Oauth:Google.Database.Authorize"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVMFu2zAM/ZWAZyP2sp1869aiK7qhxZruUgQBIzO2WtlSJbmYF/jfB0px7CztCuwUh3p6Ih/5uAOPpYP8AbD1FawS0IYseqmbqwJy0Bxel1qXitYFetygozUHtZW/49c6gsZgSR4SMGixJk+W6Xdg6bmVlgrIt6gcJeBERTVCvgPpqXb84TtDkIPzVjYl9MkQQGuxgwS89Ir/3wltyDGgwTrciIEEZAM5PLdkO+hXCVhyRjeOAvsiy/inICesNFwiU7VCkHPbVs1+7MGQgNCNp8YzHI1RUgRF0kfHd3aT1I1lvbyMLwwSBPS6teq0qLGIsyl4dm8V9GPFevNIglUcZXt4hX410t0w32IgpUMxfc+0nxaL09p/opJFfP7CWm3/v/CCPEp11MtjgNLi6BSb7mYb5uLvnh8isvFUkoV+9fYgfNMxQR6F2pX/kvs7OYcljVP1NjSIMVvy6Xst4bri03vcpCOjvFHdt8s4j/K99tgA+bpc3p4Qxt4eN/WGpyS/DI6dn+8dOz/MBWdLvtJs7sGnvoIcUr6XBiunOEE7si+Dh8NEQ+W9ydNUaYGq0s7nH7MsC3ZzJForfXfHYxIbf3Z7dU3dF62f5FRzNPKausGwIh4f7LxF59HI1pF1YS9xmbLZ6sAwLAGsjaLZZxRP1BSQAKcZNcjm2fwD62208zWG0d1Tvy/PkZyHhD398qlRKMOs7a0dpdvvziQuS0hglG+VACvEmN2OX7q3qu85HHcUi1pIhxs1WYxP1E1X2guqljMICr+glYyG/IFtUREWZANNvHUmBBk/uXXiYmY5TMDlxRL6/g9qHRU/
+sidebar_class_name: "get api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Oauth:Google.Database.Authorize"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/auth/oauth/authorize"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Oauth:Google.Database.Authorize
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":false,"schema":{"items":{"type":"string"},"type":"array","title":"Scopes"},"name":"scopes","in":"query"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"authorization_url":{"type":"string","title":"Authorization Url"}},"type":"object","required":["authorization_url"],"title":"OAuth2AuthorizeResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

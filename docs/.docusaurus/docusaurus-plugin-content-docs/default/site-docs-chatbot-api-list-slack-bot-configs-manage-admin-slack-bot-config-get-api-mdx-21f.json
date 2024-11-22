@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get",
-  "permalink": "/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Embedding Models",
-    "permalink": "/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get"
   },
   "next": {
     "title": "Create Slack Bot Config",
-    "permalink": "/docs/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post"
   }
 }

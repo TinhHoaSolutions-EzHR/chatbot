@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch",
-  "permalink": "/docs/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/update-connector-from-model-manage-admin-connector-connector-id-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete Connector By Id",
-    "permalink": "/docs/chatbot-api/delete-connector-by-id-manage-admin-connector-connector-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-connector-by-id-manage-admin-connector-connector-id-delete"
   },
   "next": {
     "title": "Connector Run Once",
-    "permalink": "/docs/chatbot-api/connector-run-once-manage-admin-connector-run-once-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/connector-run-once-manage-admin-connector-run-once-post"
   }
 }

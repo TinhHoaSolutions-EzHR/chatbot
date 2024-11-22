@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/patch-user-group-manage-admin-user-group-user-group-id-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/patch-user-group-manage-admin-user-group-user-group-id-patch",
-  "permalink": "/docs/chatbot-api/patch-user-group-manage-admin-user-group-user-group-id-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-user-group-manage-admin-user-group-user-group-id-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete User Group",
-    "permalink": "/docs/chatbot-api/delete-user-group-manage-admin-user-group-user-group-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-user-group-manage-admin-user-group-user-group-id-delete"
   },
   "next": {
     "title": "Get Query Analytics",
-    "permalink": "/docs/chatbot-api/get-query-analytics-analytics-admin-query-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-query-analytics-analytics-admin-query-get"
   }
 }

@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-prompts-prompt-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-prompts-prompt-get",
-  "permalink": "/docs/chatbot-api/list-prompts-prompt-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-prompts-prompt-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Default Model",
-    "permalink": "/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get"
   },
   "next": {
     "title": "Create Prompt",
-    "permalink": "/docs/chatbot-api/create-prompt-prompt-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-prompt-prompt-post"
   }
 }

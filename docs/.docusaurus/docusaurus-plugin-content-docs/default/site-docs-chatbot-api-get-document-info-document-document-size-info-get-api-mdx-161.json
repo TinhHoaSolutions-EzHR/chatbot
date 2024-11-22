@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-document-info-document-document-size-info-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-document-info-document-document-size-info-get",
-  "permalink": "/docs/chatbot-api/get-document-info-document-document-size-info-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-document-info-document-document-size-info-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Answer With Quote",
-    "permalink": "/docs/chatbot-api/get-answer-with-quote-query-stream-answer-with-quote-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-answer-with-quote-query-stream-answer-with-quote-post"
   },
   "next": {
     "title": "Get Chunk Info",
-    "permalink": "/docs/chatbot-api/get-chunk-info-document-chunk-info-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-chunk-info-document-chunk-info-get"
   }
 }

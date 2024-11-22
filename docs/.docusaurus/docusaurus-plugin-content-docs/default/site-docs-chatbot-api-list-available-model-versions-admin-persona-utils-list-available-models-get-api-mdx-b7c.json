@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get",
-  "permalink": "/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Patch Persona Display Priority",
-    "permalink": "/docs/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put"
   },
   "next": {
     "title": "Get Default Model",
-    "permalink": "/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get"
   }
 }

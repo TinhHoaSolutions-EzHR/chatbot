@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post",
-  "permalink": "/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Document Boost Update",
-    "permalink": "/docs/chatbot-api/document-boost-update-manage-admin-doc-boosts-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-boost-update-manage-admin-doc-boosts-post"
   },
   "next": {
     "title": "Validate Existing Genai Api Key",
-    "permalink": "/docs/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get"
   }
 }

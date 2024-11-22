@@ -1,10 +1,10 @@
 {
-  "permalink": "/blog/A blogpost",
+  "permalink": "/https://ezhrchatbot.pages.dev/blog/A blogpost",
   "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/blog/A blogpost.mdx",
   "source": "@site/blog/A blogpost.mdx",
   "title": "A blogpost",
   "description": "I could have written something here, but I didn't.",
-  "date": "2024-11-19T13:32:25.534Z",
+  "date": "2024-11-19T12:06:09.279Z",
   "tags": [],
   "readingTime": 0.325,
   "hasTruncateMarker": false,
@@ -12,7 +12,7 @@
     {
       "name": "Le Kiet",
       "page": {
-        "permalink": "/blog/authors/lekiet"
+        "permalink": "/https://ezhrchatbot.pages.dev/blog/authors/lekiet"
       },
       "key": "lekiet"
     }

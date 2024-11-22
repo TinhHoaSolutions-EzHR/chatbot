@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get",
-  "permalink": "/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Secondary Embedding Model",
-    "permalink": "/docs/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get"
   },
   "next": {
     "title": "List Slack Bot Configs",
-    "permalink": "/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get"
   }
 }

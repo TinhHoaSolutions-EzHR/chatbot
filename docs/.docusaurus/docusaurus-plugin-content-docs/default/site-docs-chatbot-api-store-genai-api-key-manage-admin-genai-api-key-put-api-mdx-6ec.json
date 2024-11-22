@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put",
-  "permalink": "/docs/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/store-genai-api-key-manage-admin-genai-api-key-put",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Gen Ai Api Key From Dynamic Config Store",
-    "permalink": "/docs/chatbot-api/get-gen-ai-api-key-from-dynamic-config-store-manage-admin-genai-api-key-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-gen-ai-api-key-from-dynamic-config-store-manage-admin-genai-api-key-get"
   },
   "next": {
     "title": "Delete Genai Api Key",
-    "permalink": "/docs/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-genai-api-key-manage-admin-genai-api-key-delete"
   }
 }

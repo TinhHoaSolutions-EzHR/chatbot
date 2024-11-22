@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/delete-prompt-prompt-prompt-id-delete.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/delete-prompt-prompt-prompt-id-delete",
-  "permalink": "/docs/chatbot-api/delete-prompt-prompt-prompt-id-delete",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-prompt-prompt-prompt-id-delete",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Prompt",
-    "permalink": "/docs/chatbot-api/get-prompt-prompt-prompt-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-prompt-prompt-prompt-id-get"
   },
   "next": {
     "title": "Update Prompt",
-    "permalink": "/docs/chatbot-api/update-prompt-prompt-prompt-id-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/update-prompt-prompt-prompt-id-patch"
   }
 }

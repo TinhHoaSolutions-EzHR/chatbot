@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put",
-  "permalink": "/docs/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Tokens",
-    "permalink": "/docs/chatbot-api/get-tokens-manage-admin-slack-bot-tokens-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-tokens-manage-admin-slack-bot-tokens-get"
   },
   "next": {
     "title": "List Personas",
-    "permalink": "/docs/chatbot-api/list-personas-persona-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-personas-persona-get"
   }
 }

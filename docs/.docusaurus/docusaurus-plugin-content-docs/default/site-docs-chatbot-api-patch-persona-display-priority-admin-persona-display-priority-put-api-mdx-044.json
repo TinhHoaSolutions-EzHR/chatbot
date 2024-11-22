@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put",
-  "permalink": "/docs/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-persona-display-priority-admin-persona-display-priority-put",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Patch Persona Visibility",
-    "permalink": "/docs/chatbot-api/patch-persona-visibility-admin-persona-persona-id-visible-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-persona-visibility-admin-persona-persona-id-visible-patch"
   },
   "next": {
     "title": "List Available Model Versions",
-    "permalink": "/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get"
   }
 }

@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-document-sets-manage-document-set-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-document-sets-manage-document-set-get",
-  "permalink": "/docs/chatbot-api/list-document-sets-manage-document-set-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-document-sets-manage-document-set-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete Document Set",
-    "permalink": "/docs/chatbot-api/delete-document-set-manage-admin-document-set-document-set-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-document-set-manage-admin-document-set-document-set-id-delete"
   },
   "next": {
     "title": "Document Set Public",
-    "permalink": "/docs/chatbot-api/document-set-public-manage-document-set-public-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-set-public-manage-document-set-public-get"
   }
 }

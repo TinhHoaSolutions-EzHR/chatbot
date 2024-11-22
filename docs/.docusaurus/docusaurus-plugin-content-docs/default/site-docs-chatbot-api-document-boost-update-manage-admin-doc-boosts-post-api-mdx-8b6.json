@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/document-boost-update-manage-admin-doc-boosts-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/document-boost-update-manage-admin-doc-boosts-post",
-  "permalink": "/docs/chatbot-api/document-boost-update-manage-admin-doc-boosts-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-boost-update-manage-admin-doc-boosts-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Most Boosted Docs",
-    "permalink": "/docs/chatbot-api/get-most-boosted-docs-manage-admin-doc-boosts-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-most-boosted-docs-manage-admin-doc-boosts-get"
   },
   "next": {
     "title": "Document Hidden Update",
-    "permalink": "/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post"
   }
 }

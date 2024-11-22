@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/patch-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/patch-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-patch",
-  "permalink": "/docs/chatbot-api/patch-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete Slack Bot Config",
-    "permalink": "/docs/chatbot-api/delete-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-delete"
   },
   "next": {
     "title": "Get Tokens",
-    "permalink": "/docs/chatbot-api/get-tokens-manage-admin-slack-bot-tokens-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-tokens-manage-admin-slack-bot-tokens-get"
   }
 }

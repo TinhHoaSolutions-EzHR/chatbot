@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-api-keys-admin-api-key-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-api-keys-admin-api-key-get",
-  "permalink": "/docs/chatbot-api/list-api-keys-admin-api-key-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-api-keys-admin-api-key-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Query History As Csv",
-    "permalink": "/docs/chatbot-api/get-query-history-as-csv-admin-query-history-csv-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-query-history-as-csv-admin-query-history-csv-get"
   },
   "next": {
     "title": "Create Api Key",
-    "permalink": "/docs/chatbot-api/create-api-key-admin-api-key-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-api-key-admin-api-key-post"
   }
 }

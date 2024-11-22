@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-all-users-manage-users-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-all-users-manage-users-get",
-  "permalink": "/docs/chatbot-api/list-all-users-manage-users-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-all-users-manage-users-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Promote Admin",
-    "permalink": "/docs/chatbot-api/promote-admin-manage-promote-user-to-admin-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/promote-admin-manage-promote-user-to-admin-patch"
   },
   "next": {
     "title": "Get User Role",
-    "permalink": "/docs/chatbot-api/get-user-role-manage-get-user-role-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-role-manage-get-user-role-get"
   }
 }

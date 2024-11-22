@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-default-model-admin-persona-utils-default-model-get",
-  "permalink": "/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-default-model-admin-persona-utils-default-model-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "List Available Model Versions",
-    "permalink": "/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-available-model-versions-admin-persona-utils-list-available-models-get"
   },
   "next": {
     "title": "List Prompts",
-    "permalink": "/docs/chatbot-api/list-prompts-prompt-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-prompts-prompt-get"
   }
 }

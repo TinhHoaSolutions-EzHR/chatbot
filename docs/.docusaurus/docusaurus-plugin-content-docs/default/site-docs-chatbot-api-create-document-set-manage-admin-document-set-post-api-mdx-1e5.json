@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/create-document-set-manage-admin-document-set-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/create-document-set-manage-admin-document-set-post",
-  "permalink": "/docs/chatbot-api/create-document-set-manage-admin-document-set-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-document-set-manage-admin-document-set-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Dissociate Credential From Connector",
-    "permalink": "/docs/chatbot-api/dissociate-credential-from-connector-manage-connector-connector-id-credential-credential-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/dissociate-credential-from-connector-manage-connector-connector-id-credential-credential-id-delete"
   },
   "next": {
     "title": "Patch Document Set",
-    "permalink": "/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch"
   }
 }

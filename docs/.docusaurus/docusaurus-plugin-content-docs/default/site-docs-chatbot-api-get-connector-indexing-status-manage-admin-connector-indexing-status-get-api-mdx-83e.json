@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get",
-  "permalink": "/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Upload Files",
-    "permalink": "/docs/chatbot-api/upload-files-manage-admin-connector-file-upload-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/upload-files-manage-admin-connector-file-upload-post"
   },
   "next": {
     "title": "Create Connector From Model",
-    "permalink": "/docs/chatbot-api/create-connector-from-model-manage-admin-connector-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-connector-from-model-manage-admin-connector-post"
   }
 }

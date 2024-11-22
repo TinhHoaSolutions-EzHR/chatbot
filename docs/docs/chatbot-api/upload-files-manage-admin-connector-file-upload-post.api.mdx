@@ -1,0 +1,71 @@
+---
+id: upload-files-manage-admin-connector-file-upload-post
+title: "Upload Files"
+description: "Upload Files"
+sidebar_label: "Upload Files"
+hide_title: true
+hide_table_of_contents: true
+api: eJydlUtvGjEQx78KmvMmS9Oe9pb0oUZpFVRIL2iFBu8ADl7bsb1RV2i/ezX28gohrXIBY4/n8fvPmA0YSw6DNPq2ggIaqwxWs4VU5Gc1alzSDKta6pkwWpMIxsXDWW9ojQ+QgaOnhny4MVULxQaE0YF04GXdqCAtupAvjKsvKgzI216sqI4r6ziDIMnzrxiYFzJQHRehtQQF+OCkXkIG7AYDFDCXGl0LXbY1QeewhQyCDIp/f4u+ur2BmT+S2KYrHVVQTPuI5f4aFzF7F4eOY+19B9dQ3PDWaJ/KuhoO+asiL5y0jB0KGDdCkPeLRg1+9caQHUJEa5UUUaX80fOdtwnOLIbVWxjfhjYYxev/Q66PVB47eIhQdrV0Ecynq6vT0n+jklUsbPDVOePeX3dFAaU6qvnYQBlxdIq6vV9AMT1ls9uROtCSHHTleWA/TEqQmdZ++VrLbk1/kve4pD3986YRxmDCp/+SgetKoXu7AzH2eBPd82V8SfheC7Y1+T6ZjE4cJm09icbJ0Eac16PbO2o/G7OWBMW07MrsheqpPwZpQDOoKawMvz79a8I9BQXkae7yOHf5bu5y7rs8zR1waPdMzsfIjVNQwCoEW+S5MgLVyvhQfBwOh8BZbNMccw+lrjhOdicIWnlHzEdyviIdZ6Cx5tMF+oBWNp6cxyasIjapFyZ66HGNsbaKBjco1qQ5U04z1T+8HF5+YDG44BpjX/euX6A54rbLLtCfkFuFMnZdrHrTU5tCogYZRG5poBI5fj2l4qOeXpkBA+Jbm80cPT041XW8/dSQYzXLDJ7RSZyrJGUGK8KKXMS9phYK+Jzm9SI2K5urhnN87eHn0UqXroUgGw7MT0ad9do1xuh+PIEM5v3/S22qKINxdfSb7ZcpySjKkZrrqGa/OBh61O1BFifCZn2+/HnwMBzf2mxSu3Tdzj4dnb3RQ9xas45l13V/AenUmvo=
+sidebar_class_name: "post api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Upload Files"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/manage/admin/connector/file/upload"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Upload Files
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"multipart/form-data":{"schema":{"properties":{"files":{"items":{"type":"string","format":"binary"},"type":"array","title":"Files"}},"type":"object","required":["files"],"title":"Body_upload_files_manage_admin_connector_file_upload_post"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"file_paths":{"items":{"type":"string"},"type":"array","title":"File Paths"}},"type":"object","required":["file_paths"],"title":"FileUploadResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

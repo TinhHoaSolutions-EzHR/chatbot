@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/cancel-new-embedding-secondary-index-cancel-new-embedding-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/cancel-new-embedding-secondary-index-cancel-new-embedding-post",
-  "permalink": "/docs/chatbot-api/cancel-new-embedding-secondary-index-cancel-new-embedding-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/cancel-new-embedding-secondary-index-cancel-new-embedding-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Set New Embedding Model",
-    "permalink": "/docs/chatbot-api/set-new-embedding-model-secondary-index-set-new-embedding-model-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/set-new-embedding-model-secondary-index-set-new-embedding-model-post"
   },
   "next": {
     "title": "Get Current Embedding Model",
-    "permalink": "/docs/chatbot-api/get-current-embedding-model-secondary-index-get-current-embedding-model-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-current-embedding-model-secondary-index-get-current-embedding-model-get"
   }
 }

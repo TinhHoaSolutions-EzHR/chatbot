@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-user-role-manage-get-user-role-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-user-role-manage-get-user-role-get",
-  "permalink": "/docs/chatbot-api/get-user-role-manage-get-user-role-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-role-manage-get-user-role-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "List All Users",
-    "permalink": "/docs/chatbot-api/list-all-users-manage-users-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-all-users-manage-users-get"
   },
   "next": {
     "title": "Verify User Logged In",
-    "permalink": "/docs/chatbot-api/verify-user-logged-in-manage-me-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/verify-user-logged-in-manage-me-get"
   }
 }

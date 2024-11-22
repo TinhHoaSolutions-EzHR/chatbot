@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-search-type-query-search-intent-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-search-type-query-search-intent-post",
-  "permalink": "/docs/chatbot-api/get-search-type-query-search-intent-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-search-type-query-search-intent-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Tags",
-    "permalink": "/docs/chatbot-api/get-tags-query-valid-tags-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-tags-query-valid-tags-get"
   },
   "next": {
     "title": "Query Validation",
-    "permalink": "/docs/chatbot-api/query-validation-query-query-validation-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/query-validation-query-query-validation-post"
   }
 }

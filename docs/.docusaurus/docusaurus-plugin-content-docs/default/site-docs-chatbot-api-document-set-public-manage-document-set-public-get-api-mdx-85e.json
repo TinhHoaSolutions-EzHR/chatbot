@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/document-set-public-manage-document-set-public-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/document-set-public-manage-document-set-public-get",
-  "permalink": "/docs/chatbot-api/document-set-public-manage-document-set-public-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-set-public-manage-document-set-public-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "List Document Sets",
-    "permalink": "/docs/chatbot-api/list-document-sets-manage-document-set-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-document-sets-manage-document-set-get"
   },
   "next": {
     "title": "Set New Embedding Model",
-    "permalink": "/docs/chatbot-api/set-new-embedding-model-secondary-index-set-new-embedding-model-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/set-new-embedding-model-secondary-index-set-new-embedding-model-post"
   }
 }

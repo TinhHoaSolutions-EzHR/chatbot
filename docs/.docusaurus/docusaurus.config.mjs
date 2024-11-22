@@ -7,7 +7,7 @@ export default {
   "title": "EzHR Chatbot Local Development Guide",
   "tagline": "EzHR Chatbot Documentation",
   "url": "https://ezhrchatbot.pages.dev",
-  "baseUrl": "/",
+  "baseUrl": "/https://ezhrchatbot.pages.dev/",
   "onBrokenLinks": "throw",
   "onBrokenMarkdownLinks": "warn",
   "favicon": "img/favicon.ico",
@@ -21,7 +21,7 @@ export default {
       "classic",
       {
         "docs": {
-          "sidebarPath": "/home/nho/Documents/ezhr/chatbot/docs/sidebars.ts",
+          "sidebarPath": "/home/nho/Documents/ezhr/docs/sidebars.ts",
           "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs",
           "docItemComponent": "@theme/ApiItem"
         },
@@ -32,7 +32,7 @@ export default {
           "onUntruncatedBlogPosts": "ignore"
         },
         "theme": {
-          "customCss": "/home/nho/Documents/ezhr/chatbot/docs/src/css/custom.css"
+          "customCss": "/home/nho/Documents/ezhr/docs/src/css/custom.css"
         }
       }
     ]
@@ -345,8 +345,7 @@ export default {
     ]
   ],
   "themes": [
-    "docusaurus-theme-openapi-docs",
-    "@easyops-cn/docusaurus-search-local"
+    "docusaurus-theme-openapi-docs"
   ],
   "baseUrlIssueBanner": true,
   "i18n": {

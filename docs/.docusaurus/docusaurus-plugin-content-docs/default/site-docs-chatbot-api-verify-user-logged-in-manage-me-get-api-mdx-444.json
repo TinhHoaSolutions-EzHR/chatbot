@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/verify-user-logged-in-manage-me-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/verify-user-logged-in-manage-me-get",
-  "permalink": "/docs/chatbot-api/verify-user-logged-in-manage-me-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/verify-user-logged-in-manage-me-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get User Role",
-    "permalink": "/docs/chatbot-api/get-user-role-manage-get-user-role-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-role-manage-get-user-role-get"
   },
   "next": {
     "title": "Check Google App Gmail Credentials Exist",
-    "permalink": "/docs/chatbot-api/check-google-app-gmail-credentials-exist-manage-admin-connector-gmail-app-credential-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/check-google-app-gmail-credentials-exist-manage-admin-connector-gmail-app-credential-get"
   }
 }

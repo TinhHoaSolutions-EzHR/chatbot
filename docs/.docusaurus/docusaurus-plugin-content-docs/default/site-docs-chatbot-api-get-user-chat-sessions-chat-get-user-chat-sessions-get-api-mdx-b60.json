@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get",
-  "permalink": "/docs/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-chat-sessions-chat-get-user-chat-sessions-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Auth:Database.Logout",
-    "permalink": "/docs/chatbot-api/auth-database-logout-auth-logout-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/auth-database-logout-auth-logout-post"
   },
   "next": {
     "title": "Get Chat Session",
-    "permalink": "/docs/chatbot-api/get-chat-session-chat-get-chat-session-session-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-chat-session-chat-get-chat-session-session-id-get"
   }
 }

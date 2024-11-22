@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post",
-  "permalink": "/docs/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-slack-bot-config-manage-admin-slack-bot-config-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "List Slack Bot Configs",
-    "permalink": "/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-slack-bot-configs-manage-admin-slack-bot-config-get"
   },
   "next": {
     "title": "Delete Slack Bot Config",
-    "permalink": "/docs/chatbot-api/delete-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-slack-bot-config-manage-admin-slack-bot-config-slack-bot-config-id-delete"
   }
 }

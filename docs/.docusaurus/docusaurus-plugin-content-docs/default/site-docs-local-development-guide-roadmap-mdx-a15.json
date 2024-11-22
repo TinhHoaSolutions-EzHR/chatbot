@@ -5,7 +5,7 @@
   "source": "@site/docs/localDevelopmentGuide/roadmap.mdx",
   "sourceDirName": "localDevelopmentGuide",
   "slug": "/localDevelopmentGuide/roadmap",
-  "permalink": "/docs/localDevelopmentGuide/roadmap",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/roadmap.mdx",
@@ -18,10 +18,10 @@
   "sidebar": "localDevelopmentGuideSidebar",
   "previous": {
     "title": "Naming Conventions",
-    "permalink": "/docs/localDevelopmentGuide/namingConvention"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/namingConvention"
   },
   "next": {
     "title": "Chatbot API",
-    "permalink": "/docs/category/chatbot-api"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/category/chatbot-api"
   }
 }

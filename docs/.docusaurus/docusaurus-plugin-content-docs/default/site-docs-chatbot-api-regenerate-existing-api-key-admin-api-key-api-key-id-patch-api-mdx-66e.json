@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
-  "permalink": "/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/regenerate-existing-api-key-admin-api-key-api-key-id-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete Api Key",
-    "permalink": "/docs/chatbot-api/delete-api-key-admin-api-key-api-key-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-api-key-admin-api-key-api-key-id-delete"
   },
   "next": {
     "title": "Handle Search Request",
-    "permalink": "/docs/chatbot-api/handle-search-request-query-document-search-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/handle-search-request-query-document-search-post"
   }
 }

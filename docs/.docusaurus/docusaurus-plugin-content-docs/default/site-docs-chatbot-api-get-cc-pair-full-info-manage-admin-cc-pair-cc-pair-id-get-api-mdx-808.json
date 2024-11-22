@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-cc-pair-full-info-manage-admin-cc-pair-cc-pair-id-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-cc-pair-full-info-manage-admin-cc-pair-cc-pair-id-get",
-  "permalink": "/docs/chatbot-api/get-cc-pair-full-info-manage-admin-cc-pair-cc-pair-id-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-cc-pair-full-info-manage-admin-cc-pair-cc-pair-id-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Update Credential From Model",
-    "permalink": "/docs/chatbot-api/update-credential-from-model-manage-credential-credential-id-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/update-credential-from-model-manage-credential-credential-id-patch"
   },
   "next": {
     "title": "Associate Credential To Connector",
-    "permalink": "/docs/chatbot-api/associate-credential-to-connector-manage-connector-connector-id-credential-credential-id-put"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/associate-credential-to-connector-manage-connector-connector-id-credential-credential-id-put"
   }
 }

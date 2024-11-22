@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/create-connector-from-model-manage-admin-connector-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/create-connector-from-model-manage-admin-connector-post",
-  "permalink": "/docs/chatbot-api/create-connector-from-model-manage-admin-connector-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-connector-from-model-manage-admin-connector-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Connector Indexing Status",
-    "permalink": "/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connector-indexing-status-manage-admin-connector-indexing-status-get"
   },
   "next": {
     "title": "Delete Connector By Id",
-    "permalink": "/docs/chatbot-api/delete-connector-by-id-manage-admin-connector-connector-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-connector-by-id-manage-admin-connector-connector-id-delete"
   }
 }

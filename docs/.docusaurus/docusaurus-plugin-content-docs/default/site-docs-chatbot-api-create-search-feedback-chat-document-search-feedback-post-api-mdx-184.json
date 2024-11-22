@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/create-search-feedback-chat-document-search-feedback-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/create-search-feedback-chat-document-search-feedback-post",
-  "permalink": "/docs/chatbot-api/create-search-feedback-chat-document-search-feedback-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-search-feedback-chat-document-search-feedback-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Create Chat Feedback",
-    "permalink": "/docs/chatbot-api/create-chat-feedback-chat-create-chat-message-feedback-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-chat-feedback-chat-create-chat-message-feedback-post"
   },
   "next": {
     "title": "Get Max Document Tokens",
-    "permalink": "/docs/chatbot-api/get-max-document-tokens-chat-max-selected-document-tokens-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-max-document-tokens-chat-max-selected-document-tokens-get"
   }
 }

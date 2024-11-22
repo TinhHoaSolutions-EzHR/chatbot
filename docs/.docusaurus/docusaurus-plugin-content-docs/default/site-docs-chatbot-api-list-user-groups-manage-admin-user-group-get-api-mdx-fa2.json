@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-user-groups-manage-admin-user-group-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-user-groups-manage-admin-user-group-get",
-  "permalink": "/docs/chatbot-api/list-user-groups-manage-admin-user-group-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-user-groups-manage-admin-user-group-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Gpt Search",
-    "permalink": "/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post"
   },
   "next": {
     "title": "Create User Group",
-    "permalink": "/docs/chatbot-api/create-user-group-manage-admin-user-group-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-user-group-manage-admin-user-group-post"
   }
 }

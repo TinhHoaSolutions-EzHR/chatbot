@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-auth-type-auth-type-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-auth-type-auth-type-get",
-  "permalink": "/docs/chatbot-api/get-auth-type-auth-type-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-auth-type-auth-type-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Healthcheck",
-    "permalink": "/docs/chatbot-api/healthcheck-health-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/healthcheck-health-get"
   },
   "next": {
     "title": "Get Version",
-    "permalink": "/docs/chatbot-api/get-version-version-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-version-version-get"
   }
 }

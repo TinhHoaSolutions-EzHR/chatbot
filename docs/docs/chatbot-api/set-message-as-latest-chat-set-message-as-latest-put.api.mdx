@@ -1,0 +1,71 @@
+---
+id: set-message-as-latest-chat-set-message-as-latest-put
+title: "Set Message As Latest"
+description: "Set Message As Latest"
+sidebar_label: "Set Message As Latest"
+hide_title: true
+hide_table_of_contents: true
+api: eJyVVMlu2zAQ/RVjznKspj3plrQBaiRFg8TpxTCMsTS2GFMiQ46SGIb+vRhS3uMuF5vi7O+94RqMJYesTD0sIANPPK3Ie1zQFP1UI5PnaV4iTz822YYhAUcvDXm+NsUKsjXkpmaqWY5orVZ5KDB49qaWO5+XVKGcrJPyrMjL1ya7KuSLV5YgA1UzLchBAqxYy82P6NYbFtC2ycbPzJ4p3/SiHBWQjfczTnYJvpbIXZJhQTWruSIHrSTbBbNrKFx4a2ofG7xMU/kryOdOWZkJMnhs8py8nze699A5Q/LPELSh7JfLy9PEv1CrIoT1bpwz7j+yHgFbEKPSclJMlT910CY/sGK9+jmHbLxlwbNT9QLa5ISXdrLjAJ3D1R5TdyY2CG0ClV/ssdrlOyEVtsnOuwYweiOx/o1/mSuW7vz2VLCDN6J7foxvEb6Pim1cvo9G9ycJI7ee8sYpXgU4r+6Ht7T6asxSEWTjSTtJjuVE3Nso/Mr37sKayRDEpZEVjRtnkUvIYCCrOfDE/U7qffR9vYnx5F7J+VC5cRoyKJltNhhok6Mujefsc5qmIF1s2nwUDUVVHDa7JQStuiXBR0m/eTQnUGMl1jl6RqsaT85jw2WATQT6sHsjbt6xspqOdz5tJefchFodsI/Bs3eN+ZLqAhKQgSJS6UV68Ulos8ZzhWEDuibOgXgA9XYgpnceWI0qCDUAte4AHoMAHKD8COJJAoKi+K3XM/T05HTbyvVLQ04onyTwik7hTEe+EygJC3KBkyWt5DmKS90PihZ33USYjxZcli9GXOU5Wf6j72RPMfdPI0hg1j3OlSkkxOGbLAu+QQaQgAmgBNrD3Ro01otGVjKDmFKIDIweSGEZpNAd9l4MrFd7DZ6oIulGkd+9V+Uwar2OWmvbrX80nY3owN14C6OTtm1/Az2AX4g=
+sidebar_class_name: "put api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Set Message As Latest"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/chat/set-message-as-latest"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Set Message As Latest
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"message_id":{"type":"integer","title":"Message Id"}},"type":"object","required":["message_id"],"title":"ChatMessageIdentifier"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

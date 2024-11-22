@@ -5,7 +5,7 @@
   "source": "@site/docs/localDevelopmentGuide/namingConvention.mdx",
   "sourceDirName": "localDevelopmentGuide",
   "slug": "/localDevelopmentGuide/namingConvention",
-  "permalink": "/docs/localDevelopmentGuide/namingConvention",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/namingConvention",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/namingConvention.mdx",
@@ -18,10 +18,10 @@
   "sidebar": "localDevelopmentGuideSidebar",
   "previous": {
     "title": "Architecture",
-    "permalink": "/docs/localDevelopmentGuide/highLevelArchitecture"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/highLevelArchitecture"
   },
   "next": {
     "title": "Roadmap",
-    "permalink": "/docs/localDevelopmentGuide/roadmap"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/roadmap"
   }
 }

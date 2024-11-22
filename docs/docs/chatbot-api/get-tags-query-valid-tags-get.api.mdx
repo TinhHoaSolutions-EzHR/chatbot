@@ -1,0 +1,71 @@
+---
+id: get-tags-query-valid-tags-get
+title: "Get Tags"
+description: "Get Tags"
+sidebar_label: "Get Tags"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVUtvGzcQ/ivCnFlLdYoe9uYmQRK4RY1azcUQhBF3dpcWl2T4cKIK+9+LIVfSKraSICetON+8vnntwTryGJU1H2qooKW4jtiG9adEfrd+Qq3q8tBSBAEOPfYUyQeoHvbg6VNSnmqoGtSBBATZUY9Q7SHuHEEFIXplWhAQVdT88BdG2c3uMEbyBgYBBnt+7/l97cZ3AcpABTkKGMSPeNpYqwnNxNWN1vbz7M5To76AgJoaTDpCFX2ik2Nk1NodUFO/KwGegrMmUGBP14sF/9QUpFeOSYMK7pOUFEKT9OyfEQwCpDWRTGQ4OqeVzBzPHwPr7CfRO88ViKp4YKr5V0Xqw4vi9ZZ23+J3ie3slpi0jH5Cneh7+I8ZNAgINnn5IpxM6qF6AGVaCpzKGp0CAUGj3IKAz7QBAa21raZ17dUTk9D2qDSIXDwKMXqUW/IsULFLm/KhMX8kn0BwEbchFpPSmkYnMpJN1SpIm3zmNhSVgJpCY32WPyqP3J/e1knGjUVfg4BGaRYam2sl4L+klQMBWhlCDqRLm+Asd3ZtZerJxFe/L3IiOesxn6AiBVYnU1Pg2LS1TlkOokNPzirDNiJhz7jGU+gycnUi+s3o4L5wLL5qoxszY47HYbyCgQtYimA3jyTjyGMZgodjK0zLfCzgxG1xt8QWTgbRe9yd90D4EYdhaniJ7bHfh4G1f7u+fj4eH3mF5Jxmb723/udno6bI7XR5OrSVZ1I0u7+bvKfOu5n3yfiiTKSWPAyry+z8aUuATGAf2m8uNwoBWzpRfRmayZgtWfo95jmv4nrETapworewezmNN4W+l5wdIO+Xy7tnBkttA8nkVdxlOm/uPtzS7rW1W0VQPax4UZ5X/R3FWe4qAT3Fzo63JV+Q2EEF87xi5/nA/BILMpB/OlyW5DVU0MXoqvlcW4m6syFWrxaLRd7Lh3juuVlK+c+jOjKPTt3mOcmbXRbxcfs3GCI6lQL5gCl2mR9lGpstHGYIe6dp9gevL8N7hcMsiS6uFle/MuvOhthjbuDR9ISDM3KOkUX6EudOo8qtlTPej/w8jCdIwIShlQAmgaX7/QYD/ev1MPBzATNvtQq40ZM7mc/Fs+s6ngXIs3BB56vDeFJZ8R+vWCdXX0BHWJPPARTdGynJxYnWs0FnK8fWePd2CQIy/2eFKwtu/JgMMprdxPazGh4y2NJuOuznWvt96YxhOOKfxjt4QWPM8oDmsq2GYfgfInonaw==
+sidebar_class_name: "get api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Tags"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/query/valid-tags"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get Tags
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":false,"schema":{"type":"string","title":"Match Pattern"},"name":"match_pattern","in":"query"},{"required":false,"schema":{"type":"boolean","title":"Allow Prefix","default":true},"name":"allow_prefix","in":"query"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"tags":{"items":{"properties":{"tag_key":{"type":"string","title":"Tag Key"},"tag_value":{"type":"string","title":"Tag Value"},"source":{"type":"string","enum":["ingestion_api","slack","web","google_drive","gmail","requesttracker","github","gitlab","guru","bookstack","confluence","discourse","slab","salesforce","jira","productboard","file","notion","zulip","linear","hubspot","document360","gong","google_sites","zendesk","loopio","sharepoint","teams","freshdesk"],"title":"DocumentSource","description":"An enumeration."}},"type":"object","required":["tag_key","tag_value","source"],"title":"SourceTag"},"type":"array","title":"Tags"}},"type":"object","required":["tags"],"title":"TagResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

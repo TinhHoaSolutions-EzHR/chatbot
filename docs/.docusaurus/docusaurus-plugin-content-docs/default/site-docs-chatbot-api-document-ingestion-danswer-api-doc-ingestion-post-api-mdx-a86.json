@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
-  "permalink": "/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Version",
-    "permalink": "/docs/chatbot-api/get-version-version-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-version-version-get"
   },
   "next": {
     "title": "Gpt Search",
-    "permalink": "/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post"
   }
 }

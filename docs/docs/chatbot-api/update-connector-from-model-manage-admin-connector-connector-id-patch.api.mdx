@@ -1,0 +1,71 @@
+---
+id: update-connector-from-model-manage-admin-connector-connector-id-patch
+title: "Update Connector From Model"
+description: "Update Connector From Model"
+sidebar_label: "Update Connector From Model"
+hide_title: true
+hide_table_of_contents: true
+api: eJztWFFv2zYQ/ivCPW2AWnvtsAe9pUmLBl23IEn3EhjCmTrZbCiSJam0nqH/Xhwp2VLsuN2APa0viSTeHe++7+549BaMJYdBGn1ZQQGtrTBQKYzWJIJxZe1MUzamIlU2qHFFJVaN1COJ0aOsytJiEGvIwaLDhgI5D8XdFhx9aqWjCorgWsrBizU1CMUWwsYSFCB1oBU5yCHIoPjL+WA3u6ygy0Fjw5/H20EOUkMBFsMaukUetyEfXplqw7aF0YF04Ee0VkkRI5199Ebzt70T1jEOQZLnt7TTzjUfnNSrkWd/8HqXgzetE0clSbcNFHcg9Yo871milZCDVyjuIYfPtIQcVsasFJWVkw/Erw1KBbsggkNxHxFZybBul+lBYXxoXQs5LI259yGZFEbXqiUt2FQlvTCt85T2ZBWPinxtXFz/KB0ySc5UrQhLg46xrKXiRW3YY8jh71ZJCzkoqQnZkXW79NYE3sCItiEdXv42j4HEqPt4vAzkWZ10RZ59U8ZYadiJNTqyRmq2EQgblqsd+XWUXOwxvug3uEkY51CRF07a6FoBZzpjjPvcfc5sSG3bUCYmnmZEGaxKHzCwTWsUA04PnCSjzS/Z1C1b+I599wnpLQlZS8ElUcvVyA2z/EgiHE3um14pO09KHSdAhKSsHX06WSLXSTB7w4JdpB2Xiqtsp7Q0RhHqkdLFINR1+YF/+zq9S2Wwy/IJwKeiHrmxOBLwK/QEXdflj3pC/OCt0T4V4Yv5nP9N4b9phSDv61Zl171w8uX7yhz15s869qMfBf+j4P9/BZ+DrE7aTyetcFSRDhJVKatYIDJQ449o7jsIOoebcbw7G9ll5aOgbKgUjjBM/N0RVhvXYIACeAR5xtIjc7eyoey8Vx6MpWnlXxr70Cv/910won6A6iNAHoV0rHPeaLR+bQJ0+eMG5lNfPJkGfe9k9BryHlcnW977XoSTDMPpSe2CBb6F4+DiKLKbgKH1QyO/kzos4hS3z/a00nOV7WvojTNN9p7H0ux9HEuzMx5LRxLZeHzMsqs4lnbx3Pn1xYvDk+UvVLKKNZ69ds64f3KsTLmoKHBbH1fNVEAZMVndn0pTMpjmx/W2eLrifjfJwUiwX30nuU+1z0E0gpHF1vgthjmutHUvN6JyD29C9+kwLhJ8xzYbRN7e3l4dGEzcehKtk2ET4Ty7unxHm3Nj7iVBcbfg3JqyfiKxOBQKa1Ol+0V/qQlrKGCWrkKzeBWa7XrAbDu+m3TcNMg9DDeg1ikoYB2CLWYzZQSqtfGheDmfz2PSD57fcFqlRJn6v+MIrXxHm+HuI9Ly7n5Uow9oZevJeWz5XtTlwDl7vb8bvf6CjVW0H332vA8jzsEkMz5tp4fqqfPw4HCbjw+tfu6TujYxvqEvRO+yVzwOaW6NDGIibP58/vwXzh5rfGhQj0I4zeWE9x2Ugb6EmVUoY9VEirY9y3eQWIYcIs/jQCGHYnIPXeTAbLLWdrtETx+c6jr+/Kklx9m4yOEBneTAYzrsQahReTpwcNd84KfrvsZ+ziA/7viQGJqz4gFVy2+Qwz1tHt+YYwdZE1bkoh9J5Dzt9qwfgQYTB22PW1LSOBOCbDgpuxhV0NXZ7fnbOMCmmzn/pAAFOPzMTQQ/J39NDD/mfvy2BYV61cajCpJRzuaY1pN6uI/10D+MOukUkYPSGBDiv6NuO9XablPBdd1OPi09qdHDO0gzR4uu674CFtj/ew==
+sidebar_class_name: "patch api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Update Connector From Model"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"patch"}
+  path={"/manage/admin/connector/{connector_id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Update Connector From Model
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":true,"schema":{"type":"integer","title":"Connector Id"},"name":"connector_id","in":"path"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"name":{"type":"string","title":"Name"},"source":{"type":"string","enum":["ingestion_api","slack","web","google_drive","gmail","requesttracker","github","gitlab","guru","bookstack","confluence","discourse","slab","salesforce","jira","productboard","file","notion","zulip","linear","hubspot","document360","gong","google_sites","zendesk","loopio","sharepoint","teams","freshdesk"],"title":"DocumentSource","description":"An enumeration."},"input_type":{"type":"string","enum":["load_state","poll","event"],"title":"InputType","description":"An enumeration."},"connector_specific_config":{"type":"object","title":"Connector Specific Config"},"refresh_freq":{"type":"integer","title":"Refresh Freq"},"disabled":{"type":"boolean","title":"Disabled"}},"type":"object","required":["name","source","input_type","connector_specific_config","disabled"],"title":"ConnectorBase"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"anyOf":[{"properties":{"name":{"type":"string","title":"Name"},"source":{"type":"string","enum":["ingestion_api","slack","web","google_drive","gmail","requesttracker","github","gitlab","guru","bookstack","confluence","discourse","slab","salesforce","jira","productboard","file","notion","zulip","linear","hubspot","document360","gong","google_sites","zendesk","loopio","sharepoint","teams","freshdesk"],"title":"DocumentSource","description":"An enumeration."},"input_type":{"type":"string","enum":["load_state","poll","event"],"title":"InputType","description":"An enumeration."},"connector_specific_config":{"type":"object","title":"Connector Specific Config"},"refresh_freq":{"type":"integer","title":"Refresh Freq"},"disabled":{"type":"boolean","title":"Disabled"},"id":{"type":"integer","title":"Id"},"credential_ids":{"items":{"type":"integer"},"type":"array","title":"Credential Ids"},"time_created":{"type":"string","format":"date-time","title":"Time Created"},"time_updated":{"type":"string","format":"date-time","title":"Time Updated"}},"type":"object","required":["name","source","input_type","connector_specific_config","disabled","id","credential_ids","time_created","time_updated"],"title":"ConnectorSnapshot"},{"properties":{"success":{"type":"boolean","title":"Success"},"message":{"type":"string","title":"Message"},"data":{"type":"integer","title":"Data"}},"type":"object","required":["success"],"title":"StatusResponse[int]"}],"title":"Response Update Connector From Model Manage Admin Connector  Connector Id  Patch"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

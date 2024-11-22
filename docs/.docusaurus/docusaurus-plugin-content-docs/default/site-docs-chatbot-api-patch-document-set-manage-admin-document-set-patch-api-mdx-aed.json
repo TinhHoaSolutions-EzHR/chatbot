@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/patch-document-set-manage-admin-document-set-patch",
-  "permalink": "/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Create Document Set",
-    "permalink": "/docs/chatbot-api/create-document-set-manage-admin-document-set-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/create-document-set-manage-admin-document-set-post"
   },
   "next": {
     "title": "Delete Document Set",
-    "permalink": "/docs/chatbot-api/delete-document-set-manage-admin-document-set-document-set-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-document-set-manage-admin-document-set-document-set-id-delete"
   }
 }

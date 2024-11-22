@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get",
-  "permalink": "/docs/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-secondary-embedding-model-secondary-index-get-secondary-embedding-model-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Current Embedding Model",
-    "permalink": "/docs/chatbot-api/get-current-embedding-model-secondary-index-get-current-embedding-model-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-current-embedding-model-secondary-index-get-current-embedding-model-get"
   },
   "next": {
     "title": "Get Embedding Models",
-    "permalink": "/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-embedding-models-secondary-index-get-embedding-models-get"
   }
 }

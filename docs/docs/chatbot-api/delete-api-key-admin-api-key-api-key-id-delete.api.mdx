@@ -1,0 +1,71 @@
+---
+id: delete-api-key-admin-api-key-api-key-id-delete
+title: "Delete Api Key"
+description: "Delete Api Key"
+sidebar_label: "Delete Api Key"
+hide_title: true
+hide_table_of_contents: true
+api: eJyVVMFu2zAM/RWDpw3QmqzbybduDbCiHVa02S6BEbA2k6iRLVWSixmG/n2g7Ngx3B52SWTpkXp8fFQL2pBFL3V1U0AKBSnytEUjt0dqtliUshq+hoUsttsOCQIMWizJk3WQblqw9FJLSwWk3tYkwOUHKhHSFnxjCFKQlac9WRDgpVe8c2VkcktNclNAEFBhyZvjXSBAVpCCQX+AkAmw5IyuHDnOerlc8l9BLrfScCGQwmOd5+TcrlbJQw8GAbmuPFWe4WiMknmse/HsOKYdmYYQgoCvl5fzxH9QySKGJStrtf2PrGAsa+1lx7sgj1LxSnoq3RygdD45xar5tYsS90I6b2W1hyBm0oYsiNMeWovNmdh3uiPIUpduf9aYPt8I/UnO4Z5gSPY+NIqRrPk0jHfrp2fKPYgzU2xiXd3VPS4b04zyduq+X8Z1J99bl50gP9br+1nCrreO8tpK30Q5r+5vbqn5rvVREqSbjC027fp19HrS+5TZkz/ocV7iFPgDpLCIE7NAIz8dqVm0o4sD8LX29TQntVWQwsF7ky4WSueoDtr59MtyuYwmP1F8ZP90jpgSHZqBRnas4pTk3fEwRzt0Ho2sHVmHNU9QYOROxwy9VI9YGkXJN8yPVPHAMc2u9uXF8uIzN8Jo50uMnu5Tz2SZqDbw8/TXL4xCGT0X6257vTYQ9QIBvWIgID2b/EwAq8LAtn1CR7+tCoG3X2qy3L5MwCtaiU9cx6aFQjpeF5DuUDmacRqmFT489Kb8mIB4m+tJ4Ip5vaKq+QsEMNHJCxUH7kBYkI0sOsBVnpPxZ6Gz94EbPXjpenW3Wq9YC27TpL+dMv3i7AmYMpu1+sSUf8+eiWlU23YGCmHAd0fvRvSFntCsVRZC+AcpuCP8
+sidebar_class_name: "delete api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Api Key"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/admin/api-key/{api_key_id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete Api Key
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":true,"schema":{"type":"integer","title":"Api Key Id"},"name":"api_key_id","in":"path"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

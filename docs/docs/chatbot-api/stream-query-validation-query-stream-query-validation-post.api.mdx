@@ -1,0 +1,71 @@
+---
+id: stream-query-validation-query-stream-query-validation-post
+title: "Stream Query Validation"
+description: "Stream Query Validation"
+sidebar_label: "Stream Query Validation"
+hide_title: true
+hide_table_of_contents: true
+api: eJyVVMFu2zAM/ZWAZ7XJup18a7cCK7qhXZvtEhiFYjOxGtlSJTmtYejfB0p27CRLt10SmXykyMdHtaA0Gu6Eqm5ySMA6g7x8eqnRNE9bLkUefJ3hlFcr64CBwZcarbtSeQNJC5mqHFaOjlxrKbIAnj5bVZHNZgWWnE7aUBFOoKWvkJ0OrtEYSxLVGhg44SQZfgSA96xHqOUzZn0BwmAOyaJLkw5hj6LUEkPwQywUPCUZgpypMRisVpWN1VzMZvSXo82M0NQApaqzDK1d1XLy0IGB/XO/Plz76eLiOPGvHaeTa2OU+Y+sByzm6LiQdBIOS3sMkCrb8/KquVtBsjjk3bOdRVQO12jApwP33BjejIbzTcUCwTMo7fq9OX5Ha/kaYZfsNDSQMZmT929zp77i1R1uJIGB3sju6Ta+RPr+dFkP+Tqf3x8ljLO1mNVGuCbQeXl/c4vNZ6U2AiFZpD5lh3IKazUJ0pwMKakNdIWivew2THNXQALTIO5pXMez8HG2HcdZNFs0NtxfGwkJFM7pZDqVKuOyUNYlH2ezGVAtfbGPpKSojf2Sd2PhWtwisSSo6iy6GVS8JO+KW8e1qC0ay2tXBPJIpg/Ds3D9xmkJR2s+yAxEtVLhtn5hA3ZyxbMNVjkwoJYiY7Pz2fkHiiFeSh42oSvjNJl7pO+acvjmplpyESQbyGo7nvtHhMEpplMGRCZB23bJLf400nsyd+0tUgZbbgRfyjh8BgXyHE0YzQaJgc9xw8+CvAku68j2wbbTJsaIyyxD7d7FpiPx3N89zoHBsnuXS5VTjOGvtDr8FRIABioQE8YfbC1IXq1rWtAEYk4aaJjsniQ2QRLdYfR+8KoZVXikDtb1Qr+jN2Y/qm2j5rzf4aPrZETHbo+mqabe+981SWPj
+sidebar_class_name: "post api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Stream Query Validation"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/query/stream-query-validation"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Stream Query Validation
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"query":{"type":"string","title":"Query"}},"type":"object","required":["query"],"title":"SimpleQueryRequest"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

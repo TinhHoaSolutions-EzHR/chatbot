@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/update-persona-admin-persona-persona-id-patch.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/update-persona-admin-persona-persona-id-patch",
-  "permalink": "/docs/chatbot-api/update-persona-admin-persona-persona-id-patch",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/update-persona-admin-persona-persona-id-patch",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Delete Persona",
-    "permalink": "/docs/chatbot-api/delete-persona-admin-persona-persona-id-delete"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-persona-admin-persona-persona-id-delete"
   },
   "next": {
     "title": "Patch Persona Visibility",
-    "permalink": "/docs/chatbot-api/patch-persona-visibility-admin-persona-persona-id-visible-patch"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/patch-persona-visibility-admin-persona-persona-id-visible-patch"
   }
 }

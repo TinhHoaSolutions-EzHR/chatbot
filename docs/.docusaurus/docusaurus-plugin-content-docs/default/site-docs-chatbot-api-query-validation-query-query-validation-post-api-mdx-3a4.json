@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/query-validation-query-query-validation-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/query-validation-query-query-validation-post",
-  "permalink": "/docs/chatbot-api/query-validation-query-query-validation-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/query-validation-query-query-validation-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Search Type",
-    "permalink": "/docs/chatbot-api/get-search-type-query-search-intent-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-search-type-query-search-intent-post"
   },
   "next": {
     "title": "Stream Query Validation",
-    "permalink": "/docs/chatbot-api/stream-query-validation-query-stream-query-validation-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/stream-query-validation-query-stream-query-validation-post"
   }
 }

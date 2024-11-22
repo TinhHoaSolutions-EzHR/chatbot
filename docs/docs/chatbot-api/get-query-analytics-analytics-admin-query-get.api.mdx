@@ -1,0 +1,71 @@
+---
+id: get-query-analytics-analytics-admin-query-get
+title: "Get Query Analytics"
+description: "Get Query Analytics"
+sidebar_label: "Get Query Analytics"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVU1P20AQ/SvRnF2S0p58owVRBFVpSXuJIjTYk2TJ2mt2x6iW5f9eza7t2CQpVOol8XrffL03M67BFGSRlcmvUohhTXz/VJKt7jFHXbFK3PApzVTe3q+JIYICLWbEZB3EixosPZXKUgrxCrWjCFyyoQwhroGrgiAGx1bla4hgZWyGDDGkyPSOVUYQASvWgrpjtAxNBDlmwUrOEagcYvDxoYn+X7iLPB0Eozx9EWoZgSVXmNyRE+ens5n8peQSqwohT3Iuk4ScW5V68qMFQwSJyZlyFjgWhVaJ53r66MSmHiSsmDLvvLAiCasQig2j9pR3L0JhKmdakx0UMRfk5HuLbKLWVKvtmwxvPK43S5V7q+V5B20iz+6r9A88nMuxkajBwDw8UiJK76RdvOBgXNhevm0Oy10MoaQ665q412YXFK3FapBUB5lcEntCq0lvPnySaWjvL4mhaaSQj6en+73xC7VKvfKTC2uN/ZfGGPdDSoxK/6VhtElGt5hX31Z+OMeayPy8ELZZHufkxoQEhbbMrQ9p3EG/knO4HhB8HOrJmMzl9rUmkLpC6BY3UHhHb2D3eBnngb5DwTrIl/n8ds9h0NZRUlrFlafz7PbqmqrPxmwVQbxYypYYq36gfaQE4o1pd63foLyBGKb9lp36LTsNq0di2uduvZZWQwwb5iKeTrVJUG+M4/jDbDbzS6rL706aJ7TDOMteCSzUNVXdmkvCdb8BV+gYC1U6sg5L3ni+VL4y3kO3ozErNE0+YbING1PSDIXPTmYn70WFwjjO0Dd06/owJyPe+iSZfvO00Kh81/ni65avBeDA3DMGUbuulxEILQKq6wd09NPqppHX4V6YTJXDBz34cmypGnxnnlGXkoGfkiPYtugeuZSDVQL17RDBhjAl6+MFk7MkoWLof2/yxUvfIJcXcylOBBgpt/XKtQ+Dyca8GvjeE7FLXH4H0z+2quvQGk3T48PVUYu2yg4tYi2bpvkDSD/awA==
+sidebar_class_name: "get api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Query Analytics"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/analytics/admin/query"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get Query Analytics
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":false,"schema":{"type":"string","format":"date-time","title":"Start"},"name":"start","in":"query"},{"required":false,"schema":{"type":"string","format":"date-time","title":"End"},"name":"end","in":"query"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"items":{"properties":{"total_queries":{"type":"integer","title":"Total Queries"},"total_likes":{"type":"integer","title":"Total Likes"},"total_dislikes":{"type":"integer","title":"Total Dislikes"},"date":{"type":"string","format":"date","title":"Date"}},"type":"object","required":["total_queries","total_likes","total_dislikes","date"],"title":"QueryAnalyticsResponse"},"type":"array","title":"Response Get Query Analytics Analytics Admin Query Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

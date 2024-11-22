@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/list-personas-persona-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/list-personas-persona-get",
-  "permalink": "/docs/chatbot-api/list-personas-persona-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-personas-persona-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Put Tokens",
-    "permalink": "/docs/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/put-tokens-manage-admin-slack-bot-tokens-put"
   },
   "next": {
     "title": "Get Persona",
-    "permalink": "/docs/chatbot-api/get-persona-persona-persona-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-persona-persona-persona-id-get"
   }
 }

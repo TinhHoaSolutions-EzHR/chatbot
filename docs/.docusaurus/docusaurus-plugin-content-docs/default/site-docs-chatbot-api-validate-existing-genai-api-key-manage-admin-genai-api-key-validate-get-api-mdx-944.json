@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get",
-  "permalink": "/docs/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/validate-existing-genai-api-key-manage-admin-genai-api-key-validate-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Document Hidden Update",
-    "permalink": "/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/document-hidden-update-manage-admin-doc-hidden-post"
   },
   "next": {
     "title": "Get Gen Ai Api Key From Dynamic Config Store",
-    "permalink": "/docs/chatbot-api/get-gen-ai-api-key-from-dynamic-config-store-manage-admin-genai-api-key-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-gen-ai-api-key-from-dynamic-config-store-manage-admin-genai-api-key-get"
   }
 }

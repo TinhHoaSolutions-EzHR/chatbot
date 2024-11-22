@@ -1,0 +1,71 @@
+---
+id: query-validation-query-query-validation-post
+title: "Query Validation"
+description: "Query Validation"
+sidebar_label: "Query Validation"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVcFu2zAM/ZWAZ7XJup18a7sCK7qhXdrtEhgFYzOJGkVyJTmtYfjfB0qO7SRtB/SSKNQjRT4+MjWYgix6afR1Dgk8l2Srxy0qmQfjYzQcmQvjPAiw9FyS8xcmryCpITPak/Z8xKJQMgvg8ZMzmm0uW9EG+VRYftZLcvwrROeDrwqCBJy3Ui9BgJdeseF3ADSN2CHM/ImyXQLSUg7JrA2T9m73clMoCs7TmCg0HKR38rakYHCF0S5mczaZ8FdOLrOy4AI4VJll5NyiVKNpCwbx2XotoTOaS/yg5mkHagSgdi9kcc43ncvcGEWoBz7nPex/ZPU57EVPD0j/27W8K7sJHH47OztmqUePrqw19vMU5eRRKj5JTxt3DFAm27tFXd0uIJkdEtqIziK1pyVZaNKeG7QWqwGDP01MkEnfuA8b9IucwyVBF+x9aCBj9MC3/+sL1xWfbnGDjvT0RnbfL+N7pO+tx3aQHw8Pd0cBY28dZaWVvgp0nt9d31B1acxaEiSztEnFQdeDUEZ9LM6f/MrwPmn3RIF+BQmMw4jGz5Pt0MGR3ZJ14cXSKkhg5X2RjMfKZKhWxvnk62QyAX59l949ayeqYT/JrhFYyBtiXiTnmcVrARo3fLtA57GQpSPrsPSrQBcLc9pvtatX5B0y2FK9sEDqhQmv7fZNwI4uMFuTzkEAlxQ5mpxOTr+wDxOywaD9No036Nvjt6vG06sfFwplUGdgqW6Z3S0/AUfcpgKYPsbU9Rwd/bGqadjcFjRLBWzRyrhdZjwcK8KcbGjGmrjmyzjFJ0HCDFdl5Pdgonnaosd5llHhP8SmA53c3d4/gIB5+0eyMTn7WHzh8cAXSAAEmMBIXKFsq0GhXpY8hAnEmNzC0Ms9EayDCNrDYEegrgYZHulBtLXw52CP7HvVdVRZ03T4ePWuR8vuDs3tTJum+Qe8iJuZ
+sidebar_class_name: "post api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Query Validation"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/query/query-validation"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Query Validation
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"query":{"type":"string","title":"Query"}},"type":"object","required":["query"],"title":"SimpleQueryRequest"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"reasoning":{"type":"string","title":"Reasoning"},"answerable":{"type":"boolean","title":"Answerable"}},"type":"object","required":["reasoning","answerable"],"title":"QueryValidationResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

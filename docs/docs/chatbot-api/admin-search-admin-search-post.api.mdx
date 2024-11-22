@@ -1,0 +1,71 @@
+---
+id: admin-search-admin-search-post
+title: "Admin Search"
+description: "Admin Search"
+sidebar_label: "Admin Search"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV01z2zYQ/SucPdO2rCRNy5vtpBNPkolrKTlUo+FA4EpEBAIMANpRNPzvnQVIiZRs2mkOvfQkCthd7Mfbt8AWdImGOaHVdQYJsKwQKrXIDM/T3p9SWwcxGPxWoXWXOttAsgWulUPl6JOVpRTcmzr7arWiNctzLBh9lYYOcgIt/ftWofH6blMiJGCdEWoFMTjhJC385QXqGJZCOjT22ITVleGYBgNbEA4L+5BFVFUByQyEWqEl51JWCojBSsbXEMM9LiCGldYriWlmxB3S34IJuY/WGcbXaGhDuLxahA/J/EdlKohhofXaumCSa7WUFSpOpjJhua6MxXAmqVgm0S618ftfhWEQU3BZxd1CM5OBD5s2lSaPIYYflRQlxCCFQkaO5NXClpoqkmleFajci99GPhAfdROPFQ4tqaPK0JJvUutSaHIiZwZLLRTZcMgKklsatLmXnO9r8aY5YOIzTiei5UaU3rUELlREOW5QdEpFa2rAjGG+iK2LqUU3UKxDzWMXogk6LyYKTHnl9HL5UM2X2hTMQQIZc3hCwh1bU1FgdBV0yRRb2Z5PfZg5tkrXOIjVKVtF73HTGEvvmKzwKfkvXqjeR6wXX5G3DSYMZoTZ9vCu4XnP0EDOphTYQye0ApfM4p9Nez3lSWjYfTt2vLgglph4krgN7QI1mdurO1OhX7ClVjbkdTwa0U8fSpOKc7R2WcnothEO7fRvOKYF3VB1d8AU2VDFdvC7zijhPK/UOhWqqyOUw5WniFbpiqSia+VVLBZMOcFTkaFyYinQDB04acSj67147bt/PaT2gfbrGBayMoshwUsvQH71WfR/8vzvyXOhadIOIevSS9Qx5CLLUHVkF1pLZKoj+y6I1DEU6FjGnO8UlmWCDmTyptcPTG0+LSGZHTPzs0m7ng9QzsfWB4Ie16YLOlUVi16YEy9AnjPH8zQXq1yKVX7Q0M8dIR/JSPRub6SOoSppQGQpcz89RT4H1ejCF6I0omBmk+p71VxWftq/m2Ai+hRMeM7gWmW/aHbSGtkZfoLpu5TYpbqHOazlmj6TtCDeIbSDvgfKOe+6S3PkjebPuAw8P5bH51UzZGo/sV6Ox8cz6QuTIvPdGb01RptfGEjoiBgfn0ZS897uUDcekEO36w7z9UEHB30r2dXQXPiI1rIV7pP/uKhPRjSl3afKQHGFoxu5TjX26Q3ZHSh7SN/QjebddHpzZDDU1iKvjHAbn86Lm+v3uLnSei0Qktm8nh/xMoEkCigJ6M01vY+aV1DJXA4JnPkX0pltxSyaO9+osy1URkICuXNlcnYmNWcy19YlL0ajEdB5rUMTQkuof9+tXepZKd77S6Agz3jYjkGxgnaXzDpWisqisaxyuU8QQfF2/1J7+50VpcTOy6vDcvsHVu8ycDj054fX+FlrY35wH4fxaPzyZPT6ZPzH9PxV8uo8Gf9+Onp9/je0t+1Z517dQdb+8rxD+pyiEWqpfT5akvDRRJd0r/DMREkPdRudjk7PPSNr6wrm+7FJ1EFJe/Xe5drhd3dWSiZ8t/gabptqz8Lj2JfZ25jHkPtRPYPtdsEsfjayrmm5SfJsHsMdM4ItZIBZDDmyjK5+sy2E6K8Cl5xMA2+28R/xCvV80LjgHEs3KDvvIPbm02TqCTk82AudkY5h99Sk7B4SgBi0z4MHgV/bgmRqVREVJBBsUiE8vnrADK+T5qPDVExtOh4eYTRuYln7Z9MjWtttQH5d7+TD1qMaTXZbaSrivK7rfwCP0McI
+sidebar_class_name: "post api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Admin Search"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/admin/search"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Admin Search
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"query":{"type":"string","title":"Query"},"filters":{"properties":{"source_type":{"items":{"type":"string","enum":["ingestion_api","slack","web","google_drive","gmail","requesttracker","github","gitlab","guru","bookstack","confluence","discourse","slab","salesforce","jira","productboard","file","notion","zulip","linear","hubspot","document360","gong","google_sites","zendesk","loopio","sharepoint","teams","freshdesk"],"title":"DocumentSource","description":"An enumeration."},"type":"array"},"document_set":{"items":{"type":"string"},"type":"array","title":"Document Set"},"time_cutoff":{"type":"string","format":"date-time","title":"Time Cutoff"},"tags":{"items":{"properties":{"tag_key":{"type":"string","title":"Tag Key"},"tag_value":{"type":"string","title":"Tag Value"}},"type":"object","required":["tag_key","tag_value"],"title":"Tag"},"type":"array","title":"Tags"}},"type":"object","title":"BaseFilters"}},"type":"object","required":["query","filters"],"title":"AdminSearchRequest"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"documents":{"items":{"properties":{"document_id":{"type":"string","title":"Document Id"},"chunk_ind":{"type":"integer","title":"Chunk Ind"},"semantic_identifier":{"type":"string","title":"Semantic Identifier"},"link":{"type":"string","title":"Link"},"blurb":{"type":"string","title":"Blurb"},"source_type":{"type":"string","enum":["ingestion_api","slack","web","google_drive","gmail","requesttracker","github","gitlab","guru","bookstack","confluence","discourse","slab","salesforce","jira","productboard","file","notion","zulip","linear","hubspot","document360","gong","google_sites","zendesk","loopio","sharepoint","teams","freshdesk"],"title":"DocumentSource","description":"An enumeration."},"boost":{"type":"integer","title":"Boost"},"hidden":{"type":"boolean","title":"Hidden"},"metadata":{"additionalProperties":{"anyOf":[{"type":"string"},{"items":{"type":"string"},"type":"array"}]},"type":"object","title":"Metadata"},"score":{"type":"number","title":"Score"},"match_highlights":{"items":{"type":"string"},"type":"array","title":"Match Highlights"},"updated_at":{"type":"string","format":"date-time","title":"Updated At"},"primary_owners":{"items":{"type":"string"},"type":"array","title":"Primary Owners"},"secondary_owners":{"items":{"type":"string"},"type":"array","title":"Secondary Owners"}},"type":"object","required":["document_id","chunk_ind","semantic_identifier","blurb","source_type","boost","hidden","metadata","match_highlights"],"title":"SearchDoc"},"type":"array","title":"Documents"}},"type":"object","required":["documents"],"title":"AdminSearchResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

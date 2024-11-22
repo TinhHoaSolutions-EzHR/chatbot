@@ -1,0 +1,71 @@
+---
+id: get-user-analytics-analytics-admin-user-get
+title: "Get User Analytics"
+description: "Get User Analytics"
+sidebar_label: "Get User Analytics"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVE1v2zAM/SsBz16TdTv5lq1FV3TDijXbpQgK1mYSNbLlSnQxw/B/HyjZjtIkKwbskkjW49d7JFswFVlkZcrrHFJYEz/UjuwDlqgbVpmLT3mhyvC8JoYEKrRYEJN1kN63YOm5VpZySFeoHSXgsg0VCGkL3FQEKTi2qlxDAitjC2RIIUemd6wKggRYsRbUHaNl6BIosQhWck9AlZDCc022gS75f+EuyzwKRmX+KtQyAUuuMqUjJ87PZzP5y8llVlVCneRcZxk5t6r15EcPhgQyUzKVLHCsKq0yz/T0yYlNGyWsmArvvLIiCKsQig2jfsCM1Qt54l1UnSqZ1mSjShYCn8w9fPLTw7vE1/wmKZGXC7l2XTIYmMcnyoT/HeH3xzLrIy13niSF+dA+Iy07z2gtNlHkATK5Ivb5T0br+CRtGJ6viKHrJNeP5+eHovxCrXJP+eTSWmP/RZF9IXJiVPovSmmT7b1i2Xxf+anYp10a95V+3fI0I19NSFBIK9z6mIwD9Bs5h+uI3tNQT8ZkIa9v6Sx1hdA9LpJ3R29g93QZF4G+Y8EGyJfF4vbAYdDWUVZbxY2nc357fUPNZ2O2iiC9X8p47qt+2DxSAfHG9BvOby7eQArTcblN/XKbSieDRLQvw1arrYYUNsxVOp1qk6HeGMfph9ls5nfDkN2dtE5ohv0cRx2wUjfUDNslC8/j4lmhY6yUnyWseePZUuXKeA/DasSi0jT5hNk2LCpJM5Q9O5udvRcNKuO4QN/OveujjOyRNubI9JunlUblW87X3vZs3QNG5p4vSMAztkxASBFM2z6io59Wd518DjtUeMyVw0cdrestNdFyf0FdSwJ+Qk5g+5JH5FIuVgnUt0ICG8KcrI8XTOZZRlXs/2DqxcvYHVeXC6lN6N/Tbet16w/RVGPZRL4PJBwSl99o8vet2jY0RteN+PB00qKvckCLVsuu6/4AfqGo0w==
+sidebar_class_name: "get api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get User Analytics"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/analytics/admin/user"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get User Analytics
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":false,"schema":{"type":"string","format":"date-time","title":"Start"},"name":"start","in":"query"},{"required":false,"schema":{"type":"string","format":"date-time","title":"End"},"name":"end","in":"query"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"items":{"properties":{"total_active_users":{"type":"integer","title":"Total Active Users"},"date":{"type":"string","format":"date","title":"Date"}},"type":"object","required":["total_active_users","date"],"title":"UserAnalyticsResponse"},"type":"array","title":"Response Get User Analytics Analytics Admin User Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

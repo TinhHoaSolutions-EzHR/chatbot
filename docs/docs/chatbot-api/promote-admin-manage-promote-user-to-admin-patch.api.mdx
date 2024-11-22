@@ -1,0 +1,71 @@
+---
+id: promote-admin-manage-promote-user-to-admin-patch
+title: "Promote Admin"
+description: "Promote Admin"
+sidebar_label: "Promote Admin"
+hide_title: true
+hide_table_of_contents: true
+api: eJyVVN9v2jAQ/lfQPZvCuj3ljXaVWnXTUEv3giJ0JAdxSWLXdtpGUf736ewAAUq3vYBzvp/fd58bUJoMOqnKuxQi0EYVytEC00KWiwJLXNNia6wsmYVT3aVGl2QgwNBLRdZdqbSGqIFElY5Kx0fUOpeJTz56tqpkm00yKpBP2nBpJ8nyl89NBcqcv1ytCSKwzshyDQKcdDkbniyZwY33aluxdVPLZ0pc14o0lEI07yeMDxNc1dsMbT/EmYq8wWpV2tDV5XjMfynZxEjNg0AEj1WSkLWrKh88dM4g/nnu1pf9dnl5mvg35jL1YYMbY5T5j6xHaKbkOiSlo8KeOuQqObjFsv61gmh+DH0rdhZZOlqTgTbeI4/GYN3j54cKDUIroLDrz6j8SdbimmCX7LyrB2Mw49u/sc5zhdKdX4/7PbwB3fNjfA/wfVRs63I7m01PEgZuLSWVka72cE6md/dUXyu1kQTRPG5jccT6NKhrMGFVcfPkMuW12AlMo8sgglFQ46hT45AXfOjUELs4S+aVjPVVK5NDBJlzOhqNcpVgninroq/j8Ri4g22Lj7w/YSMOG92RgVreE2MjudckXAsoseDbFVqHWnIrFiuXech4OR/2j8LNOxY6p2OR7zcMZLlSvmSH7aMPGFxhsqEyBQE8VwBrfDG++MIxWllXoBdB18sxjgco7+Zx9O5GOkfpd9Tj1HQIzyEgzJB/iHEsgGFkz6ZZoqUnk7ctm18qMsx3LOAVjcRlHsgWkBGmZDwpG6ohguug6KFfZ3bPq4DzkbpZeSFikiSk3ae+cW9tppPZ9S0IWHYPcqFSDjL4xlrBN4gABCgPjGfe2xrIsVxXPH4EISlz6Uk92IaN34bu0HswsKx7LZ4shuiG4d/eo3IY1TRh3dp25x+uzkZ08G69mdW4bds/nlZagA==
+sidebar_class_name: "patch api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Promote Admin"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"patch"}
+  path={"/manage/promote-user-to-admin"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Promote Admin
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"user_email":{"type":"string","title":"User Email"}},"type":"object","required":["user_email"],"title":"UserByEmail"}}},"required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

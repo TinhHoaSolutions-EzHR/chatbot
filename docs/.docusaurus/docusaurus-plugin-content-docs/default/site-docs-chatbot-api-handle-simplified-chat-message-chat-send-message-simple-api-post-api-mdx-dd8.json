@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/handle-simplified-chat-message-chat-send-message-simple-api-post.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/handle-simplified-chat-message-chat-send-message-simple-api-post",
-  "permalink": "/docs/chatbot-api/handle-simplified-chat-message-chat-send-message-simple-api-post",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/handle-simplified-chat-message-chat-send-message-simple-api-post",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,6 +26,6 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Answer With Quote",
-    "permalink": "/docs/chatbot-api/get-answer-with-quote-query-answer-with-quote-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-answer-with-quote-query-answer-with-quote-post"
   }
 }

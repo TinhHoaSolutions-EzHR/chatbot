@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-connectors-manage-connector-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-connectors-manage-connector-get",
-  "permalink": "/docs/chatbot-api/get-connectors-manage-connector-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connectors-manage-connector-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Google Drive Callback",
-    "permalink": "/docs/chatbot-api/google-drive-callback-manage-connector-google-drive-callback-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/google-drive-callback-manage-connector-google-drive-callback-get"
   },
   "next": {
     "title": "Get Connector By Id",
-    "permalink": "/docs/chatbot-api/get-connector-by-id-manage-connector-connector-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connector-by-id-manage-connector-connector-id-get"
   }
 }

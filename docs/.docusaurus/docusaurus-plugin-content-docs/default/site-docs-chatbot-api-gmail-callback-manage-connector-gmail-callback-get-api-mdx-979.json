@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/gmail-callback-manage-connector-gmail-callback-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/gmail-callback-manage-connector-gmail-callback-get",
-  "permalink": "/docs/chatbot-api/gmail-callback-manage-connector-gmail-callback-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/gmail-callback-manage-connector-gmail-callback-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Google Drive Auth",
-    "permalink": "/docs/chatbot-api/google-drive-auth-manage-connector-google-drive-authorize-credential-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/google-drive-auth-manage-connector-google-drive-authorize-credential-id-get"
   },
   "next": {
     "title": "Google Drive Callback",
-    "permalink": "/docs/chatbot-api/google-drive-callback-manage-connector-google-drive-callback-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/google-drive-callback-manage-connector-google-drive-callback-get"
   }
 }

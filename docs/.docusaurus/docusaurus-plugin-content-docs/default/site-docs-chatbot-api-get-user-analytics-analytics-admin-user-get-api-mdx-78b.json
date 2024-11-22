@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-user-analytics-analytics-admin-user-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-user-analytics-analytics-admin-user-get",
-  "permalink": "/docs/chatbot-api/get-user-analytics-analytics-admin-user-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-user-analytics-analytics-admin-user-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Query Analytics",
-    "permalink": "/docs/chatbot-api/get-query-analytics-analytics-admin-query-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-query-analytics-analytics-admin-query-get"
   },
   "next": {
     "title": "Get Chat Session History",
-    "permalink": "/docs/chatbot-api/get-chat-session-history-admin-chat-session-history-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-chat-session-history-admin-chat-session-history-get"
   }
 }

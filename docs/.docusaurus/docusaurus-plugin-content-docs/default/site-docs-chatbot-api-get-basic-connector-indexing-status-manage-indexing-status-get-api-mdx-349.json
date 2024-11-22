@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/get-basic-connector-indexing-status-manage-indexing-status-get.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/get-basic-connector-indexing-status-manage-indexing-status-get",
-  "permalink": "/docs/chatbot-api/get-basic-connector-indexing-status-manage-indexing-status-get",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-basic-connector-indexing-status-manage-indexing-status-get",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Get Connector By Id",
-    "permalink": "/docs/chatbot-api/get-connector-by-id-manage-connector-connector-id-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/get-connector-by-id-manage-connector-connector-id-get"
   },
   "next": {
     "title": "List Credentials Admin",
-    "permalink": "/docs/chatbot-api/list-credentials-admin-manage-admin-credential-get"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/list-credentials-admin-manage-admin-credential-get"
   }
 }

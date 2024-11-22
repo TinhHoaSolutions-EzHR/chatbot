@@ -5,7 +5,7 @@
   "source": "@site/docs/localDevelopmentGuide/highLevelArchitecture.mdx",
   "sourceDirName": "localDevelopmentGuide",
   "slug": "/localDevelopmentGuide/highLevelArchitecture",
-  "permalink": "/docs/localDevelopmentGuide/highLevelArchitecture",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/highLevelArchitecture",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/highLevelArchitecture.mdx",
@@ -18,10 +18,10 @@
   "sidebar": "localDevelopmentGuideSidebar",
   "previous": {
     "title": "Local Development Guide",
-    "permalink": "/docs/category/local-development-guide"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/category/local-development-guide"
   },
   "next": {
     "title": "Naming Conventions",
-    "permalink": "/docs/localDevelopmentGuide/namingConvention"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/localDevelopmentGuide/namingConvention"
   }
 }

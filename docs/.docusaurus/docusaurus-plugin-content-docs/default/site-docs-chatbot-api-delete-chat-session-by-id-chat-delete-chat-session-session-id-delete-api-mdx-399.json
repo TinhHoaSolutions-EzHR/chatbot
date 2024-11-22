@@ -5,7 +5,7 @@
   "source": "@site/docs/chatbot-api/delete-chat-session-by-id-chat-delete-chat-session-session-id-delete.api.mdx",
   "sourceDirName": "chatbot-api",
   "slug": "/chatbot-api/delete-chat-session-by-id-chat-delete-chat-session-session-id-delete",
-  "permalink": "/docs/chatbot-api/delete-chat-session-by-id-chat-delete-chat-session-session-id-delete",
+  "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/delete-chat-session-by-id-chat-delete-chat-session-session-id-delete",
   "draft": false,
   "unlisted": false,
   "editUrl": null,
@@ -26,10 +26,10 @@
   "sidebar": "chatbotApiSidebar",
   "previous": {
     "title": "Rename Chat Session",
-    "permalink": "/docs/chatbot-api/rename-chat-session-chat-rename-chat-session-put"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/rename-chat-session-chat-rename-chat-session-put"
   },
   "next": {
     "title": "Handle New Chat Message",
-    "permalink": "/docs/chatbot-api/handle-new-chat-message-chat-send-message-post"
+    "permalink": "/https://ezhrchatbot.pages.dev/docs/chatbot-api/handle-new-chat-message-chat-send-message-post"
   }
 }

@@ -1,0 +1,71 @@
+---
+id: get-chat-session-admin-admin-chat-session-history-chat-session-id-get
+title: "Get Chat Session Admin"
+description: "Get Chat Session Admin"
+sidebar_label: "Get Chat Session Admin"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vk2P2zYQ/SvCnFpAG7vbnnRzN9t0kaRN400vhqHQ1NhiLJEKOVrUEPTfi6EoW7JsJ+ihF1kW3wxn3nw2YCq0gpTRTxkksENKZS4odeicMjoVWan65+ggV46MPaTjrypL0x0SxFAJK0oktA6SVQMWv9bKYgYJ2RpjcDLHUkDSAB0qhASUJtyhhRhIUcFfHnJB0bJTHD1l0MagRcknZ1dCDEpDApWgHNp1DBZdZbRDx/rv53P+ydBJqyr2FBJY1lKic9u6iD4GMMQgjSbUxHBRVYWSnpjZF8cyzcDmyjJtpLobVHbTj8702qFNsRSqGIAdWaV3A+wnhzZ69Kiju9fRf/B5G0OJzoldMIawdFMbA+SWtvcBclKYdtCpCOq6hGQF7uAIS+i8gxiEc8qR0ATrid5n1hGfxWGhI9YVUvAV350ZWZeo6ZY3PSYdUT/x6HWAhexxWApNSqYqQ01qq9Dekl4GePR0grcxFErvb4m94/O2jXuA2XxByRVxKoHVyIHLhg0IXGysynaYLVFYmb82ckpj5OqNQ4rMNqIcI6W3JqosOnZe6ejzUfQznCwT1orDBbocY7aI2UbIi6724S/U3odUOf82MPmvxW9B/nvDTqrEVFoUhBdjujW2FAQJZILwjtEDy59VidFDEP4W930pnKX5MPPOzJkm81KLyuWGbrD5vi/K/9U5n0/HfnDdD26uobeefGlZ+y/399N++bcoVOaDFT1aa+x/b5YZUuiBV2q7MHJ0KvThz62fIWPW2njSc9v19XC8M52Bvr253Xc2wmsNsId6MiKf49+KTOHrlq8OuEE0TvR27N6o0Y6+S5f1kN+fnz9MFHaxdShrq+jg6Vx8eHqLhwdj9gohWa15co6j/gYpGk3hBe8BPsEoN2Ff8LOeckhg5teEGU/nuzCd78KaMGvOZnbr25596feD2haQQE5UJbNZYaQocuMo+Xk+n/uR3lu+5LTqEmVs/zFGolJv8dDvBLI7Pq4OW+FIVIrnlRM17wstI7fGa+g7vyirAqNfhdyj5oJiMztK5q/mr37i+FTGUSl8qgfVV9kakXq0k/AfmlWFUD4lvf9NYHIFIohe4hJiSM43oHUMzBeLNs1GOPxki7blz19rtBzvdQwvwiqxYQ9XDTdtfs8g2YrC4cTKY3nDDx9DFv8YQXzZ+p56zca9iKLmfxDDHg8X1jVfpjmKjOfvqgmohZRY0UB+0lU4D46Z9+bxmRcODuEo9nsf+/Ay6Bpj2yZp0NvKz0FnGUs1TZdcbXvEd0dXJYKXPZrZWrdt+y8RxvCy
+sidebar_class_name: "get api-method"
+info_path: docs/chatbot-api/sample-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Chat Session Admin"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/admin/chat-session-history/{chat_session_id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get Chat Session Admin
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"required":true,"schema":{"type":"integer","title":"Chat Session Id"},"name":"chat_session_id","in":"path"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"properties":{"id":{"type":"integer","title":"Id"},"user_email":{"type":"string","title":"User Email"},"name":{"type":"string","title":"Name"},"messages":{"items":{"properties":{"message":{"type":"string","title":"Message"},"message_type":{"type":"string","enum":["system","user","assistant"],"title":"MessageType","description":"An enumeration."},"documents":{"items":{"properties":{"document_id":{"type":"string","title":"Document Id"},"semantic_identifier":{"type":"string","title":"Semantic Identifier"},"link":{"type":"string","title":"Link"}},"type":"object","required":["document_id","semantic_identifier"],"title":"AbridgedSearchDoc","description":"A subset of the info present in `SearchDoc`"},"type":"array","title":"Documents"},"feedback":{"type":"string","enum":["like","dislike"],"title":"QAFeedbackType","description":"An enumeration."},"time_created":{"type":"string","format":"date-time","title":"Time Created"}},"type":"object","required":["message","message_type","documents","time_created"],"title":"MessageSnapshot"},"type":"array","title":"Messages"},"time_created":{"type":"string","format":"date-time","title":"Time Created"}},"type":"object","required":["id","messages","time_created"],"title":"ChatSessionSnapshot"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"properties":{"detail":{"items":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
