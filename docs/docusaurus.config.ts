@@ -10,7 +10,7 @@ const config: Config = {
   title: 'EzHR Chatbot Local Development Guide',
   tagline: 'EzHR Chatbot Documentation',
   url: 'https://ezhrchatbot.pages.dev/',
-  baseUrl: 'https://ezhrchatbot.pages.dev/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
