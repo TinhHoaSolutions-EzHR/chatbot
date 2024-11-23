@@ -2,43 +2,9 @@
 
 This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RAG and LlamaIndex to provide a conversational interface for the users.
 
+# THIS BRANCH IS FOR DOCUMENTATION PURPOSES ONLY
 
-## Components
-
-### API Server
-
-This is the API server for the EzHr-Chatbot LLM-based assistant. It is built using FastAPI and LlamaIndex for LLM framework coding.
-
-For developing and testing purposes, we can use the Docker compose to run the API server.
-
-```bash
-# Move to the docker_compose directory
-cd deployment/docker_compose
-
-# Create the environment file
-cp .env.example .env
-
-# Build the docker image
-docker-compose build
-
-# Run the docker container
-docker-compose up -d
-```
-
-=======
-# Authors
-
-This is contributed by 2 independent teams.
-
-- **chatbot-core** team
-  - @lelouvincx
-  - @greyyT
-  - @lekiet1214
-  - @TranThang0801
-  - @tuantran0910
-  - vn01122003
-- **vanphongso** team
-  - @TrungNotHot
-  - @thiendsu2303
-  - @ImTrungLe
-  - @Akkashij
+## [docs/chatbot-api](/docs/chatbot-api/) is automatically generated from the codebase. Do not edit it manually. 
+## If you need to update the API documentation, please update the [openapi.yaml](/static/openapi.yaml) file. 
+## You can use the [Swagger Editor](https://editor.swagger.io/) to edit the file.
+## Cloudflare Workers will automatically update the API documentation from the openapi.yaml file.
