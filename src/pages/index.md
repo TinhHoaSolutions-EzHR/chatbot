@@ -2,6 +2,8 @@
 title: EzHr-Chatbot
 ---
 
+![chatbot](https://socialify.git.ci/TinhHoaSolutions-EzHR/chatbot/image?description=1&issues=1&language=1&name=1&owner=1&pulls=1&theme=Light)
+
 # EzHr-Chatbot LLM-based Assistant
 
 This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RAG and LlamaIndex to provide a conversational interface for the users.
