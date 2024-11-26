@@ -1,22 +1,29 @@
+# TODO: setup qdrant (index), and redis (cache)
 services:
-  # postgres:
-  #   image: postgres:15.2-alpine
-  #   container_name: postgres
-  #   hostname: postgres
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_DB: ${POSTGRES_DB}
-  #     POSTGRES_PORT: ${POSTGRES_PORT}
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - postgres-data:/var/lib/postgresql/data
-  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  #   networks:
-  #     - backend
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    container_name: database
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: "SA"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    # restart: always
+    volumes:
+      - mssql-data:/var/opt/mssql/data
+      - mssql-log:/var/opt/mssql/log
+      - mssql-backup:/var/opt/mssql/backup
+    networks:
+      - backend
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1;" || exit
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   api_server:
     build:
@@ -24,6 +31,8 @@ services:
       dockerfile: Dockerfile
     container_name: api_server
     hostname: api_server
+    depends_on:
+      - database
     command:
       ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "--port", "5000"]
     ports:
@@ -36,8 +45,10 @@ services:
     networks:
       - backend
 
-# volumes:
-# postgres-data:
+volumes:
+  mssql-data:
+  mssql-log:
+  mssql-backup:
 
 networks:
   backend:
