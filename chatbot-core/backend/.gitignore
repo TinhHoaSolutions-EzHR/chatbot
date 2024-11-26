@@ -1,4 +1,4 @@
-# INFO: This is gitignore for only backend
+# INFO: This is python gitignore for only backend
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

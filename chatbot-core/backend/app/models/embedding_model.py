@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from datetime import datetime
 from typing import Optional
 
-from models import Base
+from app.models import Base
 
 
 class EmbeddingModel(Base):

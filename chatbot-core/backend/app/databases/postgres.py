@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from utils.logger import LoggerFactory
-from settings import Constants, Secrets
+from app.utils.logger import LoggerFactory
+from app.settings import Constants, Secrets
 
 logger = LoggerFactory().get_logger(__name__)
 

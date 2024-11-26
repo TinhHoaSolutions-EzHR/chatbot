@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
-from models.api import APIResponse
-from utils.api_response import BackendAPIResponse
+from app.models.api import APIResponse
+from app.utils.api_response import BackendAPIResponse
 
 router = APIRouter(tags=["base"])
 
