@@ -14,7 +14,7 @@ from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from app.models import Base
+from app.models.base import Base
 
 
 class DocumentSource(str, Enum):
@@ -28,7 +28,7 @@ class Connector(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
     source: Mapped[DocumentSource] = mapped_column(SQLAlchemyEnum(DocumentSource, native_enum=False), nullable=False)
     connector_specific_config: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)

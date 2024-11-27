@@ -26,6 +26,7 @@ class Constants:
     FORBIDDEN_REQUEST_MESSAGE = "Forbidden request"
     NOT_FOUND_MESSAGE = "Not found"
     INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
+    EMPTY_CHAT_MESSAGE_MESSAGE = "Empty chat message"
 
     # Logger Configuration
     LOGGER_LOG_LEVEL = logging.INFO
