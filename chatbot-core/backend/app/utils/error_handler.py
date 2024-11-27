@@ -10,6 +10,10 @@ class ErrorCodesMappingNumber(Enum):
     NOT_FOUND = (404, Constants.NOT_FOUND_MESSAGE)
     INTERNAL_SERVER_ERROR = (500, Constants.INTERNAL_SERVER_ERROR_MESSAGE)
 
+    # TODO: Think about adding more error codes here
+    AGENT_NOT_FOUND = (404, "Agent not specified or found for chat session")
+    CHAT_MESSAGES_NOT_FOUND = (404, "Chat message not found")
+
 
 class BaseException(Exception):
     """
