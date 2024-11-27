@@ -5,6 +5,10 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.openai import OpenAIEmbeddingMode
 from llama_index.llms.openai import OpenAI
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2471c33 (refactor(backend): refractor code and remove unused componnents)
 from app.settings import Constants
 
 
