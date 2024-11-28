@@ -20,3 +20,13 @@ devops-maintain:
           - .github/**/*
           - .devcontainer/**/*
           - deployment/**/*
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/backend/**/*
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/frontend/**/*
