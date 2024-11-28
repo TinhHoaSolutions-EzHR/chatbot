@@ -2,7 +2,6 @@ import { errorHandlingFetcher } from "@/lib/fetcher";
 import useSWR, { mutate } from "swr";
 import {
   ChatSessionMinimal,
-  DanswerBotAnalytics,
   QueryAnalytics,
   UserAnalytics,
 } from "./usage/types";
@@ -15,7 +14,7 @@ import {
   convertDateToStartOfDay,
   getXDaysAgo,
 } from "./dateUtils";
-import { THIRTY_DAYS } from "./DateRangeSelector";
+import { DateRange, THIRTY_DAYS } from "./DateRangeSelector";
 import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
 
 export const useTimeRange = () => {
@@ -52,38 +51,23 @@ export const useUserAnalytics = (timeRange: DateRangePickerValue) => {
   };
 };
 
-export const useDanswerBotAnalytics = (timeRange: DateRangePickerValue) => {
-  const url = buildApiPath("/api/analytics/admin/danswerbot", {
-    start: convertDateToStartOfDay(timeRange.from)?.toISOString(),
-    end: convertDateToEndOfDay(timeRange.to)?.toISOString(),
-  });
-  const swrResponse = useSWR<DanswerBotAnalytics[]>(url, errorHandlingFetcher); // TODO
-
-  return {
-    ...swrResponse,
-    refreshDanswerBotAnalytics: () => mutate(url),
-  };
-};
-
-export const useQueryHistory = () => {
-  const [selectedFeedbackType, setSelectedFeedbackType] =
-    useState<Feedback | null>(null);
-  const [timeRange, setTimeRange] = useTimeRange();
-
+export const useQueryHistory = ({
+  selectedFeedbackType,
+  timeRange,
+}: {
+  selectedFeedbackType: Feedback | null;
+  timeRange: DateRange;
+}) => {
   const url = buildApiPath("/api/admin/chat-session-history", {
     feedback_type: selectedFeedbackType,
-    start: convertDateToStartOfDay(timeRange.from)?.toISOString(),
-    end: convertDateToEndOfDay(timeRange.to)?.toISOString(),
+    start: convertDateToStartOfDay(timeRange?.from)?.toISOString(),
+    end: convertDateToEndOfDay(timeRange?.to)?.toISOString(),
   });
+
   const swrResponse = useSWR<ChatSessionMinimal[]>(url, errorHandlingFetcher);
 
   return {
     ...swrResponse,
-    selectedFeedbackType,
-    setSelectedFeedbackType: (feedbackType: Feedback | "all") =>
-      setSelectedFeedbackType(feedbackType === "all" ? null : feedbackType),
-    timeRange,
-    setTimeRange,
     refreshQueryHistory: () => mutate(url),
   };
 };

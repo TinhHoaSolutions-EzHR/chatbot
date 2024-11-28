@@ -1,4 +1,4 @@
-// Get Danswer Web Version
+// Get EzHR Web Version
 const { version: package_version } = require("./package.json"); // version from package.json
 const env_version = process.env.DANSWER_VERSION; // version from env variable
 // Use env version if set & valid, otherwise default to package version
@@ -9,7 +9,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  output: "standalone",
   publicRuntimeConfig: {
     version,
   },
@@ -26,7 +26,7 @@ const sentryEnabled = Boolean(
 
 // Sentry webpack plugin options
 const sentryWebpackPluginOptions = {
-  org: process.env.SENTRY_ORG || "danswer",
+  org: process.env.SENTRY_ORG || "ezHR",
   project: process.env.SENTRY_PROJECT || "data-plane-web",
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !sentryEnabled, // Silence output when Sentry is disabled

@@ -19,7 +19,7 @@ import { Settings } from "@/app/admin/settings/interfaces";
 import { fetchLLMProvidersSS } from "@/lib/llm/fetchLLMs";
 import { LLMProviderDescriptor } from "@/app/admin/configuration/llm/interfaces";
 import { Folder } from "@/app/chat/folders/interfaces";
-import Cookies from "js-cookie";
+import { cookies, headers } from "next/headers";
 import {
   SIDEBAR_TOGGLED_COOKIE_NAME,
   DOCUMENT_SIDEBAR_WIDTH_COOKIE_NAME,
@@ -48,9 +48,7 @@ interface FetchChatDataResult {
 export async function fetchChatData(searchParams: {
   [key: string]: string;
 }): Promise<FetchChatDataResult | { redirect: string }> {
-  // Client-side cookies with js-cookie
-  const requestCookies = Cookies.get();
-
+  const requestCookies = await cookies();
   const tasks = [
     getAuthTypeMetadataSS(),
     getCurrentUserSS(),
@@ -72,7 +70,7 @@ export async function fetchChatData(searchParams: {
     | LLMProviderDescriptor[]
     | [Persona[], string | null]
     | null
-    )[] = [null, null, null, null, null, null, null, null, null];
+  )[] = [null, null, null, null, null, null, null, null, null];
   try {
     results = await Promise.all(tasks);
   } catch (e) {
@@ -83,7 +81,9 @@ export async function fetchChatData(searchParams: {
   const user = results[1] as User | null;
   const ccPairsResponse = results[2] as Response | null;
   const documentSetsResponse = results[3] as Response | null;
+
   const chatSessionsResponse = results[4] as Response | null;
+
   const tagsResponse = results[5] as Response | null;
   const llmProviders = (results[6] || []) as LLMProviderDescriptor[];
   const foldersResponse = results[7] as Response | null;
@@ -91,8 +91,11 @@ export async function fetchChatData(searchParams: {
 
   const authDisabled = authTypeMetadata?.authType === "disabled";
   if (!authDisabled && !user) {
-    const fullUrl = "/chat"; // Assuming default fallback path
-    const searchParamsString = new URLSearchParams(searchParams).toString();
+    const headersList = await headers();
+    const fullUrl = headersList.get("x-url") || "/chat";
+    const searchParamsString = new URLSearchParams(
+      searchParams as unknown as Record<string, string>
+    ).toString();
     const redirectUrl = searchParamsString
       ? `${fullUrl}?${searchParamsString}`
       : fullUrl;
@@ -109,7 +112,6 @@ export async function fetchChatData(searchParams: {
   } else {
     console.log(`Failed to fetch connectors - ${ccPairsResponse?.status}`);
   }
-
   const availableSources: ValidSources[] = [];
   ccPairs.forEach((ccPair) => {
     if (!availableSources.includes(ccPair.source)) {
@@ -121,7 +123,9 @@ export async function fetchChatData(searchParams: {
   if (chatSessionsResponse?.ok) {
     chatSessions = (await chatSessionsResponse.json()).sessions;
   } else {
-    console.log(`Failed to fetch chat sessions - ${chatSessionsResponse?.text()}`);
+    console.log(
+      `Failed to fetch chat sessions - ${chatSessionsResponse?.text()}`
+    );
   }
 
   chatSessions.sort(
@@ -133,14 +137,18 @@ export async function fetchChatData(searchParams: {
   if (documentSetsResponse?.ok) {
     documentSets = await documentSetsResponse.json();
   } else {
-    console.log(`Failed to fetch document sets - ${documentSetsResponse?.status}`);
+    console.log(
+      `Failed to fetch document sets - ${documentSetsResponse?.status}`
+    );
   }
 
   let userInputPrompts: InputPrompt[] = [];
   if (userInputPromptsResponse?.ok) {
     userInputPrompts = await userInputPromptsResponse.json();
   } else {
-    console.log(`Failed to fetch user input prompts - ${userInputPromptsResponse?.status}`);
+    console.log(
+      `Failed to fetch user input prompts - ${userInputPromptsResponse?.status}`
+    );
   }
 
   let tags: Tag[] = [];
@@ -155,15 +163,17 @@ export async function fetchChatData(searchParams: {
     ? parseInt(defaultAssistantIdRaw)
     : undefined;
 
-  const documentSidebarCookieInitialWidth = requestCookies[DOCUMENT_SIDEBAR_WIDTH_COOKIE_NAME];
-  const sidebarToggled = requestCookies[SIDEBAR_TOGGLED_COOKIE_NAME];
+  const documentSidebarCookieInitialWidth = requestCookies.get(
+    DOCUMENT_SIDEBAR_WIDTH_COOKIE_NAME
+  );
+  const sidebarToggled = requestCookies.get(SIDEBAR_TOGGLED_COOKIE_NAME);
 
   const toggleSidebar = sidebarToggled
-    ? sidebarToggled.toLocaleLowerCase() === "true" || false
+    ? sidebarToggled.value.toLocaleLowerCase() == "true" || false
     : NEXT_PUBLIC_DEFAULT_SIDEBAR_OPEN;
 
   const finalDocumentSidebarInitialWidth = documentSidebarCookieInitialWidth
-    ? parseInt(documentSidebarCookieInitialWidth)
+    ? parseInt(documentSidebarCookieInitialWidth.value)
     : undefined;
 
   const hasAnyConnectors = ccPairs.length > 0;
@@ -173,6 +183,9 @@ export async function fetchChatData(searchParams: {
     !hasAnyConnectors &&
     (!user || user.role === "admin");
 
+  // if no connectors are setup, only show personas that are pure
+  // passthrough and don't do any retrieval
+
   let folders: Folder[] = [];
   if (foldersResponse?.ok) {
     folders = (await foldersResponse.json()).folders as Folder[];
@@ -180,9 +193,9 @@ export async function fetchChatData(searchParams: {
     console.log(`Failed to fetch folders - ${foldersResponse?.status}`);
   }
 
-  const openedFoldersCookie = requestCookies["openedFolders"];
+  const openedFoldersCookie = requestCookies.get("openedFolders");
   const openedFolders = openedFoldersCookie
-    ? JSON.parse(openedFoldersCookie)
+    ? JSON.parse(openedFoldersCookie.value)
     : {};
 
   return {

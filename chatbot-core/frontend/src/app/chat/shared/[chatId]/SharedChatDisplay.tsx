@@ -2,13 +2,13 @@
 import Prism from "prismjs";
 
 import { humanReadableFormat } from "@/lib/time";
-import { BackendChatSession } from "../interfaces";
+import { BackendChatSession } from "../../interfaces";
 import {
   buildLatestMessageChain,
   getCitedDocumentsFromMessage,
   processRawChatHistory,
-} from "../lib";
-import { AIMessage, HumanMessage } from "../message/Messages";
+} from "../../lib";
+import { AIMessage, HumanMessage } from "../../message/Messages";
 import { Callout } from "@/components/ui/callout";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ function BackToDanswerButton() {
     <div className="absolute bottom-0 bg-background w-full flex border-t border-border py-4">
       <div className="mx-auto">
         <Button onClick={() => router.push("/chat")}>
-          Back to {enterpriseSettings?.application_name || "Danswer Chat"}
+          Back to {enterpriseSettings?.application_name || "EzHR Chat"}
         </Button>
       </div>
     </div>

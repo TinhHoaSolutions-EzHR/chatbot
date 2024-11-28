@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/create-user-group-manage-admin-user-group-post",
+  "title": "Create User Group",
+  "description": "Create User Group",
+  "source": "@site/docs/chatbot-api/create-user-group-manage-admin-user-group-post.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/create-user-group-manage-admin-user-group-post",
+  "permalink": "/docs/chatbot-api/create-user-group-manage-admin-user-group-post",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "create-user-group-manage-admin-user-group-post",
+    "title": "Create User Group",
+    "description": "Create User Group",
+    "sidebar_label": "Create User Group",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJzVWNty2zYQ/RXOPlOxYiduqzfHTlo3beOx7LxoNBwIXEqISQDBxYmi4b93FiAl6q46T32xaXJvOOdgsfAClEbDnFDyNocBcIPMYeYtmmxqlNdZxSSbYsbySsjue62sgxQMfvVo3TuVz2GwAK6kQ+nokWldCh5Cn32xStI7y2dYMXrShhI7gZb+kqxC+u3mGmEA1hkhp5CCE66kF//Q9zqFkF/kwUc4rOwup0KZijkYgPciJ6/GgBnD5p2gjxZNcptbMuE800zsjS2kwymaA8GueXLHRBNvZaYmX5C3OAmDOQxGcbWdxaynH69X+DuhfR1ogZoiryI54zG8sFpJG5E87/fpV46WG6EJfBjA0HOO1ha+TO4bY0r6Mq5EvgOYVc23AfL/Qug64geSbUWJubBiojxk9j4Y1CkImzHuxHO3tIlSJTLZjWqTq2gVXazXaKjQY17DpWF0fEYjCoH5Mb/PrR2RqcqdwKH0FWlnwqzgkELYj5tauSfndIP8K5mQc7PLXx1Vp8ihxbSL2AYU6wts6t4o51YW6sj+626+k3Xws6LjSkrkTpmXNyKrvOEHiRJyipYQz5gWkIItGX+CFL7hBFKYKjUtMctNhHbawN10U2cYfwoLnAo385P4ULLw4I2HlIT0ZF0MyZUsSo+SB/KF5cqbsMNtdLGsRFsoE75/EYZBSsvOPXcTxQzRV4igHKmCaFL44UuhIYVSSGRUyMxPrFaklVxxX6F0F5f9sJCw6mY9VjikfvYDZY6WaiuV0kJRETNmUCshKYZDVpFdYdDOgmVHOjdNgmHE+KieUxBSe5dFJvYzUiqWZ9ZRI01Bq5IAx2fqgJ3ktxTqgSKckHcppMxq5KIQPCMuxLRTxnKPLU+K1ikZNk7JdXQKvTxAkhUGvx5U/H00TD6QYR1oZ5PySK+5aY0Is1N2FDeYo3SClT9xMi5jtIetExVmcdLY2d6XB3jOHPbIuhPuQVSYXDfObTCv85cHe2ycTzy2bSvLjuoOSaHDTRqb6waqG4BsLGm8QzlDybSdKbdO0XY36yRqT/W9qlyx9CeZ1s0Rk2k/KQU/KKsrMkzuouGp0mqmn+MD3NbA9j+W0CYhGyA3+jhVDstgKz2ccravjr819ewS2ioFDbc3TT9UJwzCtpmBvM6cyqj2Y1PQo04eVHIT5tzWtVAmy7HE2IKP+n9QJrlpzU/CojOKd+ZwC5u17yxo16ROM3qdwpvz8+0x/DMrRR5Oj+S9MRH/l83gObpm5t0zL5WKr31lcv6pgMFoU9x1ut3Jx/vJ/UvFAomhyk4PTUp/o7VsiiulHJjPCYwkHLrHSKN1xdSNXYeDFbwR3f3LuInw7UrWmvzx8HC3FTBya5F7I9w8wHl1d/sR59dKPQmEwWhcjzfnhthoktC8okRSqNDNFN23m1u0Zm4GAziLl+2z0BTOSJS9aeNh0TyHq9JoAd6UMICZc3pwdlYqzsqZsm5w0e/3gfK3BQ5JPVEP62UuqWBafMR5OMvo8h8/t4M0FMw6pkXYHMy7WQCMpHm/uvS//84qHa8sjdeS3tVlfQQXBfv1bXH5pvf2l9e/9N68vTzvTS4K3jvnv11eFJeXrGCXxOXaPXzUH4fhrlCh5IaZYUiYvKMRWdIeJlwi1P1X/VeviXeCtWKyU9UuFtZ4WmLi8Ls70yUTQeUB60VD0AgiQcv7V1xkQ9I4BeKBzBaLCbP4aMq6ptdfPRqSyziFZ2YEDQNBKynMkOV0sRwt4AnnsfVSQ+g1I+gzK30kaqM50MaNHleco3YHbccdxd19Gj6E+0P8h02lcvIx7BvtNPYNBgApqABKUE54t4CSyamnpQ8gxiQtBFGsqekpqKl56LQbJuedCreElTZroZ+dlrTutVhEudb10j5+2uvRoNtaE6Pjuq7/BdYBdI8=",
+    "sidebar_class_name": "post api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "List User Groups",
+    "permalink": "/docs/chatbot-api/list-user-groups-manage-admin-user-group-get"
+  },
+  "next": {
+    "title": "Delete User Group",
+    "permalink": "/docs/chatbot-api/delete-user-group-manage-admin-user-group-user-group-id-delete"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/patch-document-set-manage-admin-document-set-patch",
+  "title": "Patch Document Set",
+  "description": "Patch Document Set",
+  "source": "@site/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/patch-document-set-manage-admin-document-set-patch",
+  "permalink": "/docs/chatbot-api/patch-document-set-manage-admin-document-set-patch",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "patch-document-set-manage-admin-document-set-patch",
+    "title": "Patch Document Set",
+    "description": "Patch Document Set",
+    "sidebar_label": "Patch Document Set",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJyVVVFv2jAQ/ivRPacl6/aUt66tVNRNQ4XuBSF0OAe4JLFrO21RlP8+nR0ggdJtL0mwP9+dv++7owalyaCTqhxmkIJGJ9bzTImqoNLNLbl5gSWuaI5ZIcv+jgdDDIZeKrLuu8q2kNYgVOmodPyJWudS+PCDZ6tKXrNiTQXylzac3Emy/Etm/HRbTZCCLB2tyEAMTrqcV4YZNDFkZIWRmgN20NYZWa464NsOrIlBiLlGaeYyC5kcFfaDZE28W0FjcNuJdyOiEUoTDTMLzQGmFs8kXMuANJRBOuV79Ovs5591qmzJHJN70hk6egxEQsM5DjGdqcgvWK1KG9i6ShJ+9fiAcSUEWbus8uixBXP2f9Sj8Wm/XV2dBv6Nucz8sejOGGX+I+qRyhk5lHlPhT4gV6K3i+X21xLS6bHYTXyq3+y8gj9UKJBFLuzqM/P8JGtxRQc7nId6MqIJ7/7NFnyvkLrFdYxwoDewe/4at4G+j5LtIPeTyegkYNDWkqiMdFtP5/Vo+EDbG6U2kiCdzprZUXvBiPs72rk0GhOnKcit1X5UQMzvNaQwCHNi4OfEYDcnLqw/ZMm8krE+b2VySGHtnE4Hg1wJzNfKuvRrkiTANeyKHLODgif6pe7lQC0fiNmRXK0I2zGUWPDuEq1DLStLxmLl1p40tufjYVzdvWOhc9qNn+SYgb3gvQkyTdhoslwqX0zL+9iHir6j2FDJM4BvHMIkl8nlF1ZVK+sK9A3SVvkhxx9POUfvbqBzlN7Ensa6ZX8KgX2IwfPPMboKzGJgkhlY1wu09GTypuHll4oM+2EWwysaiYs8mCGGNWFGxku2oS0PwdDxF97uDM+roMJR93NnhhPXQpB2n2JnHUeNric39xDDov0jKVTGhwy+cS/hG6QAMSjPi/eFX6shx3JV8e1TCEFZaS95zysb75X2ozNQsNx2SjyxTdxehp+dodM/VdfBjE2zx4etsydaendoFnXWNM0fOLaYNQ==",
+    "sidebar_class_name": "patch api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Create Document Set",
+    "permalink": "/docs/chatbot-api/create-document-set-manage-admin-document-set-post"
+  },
+  "next": {
+    "title": "Delete Document Set",
+    "permalink": "/docs/chatbot-api/delete-document-set-manage-admin-document-set-document-set-id-delete"
+  }
+}

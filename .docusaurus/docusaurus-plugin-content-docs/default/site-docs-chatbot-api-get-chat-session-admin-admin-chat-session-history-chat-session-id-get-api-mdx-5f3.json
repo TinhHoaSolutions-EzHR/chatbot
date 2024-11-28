@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/get-chat-session-admin-admin-chat-session-history-chat-session-id-get",
+  "title": "Get Chat Session Admin",
+  "description": "Get Chat Session Admin",
+  "source": "@site/docs/chatbot-api/get-chat-session-admin-admin-chat-session-history-chat-session-id-get.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/get-chat-session-admin-admin-chat-session-history-chat-session-id-get",
+  "permalink": "/docs/chatbot-api/get-chat-session-admin-admin-chat-session-history-chat-session-id-get",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "get-chat-session-admin-admin-chat-session-history-chat-session-id-get",
+    "title": "Get Chat Session Admin",
+    "description": "Get Chat Session Admin",
+    "sidebar_label": "Get Chat Session Admin",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJy9Vk2P2zYQ/SvCnFpAG7vbnnRzN9t0kaRN400vhqHQ1NhiLJEKOVrUEPTfi6EoW7JsJ+ihF1kW3wxn3nw2YCq0gpTRTxkksENKZS4odeicMjoVWan65+ggV46MPaTjrypL0x0SxFAJK0oktA6SVQMWv9bKYgYJ2RpjcDLHUkDSAB0qhASUJtyhhRhIUcFfHnJB0bJTHD1l0MagRcknZ1dCDEpDApWgHNp1DBZdZbRDx/rv53P+ydBJqyr2FBJY1lKic9u6iD4GMMQgjSbUxHBRVYWSnpjZF8cyzcDmyjJtpLobVHbTj8702qFNsRSqGIAdWaV3A+wnhzZ69Kiju9fRf/B5G0OJzoldMIawdFMbA+SWtvcBclKYdtCpCOq6hGQF7uAIS+i8gxiEc8qR0ATrid5n1hGfxWGhI9YVUvAV350ZWZeo6ZY3PSYdUT/x6HWAhexxWApNSqYqQ01qq9Dekl4GePR0grcxFErvb4m94/O2jXuA2XxByRVxKoHVyIHLhg0IXGysynaYLVFYmb82ckpj5OqNQ4rMNqIcI6W3JqosOnZe6ejzUfQznCwT1orDBbocY7aI2UbIi6724S/U3odUOf82MPmvxW9B/nvDTqrEVFoUhBdjujW2FAQJZILwjtEDy59VidFDEP4W930pnKX5MPPOzJkm81KLyuWGbrD5vi/K/9U5n0/HfnDdD26uobeefGlZ+y/399N++bcoVOaDFT1aa+x/b5YZUuiBV2q7MHJ0KvThz62fIWPW2njSc9v19XC8M52Bvr253Xc2wmsNsId6MiKf49+KTOHrlq8OuEE0TvR27N6o0Y6+S5f1kN+fnz9MFHaxdShrq+jg6Vx8eHqLhwdj9gohWa15co6j/gYpGk3hBe8BPsEoN2Ff8LOeckhg5teEGU/nuzCd78KaMGvOZnbr25596feD2haQQE5UJbNZYaQocuMo+Xk+n/uR3lu+5LTqEmVs/zFGolJv8dDvBLI7Pq4OW+FIVIrnlRM17wstI7fGa+g7vyirAqNfhdyj5oJiMztK5q/mr37i+FTGUSl8qgfVV9kakXq0k/AfmlWFUD4lvf9NYHIFIohe4hJiSM43oHUMzBeLNs1GOPxki7blz19rtBzvdQwvwiqxYQ9XDTdtfs8g2YrC4cTKY3nDDx9DFv8YQXzZ+p56zca9iKLmfxDDHg8X1jVfpjmKjOfvqgmohZRY0UB+0lU4D46Z9+bxmRcODuEo9nsf+/Ay6Bpj2yZp0NvKz0FnGUs1TZdcbXvEd0dXJYKXPZrZWrdt+y8RxvCy",
+    "sidebar_class_name": "get api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Get Chat Session History",
+    "permalink": "/docs/chatbot-api/get-chat-session-history-admin-chat-session-history-get"
+  },
+  "next": {
+    "title": "Get Query History As Csv",
+    "permalink": "/docs/chatbot-api/get-query-history-as-csv-admin-query-history-csv-get"
+  }
+}

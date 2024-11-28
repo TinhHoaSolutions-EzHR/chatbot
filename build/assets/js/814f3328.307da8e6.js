@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[7472],{55513:t=>{t.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"donut.c without a math library","permalink":"/blog/donut","unlisted":false,"date":"2024-11-22T00:00:00.000Z"}]}')}}]);

@@ -58,22 +58,22 @@ export function AccessTypeForm({
       name: "Public",
       value: "public",
       description:
-        "Everyone with an account on Danswer can access the documents pulled in by this connector",
+        "Everyone with an account on EzHR can access the documents pulled in by this connector",
     });
   }
 
-  if (isAutoSyncSupported && isAdmin && isPaidEnterpriseEnabled) {
+  if (isAutoSyncSupported && isPaidEnterpriseEnabled) {
     options.push({
       name: "Auto Sync Permissions",
       value: "sync",
       description:
-        "We will automatically sync permissions from the source. A document will be searchable in Danswer if and only if the user performing the search has permission to access the document in the source.",
+        "We will automatically sync permissions from the source. A document will be searchable in EzHR if and only if the user performing the search has permission to access the document in the source.",
     });
   }
 
   return (
     <>
-      {isPaidEnterpriseEnabled && isAdmin && (
+      {isPaidEnterpriseEnabled && (isAdmin || isAutoSyncSupported) && (
         <>
           <div>
             <label className="text-text-950 font-medium">Document Access</label>

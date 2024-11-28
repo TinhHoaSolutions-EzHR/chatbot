@@ -37,19 +37,19 @@ export default function FixedLogo({
                   {enterpriseSettings.application_name}
                 </HeaderTitle>
                 {!NEXT_PUBLIC_DO_NOT_USE_TOGGLE_OFF_DANSWER_POWERED && (
-                  <p className="text-xs text-subtle">Powered by Danswer</p>
+                  <p className="text-xs text-subtle">Powered by EzHR</p>
                 )}
               </div>
             ) : (
               <HeaderTitle backgroundToggled={backgroundToggled}>
-                Danswer
+                EzHR
               </HeaderTitle>
             )}
           </div>
         </div>
       </Link>
       <div className="mobile:hidden fixed left-2.5 bottom-4">
-        <FiSidebar />
+        <FiSidebar className="text-text-mobile-sidebar" />
       </div>
     </>
   );

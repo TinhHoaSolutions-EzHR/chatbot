@@ -1,11 +1,11 @@
 FROM node:20-alpine AS base
 
-LABEL com.danswer.maintainer="founders@danswer.ai"
-LABEL com.danswer.description="This image is the web/frontend container of Danswer which \
-contains code for both the Community and Enterprise editions of Danswer. If you do not \
+LABEL com.ezHR.maintainer="founders@ezHR.ai"
+LABEL com.ezHR.description="This image is the web/frontend container of EzHR which \
+contains code for both the Community and Enterprise editions of EzHR. If you do not \
 have a contract or agreement with DanswerAI, you are not permitted to use the Enterprise \
 Edition features outside of personal development or testing purposes. Please reach out to \
-founders@danswer.ai for more information. Please visit https://github.com/danswer-ai/danswer"
+founders@ezHR.ai for more information. Please visit https://github.com/ezHR-ai/ezHR"
 
 # Default DANSWER_VERSION, typically overriden during builds by GitHub Actions.
 ARG DANSWER_VERSION=0.8-dev
@@ -68,6 +68,9 @@ ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
 
 ARG NEXT_PUBLIC_SENTRY_DSN
 ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN} 
+
+ARG NEXT_PUBLIC_GTM_ENABLED
+ENV NEXT_PUBLIC_GTM_ENABLED=${NEXT_PUBLIC_GTM_ENABLED}
 
 RUN npx next build
 
@@ -134,9 +137,12 @@ ARG NEXT_PUBLIC_POSTHOG_KEY
 ARG NEXT_PUBLIC_POSTHOG_HOST
 ENV NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
 ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
+
 ARG NEXT_PUBLIC_SENTRY_DSN
 ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN} 
 
+ARG NEXT_PUBLIC_GTM_ENABLED
+ENV NEXT_PUBLIC_GTM_ENABLED=${NEXT_PUBLIC_GTM_ENABLED}
 
 # Note: Don't expose ports here, Compose will handle that for us if necessary. 
 # If you want to run this without compose, specify the ports to 

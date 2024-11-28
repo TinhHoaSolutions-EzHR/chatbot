@@ -1,0 +1,27 @@
+{
+  "id": "localDevelopmentGuide/namingConvention",
+  "title": "Naming Conventions",
+  "description": "A well-defined Git naming convention enhances collaboration, supports automated versioning, and simplifies project maintenance. This document outlines recommended naming conventions for branches, commits, and tags to facilitate a smooth workflow and compatibility with Semantic Release.",
+  "source": "@site/docs/localDevelopmentGuide/namingConvention.mdx",
+  "sourceDirName": "localDevelopmentGuide",
+  "slug": "/localDevelopmentGuide/namingConvention",
+  "permalink": "/docs/localDevelopmentGuide/namingConvention",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/docs/localDevelopmentGuide/namingConvention.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Naming Conventions",
+    "description": "A well-defined Git naming convention enhances collaboration, supports automated versioning, and simplifies project maintenance. This document outlines recommended naming conventions for branches, commits, and tags to facilitate a smooth workflow and compatibility with Semantic Release."
+  },
+  "sidebar": "localDevelopmentGuideSidebar",
+  "previous": {
+    "title": "Architecture",
+    "permalink": "/docs/localDevelopmentGuide/highLevelArchitecture"
+  },
+  "next": {
+    "title": "Roadmap",
+    "permalink": "/docs/localDevelopmentGuide/roadmap"
+  }
+}

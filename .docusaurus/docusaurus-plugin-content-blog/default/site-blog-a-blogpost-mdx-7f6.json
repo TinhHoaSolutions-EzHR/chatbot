@@ -1,0 +1,24 @@
+{
+  "permalink": "/blog/A blogpost",
+  "editUrl": "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs/blog/A blogpost.mdx",
+  "source": "@site/blog/A blogpost.mdx",
+  "title": "A blogpost",
+  "description": "I could have written something here, but I didn't.",
+  "date": "2024-11-22T12:33:19.235Z",
+  "tags": [],
+  "readingTime": 0.325,
+  "hasTruncateMarker": false,
+  "authors": [
+    {
+      "name": "Le Kiet",
+      "page": {
+        "permalink": "/blog/authors/lekiet"
+      },
+      "key": "lekiet"
+    }
+  ],
+  "frontMatter": {
+    "authors": "lekiet"
+  },
+  "unlisted": false
+}

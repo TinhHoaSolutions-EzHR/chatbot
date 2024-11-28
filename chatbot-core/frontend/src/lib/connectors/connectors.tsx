@@ -6,7 +6,7 @@ import { Credential } from "@/lib/connectors/credentials"; // Import Credential 
 
 export function isLoadState(connector_name: string): boolean {
   // TODO: centralize connector metadata like this somewhere instead of hardcoding it here
-  const loadStateConnectors = ["web", "xenforo"];
+  const loadStateConnectors = ["web", "xenforo", "file"];
   if (loadStateConnectors.includes(connector_name)) {
     return true;
   }
@@ -42,6 +42,7 @@ export interface Option {
     values: any,
     currentCredential: Credential<any> | null
   ) => boolean;
+  wrapInCollapsible?: boolean;
 }
 
 export interface SelectOption extends Option {
@@ -59,6 +60,7 @@ export interface ListOption extends Option {
 export interface TextOption extends Option {
   type: "text";
   default?: string;
+  isTextArea?: boolean;
 }
 
 export interface NumberOption extends Option {
@@ -76,9 +78,28 @@ export interface FileOption extends Option {
   default?: string;
 }
 
-export interface ZipOption extends Option {
-  type: "zip";
+export interface StringTabOption extends Option {
+  type: "string_tab";
   default?: string;
+}
+
+export interface TabOption extends Option {
+  type: "tab";
+  defaultTab?: string;
+  tabs: {
+    label: string;
+    value: string;
+    fields: (
+      | BooleanOption
+      | ListOption
+      | TextOption
+      | NumberOption
+      | SelectOption
+      | FileOption
+      | StringTabOption
+    )[];
+  }[];
+  default?: [];
 }
 
 export interface ConnectionConfiguration {
@@ -91,7 +112,7 @@ export interface ConnectionConfiguration {
     | NumberOption
     | SelectOption
     | FileOption
-    | ZipOption
+    | TabOption
   )[];
   advanced_values: (
     | BooleanOption
@@ -100,7 +121,7 @@ export interface ConnectionConfiguration {
     | NumberOption
     | SelectOption
     | FileOption
-    | ZipOption
+    | TabOption
   )[];
   overrideDefaultFreq?: number;
 }
@@ -109,13 +130,26 @@ export const connectorConfigs: Record<
   ConfigurableSources,
   ConnectionConfiguration
 > = {
+  file: {
+    description: "Configure File connector",
+    values: [
+      {
+        type: "file",
+        query: "Enter file locations:",
+        label: "File Locations",
+        name: "file_locations",
+        optional: false,
+      },
+    ],
+    advanced_values: [],
+  },
   web: {
     description: "Configure Web connector",
     values: [
       {
         type: "text",
         query:
-          "Enter the website URL to scrape e.g. https://docs.danswer.dev/:",
+          "Enter the website URL to scrape e.g. https://docs.ezHR.dev/:",
         label: "Base URL",
         name: "base_url",
         optional: false,
@@ -211,59 +245,96 @@ export const connectorConfigs: Record<
     description: "Configure Google Drive connector",
     values: [
       {
-        type: "checkbox",
-        label: "Include shared drives?",
-        description:
-          "This will allow Danswer to index everything in your shared drives.",
-        name: "include_shared_drives",
+        type: "tab",
+        name: "indexing_scope",
+        label: "How should we index your Google Drive?",
         optional: true,
-        default: true,
-      },
-      {
-        type: "text",
-        description:
-          "Enter a comma separated list of the URLs of the shared drives to index. Leave blank to index all shared drives.",
-        label: "Shared Drive URLs",
-        name: "shared_drive_urls",
-        visibleCondition: (values) => values.include_shared_drives,
-        optional: true,
-      },
-      {
-        type: "checkbox",
-        label: (currentCredential) =>
-          currentCredential?.credential_json?.google_drive_tokens
-            ? "Include My Drive?"
-            : "Include Everyone's My Drive?",
-        description: (currentCredential) =>
-          currentCredential?.credential_json?.google_drive_tokens
-            ? "This will allow Danswer to index everything in your My Drive."
-            : "This will allow Danswer to index everything in everyone's My Drives.",
-        name: "include_my_drives",
-        optional: true,
-        default: true,
-      },
-      {
-        type: "text",
-        description:
-          "Enter a comma separated list of the emails of the users whose MyDrive you want to index. Leave blank to index all MyDrives.",
-        label: "My Drive Emails",
-        name: "my_drive_emails",
-        visibleCondition: (values, currentCredential) =>
-          values.include_my_drives &&
-          !currentCredential?.credential_json?.google_drive_tokens,
-        optional: true,
+        tabs: [
+          {
+            value: "general",
+            label: "General",
+            fields: [
+              {
+                type: "checkbox",
+                label: "Include shared drives?",
+                description: (currentCredential) => {
+                  return currentCredential?.credential_json?.google_tokens
+                    ? "This will allow EzHR to index everything in the shared drives you have access to."
+                    : "This will allow EzHR to index everything in your Organization's shared drives.";
+                },
+                name: "include_shared_drives",
+                default: false,
+              },
+              {
+                type: "checkbox",
+                label: (currentCredential) => {
+                  return currentCredential?.credential_json?.google_tokens
+                    ? "Include My Drive?"
+                    : "Include Everyone's My Drive?";
+                },
+                description: (currentCredential) => {
+                  return currentCredential?.credential_json?.google_tokens
+                    ? "This will allow EzHR to index everything in your My Drive."
+                    : "This will allow EzHR to index everything in everyone's My Drives.";
+                },
+                name: "include_my_drives",
+                default: false,
+              },
+              {
+                type: "checkbox",
+                description:
+                  "This will allow EzHR to index all files shared with you.",
+                label: "Include All Files Shared With You?",
+                name: "include_files_shared_with_me",
+                visibleCondition: (values, currentCredential) =>
+                  currentCredential?.credential_json?.google_tokens,
+                default: false,
+              },
+            ],
+          },
+          {
+            value: "specific",
+            label: "Specific",
+            fields: [
+              {
+                type: "text",
+                description: (currentCredential) => {
+                  return currentCredential?.credential_json?.google_tokens
+                    ? "Enter a comma separated list of the URLs for the shared drive you would like to index. You must have access to these shared drives."
+                    : "Enter a comma separated list of the URLs for the shared drive you would like to index.";
+                },
+                label: "Shared Drive URLs",
+                name: "shared_drive_urls",
+                default: "",
+                isTextArea: true,
+              },
+              {
+                type: "text",
+                description:
+                  "Enter a comma separated list of the URLs of any folders you would like to index. The files located in these folders (and all subfolders) will be indexed.",
+                label: "Folder URLs",
+                name: "shared_folder_urls",
+                default: "",
+                isTextArea: true,
+              },
+              {
+                type: "text",
+                description:
+                  "Enter a comma separated list of the emails of the users whose MyDrive you want to index.",
+                label: "My Drive Emails",
+                name: "my_drive_emails",
+                visibleCondition: (values, currentCredential) =>
+                  !currentCredential?.credential_json?.google_tokens,
+                default: "",
+                isTextArea: true,
+              },
+            ],
+          },
+        ],
+        defaultTab: "space",
       },
     ],
-    advanced_values: [
-      {
-        type: "text",
-        description:
-          "Enter a comma separated list of the URLs of the folders located in Shared Drives to index. The files located in these folders (and all subfolders) will be indexed. Note: This will be in addition to the 'Include Shared Drives' and 'Shared Drive URLs' settings, so leave those blank if you only want to index the folders specified here.",
-        label: "Folder URLs",
-        name: "shared_folder_urls",
-        optional: true,
-      },
-    ],
+    advanced_values: [],
   },
   gmail: {
     description: "Configure Gmail connector",
@@ -277,26 +348,7 @@ export const connectorConfigs: Record<
   },
   confluence: {
     description: "Configure Confluence connector",
-    subtext: `Specify the base URL of your Confluence instance, the space name, and optionally a specific page ID to index. If no page ID is provided, the entire space will be indexed. If no space is specified, all available Confluence spaces will be indexed.`,
     values: [
-      {
-        type: "text",
-        query: "Enter the wiki base URL:",
-        label: "Wiki Base URL",
-        name: "wiki_base",
-        optional: false,
-        description:
-          "The base URL of your Confluence instance (e.g., https://your-domain.atlassian.net/wiki)",
-      },
-      {
-        type: "text",
-        query: "Enter the space:",
-        label: "Space",
-        name: "space",
-        optional: true,
-        description:
-          "The Confluence space name to index (e.g. `KB`). If no space is specified, all available Confluence spaces will be indexed.",
-      },
       {
         type: "checkbox",
         query: "Is this a Confluence Cloud instance?",
@@ -307,40 +359,96 @@ export const connectorConfigs: Record<
         description:
           "Check if this is a Confluence Cloud instance, uncheck for Confluence Server/Data Center",
       },
-    ],
-    advanced_values: [
       {
         type: "text",
-        query: "Enter the page ID (optional):",
-        label: "Page ID",
-        name: "page_id",
-        optional: true,
-        description:
-          "Specific page ID to index  - leave empty to index the entire space (e.g. `131368`)",
-      },
-      {
-        type: "checkbox",
-        query: "Should index pages recursively?",
-        label: "Index Recursively",
-        name: "index_recursively",
-        description:
-          "If this is set and the Wiki Page URL leads to a page, we will index the page and all of its children instead of just the page. This is set by default for Confluence connectors without a page ID specified.",
+        query: "Enter the wiki base URL:",
+        label: "Wiki Base URL",
+        name: "wiki_base",
         optional: false,
+        description:
+          "The base URL of your Confluence instance (e.g., https://your-domain.atlassian.net/wiki)",
       },
       {
-        type: "text",
-        query: "Enter the CQL query (optional):",
-        label: "CQL Query",
-        name: "cql_query",
+        type: "tab",
+        name: "indexing_scope",
+        label: "How Should We Index Your Confluence?",
         optional: true,
-        description:
-          "IMPORTANT: This will overwrite all other selected connector settings (besides Wiki Base URL). We currently only support CQL queries that return objects of type 'page'. This means all CQL queries must contain 'type=page' as the only type filter. It is also important that no filters for 'lastModified' are used as it will cause issues with our connector polling logic. We will still get all attachments and comments for the pages returned by the CQL query. Any 'lastmodified' filters will be overwritten. See https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/ for more details.",
+        tabs: [
+          {
+            value: "everything",
+            label: "Everything",
+            fields: [
+              {
+                type: "string_tab",
+                label: "Everything",
+                name: "everything",
+                description:
+                  "This connector will index all pages the provided credentials have access to!",
+              },
+            ],
+          },
+          {
+            value: "space",
+            label: "Space",
+            fields: [
+              {
+                type: "text",
+                query: "Enter the space:",
+                label: "Space Key",
+                name: "space",
+                default: "",
+                description: "The Confluence space key to index (e.g. `KB`).",
+              },
+            ],
+          },
+          {
+            value: "page",
+            label: "Page",
+            fields: [
+              {
+                type: "text",
+                query: "Enter the page ID:",
+                label: "Page ID",
+                name: "page_id",
+                default: "",
+                description: "Specific page ID to index (e.g. `131368`)",
+              },
+              {
+                type: "checkbox",
+                query: "Should index pages recursively?",
+                label: "Index Recursively",
+                name: "index_recursively",
+                description:
+                  "If this is set, we will index the page indicated by the Page ID as well as all of its children.",
+                optional: false,
+                default: true,
+              },
+            ],
+          },
+          {
+            value: "cql",
+            label: "CQL Query",
+            fields: [
+              {
+                type: "text",
+                query: "Enter the CQL query (optional):",
+                label: "CQL Query",
+                name: "cql_query",
+                default: "",
+                description:
+                  "IMPORTANT: We currently only support CQL queries that return objects of type 'page'. This means all CQL queries must contain 'type=page' as the only type filter. It is also important that no filters for 'lastModified' are used as it will cause issues with our connector polling logic. We will still get all attachments and comments for the pages returned by the CQL query. Any 'lastmodified' filters will be overwritten. See https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/ for more details.",
+              },
+            ],
+          },
+        ],
+        defaultTab: "space",
       },
     ],
+    advanced_values: [],
   },
   jira: {
     description: "Configure Jira connector",
-    subtext: `Specify any link to a Jira page below and click "Index" to Index. Based on the provided link, we will index the ENTIRE PROJECT, not just the specified page. For example, entering https://danswer.atlassian.net/jira/software/projects/DAN/boards/1 and clicking the Index button will index the whole DAN Jira project.`,
+    subtext: `Specify any link to a Jira page below and click "Index" to Index. Based on the provided link, we will index the ENTIRE PROJECT, not just the specified page. For example, entering https://ezHR.atlassian.net/jira/software/projects/DAN/boards/1 and clicking the Index button will index the whole DAN Jira project.`,
     values: [
       {
         type: "text",
@@ -370,7 +478,7 @@ export const connectorConfigs: Record<
         label: "Requested Objects",
         name: "requested_objects",
         optional: true,
-        description: `Specify the Salesforce object types you want us to index. If unsure, don't specify any objects and Danswer will default to indexing by 'Account'.
+        description: `Specify the Salesforce object types you want us to index. If unsure, don't specify any objects and EzHR will default to indexing by 'Account'.
 
 Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of 'Opportunities').`,
       },
@@ -449,39 +557,6 @@ Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of '
     values: [],
     advanced_values: [],
   },
-  slack: {
-    description: "Configure Slack connector",
-    values: [
-      {
-        type: "text",
-        query: "Enter the Slack workspace:",
-        label: "Workspace",
-        name: "workspace",
-        optional: false,
-      },
-    ],
-    advanced_values: [
-      {
-        type: "list",
-        query: "Enter channels to include:",
-        label: "Channels",
-        name: "channels",
-        description: `Specify 0 or more channels to index. For example, specifying the channel "support" will cause us to only index all content within the "#support" channel. If no channels are specified, all channels in your workspace will be indexed.`,
-        optional: true,
-        // Slack channels can only be lowercase
-        transform: (values) => values.map((value) => value.toLowerCase()),
-      },
-      {
-        type: "checkbox",
-        query: "Enable channel regex?",
-        label: "Enable Channel Regex",
-        name: "channel_regex_enabled",
-        description: `If enabled, we will treat the "channels" specified above as regular expressions. A channel's messages will be pulled in by the connector if the name of the channel fully matches any of the specified regular expressions.
-For example, specifying .*-support.* as a "channel" will cause the connector to include any channels with "-support" in the name.`,
-        optional: true,
-      },
-    ],
-  },
   slab: {
     description: "Configure Slab connector",
     values: [
@@ -491,7 +566,7 @@ For example, specifying .*-support.* as a "channel" will cause the connector to 
         label: "Base URL",
         name: "base_url",
         optional: false,
-        description: `Specify the base URL for your Slab team. This will look something like: https://danswer.slab.com/`,
+        description: `Specify the base URL for your Slab team. This will look something like: https://ezHR.slab.com/`,
       },
     ],
     advanced_values: [],
@@ -531,19 +606,6 @@ For example, specifying .*-support.* as a "channel" will cause the connector to 
     ],
     advanced_values: [],
     overrideDefaultFreq: 60 * 60 * 24,
-  },
-  file: {
-    description: "Configure File connector",
-    values: [
-      {
-        type: "file",
-        query: "Enter file locations:",
-        label: "File Locations",
-        name: "file_locations",
-        optional: false,
-      },
-    ],
-    advanced_values: [],
   },
   zulip: {
     description: "Configure Zulip connector",
@@ -647,10 +709,10 @@ For example, specifying .*-support.* as a "channel" will cause the connector to 
     description: "Configure Google Sites connector",
     values: [
       {
-        type: "zip",
+        type: "file",
         query: "Enter the zip path:",
-        label: "Zip Path",
-        name: "zip_path",
+        label: "File Locations",
+        name: "file_locations",
         optional: false,
         description:
           "Upload a zip file containing the HTML of your Google Site",
@@ -950,6 +1012,11 @@ For example, specifying .*-support.* as a "channel" will cause the connector to 
     values: [],
     advanced_values: [],
   },
+  fireflies: {
+    description: "Configure Fireflies connector",
+    values: [],
+    advanced_values: [],
+  },
 };
 export function createConnectorInitialValues(
   connector: ConfigurableSources
@@ -1027,7 +1094,7 @@ export interface ConnectorBase<T> {
   refresh_freq: number | null;
   prune_freq: number | null;
   indexing_start: Date | null;
-  is_public?: boolean;
+  access_type: string;
   groups?: number[];
 }
 
@@ -1110,11 +1177,6 @@ export interface TeamsConfig {
 
 export interface ProductboardConfig {}
 
-export interface SlackConfig {
-  workspace: string;
-  channels?: string[];
-  channel_regex_enabled?: boolean;
-}
 
 export interface SlabConfig {
   base_url: string;
@@ -1208,6 +1270,8 @@ export interface AsanaConfig {
 }
 
 export interface FreshdeskConfig {}
+
+export interface FirefliesConfig {}
 
 export interface MediaWikiConfig extends MediaWikiBaseConfig {
   hostname: string;

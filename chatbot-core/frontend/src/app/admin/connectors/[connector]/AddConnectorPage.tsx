@@ -23,26 +23,21 @@ import { ConfigurableSources, ValidSources } from "@/lib/types";
 import { Credential, credentialTemplates } from "@/lib/connectors/credentials";
 import {
   ConnectionConfiguration,
+  Connector,
+  ConnectorBase,
   connectorConfigs,
   createConnectorInitialValues,
   createConnectorValidationSchema,
   defaultPruneFreqDays,
   defaultRefreshFreqMinutes,
   isLoadState,
-  Connector,
-  ConnectorBase,
 } from "@/lib/connectors/connectors";
 import { Modal } from "@/components/Modal";
-import GDriveMain from "./pages/gdrive/GoogleDrivePage";
-import { GmailMain } from "./pages/gmail/GmailPage";
-import {
-  useGmailCredentials,
-  useGoogleDriveCredentials,
-} from "./pages/utils/hooks";
 import { Formik } from "formik";
 import NavigationRow from "./NavigationRow";
 import { useRouter } from "next/navigation";
 import CardSection from "@/components/admin/CardSection";
+
 export interface AdvancedConfig {
   refreshFreq: number;
   pruneFreq: number;
@@ -54,8 +49,7 @@ const BASE_CONNECTOR_URL = "/api/manage/admin/connector";
 export async function submitConnector<T>(
   connector: ConnectorBase<T>,
   connectorId?: number,
-  fakeCredential?: boolean,
-  isPublicCcpair?: boolean // exclusively for mock credentials, when also need to specify ccpair details
+  fakeCredential?: boolean
 ): Promise<{ message: string; isSuccess: boolean; response?: Connector<T> }> {
   const isUpdate = connectorId !== undefined;
   if (!connector.connector_specific_config) {
@@ -71,7 +65,7 @@ export async function submitConnector<T>(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...connector, is_public: isPublicCcpair }),
+          body: JSON.stringify({ ...connector }),
         }
       );
       if (response.ok) {
@@ -116,7 +110,6 @@ export default function AddConnector({
   // State for managing credentials and files
   const [currentCredential, setCurrentCredential] =
     useState<Credential<any> | null>(null);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [createConnectorToggle, setCreateConnectorToggle] = useState(false);
 
   // Fetch credentials data
@@ -141,15 +134,8 @@ export default function AddConnector({
     useFormContext();
   const { popup, setPopup } = usePopup();
 
-  // Hooks for Google Drive and Gmail credentials
-  const { liveGDriveCredential } = useGoogleDriveCredentials(connector);
-  const { liveGmailCredential } = useGmailCredentials(connector);
-
   // Check if credential is activated
-  const credentialActivated =
-    (connector === "google_drive" && liveGDriveCredential) ||
-    (connector === "gmail" && liveGmailCredential) ||
-    currentCredential;
+  const credentialActivated = currentCredential;
 
   // Check if there are no credentials
   const noCredentials = credentialTemplate == null;
@@ -233,24 +219,21 @@ export default function AddConnector({
         // Apply transforms from connectors.ts configuration
         const transformedConnectorSpecificConfig = Object.entries(
           connector_specific_config
-        ).reduce(
-          (acc, [key, value]) => {
-            const matchingConfigValue = configuration.values.find(
-              (configValue) => configValue.name === key
-            );
-            if (
-              matchingConfigValue &&
-              "transform" in matchingConfigValue &&
-              matchingConfigValue.transform
-            ) {
-              acc[key] = matchingConfigValue.transform(value as string[]);
-            } else {
-              acc[key] = value;
-            }
-            return acc;
-          },
-          {} as Record<string, any>
-        );
+        ).reduce((acc, [key, value]) => {
+          const matchingConfigValue = configuration.values.find(
+            (configValue) => configValue.name === key
+          );
+          if (
+            matchingConfigValue &&
+            "transform" in matchingConfigValue &&
+            matchingConfigValue.transform
+          ) {
+            acc[key] = matchingConfigValue.transform(value as string[]);
+          } else {
+            acc[key] = value;
+          }
+          return acc;
+        }, {} as Record<string, any>);
 
         // Apply advanced configuration-specific transforms.
         const advancedConfiguration: any = {
@@ -258,6 +241,13 @@ export default function AddConnector({
           indexingStart: convertStringToDateTime(indexingStart),
           refreshFreq: (refreshFreq ?? defaultRefreshFreqMinutes) * 60,
         };
+
+        // File-specific handling
+        const selectedFiles = Array.isArray(values.file_locations)
+          ? values.file_locations
+          : values.file_locations
+          ? [values.file_locations]
+          : [];
 
         // Google sites-specific handling
         if (connector == "google_sites") {
@@ -268,7 +258,7 @@ export default function AddConnector({
             advancedConfiguration.refreshFreq,
             advancedConfiguration.pruneFreq,
             advancedConfiguration.indexingStart,
-            values.access_type == "public",
+            values.access_type,
             groups,
             name
           );
@@ -277,15 +267,13 @@ export default function AddConnector({
           }
           return;
         }
-
         // File-specific handling
-        if (connector == "file" && selectedFiles.length > 0) {
+        if (connector == "file") {
           const response = await submitFiles(
             selectedFiles,
             setPopup,
-            setSelectedFiles,
             name,
-            access_type == "public",
+            access_type,
             groups
           );
           if (response) {
@@ -300,15 +288,14 @@ export default function AddConnector({
             input_type: isLoadState(connector) ? "load_state" : "poll", // single case
             name: name,
             source: connector,
-            is_public: access_type == "public",
+            access_type: access_type,
             refresh_freq: advancedConfiguration.refreshFreq || null,
             prune_freq: advancedConfiguration.pruneFreq || null,
             indexing_start: advancedConfiguration.indexingStart || null,
             groups: groups,
           },
           undefined,
-          credentialActivated ? false : true,
-          access_type == "public"
+          credentialActivated ? false : true
         );
         // If no credential
         if (!credentialActivated) {
@@ -321,8 +308,7 @@ export default function AddConnector({
 
         // Without credential
         if (credentialActivated && isSuccess && response) {
-          const credential =
-            currentCredential || liveGDriveCredential || liveGmailCredential;
+          const credential = currentCredential;
           const linkCredentialResponse = await linkCredential(
             response.id,
             credential?.id!,
@@ -367,60 +353,51 @@ export default function AddConnector({
               <CardSection>
                 <Title className="mb-2 text-lg">Select a credential</Title>
 
-                {connector == "google_drive" ? (
-                  <GDriveMain />
-                ) : connector == "gmail" ? (
-                  <GmailMain />
-                ) : (
-                  <>
-                    <ModifyCredential
-                      showIfEmpty
-                      source={connector}
-                      defaultedCredential={currentCredential!}
-                      credentials={credentials}
-                      editableCredentials={editableCredentials}
-                      onDeleteCredential={onDeleteCredential}
-                      onSwitch={onSwap}
-                    />
-                    {!createConnectorToggle && (
-                      <button
-                        className="mt-6 text-sm bg-background-900 px-2 py-1.5 flex text-text-200 flex-none rounded"
-                        onClick={() =>
-                          setCreateConnectorToggle(
-                            (createConnectorToggle) => !createConnectorToggle
-                          )
-                        }
-                      >
-                        Create New
-                      </button>
-                    )}
-
-                    {/* NOTE: connector will never be google_drive, since the ternary above will 
-                    prevent that, but still keeping this here for safety in case the above changes. */}
-                    {(connector as ValidSources) !== "google_drive" &&
-                      createConnectorToggle && (
-                        <Modal
-                          className="max-w-3xl rounded-lg"
-                          onOutsideClick={() => setCreateConnectorToggle(false)}
-                        >
-                          <>
-                            <Title className="mb-2 text-lg">
-                              Create a {getSourceDisplayName(connector)}{" "}
-                              credential
-                            </Title>
-                            <CreateCredential
-                              close
-                              refresh={refresh}
-                              sourceType={connector}
-                              setPopup={setPopup}
-                              onSwitch={onSwap}
-                              onClose={() => setCreateConnectorToggle(false)}
-                            />
-                          </>
-                        </Modal>
-                      )}
-                  </>
+                <ModifyCredential
+                  showIfEmpty
+                  source={connector}
+                  defaultedCredential={currentCredential!}
+                  credentials={credentials}
+                  editableCredentials={editableCredentials}
+                  onDeleteCredential={onDeleteCredential}
+                  onSwitch={onSwap}
+                />
+                {!createConnectorToggle && (
+                  <button
+                    className="mt-6 text-sm bg-background-900 px-2 py-1.5 flex text-text-200 flex-none rounded"
+                    onClick={() =>
+                      setCreateConnectorToggle(
+                        (createConnectorToggle) => !createConnectorToggle
+                      )
+                    }
+                  >
+                    Create New
+                  </button>
                 )}
+
+                {/* NOTE: connector will never be google_drive, since the ternary above will 
+                    prevent that, but still keeping this here for safety in case the above changes. */}
+                {(connector as ValidSources) !== "google_drive" &&
+                  createConnectorToggle && (
+                    <Modal
+                      className="max-w-3xl rounded-lg"
+                      onOutsideClick={() => setCreateConnectorToggle(false)}
+                    >
+                      <>
+                        <Title className="mb-2 text-lg">
+                          Create a {getSourceDisplayName(connector)} credential
+                        </Title>
+                        <CreateCredential
+                          close
+                          refresh={refresh}
+                          sourceType={connector}
+                          setPopup={setPopup}
+                          onSwitch={onSwap}
+                          onClose={() => setCreateConnectorToggle(false)}
+                        />
+                      </>
+                    </Modal>
+                  )}
               </CardSection>
             )}
 
@@ -429,15 +406,8 @@ export default function AddConnector({
                 <DynamicConnectionForm
                   values={formikProps.values}
                   config={configuration}
-                  setSelectedFiles={setSelectedFiles}
-                  selectedFiles={selectedFiles}
                   connector={connector}
-                  currentCredential={
-                    currentCredential ||
-                    liveGDriveCredential ||
-                    liveGmailCredential ||
-                    null
-                  }
+                  currentCredential={currentCredential || null}
                 />
               </CardSection>
             )}

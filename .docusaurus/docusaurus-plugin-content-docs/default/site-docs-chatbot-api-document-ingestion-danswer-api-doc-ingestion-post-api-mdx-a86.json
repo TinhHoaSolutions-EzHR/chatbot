@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
+  "title": "Document Ingestion",
+  "description": "Currently only attaches docs to existing connectors (cc-pairs).",
+  "source": "@site/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
+  "permalink": "/docs/chatbot-api/document-ingestion-danswer-api-doc-ingestion-post",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "document-ingestion-danswer-api-doc-ingestion-post",
+    "title": "Document Ingestion",
+    "description": "Currently only attaches docs to existing connectors (cc-pairs).",
+    "sidebar_label": "Document Ingestion",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "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",
+    "sidebar_class_name": "post api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Get Version",
+    "permalink": "/docs/chatbot-api/get-version-version-get"
+  },
+  "next": {
+    "title": "Gpt Search",
+    "permalink": "/docs/chatbot-api/gpt-search-gpts-gpt-document-search-post"
+  }
+}

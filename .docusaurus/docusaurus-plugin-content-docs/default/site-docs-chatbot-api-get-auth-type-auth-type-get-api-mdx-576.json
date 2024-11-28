@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/get-auth-type-auth-type-get",
+  "title": "Get Auth Type",
+  "description": "Get Auth Type",
+  "source": "@site/docs/chatbot-api/get-auth-type-auth-type-get.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/get-auth-type-auth-type-get",
+  "permalink": "/docs/chatbot-api/get-auth-type-auth-type-get",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "get-auth-type-auth-type-get",
+    "title": "Get Auth Type",
+    "description": "Get Auth Type",
+    "sidebar_label": "Get Auth Type",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJx1U8Fu2zAM/RWDZyH2tptv2TAURS9D0+0SBAEjM7EaWVIlKphh+N8H2l6aBZ0vkijyke89awAfKCIb7x4bqOFEvMfM7Z77QDe7EzEoiJSCd4kS1AN8ripZGko6miAIUMMma00pHbMtnpdkUKC9Y3Is6RiCNXpqWL4mqRkg6ZY6lF2IMg6bucO1vRzmFRJH406ggFzuoN5CYxIeLDWg4IDJaFBw8v5kae+lHhR400g0YWdhp4ANW0FaZ25fBFTdcVi7QsAXWVYwCvG3bCKl/YWiOS7z30x18N4SOnhHf14qil+3FeOo/pb4wyvpWdQpsxEy74z/1/MDAlehR/nu2TwQF5JZLFw74tYvVoOCgNxCDaV0LpfOieKFYoJ6O0COFmpomUNdltZrtK1PXH+pqgrGneTqHA33G/Fwtm394/GJ+m/en82tcxjME/WgwMhYer5W4LCT2yMmxmByopgm34SJcUc/ISyMN9gFS8VX1Gdy4riMOdOsVtXqk1gVfOIOJ3MW6HsF/tHnOh7Tby6DReMEZaI9LOrMvsBi3U6BSCDhYThgop/RjqOE3zLFHurtTsEFo5HfUk6jgpawoTgJeqZevNOaguh/QZtnde7ehYh79erh+wuM4x8XhkTj",
+    "sidebar_class_name": "get api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Healthcheck",
+    "permalink": "/docs/chatbot-api/healthcheck-health-get"
+  },
+  "next": {
+    "title": "Get Version",
+    "permalink": "/docs/chatbot-api/get-version-version-get"
+  }
+}

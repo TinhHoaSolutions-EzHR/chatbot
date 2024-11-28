@@ -12,12 +12,6 @@ export interface UserAnalytics {
   date: string;
 }
 
-export interface DanswerBotAnalytics {
-  total_queries: number;
-  auto_resolved: number;
-  date: string;
-}
-
 export interface AbridgedSearchDoc {
   document_id: string;
   semantic_identifier: string;
@@ -38,7 +32,8 @@ export interface ChatSessionSnapshot {
   user_email: string | null;
   name: string | null;
   messages: MessageSnapshot[];
-  persona_name: string | null;
+  assistant_id: number | null;
+  assistant_name: string | null;
   time_created: string;
   flow_type: SessionType;
 }
@@ -49,10 +44,12 @@ export interface ChatSessionMinimal {
   name: string | null;
   first_user_message: string;
   first_ai_message: string;
-  persona_name: string | null;
+  assistant_id: number | null;
+  assistant_name: string | null;
   time_created: string;
   feedback_type: Feedback | "mixed" | null;
   flow_type: SessionType;
+  conversation_length: number;
 }
 
 export interface UsageReport {

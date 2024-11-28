@@ -1,0 +1,35 @@
+{
+  "id": "chatbot-api/get-query-analytics-analytics-admin-query-get",
+  "title": "Get Query Analytics",
+  "description": "Get Query Analytics",
+  "source": "@site/docs/chatbot-api/get-query-analytics-analytics-admin-query-get.api.mdx",
+  "sourceDirName": "chatbot-api",
+  "slug": "/chatbot-api/get-query-analytics-analytics-admin-query-get",
+  "permalink": "/docs/chatbot-api/get-query-analytics-analytics-admin-query-get",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "get-query-analytics-analytics-admin-query-get",
+    "title": "Get Query Analytics",
+    "description": "Get Query Analytics",
+    "sidebar_label": "Get Query Analytics",
+    "hide_title": true,
+    "hide_table_of_contents": true,
+    "api": "eJytVU1P20AQ/SvRnF2S0p58owVRBFVpSXuJIjTYk2TJ2mt2x6iW5f9eza7t2CQpVOol8XrffL03M67BFGSRlcmvUohhTXz/VJKt7jFHXbFK3PApzVTe3q+JIYICLWbEZB3EixosPZXKUgrxCrWjCFyyoQwhroGrgiAGx1bla4hgZWyGDDGkyPSOVUYQASvWgrpjtAxNBDlmwUrOEagcYvDxoYn+X7iLPB0Eozx9EWoZgSVXmNyRE+ens5n8peQSqwohT3Iuk4ScW5V68qMFQwSJyZlyFjgWhVaJ53r66MSmHiSsmDLvvLAiCasQig2j9pR3L0JhKmdakx0UMRfk5HuLbKLWVKvtmwxvPK43S5V7q+V5B20iz+6r9A88nMuxkajBwDw8UiJK76RdvOBgXNhevm0Oy10MoaQ665q412YXFK3FapBUB5lcEntCq0lvPnySaWjvL4mhaaSQj6en+73xC7VKvfKTC2uN/ZfGGPdDSoxK/6VhtElGt5hX31Z+OMeayPy8ELZZHufkxoQEhbbMrQ9p3EG/knO4HhB8HOrJmMzl9rUmkLpC6BY3UHhHb2D3eBnngb5DwTrIl/n8ds9h0NZRUlrFlafz7PbqmqrPxmwVQbxYypYYq36gfaQE4o1pd63foLyBGKb9lp36LTsNq0di2uduvZZWQwwb5iKeTrVJUG+M4/jDbDbzS6rL706aJ7TDOMteCSzUNVXdmkvCdb8BV+gYC1U6sg5L3ni+VL4y3kO3ozErNE0+YbING1PSDIXPTmYn70WFwjjO0Dd06/owJyPe+iSZfvO00Kh81/ni65avBeDA3DMGUbuulxEILQKq6wd09NPqppHX4V6YTJXDBz34cmypGnxnnlGXkoGfkiPYtugeuZSDVQL17RDBhjAl6+MFk7MkoWLof2/yxUvfIJcXcylOBBgpt/XKtQ+Dyca8GvjeE7FLXH4H0z+2quvQGk3T48PVUYu2yg4tYi2bpvkDSD/awA==",
+    "sidebar_class_name": "get api-method",
+    "info_path": "docs/chatbot-api/sample-backend",
+    "custom_edit_url": null
+  },
+  "sidebar": "chatbotApiSidebar",
+  "previous": {
+    "title": "Patch User Group",
+    "permalink": "/docs/chatbot-api/patch-user-group-manage-admin-user-group-user-group-id-patch"
+  },
+  "next": {
+    "title": "Get User Analytics",
+    "permalink": "/docs/chatbot-api/get-user-analytics-analytics-admin-user-get"
+  }
+}

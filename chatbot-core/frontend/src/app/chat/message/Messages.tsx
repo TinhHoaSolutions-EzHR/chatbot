@@ -88,7 +88,7 @@ function FileDisplay({
     <>
       {nonImgFiles && nonImgFiles.length > 0 && (
         <div
-          id="danswer-file"
+          id="ezHR-file"
           className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}
         >
           <div className="flex flex-col gap-2">
@@ -109,7 +109,7 @@ function FileDisplay({
 
       {imageFiles && imageFiles.length > 0 && (
         <div
-          id="danswer-image"
+          id="ezHR-image"
           className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}
         >
           <div className="flex flex-col gap-2">
@@ -336,7 +336,7 @@ export const AIMessage = ({
 
   return (
     <div
-      id="danswer-ai-message"
+      id="ezHR-ai-message"
       ref={trackedElementRef}
       className={"py-5 ml-4 px-5 relative flex "}
     >
@@ -482,9 +482,10 @@ export const AIMessage = ({
                               ))}
                             <div
                               onClick={() => {
-                                if (toggleDocumentSelection) {
-                                  toggleDocumentSelection();
+                                if (messageId) {
+                                  onMessageSelection?.(messageId);
                                 }
+                                toggleDocumentSelection?.();
                               }}
                               key={-1}
                               className="cursor-pointer w-[200px] rounded-lg flex-none transition-all duration-500 hover:bg-background-125 bg-text-100 px-4 py-2 border-b"
@@ -769,7 +770,7 @@ export const HumanMessage = ({
 
   return (
     <div
-      id="danswer-human-message"
+      id="ezHR-human-message"
       className="pt-5 pb-1 px-2 lg:px-5 flex -mr-6 relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
