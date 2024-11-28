@@ -55,6 +55,7 @@ repos:
 
   # TODO: Move this to CI in the future
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
+    rev: v0.8.0
     hooks:
+      - id: ruff
       - id: ruff-format

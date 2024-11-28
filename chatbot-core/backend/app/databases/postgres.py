@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
+from typing import Generator
 
 from app.utils.logger import LoggerFactory
 from app.settings import Constants, Secrets
@@ -60,7 +61,7 @@ engine = PostgresConnector.get_instance()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_session() -> Session:
+def get_db_session() -> Generator[Session, None, None]:
     """
     Generate a database session for the applications
     """

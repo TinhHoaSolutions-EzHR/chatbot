@@ -1,0 +1,41 @@
+[project]
+name = "chatbot-core"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.5",
+    "llama-index-vector-stores-redis>=0.4.0",
+    "llama-index>=0.12.1",
+    "minio>=7.2.11",
+    "openai>=1.55.0",
+    "pdfplumber>=0.11.4",
+    "qdrant-client>=1.12.1",
+    "sqlalchemy>=2.0.36",
+    "llama-index-embeddings-cohere>=0.4.0",
+    "llama-index-embeddings-openai>=0.3.0",
+    "redis>=5.2.0",
+    "llama-index-storage-docstore-redis>=0.3.0",
+    "llama-index-storage-kvstore-redis>=0.3.0",
+    "llama-index-llms-anyscale>=0.3.0",
+    "llama-index-vector-stores-qdrant>=0.4.0",
+    "uvicorn>=0.32.1",
+    "psycopg2-binary>=2.9.10",
+    "python-multipart>=0.0.17",
+]
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.0.0",
+    "ipykernel>=6.29.5",
+    "isort>=5.13.2",
+    "mypy>=1.13.0",
+    "pytest>=8.3.3",
+    "reorder-python-imports>=3.14.0",
+    "ruff>=0.8.0",
+]
+
+[tool.ruff]
+# Set the maximum line length to 79.
+line-length = 100

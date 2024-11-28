@@ -6,7 +6,7 @@ from app.utils.api_response import BackendAPIResponse
 router = APIRouter(tags=["base"])
 
 
-@router.get("/", response_model=APIResponse)
+@router.get("/", response_model=APIResponse, status_code=status.HTTP_200_OK)
 async def home():
     """
     Just a simple home endpoint to show the API's information
@@ -23,7 +23,7 @@ async def home():
     )
 
 
-@router.get("/ping", response_model=APIResponse)
+@router.get("/ping", response_model=APIResponse, status_code=status.HTTP_200_OK)
 async def ping():
     """
     Just a simple ping endpoint to check if the API is running

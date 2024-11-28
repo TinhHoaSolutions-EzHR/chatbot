@@ -1,16 +1,15 @@
-import os
 import logging
+import os
 
 
 class Constants:
+    PROJECT_NAME = "chatbot-core"
+
     # API Configuration
     FASTAPI_NAME = "EzHR Chatbot"
     FASTAPI_VERSION = "1.0.0"
     FASTAPI_DESCRIPTION = ("This is an API for the LLM-based assistant chatbot",)
     FASTAPI_PREFIX = "/api/v1"
-
-    # LLM API URL
-    LLM_API_URL = os.getenv("LLM_API_URL")
 
     # Relational Database Connection Configuration
     POSTGRES_POOL_SIZE = 10
@@ -34,3 +33,17 @@ class Constants:
     LOGGER_LOG_FILE_PATH = "api.log"
     LOGGER_MAX_BYTES = 10485760
     LOGGER_BACKUP_COUNT = 5
+
+    # Minio Configuration
+    MINIO_DOCUMENT_BUCKET = os.getenv("MINIO_DOCUMENT_BUCKET", "documents")
+
+    # Redis Configuration
+    REDIS_DB_NUM = 0
+    REDIS_MAX_CONNECTIONS = 10
+
+    # Llama Index Configuration
+    LLM_QDRANT_COLLECTION = "ezhr_chatbot"
+    LLM_REDIS_CACHE_COLLECTION = "ezhr_chatbot_cache"
+    OPENAI_LLM_MODEL = "gpt-4o-mini"
+    OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
+    INGESTION_BATCH_SIZE = 32
