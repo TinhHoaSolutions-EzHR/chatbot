@@ -24,6 +24,13 @@ dependencies = [
   "psycopg2-binary==2.9.10",
   "sqlalchemy==1.4.54",
   "llama-index>=0.12.1",
+  "llama-index-vector-stores-qdrant>=0.4.0",
+  "llama-index-storage-chat-store-redis>=0.4.0",
+  "llama-index-storage-kvstore-redis>=0.3.0",
+  "redis>=5.2.0",
+  "fastembed>=0.4.2",
+  "pdfplumber>=0.11.4",
+  "qdrant-client>=1.12.1",
 ]
 
 [project.optional-dependencies]
@@ -88,4 +95,8 @@ python_classes = ["Test*"]                # Class names to consider as tests
 python_functions = ["test_*"]             # Function names to consider as tests
 
 [dependency-groups]
-dev = ["pytest-coverage>=0.0", "pytest>=8.3.3"]
+dev = [
+    "pytest-coverage>=0.0",
+    "pytest>=8.3.3",
+    "ipykernel>=6.29.5",
+]

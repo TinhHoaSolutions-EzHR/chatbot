@@ -4,6 +4,9 @@ FROM python:3.11.10-alpine
 # Set label to push to GitHub Container Registry
 LABEL org.opencontainers.image.source "https://github.com/TinhHoaSolutions-EzHR/chatbot"
 
+# Set this to avoid buffering stdout and stderr
+ENV PYTHONUNBUFFERED=1
+
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -17,5 +20,6 @@ RUN uv sync --frozen --no-cache
 # Expose the port on which the application will run
 EXPOSE 5000
 
-# Run the application
-CMD [ "/app/.venv/bin/fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "5000" ]
+# Default command which does nothing
+# This container is used by api server and background which specify their own CMD
+CMD ["tail", "-f", "/dev/null"]
