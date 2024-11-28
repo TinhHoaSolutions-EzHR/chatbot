@@ -21,7 +21,6 @@ keywords = ["sample", "setuptools", "development"]
 dependencies = [
   "fastapi[standard]",
   "uvicorn==0.23.2",
-  "sqlalchemy==1.4.54",
   "llama-index>=0.12.1",
   "llama-index-vector-stores-qdrant>=0.4.0",
   "llama-index-storage-chat-store-redis>=0.4.0",
@@ -32,6 +31,7 @@ dependencies = [
   "qdrant-client>=1.12.1",
   "minio>=7.2.12",
   "pyodbc>=5.2.0",
+  "sqlalchemy>=1.4.54",
 ]
 
 [project.optional-dependencies]

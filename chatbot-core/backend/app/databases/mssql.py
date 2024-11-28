@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine, Engine
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Generator
 
@@ -38,8 +39,8 @@ class MSSQLConnector:
                 user=Secrets.MSSQL_USER,
                 password=Secrets.MSSQL_SA_PASSWORD,
                 host=Secrets.MSSQL_HOST,
-                port=Secrets.MSSQL_PORT,
-                db_name=Secrets.MSSQL_DB_NAME,
+                db_name=Secrets.MSSQL_DB,
+                driver=Constants.MSSQL_DRIVER,
             )
             return create_engine(
                 uri,

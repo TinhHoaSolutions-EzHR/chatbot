@@ -16,9 +16,8 @@ class Constants:
     MSSQL_MAX_OVERFLOW = 20
     MSSQL_POOL_TIMEOUT = 30
     MSSQL_POOL_RECYCLE = 3600
-    MSSQL_CONNECTOR_URI = (
-        "mssql+pyodbc://{user}:{password}@{host}:{port}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server"
-    )
+    MSSQL_DRIVER = "ODBC+Driver+17+for+SQL+Server"
+    MSSQL_CONNECTOR_URI = "mssql+pyodbc://{user}:{password}@{host}/{db_name}?driver={driver}"
 
     # Error Handler
     API_SUCCESS = "Success"

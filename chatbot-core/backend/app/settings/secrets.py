@@ -8,9 +8,8 @@ class Secrets:
     # Relational Database Credentials
     MSSQL_HOST = os.getenv("MSSQL_HOST", "localhost")
     MSSQL_USER = os.getenv("MSSQL_USER", "SA")
-    MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "password")
-    MSSQL_DB_NAME = os.getenv("MSSQL_DB_NAME", "ezhr_chatbot")
-    MSSQL_PORT = int(os.getenv("MSSQL_PORT", 1433))
+    MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "P&ssword123")
+    MSSQL_DB = os.getenv("MSSQL_DB", "ezhr_chatbot")
 
     # Minio Credentials
     MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")

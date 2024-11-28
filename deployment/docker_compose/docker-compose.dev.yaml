@@ -2,7 +2,7 @@
 services:
   database:
     image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
-    platform: linux/x86_64
+    platform: linux/amd64
     container_name: database
     user: root
     restart: always
@@ -76,6 +76,7 @@ services:
     build:
       context: ../../chatbot-core/backend/
       dockerfile: Dockerfile
+    platform: linux/amd64
     container_name: api_server
     hostname: api_server
     restart: on-failure

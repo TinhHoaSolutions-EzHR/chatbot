@@ -1,9 +1,11 @@
-CREATE TABLE embedding_model (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    provider VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL
+CREATE DATABASE chatbot_core;
+
+CREATE TABLE connectors (
+    id INT,
+    name VARCHAR(255),
+    source VARCHAR(30),
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP,
+    PRIMARY KEY (id)
 );
