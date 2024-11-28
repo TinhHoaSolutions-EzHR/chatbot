@@ -1,5 +1,7 @@
 # Use the official Python base image
-FROM python:3.11.10-alpine
+# NOTE: has to use slim version to avoid error when installing onnxruntime
+# required by fastembed package, visit https://github.com/microsoft/onnxruntime/issues/2909
+FROM python:3.11.10-slim
 
 # Set label to push to GitHub Container Registry
 LABEL org.opencontainers.image.source "https://github.com/TinhHoaSolutions-EzHR/chatbot"

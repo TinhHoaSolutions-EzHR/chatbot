@@ -1,3 +1,4 @@
+# NOTE: pwd must be chatbot-core
 services:
   database:
     image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
@@ -72,10 +73,10 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ../../chatbot-core/.env
+      - ./.env
     volumes: # INFO: Mount for auto-reload code changes
-      - ../../chatbot-core/backend/app:/app/app
-      - ../../chatbot-core/backend/tests:/app/tests
+      - ../../chatbot-core/backend/app/:/app/app
+      - ../../chatbot-core/backend/tests/:/app/tests
     networks:
       - backend
     extra_hosts:
