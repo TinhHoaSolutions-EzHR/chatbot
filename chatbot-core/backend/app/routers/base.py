@@ -13,7 +13,6 @@ async def home():
     """
     return (
         BackendAPIResponse()
-        .set_status_code(status.HTTP_200_OK)
         .set_data(
             {
                 "org": "Tinh Hoa Solutions",
@@ -29,4 +28,4 @@ async def ping():
     """
     Just a simple ping endpoint to check if the API is running
     """
-    return BackendAPIResponse().set_status_code(status.HTTP_200_OK).set_message("Pong!").respond()
+    return BackendAPIResponse().set_message("Pong!").respond()

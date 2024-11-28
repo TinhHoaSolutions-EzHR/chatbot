@@ -14,10 +14,6 @@ class BackendAPIResponse:
 
         self.resp = resp
 
-    def set_status_code(self, status_code: int) -> "BackendAPIResponse":
-        self.resp.status_code = status_code
-        return self
-
     def set_message(self, message: str) -> "BackendAPIResponse":
         """
         Set the message of the response
