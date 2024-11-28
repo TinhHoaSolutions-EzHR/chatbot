@@ -28,17 +28,17 @@ jobs:
         uses: "pascalgn/automerge-action@v0.16.4"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge"
-          MERGE_REMOVE_LABELS: "automerge"
-          MERGE_READY_STATE: "clean"
+          MERGE_LABELS: "automerge,autorebase,autosquash"
+          MERGE_REMOVE_LABELS: "automerge,rebase,squash"
+          MERGE_METHOD: "merge"
+          MERGE_METHOD_LABELS: "automerge=merge,autorebase=rebase,autosquash=squash"
+          MERGE_METHOD_LABEL_REQUIRED: "true"
           MERGE_DELETE_BRANCH: "true"
           MERGE_COMMIT_MESSAGE: "pull-request-title"
           MERGE_FORKS: "false"
           MERGE_RETRIES: "3"
           MERGE_RETRY_SLEEP: "10000"
           MERGE_REQUIRED_APPROVALS: "1"
-          UPDATE_LABELS: "rebase"
-          UPDATE_METHOD: "rebase"
       - name: feedback
         if: ${{ steps.automerge.outputs.mergeResult == 'merged' }}
         run: |
