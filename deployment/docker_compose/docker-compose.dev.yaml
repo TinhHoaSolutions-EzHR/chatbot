@@ -24,6 +24,35 @@ services:
       retries: 3
       start_period: 10s
 
+  cache:
+    image: redis:7.4-alpine
+    container_name: cache
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    # docker silently mounts /data even without an explicit volume mount, which enables
+    # persistence. explicitly setting save and appendonly forces ephemeral behavior.
+    command: redis-server --save "" --appendonly no
+
+  index:
+    image: qdrant/qdrant:v1.12.4
+    container_name: index
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    expose:
+      - "6333" # for HTTP
+      - "6334" # for gRPC
+    configs:
+      - source: qdrant_config
+        target: ../data/qdrant/config/local.yaml
+    volumes:
+      - qdrant_data_volume:/qdrant/storage
+    networks:
+      - backend
 
   # NOTE: Official port for api_server is 5000
   api_server:
@@ -35,6 +64,8 @@ services:
     restart: on-failure
     depends_on:
       - database
+      - cache
+      - index
     command:
       # [ "/app/.venv/bin/fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "5000" ]
       ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "--port", "5000"]
@@ -59,7 +90,13 @@ volumes:
   mssql_data_volume:
   mssql_log_volume:
   mssql_backup_volume:
+  qdrant_data_volume:
 
 networks:
   backend:
     driver: bridge
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO
