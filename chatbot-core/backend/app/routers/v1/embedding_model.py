@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
-from services.embedding_model import EmbeddingModelService
-from databases.postgres import get_session
-from models.embedding_model import (
+from app.services.embedding_model import EmbeddingModelService
+from app.databases.postgres import get_session
+from app.models.embedding_model import (
     EmbeddingModel,
     EmbeddingModelRequest,
     EmbeddingModelResponse,
 )
-from models.api import APIResponse
-from utils.api_response import BackendAPIResponse
-from utils.logger import LoggerFactory
-from settings import Constants
+from app.models.api import APIResponse
+from app.utils.api_response import BackendAPIResponse
+from app.utils.logger import LoggerFactory
+from app.settings import Constants
 
 logger = LoggerFactory().get_logger(__name__)
 router = APIRouter(prefix="/embedding_model", tags=["embedding_model"])

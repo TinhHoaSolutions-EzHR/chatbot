@@ -2,64 +2,50 @@
 
 # Variables
 DEEPEVAL := ${PWD}/.venv/bin/deepeval
-DOCKER_COMPOSE ?= docker-compose  # Allows overriding the docker-compose executable
-COMPOSE_FILE := docker-compose.yml
+DOCKER_COMPOSE ?= $(shell command -v docker-compose 2>/dev/null || echo docker compose)  # Allows overriding the docker-compose executable
+COMPOSE_FILE := ../deployment/docker_compose/docker-compose.dev.yaml
 YARN ?= yarn
+UV ?= uv
 
 # Docker Compose commands
-.PHONY: docs-dev up down restart build logs log-chainlit ps stop start clean test clear-cache help
-
-docs-dev:
-	@echo "Starting docs dev..."
-	@$(YARN) --cwd docs dev
+.PHONY: up down restart build logs ps stop start clean help
 
 up:  ## Start services in detached mode
 	@echo "Services are starting..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core up -d
 
 down:  ## Stop and remove containers
 	@echo "Services are stopping..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down
 
 restart:  ## Restart services
 	@echo "Services have restarted..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core up -d
 
 build:  ## Build or rebuild services
 	@echo "Services are being built..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) build
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core build
 
 logs:  ## Follow logs of running services
 	@echo "Tailing logs..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
-
-log-chainlit:
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f chainlit
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core logs -f
 
 ps:  ## List containers
 	@echo "Listing all services..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) ps -a
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core ps -a
 
 stop:  ## Stop services without removing containers
 	@echo "Services are stopped..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) stop
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core stop
 
 start:  ## Start stopped services
 	@echo "Services are started..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) start
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core start
 
 clean:  ## Stop services and remove containers and volumes
 	@echo "Services and volumes have been removed..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down --volumes
-
-test:
-	@echo "Running tests..."
-	@$(DEEPEVAL) test run ./tests/
-
-clear-cache:
-	@echo "Clearing cache..."
-	rm -rf volumes/chainlit/cache/*
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down v
 
 help:  ## Show this help
 	@echo "Available commands:"

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
-from models.api import APIResponse
-from utils.api_response import BackendAPIResponse
+from app.models.api import APIResponse
+from app.utils.api_response import BackendAPIResponse
 
 router = APIRouter(tags=["base"])
 
@@ -13,7 +13,6 @@ async def home():
     """
     return (
         BackendAPIResponse()
-        .set_status_code(status.HTTP_200_OK)
         .set_data(
             {
                 "org": "Tinh Hoa Solutions",
@@ -29,4 +28,4 @@ async def ping():
     """
     Just a simple ping endpoint to check if the API is running
     """
-    return BackendAPIResponse().set_status_code(status.HTTP_200_OK).set_message("Pong!").respond()
+    return BackendAPIResponse().set_message("Pong!").respond()

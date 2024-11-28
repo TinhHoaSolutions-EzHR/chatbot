@@ -1,6 +1,6 @@
 from enum import Enum
 
-from settings import Constants
+from app.settings import Constants
 
 
 class ErrorCodesMappingNumber(Enum):

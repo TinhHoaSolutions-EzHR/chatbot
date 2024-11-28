@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from settings import Constants
+from app.settings.constants import Constants
 
 
 class LoggerFactory:

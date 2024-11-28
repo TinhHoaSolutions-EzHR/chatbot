@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 
-from utils.logger import LoggerFactory
-from routers import base
-from routers.v1 import embedding_model
-from settings import Constants
+from app.utils.logger import LoggerFactory
+from app.routers import base
+from app.routers.v1 import embedding_model
+from app.settings.constants import Constants
 
 logger = LoggerFactory().get_logger(__name__)
 

@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from typing import List, Tuple
 
-from repositories.embeding_model import EmbeddingModelRepository
-from models.embedding_model import EmbeddingModel
-from models.api import APIError
-from utils.logger import LoggerFactory
-from utils.error_handler import ErrorCodesMappingNumber
+from app.repositories.embeding_model import EmbeddingModelRepository
+from app.models.embedding_model import EmbeddingModel
+from app.models.api import APIError
+from app.utils.logger import LoggerFactory
+from app.utils.error_handler import ErrorCodesMappingNumber
 
 logger = LoggerFactory().get_logger(__name__)
 
