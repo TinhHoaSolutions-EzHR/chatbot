@@ -23,6 +23,8 @@ dependencies = [
     "uvicorn>=0.32.1",
     "psycopg2-binary>=2.9.10",
     "python-multipart>=0.0.17",
+    "fastapi-users>=14.0.0",
+    "fastapi-users-db-sqlalchemy>=6.0.1",
 ]
 
 [dependency-groups]

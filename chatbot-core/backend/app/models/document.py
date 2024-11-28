@@ -17,7 +17,7 @@ from app.models import Base
 
 
 class DocumentMetadata(Base):
-    __tablename__ = "document_metadata"
+    __tablename__ = "documents_metadata"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
@@ -34,7 +34,7 @@ class DocumentMetadata(Base):
     )
 
 
-class DocumentMetadataTags(Base):
+class DocumentMetadataTag(Base):
     __tablename__ = "document_metadata_tags"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(

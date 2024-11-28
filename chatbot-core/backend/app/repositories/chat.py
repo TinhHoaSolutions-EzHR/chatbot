@@ -1,0 +1,127 @@
+from sqlalchemy import and_
+from sqlalchemy.orm import Session
+from typing import List, Tuple
+
+from app.models.api import APIError
+from app.models.chat import ChatSession
+from app.utils.error_handler import ErrorCodesMappingNumber
+from app.utils.logger import LoggerFactory
+
+logger = LoggerFactory().get_logger(__name__)
+
+
+class ChatRepository:
+    def __init__(self, user_id: str, db_session: Session) -> None:
+        self._db_session = db_session
+
+    def get_chat_sessions(self, user_id: str) -> Tuple[List[ChatSession], APIError | None]:
+        """
+        Get all chat sessions of the user.
+
+        Args:
+            user_id(str): User id
+
+        Returns:
+            Tuple[List[ChatSession], APIError | None]: List of chat session objects and APIError object if any error
+        """
+        try:
+            chat_sessions = (
+                self._db_session.query(ChatSession).filter(ChatSession.user_id == user_id).all()
+            )
+            return chat_sessions, None
+        except Exception as e:
+            logger.error(f"Error getting chat sessions: {e}")
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def get_chat_session(self, id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
+        """
+        Get chat session by id.
+
+        Args:
+            id(str): Chat session id
+            user_id(str): User id
+
+        Returns:
+            Tuple[ChatSession, APIError | None]: Chat session object and APIError object if any error
+        """
+        try:
+            chat_session = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == id, ChatSession.user_id == user_id))
+                .first()
+            )
+            return chat_session, None
+        except Exception as e:
+            logger.error(f"Error getting chat session: {e}")
+            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def create_chat_session(self, chat_session: ChatSession) -> APIError | None:
+        """
+        Create chat session.
+
+        Args:
+            chat_session(ChatSession): Chat session object
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        try:
+            self._db_session.add(chat_session)
+            self._db_session.commit()
+            return None
+        except Exception as e:
+            logger.error(f"Error creating chat session: {e}")
+            self._db_session.rollback()
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def update_chat_session(
+        self, id: str, chat_session: ChatSession, user_id: str
+    ) -> APIError | None:
+        """
+        Update chat session.
+
+        Args:
+            id(str): Chat session id
+            chat_session(ChatSession): Chat session object
+            user_id(str): User id
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        try:
+            chat_session = {
+                key: value
+                for key, value in chat_session.__dict__.items()
+                if not key.startswith("_")
+            }
+            self._db_session.query(ChatSession).filter(
+                and_(ChatSession.id == id, ChatSession.user_id == user_id)
+            ).update(chat_session)
+            self._db_session.commit()
+            return None
+        except Exception as e:
+            logger.error(f"Error updating chat session: {e}")
+            self._db_session.rollback()
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def delete_chat_session(self, id: str, user_id: str) -> APIError | None:
+        """
+        Delete chat session by id.
+
+        Args:
+            id(str): Chat session id
+            user_id(str): User id
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        try:
+            self._db_session.query(ChatSession).filter(
+                and_(ChatSession.id == id, ChatSession.user_id == user_id)
+            ).delete()
+            self._db_session.commit()
+            return None
+        except Exception as e:
+            logger.error(f"Error deleting chat session: {e}")
+            self._db_session.rollback()
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
