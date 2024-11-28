@@ -1,0 +1,42 @@
+# You can refer README of this repo for future mantainances: https://github.com/actions/labeler
+automerge:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+          - chatbot-core/**/*
+          - deployment/**/*
+          - docs/**/*
+          - Makefile
+          - README.md
+
+chatbot:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/**/*
+
+vanphongso:
+  - changed-files:
+      - any-glob-to-any-file:
+          - vanphongso/**/*
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - docs/**/*
+
+devops-maintain:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+          - .devcontainer/**/*
+          - deployment/**/*
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/backend/**/*
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/frontend/**/*
