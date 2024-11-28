@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Generator
 
@@ -10,15 +10,13 @@ logger = LoggerFactory().get_logger(__name__)
 
 class PostgresConnector:
     """
+    Postgres connector class
+
     Pattern: Singleton
     Purpose: Create a single instance of the database connection
     """
 
     _instance = None
-
-    def __init__(self):
-        if PostgresConnector._instance is None:
-            PostgresConnector._instance = self.__create_engine()
 
     @classmethod
     def get_instance(cls):
@@ -26,11 +24,12 @@ class PostgresConnector:
         Get the instance of the database connection
         """
         if cls._instance is None:
-            cls._instance = cls().__create_engine()
+            cls._instance = cls()._create_engine()
+
         return cls._instance
 
     @classmethod
-    def __create_engine(cls):
+    def _create_engine(cls) -> Engine | None:
         """
         Create the database connection if there is no any existing connection
         """

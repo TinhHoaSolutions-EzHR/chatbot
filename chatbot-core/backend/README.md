@@ -54,7 +54,7 @@ The project follows a structured flow:
     router = APIRouter(prefix="/embedding_model", tags=["embedding_model"])
 
     @router.get("/", response_model=APIResponse)
-    async def get_embedding_models(db_session: Session = Depends(get_session)):
+    async def get_embedding_models(db_session: Session = Depends(get_db_session)):
         pass
     ```
 
