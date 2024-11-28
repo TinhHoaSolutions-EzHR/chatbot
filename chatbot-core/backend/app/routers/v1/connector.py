@@ -2,7 +2,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, File, HTTPException, UploadFile, Depends, status
 from sqlalchemy.orm import Session
 
-from app.databases.postgres import get_db_session
+from app.databases.mssql import get_db_session
 from app.models.api import APIResponse
 from app.models.connector import ConnectorRequest, ConnectorResponse
 from app.models.document import DocumentMetadataResponse

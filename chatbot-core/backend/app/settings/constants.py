@@ -12,11 +12,13 @@ class Constants:
     FASTAPI_PREFIX = "/api/v1"
 
     # Relational Database Connection Configuration
-    POSTGRES_POOL_SIZE = 10
-    POSTGRES_MAX_OVERFLOW = 20
-    POSTGRES_POOL_TIMEOUT = 30
-    POSTGRES_POOL_RECYCLE = 3600
-    POSTGRES_CONNECTOR_URI = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
+    MSSQL_POOL_SIZE = 10
+    MSSQL_MAX_OVERFLOW = 20
+    MSSQL_POOL_TIMEOUT = 30
+    MSSQL_POOL_RECYCLE = 3600
+    MSSQL_CONNECTOR_URI = (
+        "mssql+pyodbc://{user}:{password}@{host}:{port}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server"
+    )
 
     # Error Handler
     API_SUCCESS = "Success"

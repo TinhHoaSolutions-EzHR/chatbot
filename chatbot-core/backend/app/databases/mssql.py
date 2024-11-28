@@ -8,18 +8,18 @@ from app.settings import Constants, Secrets
 logger = LoggerFactory().get_logger(__name__)
 
 
-class PostgresConnector:
+class MSSQLConnector:
     """
-    Postgres connector class
+    MSSQL connector class
 
     Pattern: Singleton
     Purpose: Create a single instance of the database connection
     """
 
-    _instance = None
+    _instance: Engine = None
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls) -> Engine:
         """
         Get the instance of the database connection
         """
@@ -34,27 +34,27 @@ class PostgresConnector:
         Create the database connection if there is no any existing connection
         """
         try:
-            uri = Constants.POSTGRES_CONNECTOR_URI.format(
-                user=Secrets.POSTGRES_USER,
-                password=Secrets.POSTGRES_PASSWORD,
-                host=Secrets.POSTGRES_HOST,
-                port=Secrets.POSTGRES_PORT,
-                name=Secrets.POSTGRES_NAME,
+            uri = Constants.MSSQL_CONNECTOR_URI.format(
+                user=Secrets.MSSQL_USER,
+                password=Secrets.MSSQL_SA_PASSWORD,
+                host=Secrets.MSSQL_HOST,
+                port=Secrets.MSSQL_PORT,
+                db_name=Secrets.MSSQL_DB_NAME,
             )
             return create_engine(
                 uri,
-                pool_size=Constants.POSTGRES_POOL_SIZE,
-                max_overflow=Constants.POSTGRES_MAX_OVERFLOW,
-                pool_timeout=Constants.POSTGRES_POOL_TIMEOUT,
-                pool_recycle=Constants.POSTGRES_POOL_RECYCLE,
+                pool_size=Constants.MSSQL_POOL_SIZE,
+                max_overflow=Constants.MSSQL_MAX_OVERFLOW,
+                pool_timeout=Constants.MSSQL_POOL_TIMEOUT,
+                pool_recycle=Constants.MSSQL_POOL_RECYCLE,
             )
         except Exception as e:
             logger.error(f"Error initializing database: {e}")
             raise
 
 
-# Get the engine from the PostgresConnector singleton
-engine = PostgresConnector.get_instance()
+# Get the engine from the MSSQLConnector singleton
+engine = MSSQLConnector.get_instance()
 
 # Create a session maker
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

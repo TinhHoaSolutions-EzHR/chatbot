@@ -6,11 +6,11 @@ class Secrets:
     LLM_API_KEY = os.getenv("LLM_API_KEY")
 
     # Relational Database Credentials
-    POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
-    POSTGRES_USER = os.getenv("POSTGRES_USER", "root")
-    POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "123")
-    POSTGRES_NAME = os.getenv("POSTGRES_NAME", "ezhr_chatbot")
-    POSTGRES_PORT = int(os.getenv("POSTGRES_PORT", 5432))
+    MSSQL_HOST = os.getenv("MSSQL_HOST", "localhost")
+    MSSQL_USER = os.getenv("MSSQL_USER", "SA")
+    MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "password")
+    MSSQL_DB_NAME = os.getenv("MSSQL_DB_NAME", "ezhr_chatbot")
+    MSSQL_PORT = int(os.getenv("MSSQL_PORT", 1433))
 
     # Minio Credentials
     MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")

@@ -18,13 +18,13 @@ cd chatbot-core
 
 Create the environment file from example
 
-```
+```bash
 cp .env.example .env
 ```
 
 Build the docker image
 
-```
+```bash
 make build
 # Or
 docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbot-core build
@@ -32,13 +32,13 @@ docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbo
 
 Run the docker container
 
-```
+```bash
 make up
 ```
 
 Ping the API Server
 
-```
+```bash
 curl http://localhost:5000/ping | jq
 ```
 
