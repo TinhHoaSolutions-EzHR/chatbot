@@ -11,8 +11,13 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
+
+# Logs
 docs/.next
 docs/node_modules
 node_modules
 yarn-error.log
-.ruff_cache
+
+# Tools
+.ruff_cache/
