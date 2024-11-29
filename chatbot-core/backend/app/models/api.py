@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, Any
 
-from utils.error_handler import ErrorCodesMappingNumber
+from app.utils.error_handler import ErrorCodesMappingNumber
 
 
 class APIResponse(BaseModel):

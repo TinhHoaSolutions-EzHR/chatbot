@@ -2,10 +2,6 @@
 
 This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RAG and LlamaIndex to provide a conversational interface for the users.
 
-## Authors
-
-- Meow
-
 ## Components
 
 ### API Server
@@ -14,16 +10,36 @@ This is the API server for the EzHr-Chatbot LLM-based assistant. It is built usi
 
 For developing and testing purposes, we can use the Docker compose to run the API server.
 
+Go to the chatbot-core directory
+
 ```bash
-# Move to the docker_compose directory
-cd deployment/docker_compose
-
-# Create the environment file
-cp .env.example .env
-
-# Build the docker image
-docker-compose build
-
-# Run the docker container
-docker-compose up -d
+cd chatbot-core
 ```
+
+Create the environment file from example
+
+```
+cp .env.example .env
+```
+
+Build the docker image
+
+```
+make build
+# Or
+docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbot-core build
+```
+
+Run the docker container
+
+```
+make up
+```
+
+Ping the API Server
+
+```
+curl http://localhost:5000/ping | jq
+```
+
+Every necessary commands are in the Makefile. You can use `make help` to see all available commands.
