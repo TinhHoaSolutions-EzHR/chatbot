@@ -25,15 +25,14 @@ ENV PYTHONUNBUFFERED=1
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
+# Copy the application into the container, including uv.lock
+COPY . /app
+
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy project package files and install dependencies
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-cache
-
-# Copy the remaining application into the container
-COPY . .
+# Install dependencies
+RUN uv sync --frozen --no-cache --no-install-project
 
 # Expose the port on which the application will run
 EXPOSE 5000
