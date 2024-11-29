@@ -7,7 +7,7 @@ class Constants:
 
     # API Configuration
     FASTAPI_NAME = "EzHR Chatbot"
-    FASTAPI_VERSION = "1.0.0"
+    FASTAPI_VERSION = os.getenv("API_VERSION", "1.0.0")
     FASTAPI_DESCRIPTION = ("This is an API for the LLM-based assistant chatbot",)
     FASTAPI_PREFIX = "/api/v1"
 
@@ -43,8 +43,14 @@ class Constants:
     REDIS_MAX_CONNECTIONS = 10
 
     # Llama Index Configuration
+    # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
+    # should be small under development, to reduce costs
     LLM_QDRANT_COLLECTION = "ezhr_chatbot"
     LLM_REDIS_CACHE_COLLECTION = "ezhr_chatbot_cache"
-    OPENAI_LLM_MODEL = "gpt-4o-mini"
-    OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
+    LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     INGESTION_BATCH_SIZE = 32
+    EMBEDDING_BATCH_SIZE = 50
+    DIMENSIONS = 768
+    LLM_MAX_OUTPUT_LENGTH = 512
+    LLM_MAX_CONTEXT_WINDOW = 128_000  # max context window of gpt-4o-mini
