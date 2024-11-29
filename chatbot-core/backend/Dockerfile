@@ -1,23 +1,24 @@
 # Use the official Python base image
 # NOTE: has to use slim version to avoid error when installing onnxruntime
 # required by fastembed package, visit https://github.com/microsoft/onnxruntime/issues/2909
-FROM python:3.11.10-slim
+# also, for odbc to work with SQL Server
+FROM python:3.11.10-slim-bookworm
 
 # Set label to push to GitHub Container Registry
 LABEL org.opencontainers.image.source "https://github.com/TinhHoaSolutions-EzHR/chatbot"
+LABEL org.opencontainers.image.descripiton "Docker image for backend api_server"
 
 # Install required system packages and Microsoft ODBC Driver for SQL Server
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    unixodbc \
-    odbcinst && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Download and install the Microsoft ODBC Driver
-RUN curl -sSL https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.5.1-1_amd64.deb -o msodbcsql17_17.10.5.1-1_amd64.deb && \
-    ACCEPT_EULA=Y dpkg --install ./msodbcsql17_17.10.5.1-1_amd64.deb && \
-    rm ./msodbcsql17_17.10.5.1-1_amd64.deb
+  curl=7.88.1-10+deb12u8 \
+  unixodbc=2.3.11-2+deb12u1 \
+  odbcinst=2.3.11-2+deb12u1 && \
+  curl -sSL https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.6.1-1_amd64.deb -o msodbcsql17_17.10.6.1-1_amd64.deb && \
+  ACCEPT_EULA=Y dpkg --install ./msodbcsql17_17.10.6.1-1_amd64.deb && \
+  rm ./msodbcsql17_17.10.6.1-1_amd64.deb && \
+  apt-get clean && \
+  apt-get autoremove -y && \
+  rm -rf /var/lib/apt/lists/*
 
 # Set this to avoid buffering stdout and stderr
 ENV PYTHONUNBUFFERED=1
@@ -32,7 +33,7 @@ COPY . /app
 WORKDIR /app
 
 # Install dependencies
-RUN uv sync --frozen --no-cache --no-install-project
+RUN uv sync --frozen --no-cache
 
 # Expose the port on which the application will run
 EXPOSE 5000

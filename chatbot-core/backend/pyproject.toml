@@ -50,7 +50,7 @@ changelog_file = "CHANGELOG.md"
 [tool.ruff]
 target-version = "py311"
 line-length = 120
-exclude = ["*/migrations/*", "*/alembic/*", "*/__init__.py"]
+exclude = ["*/migrations/*", "*/alembic/*", "*/__init__.py", "backend.egg-info"]
 extend-exclude = ["*.ipynb"]
 indent-width = 4
 

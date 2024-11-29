@@ -29,15 +29,6 @@ repos:
   #       # in the backend directory called `alembic`
   #       exclude: ^src/deprecated_scripts/
 
-  # INFO: Deprecated, using ruff-format
-  # Formatter
-  # - repo: https://github.com/psf/black
-  #   rev: 24.10.0
-  #   hooks:
-  #     - id: black
-  #       language_version: python3.11
-  #       args: [--extend-exclude, "src/rules/structures/__init__.py"]
-
   # TODO: Move this to CI
   # The repo currently does not and should not have imports with side effects
   # These settings will remove unused imports with side effects
@@ -55,7 +46,11 @@ repos:
 
   # TODO: Move this to CI in the future
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.0
+    rev: v0.8.1
     hooks:
+      # Run the ruff linter
       - id: ruff
+        types_or: [python, pyi]
+      # Run the ruff formatter
       - id: ruff-format
+        types_or: [python, pyi]
