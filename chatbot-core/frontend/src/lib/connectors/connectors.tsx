@@ -130,26 +130,13 @@ export const connectorConfigs: Record<
   ConfigurableSources,
   ConnectionConfiguration
 > = {
-  file: {
-    description: "Configure File connector",
-    values: [
-      {
-        type: "file",
-        query: "Enter file locations:",
-        label: "File Locations",
-        name: "file_locations",
-        optional: false,
-      },
-    ],
-    advanced_values: [],
-  },
   web: {
     description: "Configure Web connector",
     values: [
       {
         type: "text",
         query:
-          "Enter the website URL to scrape e.g. https://docs.ezHR.dev/:",
+          "Enter the website URL to scrape e.g. https://docs.danswer.dev/:",
         label: "Base URL",
         name: "base_url",
         optional: false,
@@ -259,8 +246,8 @@ export const connectorConfigs: Record<
                 label: "Include shared drives?",
                 description: (currentCredential) => {
                   return currentCredential?.credential_json?.google_tokens
-                    ? "This will allow EzHR to index everything in the shared drives you have access to."
-                    : "This will allow EzHR to index everything in your Organization's shared drives.";
+                    ? "This will allow Danswer to index everything in the shared drives you have access to."
+                    : "This will allow Danswer to index everything in your Organization's shared drives.";
                 },
                 name: "include_shared_drives",
                 default: false,
@@ -274,8 +261,8 @@ export const connectorConfigs: Record<
                 },
                 description: (currentCredential) => {
                   return currentCredential?.credential_json?.google_tokens
-                    ? "This will allow EzHR to index everything in your My Drive."
-                    : "This will allow EzHR to index everything in everyone's My Drives.";
+                    ? "This will allow Danswer to index everything in your My Drive."
+                    : "This will allow Danswer to index everything in everyone's My Drives.";
                 },
                 name: "include_my_drives",
                 default: false,
@@ -283,7 +270,7 @@ export const connectorConfigs: Record<
               {
                 type: "checkbox",
                 description:
-                  "This will allow EzHR to index all files shared with you.",
+                  "This will allow Danswer to index all files shared with you.",
                 label: "Include All Files Shared With You?",
                 name: "include_files_shared_with_me",
                 visibleCondition: (values, currentCredential) =>
@@ -448,7 +435,7 @@ export const connectorConfigs: Record<
   },
   jira: {
     description: "Configure Jira connector",
-    subtext: `Specify any link to a Jira page below and click "Index" to Index. Based on the provided link, we will index the ENTIRE PROJECT, not just the specified page. For example, entering https://ezHR.atlassian.net/jira/software/projects/DAN/boards/1 and clicking the Index button will index the whole DAN Jira project.`,
+    subtext: `Specify any link to a Jira page below and click "Index" to Index. Based on the provided link, we will index the ENTIRE PROJECT, not just the specified page. For example, entering https://danswer.atlassian.net/jira/software/projects/DAN/boards/1 and clicking the Index button will index the whole DAN Jira project.`,
     values: [
       {
         type: "text",
@@ -478,7 +465,7 @@ export const connectorConfigs: Record<
         label: "Requested Objects",
         name: "requested_objects",
         optional: true,
-        description: `Specify the Salesforce object types you want us to index. If unsure, don't specify any objects and EzHR will default to indexing by 'Account'.
+        description: `Specify the Salesforce object types you want us to index. If unsure, don't specify any objects and Danswer will default to indexing by 'Account'.
 
 Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of 'Opportunities').`,
       },
@@ -557,6 +544,39 @@ Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of '
     values: [],
     advanced_values: [],
   },
+  slack: {
+    description: "Configure Slack connector",
+    values: [
+      {
+        type: "text",
+        query: "Enter the Slack workspace:",
+        label: "Workspace",
+        name: "workspace",
+        optional: false,
+      },
+    ],
+    advanced_values: [
+      {
+        type: "list",
+        query: "Enter channels to include:",
+        label: "Channels",
+        name: "channels",
+        description: `Specify 0 or more channels to index. For example, specifying the channel "support" will cause us to only index all content within the "#support" channel. If no channels are specified, all channels in your workspace will be indexed.`,
+        optional: true,
+        // Slack Channels can only be lowercase
+        transform: (values) => values.map((value) => value.toLowerCase()),
+      },
+      {
+        type: "checkbox",
+        query: "Enable channel regex?",
+        label: "Enable Channel Regex",
+        name: "channel_regex_enabled",
+        description: `If enabled, we will treat the "channels" specified above as regular expressions. A channel's messages will be pulled in by the connector if the name of the channel fully matches any of the specified regular expressions.
+For example, specifying .*-support.* as a "channel" will cause the connector to include any channels with "-support" in the name.`,
+        optional: true,
+      },
+    ],
+  },
   slab: {
     description: "Configure Slab connector",
     values: [
@@ -566,7 +586,7 @@ Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of '
         label: "Base URL",
         name: "base_url",
         optional: false,
-        description: `Specify the base URL for your Slab team. This will look something like: https://ezHR.slab.com/`,
+        description: `Specify the base URL for your Slab team. This will look something like: https://danswer.slab.com/`,
       },
     ],
     advanced_values: [],
@@ -606,6 +626,19 @@ Hint: Use the singular form of the object name (e.g., 'Opportunity' instead of '
     ],
     advanced_values: [],
     overrideDefaultFreq: 60 * 60 * 24,
+  },
+  file: {
+    description: "Configure File connector",
+    values: [
+      {
+        type: "file",
+        query: "Enter file locations:",
+        label: "File Locations",
+        name: "file_locations",
+        optional: false,
+      },
+    ],
+    advanced_values: [],
   },
   zulip: {
     description: "Configure Zulip connector",
@@ -1177,6 +1210,11 @@ export interface TeamsConfig {
 
 export interface ProductboardConfig {}
 
+export interface SlackConfig {
+  workspace: string;
+  channels?: string[];
+  channel_regex_enabled?: boolean;
+}
 
 export interface SlabConfig {
   base_url: string;

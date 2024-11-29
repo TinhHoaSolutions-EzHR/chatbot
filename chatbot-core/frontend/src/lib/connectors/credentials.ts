@@ -48,7 +48,9 @@ export interface ProductboardCredentialJson {
   productboard_access_token: string;
 }
 
-
+export interface SlackCredentialJson {
+  slack_bot_token: string;
+}
 
 export interface GmailCredentialJson {
   google_tokens: string;
@@ -199,6 +201,7 @@ export const credentialTemplates: Record<ValidSources, any> = {
     gitlab_url: "",
     gitlab_access_token: "",
   } as GitlabCredentialJson,
+  slack: { slack_bot_token: "" } as SlackCredentialJson,
   bookstack: {
     bookstack_base_url: "",
     bookstack_api_token_id: "",
@@ -333,6 +336,8 @@ export const credentialDisplayNames: Record<string, string> = {
   // Productboard
   productboard_access_token: "Productboard Access Token",
 
+  // Slack
+  slack_bot_token: "Slack Bot Token",
 
   // Gmail and Google Drive
   google_tokens: "Google Oauth Tokens",

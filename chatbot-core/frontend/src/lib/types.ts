@@ -24,6 +24,7 @@ export enum UserRole {
   CURATOR = "curator",
   GLOBAL_CURATOR = "global_curator",
   EXT_PERM_USER = "ext_perm_user",
+  SLACK_USER = "slack_user",
 }
 
 export const USER_ROLE_LABELS: Record<UserRole, string> = {
@@ -33,6 +34,7 @@ export const USER_ROLE_LABELS: Record<UserRole, string> = {
   [UserRole.CURATOR]: "Curator",
   [UserRole.LIMITED]: "Limited",
   [UserRole.EXT_PERM_USER]: "External Permissioned User",
+  [UserRole.SLACK_USER]: "Slack User",
 };
 
 export const INVALID_ROLE_HOVER_TEXT: Partial<Record<UserRole, string>> = {
@@ -41,6 +43,8 @@ export const INVALID_ROLE_HOVER_TEXT: Partial<Record<UserRole, string>> = {
   [UserRole.GLOBAL_CURATOR]:
     "Global Curator users can perform admin actions for all groups they are a member of",
   [UserRole.CURATOR]: "Curator role must be assigned in the Groups tab",
+  [UserRole.SLACK_USER]:
+    "This role is automatically assigned to users who only use Danswer via Slack",
 };
 
 export interface User {
@@ -54,6 +58,7 @@ export interface User {
   status: UserStatus;
   current_token_created_at?: Date;
   current_token_expiry_length?: number;
+  oidc_expiry?: Date;
   is_cloud_superuser?: boolean;
   organization_name: string | null;
 }
@@ -74,7 +79,7 @@ export type ValidStatuses =
 export type TaskStatus = "PENDING" | "STARTED" | "SUCCESS" | "FAILURE";
 export type Feedback = "like" | "dislike";
 export type AccessType = "public" | "private" | "sync";
-export type SessionType = "Chat" | "Search";
+export type SessionType = "Chat" | "Search" | "Slack";
 
 export interface DocumentBoostStatus {
   document_id: string;
@@ -193,6 +198,49 @@ export interface StandardAnswer {
   categories: StandardAnswerCategory[];
 }
 
+// SLACK BOT CONFIGS
+
+export type AnswerFilterOption =
+  | "well_answered_postfilter"
+  | "questionmark_prefilter";
+
+export interface ChannelConfig {
+  channel_name: string;
+  respond_tag_only?: boolean;
+  respond_to_bots?: boolean;
+  show_continue_in_web_ui?: boolean;
+  respond_member_group_list?: string[];
+  answer_filters?: AnswerFilterOption[];
+  follow_up_tags?: string[];
+}
+
+export type SlackBotResponseType = "quotes" | "citations";
+
+export interface SlackChannelConfig {
+  id: number;
+  slack_bot_id: number;
+  persona: Persona | null;
+  channel_config: ChannelConfig;
+  response_type: SlackBotResponseType;
+  standard_answer_categories: StandardAnswerCategory[];
+  enable_auto_filters: boolean;
+}
+
+export interface SlackBot {
+  id: number;
+  name: string;
+  enabled: boolean;
+  configs_count: number;
+
+  // tokens
+  bot_token: string;
+  app_token: string;
+}
+
+export interface SlackBotTokens {
+  bot_token: string;
+  app_token: string;
+}
 
 /* EE Only Types */
 export interface UserGroup {
@@ -208,10 +256,10 @@ export interface UserGroup {
 }
 
 const validSources = [
-  "file",
   "web",
   "github",
   "gitlab",
+  "slack",
   "google_drive",
   "gmail",
   "bookstack",
@@ -226,7 +274,7 @@ const validSources = [
   "linear",
   "hubspot",
   "document360",
-
+  "file",
   "google_sites",
   "loopio",
   "dropbox",
@@ -263,5 +311,6 @@ export const validAutoSyncSources = [
   "confluence",
   "google_drive",
   "gmail",
+  "slack",
 ] as const;
 export type ValidAutoSyncSources = (typeof validAutoSyncSources)[number];

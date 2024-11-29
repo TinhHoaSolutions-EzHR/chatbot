@@ -1,12 +1,13 @@
 "use client";
 import { SourceIcon } from "@/components/SourceIcon";
 import { AdminPageTitle } from "@/components/admin/Title";
-import {ConnectorIcon, FileIcon} from "@/components/icons/icons";
+import { ConnectorIcon } from "@/components/icons/icons";
 import { SourceCategory, SourceMetadata } from "@/lib/search/interfaces";
+import { listSourceMetadata } from "@/lib/sources";
 import Title from "@/components/ui/title";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function SourceTile({
   sourceMetadata,
@@ -37,12 +38,59 @@ function SourceTile({
   );
 }
 export default function Page() {
-  const srcmetadata :SourceMetadata = {
-    icon: FileIcon,
-    displayName: "File",
-    category: SourceCategory.Storage,
-    internalName: "file",
-    adminUrl: "/admin/connectors/file",
+  const sources = useMemo(() => listSourceMetadata(), []);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+  const filterSources = useCallback(
+    (sources: SourceMetadata[]) => {
+      if (!searchTerm) return sources;
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      return sources.filter(
+        (source) =>
+          source.displayName.toLowerCase().includes(lowerSearchTerm) ||
+          source.category.toLowerCase().includes(lowerSearchTerm)
+      );
+    },
+    [searchTerm]
+  );
+
+  const categorizedSources = useMemo(() => {
+    const filtered = filterSources(sources);
+    return Object.values(SourceCategory).reduce(
+      (acc, category) => {
+        acc[category] = sources.filter(
+          (source) =>
+            source.category === category &&
+            (filtered.includes(source) ||
+              category.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        return acc;
+      },
+      {} as Record<SourceCategory, SourceMetadata[]>
+    );
+  }, [sources, searchTerm]);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const filteredCategories = Object.entries(categorizedSources).filter(
+        ([_, sources]) => sources.length > 0
+      );
+      if (
+        filteredCategories.length > 0 &&
+        filteredCategories[0][1].length > 0
+      ) {
+        const firstSource = filteredCategories[0][1][0];
+        if (firstSource) {
+          window.open(firstSource.adminUrl, "_self");
+        }
+      }
+    }
   };
 
   return (
@@ -57,20 +105,58 @@ export default function Page() {
         }
       />
 
-      <div key="Storage" className="mb-8">
-        <div className="flex mt-8">
-          <Title>Storage</Title>
-        </div>
-        <div className="flex flex-wrap gap-4 p-4">
-        <SourceTile
-          preSelect={
-            0 == 0 && 0 == 0
-          }
-          key="Storage"
-          sourceMetadata={srcmetadata}
-            />
-        </div>
-      </div>
+      <input
+        type="text"
+        ref={searchInputRef}
+        placeholder="Search connectors..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={handleKeyPress}
+        className="ml-1 w-96 h-9 flex-none rounded-md border border-border bg-background-50 px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      />
+
+      {Object.entries(categorizedSources)
+        .filter(([_, sources]) => sources.length > 0)
+        .map(([category, sources], categoryInd) => (
+          <div key={category} className="mb-8">
+            <div className="flex mt-8">
+              <Title>{category}</Title>
+            </div>
+            <p>{getCategoryDescription(category as SourceCategory)}</p>
+            <div className="flex flex-wrap gap-4 p-4">
+              {sources.map((source, sourceInd) => (
+                <SourceTile
+                  preSelect={
+                    searchTerm.length > 0 && categoryInd == 0 && sourceInd == 0
+                  }
+                  key={source.internalName}
+                  sourceMetadata={source}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
     </div>
   );
+}
+
+function getCategoryDescription(category: SourceCategory): string {
+  switch (category) {
+    case SourceCategory.Messaging:
+      return "Integrate with messaging and communication platforms.";
+    case SourceCategory.ProjectManagement:
+      return "Link to project management and task tracking tools.";
+    case SourceCategory.CustomerSupport:
+      return "Connect to customer support and helpdesk systems.";
+    case SourceCategory.CodeRepository:
+      return "Integrate with code repositories and version control systems.";
+    case SourceCategory.Storage:
+      return "Connect to cloud storage and file hosting services.";
+    case SourceCategory.Wiki:
+      return "Link to wiki and knowledge base platforms.";
+    case SourceCategory.Other:
+      return "Connect to other miscellaneous knowledge sources.";
+    default:
+      return "Connect to various knowledge sources.";
+  }
 }

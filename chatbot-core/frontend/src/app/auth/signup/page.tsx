@@ -10,7 +10,10 @@ import { redirect } from "next/navigation";
 import { EmailPasswordForm } from "../login/EmailPasswordForm";
 import Text from "@/components/ui/text";
 import Link from "next/link";
+import { SignInButton } from "../login/SignInButton";
 import AuthFlowContainer from "@/components/auth/AuthFlowContainer";
+import ReferralSourceSelector from "./ReferralSourceSelector";
+import { Separator } from "@/components/ui/separator";
 
 const Page = async (props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -46,10 +49,16 @@ const Page = async (props: {
     }
     return redirect("/auth/waiting-on-verification");
   }
+  const cloud = authTypeMetadata?.authType === "cloud";
 
   // only enable this page if basic login is enabled
-  if (authTypeMetadata?.authType !== "basic") {
+  if (authTypeMetadata?.authType !== "basic" && !cloud) {
     return redirect("/");
+  }
+
+  let authUrl: string | null = null;
+  if (cloud && authTypeMetadata) {
+    authUrl = await getAuthUrlSS(authTypeMetadata.authType, null);
   }
 
   return (
@@ -60,8 +69,26 @@ const Page = async (props: {
         <div className="absolute top-10x w-full"></div>
         <div className="flex w-full flex-col justify-center">
           <h2 className="text-center text-xl text-strong font-bold">
-            Sign Up for EzHR
+            {cloud ? "Complete your sign up" : "Sign Up for Danswer"}
           </h2>
+          {cloud && (
+            <>
+              <div className="w-full flex flex-col items-center space-y-4 mb-4 mt-4">
+                <ReferralSourceSelector />
+              </div>
+            </>
+          )}
+
+          {cloud && authUrl && (
+            <div className="w-full justify-center">
+              <SignInButton authorizeUrl={authUrl} authType="cloud" />
+              <div className="flex items-center w-full my-4">
+                <div className="flex-grow border-t border-background-300"></div>
+                <span className="px-4 text-gray-500">or</span>
+                <div className="flex-grow border-t border-background-300"></div>
+              </div>
+            </div>
+          )}
 
           <EmailPasswordForm
             isSignup

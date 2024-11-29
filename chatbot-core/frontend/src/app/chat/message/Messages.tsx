@@ -88,7 +88,7 @@ function FileDisplay({
     <>
       {nonImgFiles && nonImgFiles.length > 0 && (
         <div
-          id="ezHR-file"
+          id="danswer-file"
           className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}
         >
           <div className="flex flex-col gap-2">
@@ -109,7 +109,7 @@ function FileDisplay({
 
       {imageFiles && imageFiles.length > 0 && (
         <div
-          id="ezHR-image"
+          id="danswer-image"
           className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}
         >
           <div className="flex flex-col gap-2">
@@ -336,7 +336,7 @@ export const AIMessage = ({
 
   return (
     <div
-      id="ezHR-ai-message"
+      id="danswer-ai-message"
       ref={trackedElementRef}
       className={"py-5 ml-4 px-5 relative flex "}
     >
@@ -770,7 +770,7 @@ export const HumanMessage = ({
 
   return (
     <div
-      id="ezHR-human-message"
+      id="danswer-human-message"
       className="pt-5 pb-1 px-2 lg:px-5 flex -mr-6 relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

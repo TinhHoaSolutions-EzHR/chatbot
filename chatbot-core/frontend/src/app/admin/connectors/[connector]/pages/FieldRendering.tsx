@@ -1,5 +1,6 @@
-import React, { FC } from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 import { AdminBooleanFormField } from "@/components/credentials/CredentialFields";
+import { FileUpload } from "@/components/admin/connectors/FileUpload";
 import { TabOption } from "@/lib/connectors/connectors";
 import SelectInput from "./ConnectorInput/SelectInput";
 import NumberInput from "./ConnectorInput/NumberInput";

@@ -53,7 +53,7 @@ export const DocumentSidebar = forwardRef<HTMLDivElement, DocumentSidebarProps>(
 
     return (
       <div
-        id="ezHR-chat-sidebar"
+        id="danswer-chat-sidebar"
         className={`fixed inset-0 transition-opacity duration-300 z-50 bg-black/80 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
@@ -80,7 +80,7 @@ export const DocumentSidebar = forwardRef<HTMLDivElement, DocumentSidebarProps>(
               <p className="text-sm font-semibold flex flex-wrap gap-x-2 text-text-600 mt-1">
                 Select to add to continuous context
                 <a
-                  href="https://docs.ezHR.dev/introduction"
+                  href="https://docs.danswer.dev/introduction"
                   className="underline cursor-pointer hover:text-strong"
                 >
                   Learn more

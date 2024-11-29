@@ -41,7 +41,7 @@ export default function EmbeddingSidebar() {
               {enterpriseSettings && enterpriseSettings.application_name ? (
                 <HeaderTitle>{enterpriseSettings.application_name}</HeaderTitle>
               ) : (
-                <HeaderTitle>EzHR</HeaderTitle>
+                <HeaderTitle>Danswer</HeaderTitle>
               )}
             </div>
           </div>

@@ -34,7 +34,7 @@ export function mockedRefreshToken(): CustomRefreshTokenResponse {
       givenName: "Mock name",
       fullName: "Mock name",
       userId: "Mock User ID",
-      email: "email@ezHR.ai",
+      email: "email@danswer.ai",
     },
   };
   return data;

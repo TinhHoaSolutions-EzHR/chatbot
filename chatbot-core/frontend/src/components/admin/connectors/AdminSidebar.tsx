@@ -60,12 +60,12 @@ export function AdminSidebar({ collections }: { collections: Collection[] }) {
                       </HeaderTitle>
                       {!NEXT_PUBLIC_DO_NOT_USE_TOGGLE_OFF_DANSWER_POWERED && (
                         <p className="text-xs text-subtle">
-                          Powered by EzHR
+                          Powered by Danswer
                         </p>
                       )}
                     </div>
                   ) : (
-                    <HeaderTitle backgroundToggled={true}>EzHR</HeaderTitle>
+                    <HeaderTitle backgroundToggled={true}>Danswer</HeaderTitle>
                   )}
                 </div>
               </div>
@@ -79,7 +79,7 @@ export function AdminSidebar({ collections }: { collections: Collection[] }) {
               <p className="ml-1 break-words line-clamp-2 ellipsis leading-none">
                 Back to{" "}
                 {combinedSettings.enterpriseSettings?.application_name ||
-                  "EzHR"}
+                  "Danswer"}
               </p>
             </button>
           </Link>
@@ -122,7 +122,7 @@ export function AdminSidebar({ collections }: { collections: Collection[] }) {
           key={"danswerVersion"}
         >
           <h2 className="text-xs text-text w-52 font-medium pb-2">
-            EzHR version: {combinedSettings.webVersion}
+            Danswer version: {combinedSettings.webVersion}
           </h2>
         </div>
       )}

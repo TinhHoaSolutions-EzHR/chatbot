@@ -1,6 +1,7 @@
 "use client";
 
 import { DateRangeSelector } from "../DateRangeSelector";
+import { DanswerBotChart } from "./DanswerBotChart";
 import { FeedbackChart } from "./FeedbackChart";
 import { QueryPerformanceChart } from "./QueryPerformanceChart";
 import { useTimeRange } from "../lib";
@@ -24,6 +25,7 @@ export default function AnalyticsPage() {
       />
       <QueryPerformanceChart timeRange={timeRange} />
       <FeedbackChart timeRange={timeRange} />
+      <DanswerBotChart timeRange={timeRange} />
       <Separator />
       <UsageReports />
     </main>

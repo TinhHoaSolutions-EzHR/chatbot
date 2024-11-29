@@ -102,13 +102,13 @@ export function getSecondsUntilExpiration(
     return null;
   }
 
-  const { current_token_created_at, current_token_expiry_length } =
+  const { oidc_expiry, current_token_created_at, current_token_expiry_length } =
     userInfo;
 
   const now = new Date();
 
   let secondsUntilTokenExpiration: number | null = null;
-
+  let secondsUntilOIDCExpiration: number | null = null;
 
   if (current_token_created_at && current_token_expiry_length !== undefined) {
     const createdAt = new Date(current_token_created_at);
@@ -120,10 +120,16 @@ export function getSecondsUntilExpiration(
     );
   }
 
-
+  if (oidc_expiry) {
+    const expiresAtFromOIDC = new Date(oidc_expiry);
+    secondsUntilOIDCExpiration = Math.floor(
+      (expiresAtFromOIDC.getTime() - now.getTime()) / 1000
+    );
+  }
 
   if (
-    secondsUntilTokenExpiration === null
+    secondsUntilTokenExpiration === null &&
+    secondsUntilOIDCExpiration === null
   ) {
     return null;
   }
@@ -132,6 +138,7 @@ export function getSecondsUntilExpiration(
     0,
     Math.min(
       secondsUntilTokenExpiration ?? Infinity,
+      secondsUntilOIDCExpiration ?? Infinity
     )
   );
 }

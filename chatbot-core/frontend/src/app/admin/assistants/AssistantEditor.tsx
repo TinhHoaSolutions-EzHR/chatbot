@@ -893,7 +893,7 @@ export function AssistantEditor({
                                       <>
                                         If this functionality would be useful,
                                         reach out to the administrators of
-                                        EzHR for assistance.
+                                        Danswer for assistance.
                                       </>
                                     )}
                                   </p>
@@ -1192,7 +1192,7 @@ export function AssistantEditor({
                           setFieldValue("task_prompt", e.target.value);
                         }}
                         explanationText="Learn about prompting in our docs!"
-                        explanationLink="https://docs.ezHR.dev/guides/assistants"
+                        explanationLink="https://docs.danswer.dev/guides/assistants"
                       />
                     </>
                   )}

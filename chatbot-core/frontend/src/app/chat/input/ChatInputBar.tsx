@@ -281,7 +281,7 @@ export function ChatInputBar({
   };
 
   return (
-    <div id="ezHR-chat-input">
+    <div id="danswer-chat-input">
       <div className="flex justify-center mx-auto">
         <div
           className="

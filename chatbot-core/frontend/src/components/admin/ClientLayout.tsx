@@ -16,6 +16,7 @@ import {
   SettingsIconSkeleton,
   PaintingIconSkeleton,
   ZoomInIconSkeleton,
+  SlackIconSkeleton,
   DocumentSetIconSkeleton,
   AssistantsIconSkeleton,
   ClosedBookIcon,
@@ -147,6 +148,15 @@ export function ClientLayout({
                   },
                   ...(!isCurator
                     ? [
+                        {
+                          name: (
+                            <div className="flex">
+                              <SlackIconSkeleton className="text-icon-settings-sidebar" />
+                              <div className="ml-1">Slack Bots</div>
+                            </div>
+                          ),
+                          link: "/admin/bots",
+                        },
                         {
                           name: (
                             <div className="flex">
