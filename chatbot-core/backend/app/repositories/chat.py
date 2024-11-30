@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Tuple
 
 from app.models.api import APIError
-from app.models.chat import ChatSession
+from app.models.chat import ChatSession, ChatMessage
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
 
@@ -11,7 +11,7 @@ logger = LoggerFactory().get_logger(__name__)
 
 
 class ChatRepository:
-    def __init__(self, user_id: str, db_session: Session) -> None:
+    def __init__(self, db_session: Session) -> None:
         self._db_session = db_session
 
     def get_chat_sessions(self, user_id: str) -> Tuple[List[ChatSession], APIError | None]:
@@ -25,20 +25,37 @@ class ChatRepository:
             Tuple[List[ChatSession], APIError | None]: List of chat session objects and APIError object if any error
         """
         try:
-            chat_sessions = (
-                self._db_session.query(ChatSession).filter(ChatSession.user_id == user_id).all()
-            )
+            chat_sessions = self._db_session.query(ChatSession).filter(ChatSession.user_id == user_id).all()
             return chat_sessions, None
         except Exception as e:
             logger.error(f"Error getting chat sessions: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_chat_session(self, id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
+    def get_chat_messages(self, chat_session_id: str) -> Tuple[List[ChatSession], APIError | None]:
+        """
+        Get all chat messages of the chat session.
+
+        Args:
+            chat_session_id(str): Chat session id
+
+        Returns:
+            Tuple[List[ChatSession], APIError | None]: List of chat session objects and APIError object if any error
+        """
+        try:
+            chat_messages = (
+                self._db_session.query(ChatMessage).filter(ChatMessage.chat_session_id == chat_session_id).all()
+            )
+            return chat_messages, None
+        except Exception as e:
+            logger.error(f"Error getting chat messages: {e}")
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def get_chat_session(self, chat_session_id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
         """
         Get chat session by id.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             user_id(str): User id
 
         Returns:
@@ -47,12 +64,34 @@ class ChatRepository:
         try:
             chat_session = (
                 self._db_session.query(ChatSession)
-                .filter(and_(ChatSession.id == id, ChatSession.user_id == user_id))
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
                 .first()
             )
             return chat_session, None
         except Exception as e:
             logger.error(f"Error getting chat session: {e}")
+            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def get_chat_message(self, chat_session_id: str, chat_message_id: str) -> Tuple[ChatMessage, APIError | None]:
+        """
+        Get chat message by id.
+
+        Args:
+            chat_session_id(str): Chat session id
+            chat_message_id(str): Message id
+
+        Returns:
+            Tuple[ChatMessage, APIError | None]: Chat message object and APIError object if any error
+        """
+        try:
+            chat_message = (
+                self._db_session.query(ChatMessage)
+                .filter(and_(ChatSession.id == chat_session_id, ChatMessage.id == chat_message_id))
+                .first()
+            )
+            return chat_message, None
+        except Exception as e:
+            logger.error(f"Error getting chat message: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def create_chat_session(self, chat_session: ChatSession) -> APIError | None:
@@ -67,21 +106,18 @@ class ChatRepository:
         """
         try:
             self._db_session.add(chat_session)
-            self._db_session.commit()
             return None
         except Exception as e:
             logger.error(f"Error creating chat session: {e}")
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_chat_session(
-        self, id: str, chat_session: ChatSession, user_id: str
-    ) -> APIError | None:
+    def update_chat_session(self, chat_session_id: str, chat_session: ChatSession, user_id: str) -> APIError | None:
         """
         Update chat session.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             chat_session(ChatSession): Chat session object
             user_id(str): User id
 
@@ -89,27 +125,47 @@ class ChatRepository:
             APIError | None: APIError object if any error
         """
         try:
-            chat_session = {
-                key: value
-                for key, value in chat_session.__dict__.items()
-                if not key.startswith("_")
-            }
+            chat_session = {key: value for key, value in chat_session.__dict__.items() if not key.startswith("_")}
             self._db_session.query(ChatSession).filter(
-                and_(ChatSession.id == id, ChatSession.user_id == user_id)
+                and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id)
             ).update(chat_session)
-            self._db_session.commit()
             return None
         except Exception as e:
             logger.error(f"Error updating chat session: {e}")
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def delete_chat_session(self, id: str, user_id: str) -> APIError | None:
+    def update_chat_message(
+        self, chat_session_id: str, chat_message_id: str, chat_message: ChatMessage
+    ) -> APIError | None:
+        """
+        Update chat message.
+
+        Args:
+            chat_session_id(str): Chat session id
+            chat_message_id(str): Chat message id
+            chat_message(ChatMessage): Chat message object
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        try:
+            chat_message = {key: value for key, value in chat_message.__dict__.items() if not key.startswith("_")}
+            self._db_session.query(ChatMessage).filter(
+                and_(ChatSession.id == chat_session_id, ChatMessage.id == chat_message_id)
+            ).update(chat_message)
+            return None
+        except Exception as e:
+            logger.error(f"Error updating chat message: {e}")
+            self._db_session.rollback()
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def delete_chat_session(self, chat_session_id: str, user_id: str) -> APIError | None:
         """
         Delete chat session by id.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             user_id(str): User id
 
         Returns:
@@ -117,9 +173,8 @@ class ChatRepository:
         """
         try:
             self._db_session.query(ChatSession).filter(
-                and_(ChatSession.id == id, ChatSession.user_id == user_id)
+                and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id)
             ).delete()
-            self._db_session.commit()
             return None
         except Exception as e:
             logger.error(f"Error deleting chat session: {e}")

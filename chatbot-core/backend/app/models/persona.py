@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, DateTime, String
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import relationship
 from uuid import uuid4
 
@@ -10,7 +10,7 @@ from app.models import Base
 class Persona(Base):
     __tablename__ = "personas"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid4)
+    id = Column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now)

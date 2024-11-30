@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from typing import Tuple, List
+from typing import Tuple, List, Generator
 
 from app.models.api import APIError
-from app.models.chat import ChatSession, ChatSessionRequest
+from app.models.chat import ChatSession, ChatSessionRequest, ChatMessage, ChatMessageRequest
 from app.repositories.chat import ChatRepository
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
@@ -26,22 +26,49 @@ class ChatService:
         """
         return ChatRepository(db_session=self._db_session).get_chat_sessions(user_id=user_id)
 
-    def get_chat_session(self, id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
+    def get_chat_messages(self, chat_session_id: str) -> Tuple[List[ChatMessage], APIError | None]:
+        """
+        Get all chat messages of the chat session.
+
+        Args:
+            chat_session_id(str): Chat session id
+
+        Returns:
+            Tuple[List[ChatMessage], APIError | None]: List of chat message objects and APIError object if any error
+        """
+        return ChatRepository(db_session=self._db_session).get_chat_messages(chat_session_id=chat_session_id)
+
+    def get_chat_session(self, chat_session_id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
         """
         Get chat session by id.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             user_id(str): User id
 
         Returns:
             Tuple[ChatSession, APIError | None]: Chat session object and APIError object if any error
         """
-        return ChatRepository(db_session=self._db_session).get_chat_session(id=id, user_id=user_id)
+        return ChatRepository(db_session=self._db_session).get_chat_session(
+            chat_session_id=chat_session_id, user_id=user_id
+        )
 
-    def create_chat_session(
-        self, chat_session_request: ChatSessionRequest, user_id: str
-    ) -> APIError | None:
+    def get_chat_message(self, chat_session_id: str, chat_message_id: str) -> Tuple[ChatMessage, APIError | None]:
+        """
+        Get chat message by id.
+
+        Args:
+            chat_session_id(str): Chat session id
+            chat_message_id(str): Chat message id
+
+        Returns:
+            Tuple[ChatMessage, APIError | None]: Chat message object and APIError object if any error
+        """
+        return ChatRepository(db_session=self._db_session).get_chat_message(
+            chat_session_id=chat_session_id, chat_message_id=chat_message_id
+        )
+
+    def create_chat_session(self, chat_session_request: ChatSessionRequest, user_id: str) -> APIError | None:
         """
         Create chat session.
 
@@ -65,9 +92,10 @@ class ChatService:
             )
 
             # Create chat session
-            err = ChatRepository(db_session=self._db_session).create_chat_session(
-                chat_session=chat_session
-            )
+            err = ChatRepository(db_session=self._db_session).create_chat_session(chat_session=chat_session)
+
+            # Commit the transaction
+            self._db_session.commit()
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
@@ -77,13 +105,13 @@ class ChatService:
         return err
 
     def update_chat_session(
-        self, id: str, chat_session_request: ChatSessionRequest, user_id: str
+        self, chat_session_id: str, chat_session_request: ChatSessionRequest, user_id: str
     ) -> APIError | None:
         """
         Update chat session.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             chat_session_request(ChatSessionRequest): Chat session request object
             user_id(str): User id
 
@@ -102,8 +130,11 @@ class ChatService:
 
             # Update chat session
             err = ChatRepository(db_session=self._db_session).update_chat_session(
-                id=id, chat_session=chat_session, user_id=user_id
+                chat_session_id=chat_session_id, chat_session=chat_session, user_id=user_id
             )
+
+            # Commit the transaction
+            self._db_session.commit()
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
@@ -112,12 +143,52 @@ class ChatService:
 
         return err
 
-    def delete_chat_session(self, id: str, user_id: str) -> APIError | None:
+    def update_chat_message(
+        self, chat_session_id: str, chat_message_id: str, chat_message_request: ChatMessageRequest
+    ) -> APIError | None:
+        """
+        Update chat message.
+
+        Args:
+            chat_session_id(str): Chat session id
+            chat_message_id(str): Chat message id
+            chat_message_request(ChatMessageRequest): Chat message request object
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        err = None
+        try:
+            # Begin the transaction
+            self._db_session.begin()
+
+            # Define the chat message
+            chat_message = ChatMessage(
+                message=chat_message_request.message,
+                latest_child_message_id=chat_message_request.latest_child_message_id,
+            )
+
+            # Update the chat message
+            err = ChatRepository(db_session=self._db_session).update_chat_message(
+                chat_session_id=chat_session_id, chat_message_id=chat_message_id, chat_message=chat_message
+            )
+
+            # Commit the transaction
+            self._db_session.commit()
+        except Exception as e:
+            # Rollback the transaction
+            self._db_session.rollback()
+            logger.error(f"Error updating chat message: {e}")
+            err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+        return err
+
+    def delete_chat_session(self, chat_session_id: str, user_id: str) -> APIError | None:
         """
         Delete chat session by id.
 
         Args:
-            id(str): Chat session id
+            chat_session_id(str): Chat session id
             user_id(str): User id
 
         Returns:
@@ -129,8 +200,11 @@ class ChatService:
 
             # Delete chat session
             err = ChatRepository(db_session=self._db_session).delete_chat_session(
-                id=id, user_id=user_id
+                chat_session_id=chat_session_id, user_id=user_id
             )
+
+            # Commit the transaction
+            self._db_session.commit()
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
@@ -139,6 +213,46 @@ class ChatService:
 
         return err
 
-    def get_chat_message(self, chat_message_id: str, user_id: str):
-        # TODO: user_id is just for check whether the user can access the chat message or not
-        pass
+    @classmethod
+    def generate_stream_chat_message(cls) -> Generator[str, None, None]:
+        # TODO: Implement the chat message handling logic
+        yield "Message received"
+
+    def set_message_as_latest(self, chat_session_id: str, chat_message_id: str, user_id: str) -> APIError | None:
+        """
+        Set message as latest.
+
+        Args:
+            chat_session_id(str): Chat session id
+            message_id(str): Message id
+            user_id(str): User id
+
+        Returns:
+            APIError | None: APIError object if any error
+        """
+        # Get the chat message
+        chat_message, err = self.get_chat_message(chat_session_id=chat_session_id, chat_message_id=chat_message_id)
+        if err:
+            return err
+
+        chat_user_id = chat_message.chat_session.user_id
+        if not chat_user_id == user_id:
+            return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
+
+        # Get its parent message
+        parent_message_id = chat_message.parent_message_id
+        if not parent_message_id:
+            raise RuntimeError(f"Trying to set a latest message without parent, message id: {chat_message.id}")
+        parent_message, err = self.get_chat_message(chat_session_id=chat_session_id, chat_message_id=parent_message_id)
+        if err:
+            return err
+
+        # Set the message as latest child of the parent message
+        err = self.update_chat_message(
+            chat_session_id=chat_session_id,
+            chat_message_id=parent_message_id,
+            chat_message_request=ChatMessageRequest(
+                latest_child_message_id=chat_message_id,
+            ),
+        )
+        return err
