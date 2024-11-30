@@ -17,44 +17,53 @@ repos:
     hooks:
       - id: gitleaks
 
-  # TODO: Move this to CI
-  # Reorder imports
-  # - repo: https://github.com/asottile/reorder_python_imports
-  #   rev: v3.9.0
-  #   hooks:
-  #     - id: reorder-python-imports
-  #       args: ["--py311-plus", "--application-directories=src/"]
-  #       # need to ignore alembic files, since reorder-python-imports gets confused
-  #       # and thinks that alembic is a local package since there is a folder
-  #       # in the backend directory called `alembic`
-  #       exclude: ^src/deprecated_scripts/
+  # Reorder python imports
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.14.0
+    hooks:
+      - id: reorder-python-imports
+        args: [
+            "--application-directories=chatbot-core/backend/app:chatbot-core/backend/tests",
+            "--unclassifiable-application-module=app", # app is the main module
+            "--py311-plus",
+          ]
+        # need to ignore alembic files, since reorder-python-imports gets confused
+        # and thinks that alembic is a local package since there is a folder
+        # in the backend directory called `alembic`
+        exclude: ^chatbot-core/backend/alembic
 
-  # INFO: Deprecated, using ruff-format
-  # Formatter
-  # - repo: https://github.com/psf/black
-  #   rev: 24.10.0
-  #   hooks:
-  #     - id: black
-  #       language_version: python3.11
-  #       args: [--extend-exclude, "src/rules/structures/__init__.py"]
-
-  # TODO: Move this to CI
   # The repo currently does not and should not have imports with side effects
   # These settings will remove unused imports with side effects
-  # - repo: https://github.com/PyCQA/autoflake
-  #   rev: v2.2.0
-  #   hooks:
-  #     - id: autoflake
-  #       args:
-  #         [
-  #           "--remove-all-unused-imports",
-  #           "--remove-unused-variables",
-  #           "--in-place",
-  #           "--recursive",
-  #         ]
-
-  # TODO: Move this to CI in the future
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
     hooks:
+      - id: autoflake
+        args: [
+            "-r", # recursive
+            "--remove-all-unused-imports",
+            "--ignore-init-module-imports",
+            "--remove-unused-variables",
+            "--verbose",
+            "--in-place",
+          ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
+    hooks:
+      # Run the ruff linter
+      - id: ruff
+        types_or: [python, pyi]
+        args: [--fix]
+      # Run the ruff formatter
       - id: ruff-format
+        types_or: [python, pyi]
+
+  # INFO: wait for frontend to be ready
+  # This checks for any potential detecting and preventing hardcoded secrets like
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v3.1.0
+  #   hooks:
+  #     - id: prettier
+  #       types_or: [html, css, javascript, ts, tsx]
+  #       additional_dependencies:
+  #         - prettier
