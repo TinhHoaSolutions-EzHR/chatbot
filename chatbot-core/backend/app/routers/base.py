@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 
 from app.models.api import APIResponse
 from app.utils.api_response import BackendAPIResponse
