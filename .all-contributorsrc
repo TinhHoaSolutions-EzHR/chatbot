@@ -55,6 +55,22 @@
         "tool",
         "tutorial"
       ]
+    },
+    {
+      "login": "tuantran0910",
+      "name": "Trần Ngọc Tuấn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/94174684?v=4",
+      "profile": "https://www.tuantrann.work/",
+      "contributions": [
+        "bug",
+        "code",
+        "data",
+        "design",
+        "infra",
+        "maintenance",
+        "research",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
