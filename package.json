@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "api-build": "docusaurus gen-api-docs all && docusaurus build",
+    "api-build": "docusaurus gen-api-docs all && all-contributors generate && docusaurus build",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
@@ -21,6 +21,7 @@
     "clean-api-docs:version": "docusaurus clean-api-docs:version"
   },
   "dependencies": {
+    "all-contributors-cli": "^6.26.1",
     "@docusaurus/core": "^3.6.1",
     "@docusaurus/preset-classic": "^3.6.1",
     "@mdx-js/react": "^3.0.0",
@@ -44,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    
   }
 }
