@@ -102,6 +102,20 @@
         "maintenance",
         "research"
       ]
+    },
+    {
+      "login": "TranThang0801",
+      "name": "Trần Xuân Thắng",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150577636?v=4",
+      "profile": "https://github.com/TranThang0801",
+      "contributions": [
+        "bug",
+        "data",
+        "ideas",
+        "research",
+        "test",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
