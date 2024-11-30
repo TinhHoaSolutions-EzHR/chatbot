@@ -1,25 +1,9 @@
 import { AdminPageTitle } from "@/components/admin/Title";
-import { CUSTOM_ANALYTICS_ENABLED } from "@/lib/constants";
-import { Callout } from "@/components/ui/callout";
 import { FiBarChart2 } from "react-icons/fi";
 import Text from "@/components/ui/text";
 import { CustomAnalyticsUpdateForm } from "./CustomAnalyticsUpdateForm";
 
 function Main() {
-  if (!CUSTOM_ANALYTICS_ENABLED) {
-    return (
-      <div>
-        <div className="mt-4">
-          <Callout type="danger" title="Custom Analytics is not enabled.">
-            To set up custom analytics scripts, please work with the team who
-            setup Danswer in your organization to set the{" "}
-            <i>CUSTOM_ANALYTICS_SECRET_KEY</i> environment variable.
-          </Callout>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <Text className="mb-8">

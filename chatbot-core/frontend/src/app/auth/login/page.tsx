@@ -2,7 +2,6 @@ import { HealthCheckBanner } from "@/components/health/healthcheck";
 import { User } from "@/lib/types";
 import {
   getCurrentUserSS,
-  getAuthUrlSS,
   getAuthTypeMetadataSS,
   AuthTypeMetadata,
 } from "@/lib/userSS";
@@ -62,7 +61,7 @@ const Page = async (props: {
   let authUrl: string | null = null;
   if (authTypeMetadata) {
     try {
-      authUrl = await getAuthUrlSS(authTypeMetadata.authType, nextUrl!);
+      authUrl = ""
     } catch (e) {
       console.log(`Some fetch failed for the login page - ${e}`);
     }
@@ -87,7 +86,6 @@ const Page = async (props: {
 
             <SignInButton
               authorizeUrl={authUrl}
-              authType={authTypeMetadata?.authType}
             />
           </>
         )}

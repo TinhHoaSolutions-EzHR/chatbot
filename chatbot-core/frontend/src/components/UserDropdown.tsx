@@ -110,7 +110,7 @@ export function UserDropdown({ page }: { page?: pageType }) {
   const showAdminPanel = !user || user.role === UserRole.ADMIN;
   const showCuratorPanel = user && isCurator;
   const showLogout =
-    user && !checkUserIsNoAuthUser(user.id) && !LOGOUT_DISABLED;
+    user && !checkUserIsNoAuthUser(user.id)
 
   const onOpenChange = (open: boolean) => {
     setUserInfoVisible(open);

@@ -16,7 +16,7 @@ import {
   SettingsIconSkeleton,
   PaintingIconSkeleton,
   ZoomInIconSkeleton,
-  SlackIconSkeleton,
+
   DocumentSetIconSkeleton,
   AssistantsIconSkeleton,
   ClosedBookIcon,
@@ -90,117 +90,109 @@ export function ClientLayout({
                   },
                 ],
               },
-              {
-                name: "Document Management",
-                items: [
-                  {
-                    name: (
-                      <div className="flex">
-                        <DocumentSetIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
-                        <div className="ml-1">Document Sets</div>
-                      </div>
-                    ),
-                    link: "/admin/documents/sets",
-                  },
-                  {
-                    name: (
-                      <div className="flex">
-                        <ZoomInIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
-                        <div className="ml-1">Explorer</div>
-                      </div>
-                    ),
-                    link: "/admin/documents/explorer",
-                  },
-                  {
-                    name: (
-                      <div className="flex">
-                        <ThumbsUpIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
-                        <div className="ml-1">Feedback</div>
-                      </div>
-                    ),
-                    link: "/admin/documents/feedback",
-                  },
-                ],
-              },
-              {
-                name: "Custom Assistants",
-                items: [
-                  {
-                    name: (
-                      <div className="flex">
-                        <AssistantsIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
-                        <div className="ml-1">Assistants</div>
-                      </div>
-                    ),
-                    link: "/admin/assistants",
-                  },
-                  ...(!isCurator
-                    ? [
-                        {
-                          name: (
-                            <div className="flex">
-                              <SlackIconSkeleton className="text-icon-settings-sidebar" />
-                              <div className="ml-1">Slack Bots</div>
-                            </div>
-                          ),
-                          link: "/admin/bots",
-                        },
-                        {
-                          name: (
-                            <div className="flex">
-                              <ToolIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Tools</div>
-                            </div>
-                          ),
-                          link: "/admin/tools",
-                        },
-                        {
-                          name: (
-                            <div className="flex">
-                              <ClosedBookIcon
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Prompt Library</div>
-                            </div>
-                          ),
-                          link: "/admin/prompt-library",
-                        },
-                      ]
-                    : []),
-                  ...(enableEnterprise
-                    ? [
-                        {
-                          name: (
-                            <div className="flex">
-                              <ClipboardIcon
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Standard Answers</div>
-                            </div>
-                          ),
-                          link: "/admin/standard-answer",
-                        },
-                      ]
-                    : []),
-                ],
-              },
+              // {
+              //   name: "Document Management",
+              //   items: [
+              //     {
+              //       name: (
+              //         <div className="flex">
+              //           <DocumentSetIconSkeleton
+              //             className="text-icon-settings-sidebar"
+              //             size={18}
+              //           />
+              //           <div className="ml-1">Document Sets</div>
+              //         </div>
+              //       ),
+              //       link: "/admin/documents/sets",
+              //     },
+              //     {
+              //       name: (
+              //         <div className="flex">
+              //           <ZoomInIconSkeleton
+              //             className="text-icon-settings-sidebar"
+              //             size={18}
+              //           />
+              //           <div className="ml-1">Explorer</div>
+              //         </div>
+              //       ),
+              //       link: "/admin/documents/explorer",
+              //     },
+              //     {
+              //       name: (
+              //         <div className="flex">
+              //           <ThumbsUpIconSkeleton
+              //             className="text-icon-settings-sidebar"
+              //             size={18}
+              //           />
+              //           <div className="ml-1">Feedback</div>
+              //         </div>
+              //       ),
+              //       link: "/admin/documents/feedback",
+              //     },
+              //   ],
+              // },
+              // {
+              //   name: "Custom Assistants",
+              //   items: [
+              //     {
+              //       name: (
+              //         <div className="flex">
+              //           <AssistantsIconSkeleton
+              //             className="text-icon-settings-sidebar"
+              //             size={18}
+              //           />
+              //           <div className="ml-1">Assistants</div>
+              //         </div>
+              //       ),
+              //       link: "/admin/assistants",
+              //     },
+              //     ...(!isCurator
+              //       ? [
+              //
+              //           {
+              //             name: (
+              //               <div className="flex">
+              //                 <ToolIconSkeleton
+              //                   className="text-icon-settings-sidebar"
+              //                   size={18}
+              //                 />
+              //                 <div className="ml-1">Tools</div>
+              //               </div>
+              //             ),
+              //             link: "/admin/tools",
+              //           },
+              //           {
+              //             name: (
+              //               <div className="flex">
+              //                 <ClosedBookIcon
+              //                   className="text-icon-settings-sidebar"
+              //                   size={18}
+              //                 />
+              //                 <div className="ml-1">Prompt Library</div>
+              //               </div>
+              //             ),
+              //             link: "/admin/prompt-library",
+              //           },
+              //         ]
+              //       : []),
+              //     ...(enableEnterprise
+              //       ? [
+              //           {
+              //             name: (
+              //               <div className="flex">
+              //                 <ClipboardIcon
+              //                   className="text-icon-settings-sidebar"
+              //                   size={18}
+              //                 />
+              //                 <div className="ml-1">Standard Answers</div>
+              //               </div>
+              //             ),
+              //             link: "/admin/standard-answer",
+              //           },
+              //         ]
+              //       : []),
+              //   ],
+              // },
               ...(isCurator
                 ? [
                     {
@@ -249,15 +241,15 @@ export function ClientLayout({
                           ),
                           link: "/admin/configuration/search",
                         },
-                        {
-                          name: (
-                            <div className="flex">
-                              <DocumentIcon2 className="text-icon-settings-sidebar" />
-                              <div className="ml-1">Document Processing</div>
-                            </div>
-                          ),
-                          link: "/admin/configuration/document-processing",
-                        },
+                        // {
+                        //   name: (
+                        //     <div className="flex">
+                        //       <DocumentIcon2 className="text-icon-settings-sidebar" />
+                        //       <div className="ml-1">Document Processing</div>
+                        //     </div>
+                        //   ),
+                        //   link: "/admin/configuration/document-processing",
+                        // },
                       ],
                     },
                     {
@@ -277,140 +269,140 @@ export function ClientLayout({
                         },
                         ...(enableEnterprise
                           ? [
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <GroupsIconSkeleton
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Groups</div>
-                                  </div>
-                                ),
-                                link: "/admin/groups",
-                              },
+                              // {
+                              //   name: (
+                              //     <div className="flex">
+                              //       <GroupsIconSkeleton
+                              //         className="text-icon-settings-sidebar"
+                              //         size={18}
+                              //       />
+                              //       <div className="ml-1">Groups</div>
+                              //     </div>
+                              //   ),
+                              //   link: "/admin/groups",
+                              // },
                             ]
                           : []),
-                        {
-                          name: (
-                            <div className="flex">
-                              <KeyIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">API Keys</div>
-                            </div>
-                          ),
-                          link: "/admin/api-key",
-                        },
-                        {
-                          name: (
-                            <div className="flex">
-                              <ShieldIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Token Rate Limits</div>
-                            </div>
-                          ),
-                          link: "/admin/token-rate-limits",
-                        },
+                        // {
+                        //   name: (
+                        //     <div className="flex">
+                        //       <KeyIconSkeleton
+                        //         className="text-icon-settings-sidebar"
+                        //         size={18}
+                        //       />
+                        //       <div className="ml-1">API Keys</div>
+                        //     </div>
+                        //   ),
+                        //   link: "/admin/api-key",
+                        // },
+                        // {
+                        //   name: (
+                        //     <div className="flex">
+                        //       <ShieldIconSkeleton
+                        //         className="text-icon-settings-sidebar"
+                        //         size={18}
+                        //       />
+                        //       <div className="ml-1">Token Rate Limits</div>
+                        //     </div>
+                        //   ),
+                        //   link: "/admin/token-rate-limits",
+                        // },
                       ],
                     },
                     ...(enableEnterprise
                       ? [
-                          {
-                            name: "Performance",
-                            items: [
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <FiActivity
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Usage Statistics</div>
-                                  </div>
-                                ),
-                                link: "/admin/performance/usage",
-                              },
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <DatabaseIconSkeleton
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Query History</div>
-                                  </div>
-                                ),
-                                link: "/admin/performance/query-history",
-                              },
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <FiBarChart2
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Custom Analytics</div>
-                                  </div>
-                                ),
-                                link: "/admin/performance/custom-analytics",
-                              },
-                            ],
-                          },
+                          // {
+                          //   name: "Performance",
+                          //   items: [
+                          //     {
+                          //       name: (
+                          //         <div className="flex">
+                          //           <FiActivity
+                          //             className="text-icon-settings-sidebar"
+                          //             size={18}
+                          //           />
+                          //           <div className="ml-1">Usage Statistics</div>
+                          //         </div>
+                          //       ),
+                          //       link: "/admin/performance/usage",
+                          //     },
+                          //     {
+                          //       name: (
+                          //         <div className="flex">
+                          //           <DatabaseIconSkeleton
+                          //             className="text-icon-settings-sidebar"
+                          //             size={18}
+                          //           />
+                          //           <div className="ml-1">Query History</div>
+                          //         </div>
+                          //       ),
+                          //       link: "/admin/performance/query-history",
+                          //     },
+                          //     {
+                          //       name: (
+                          //         <div className="flex">
+                          //           <FiBarChart2
+                          //             className="text-icon-settings-sidebar"
+                          //             size={18}
+                          //           />
+                          //           <div className="ml-1">Custom Analytics</div>
+                          //         </div>
+                          //       ),
+                          //       link: "/admin/performance/custom-analytics",
+                          //     },
+                          //   ],
+                          // },
                         ]
                       : []),
-                    {
-                      name: "Settings",
-                      items: [
-                        {
-                          name: (
-                            <div className="flex">
-                              <SettingsIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Workspace Settings</div>
-                            </div>
-                          ),
-                          link: "/admin/settings",
-                        },
-                        ...(enableEnterprise
-                          ? [
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <PaintingIconSkeleton
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Whitelabeling</div>
-                                  </div>
-                                ),
-                                link: "/admin/whitelabeling",
-                              },
-                            ]
-                          : []),
-                        ...(enableCloud
-                          ? [
-                              {
-                                name: (
-                                  <div className="flex">
-                                    <Cloud
-                                      className="text-icon-settings-sidebar"
-                                      size={18}
-                                    />
-                                    <div className="ml-1">Cloud Settings</div>
-                                  </div>
-                                ),
-                                link: "/admin/cloud-settings",
-                              },
-                            ]
-                          : []),
-                      ],
-                    },
+                    // {
+                    //   name: "Settings",
+                    //   items: [
+                    //     {
+                    //       name: (
+                    //         <div className="flex">
+                    //           <SettingsIconSkeleton
+                    //             className="text-icon-settings-sidebar"
+                    //             size={18}
+                    //           />
+                    //           <div className="ml-1">Workspace Settings</div>
+                    //         </div>
+                    //       ),
+                    //       link: "/admin/settings",
+                    //     },
+                    //     ...(enableEnterprise
+                    //       ? [
+                    //           {
+                    //             name: (
+                    //               <div className="flex">
+                    //                 <PaintingIconSkeleton
+                    //                   className="text-icon-settings-sidebar"
+                    //                   size={18}
+                    //                 />
+                    //                 <div className="ml-1">Whitelabeling</div>
+                    //               </div>
+                    //             ),
+                    //             link: "/admin/whitelabeling",
+                    //           },
+                    //         ]
+                    //       : []),
+                    //     ...(enableCloud
+                    //       ? [
+                    //           {
+                    //             name: (
+                    //               <div className="flex">
+                    //                 <Cloud
+                    //                   className="text-icon-settings-sidebar"
+                    //                   size={18}
+                    //                 />
+                    //                 <div className="ml-1">Cloud Settings</div>
+                    //               </div>
+                    //             ),
+                    //             link: "/admin/cloud-settings",
+                    //           },
+                    //         ]
+                    //       : []),
+                    //   ],
+                    // },
                   ]
                 : []),
             ]}

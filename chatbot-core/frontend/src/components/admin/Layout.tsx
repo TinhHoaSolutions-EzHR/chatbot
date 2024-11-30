@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { ClientLayout } from "./ClientLayout";
 import {
   SERVER_SIDE_ONLY__CLOUD_ENABLED,
-  SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED,
+
 } from "@/lib/constants";
 import { AnnouncementBanner } from "../header/AnnouncementBanner";
 
@@ -44,7 +44,7 @@ export async function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <ClientLayout
-      enableEnterprise={SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED}
+      enableEnterprise={true}
       enableCloud={SERVER_SIDE_ONLY__CLOUD_ENABLED}
       user={user}
     >

@@ -4,17 +4,13 @@ import {
   getCurrentUserSS,
   getAuthTypeMetadataSS,
   AuthTypeMetadata,
-  getAuthUrlSS,
 } from "@/lib/userSS";
 import { redirect } from "next/navigation";
 import { EmailPasswordForm } from "../login/EmailPasswordForm";
 import Text from "@/components/ui/text";
 import Link from "next/link";
-import { SignInButton } from "../login/SignInButton";
 import AuthFlowContainer from "@/components/auth/AuthFlowContainer";
 import ReferralSourceSelector from "./ReferralSourceSelector";
-import { Separator } from "@/components/ui/separator";
-
 const Page = async (props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
@@ -57,9 +53,6 @@ const Page = async (props: {
   }
 
   let authUrl: string | null = null;
-  if (cloud && authTypeMetadata) {
-    authUrl = await getAuthUrlSS(authTypeMetadata.authType, null);
-  }
 
   return (
     <AuthFlowContainer>
@@ -77,17 +70,6 @@ const Page = async (props: {
                 <ReferralSourceSelector />
               </div>
             </>
-          )}
-
-          {cloud && authUrl && (
-            <div className="w-full justify-center">
-              <SignInButton authorizeUrl={authUrl} authType="cloud" />
-              <div className="flex items-center w-full my-4">
-                <div className="flex-grow border-t border-background-300"></div>
-                <span className="px-4 text-gray-500">or</span>
-                <div className="flex-grow border-t border-background-300"></div>
-              </div>
-            </div>
           )}
 
           <EmailPasswordForm

@@ -161,7 +161,7 @@ export function ChatPage({
 
   const { user, isAdmin, isLoadingUser, refreshUser } = useUser();
 
-  const slackChatId = searchParams.get("slackChatId");
+
 
   const existingChatIdRaw = searchParams.get("chatId");
   const [sendOnLoad, setSendOnLoad] = useState<string | null>(
@@ -1815,42 +1815,6 @@ export function ChatPage({
       });
     };
   }
-
-  useEffect(() => {
-    const handleSlackChatRedirect = async () => {
-      if (!slackChatId) return;
-
-      // Set isReady to false before starting retrieval to display loading text
-      setIsReady(false);
-
-      try {
-        const response = await fetch("/api/chat/seed-chat-session-from-slack", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chat_session_id: slackChatId,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to seed chat from Slack");
-        }
-
-        const data = await response.json();
-        router.push(data.redirect_url);
-      } catch (error) {
-        console.error("Error seeding chat from Slack:", error);
-        setPopup({
-          message: "Failed to load chat from Slack",
-          type: "error",
-        });
-      }
-    };
-
-    handleSlackChatRedirect();
-  }, [searchParams, router]);
 
   return (
     <>

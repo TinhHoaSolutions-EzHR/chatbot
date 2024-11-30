@@ -440,7 +440,7 @@ export function CCPairIndexingStatusTable({
       <TableBody>
         {sortedSources
           .filter(
-            (source) => source != "not_applicable" && source != "ingestion_api"
+            (source) => source == 'file'
           )
           .map((source, ind) => {
             const sourceMatches = source

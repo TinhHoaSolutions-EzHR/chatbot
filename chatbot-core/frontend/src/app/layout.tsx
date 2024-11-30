@@ -4,11 +4,6 @@ import {
   fetchEnterpriseSettingsSS,
   fetchSettingsSS,
 } from "@/components/settings/lib";
-import {
-  CUSTOM_ANALYTICS_ENABLED,
-  GTM_ENABLED,
-  SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED,
-} from "@/lib/constants";
 import { Metadata } from "next";
 import { buildClientUrl } from "@/lib/utilsSS";
 import { Inter } from "next/font/google";
@@ -22,7 +17,6 @@ import { getCurrentUserSS } from "@/lib/userSS";
 import CardSection from "@/components/admin/CardSection";
 import { Suspense } from "react";
 import PostHogPageView from "./PostHogPageView";
-import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,13 +27,12 @@ const inter = Inter({
 export async function generateMetadata(): Promise<Metadata> {
   let logoLocation = buildClientUrl("/danswer.ico");
   let enterpriseSettings: EnterpriseSettings | null = null;
-  if (SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED) {
-    enterpriseSettings = await (await fetchEnterpriseSettingsSS()).json();
-    logoLocation =
-      enterpriseSettings && enterpriseSettings.use_custom_logo
-        ? "/api/enterprise-settings/logo"
-        : buildClientUrl("/danswer.ico");
-  }
+
+  enterpriseSettings = await (await fetchEnterpriseSettingsSS()).json();
+  logoLocation =
+    enterpriseSettings && enterpriseSettings.use_custom_logo
+      ? "/api/enterprise-settings/logo"
+      : buildClientUrl("/danswer.ico");
 
   return {
     title: enterpriseSettings?.application_name ?? "Danswer",
@@ -73,31 +66,6 @@ export default async function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, interactive-widget=resizes-content"
         />
-        {CUSTOM_ANALYTICS_ENABLED &&
-          combinedSettings?.customAnalyticsScript && (
-            <script
-              type="text/javascript"
-              dangerouslySetInnerHTML={{
-                __html: combinedSettings.customAnalyticsScript,
-              }}
-            />
-          )}
-
-        {GTM_ENABLED && (
-          <Script
-            id="google-tag-manager"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-               })(window,document,'script','dataLayer','GTM-PZXS36NG');
-             `,
-            }}
-          />
-        )}
       </head>
       <body className={`relative ${inter.variable} font-sans`}>
         <div
@@ -115,7 +83,7 @@ export default async function RootLayout({
     return getPageContent(
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="mb-2 flex items-center max-w-[175px]">
-          <HeaderTitle>Danswer</HeaderTitle>
+          <HeaderTitle>EzHR</HeaderTitle>
           <Logo height={40} width={40} />
         </div>
 
@@ -139,19 +107,6 @@ export default async function RootLayout({
             to see how to configure Danswer properly. If you&apos;re a user,
             please contact your admin to fix this error.
           </p>
-          <p className="mt-4">
-            For additional support and guidance, you can reach out to our
-            community on{" "}
-            <a
-              className="text-link"
-              href="https://danswer.ai?utm_source=app&utm_medium=error_page&utm_campaign=config_error"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Slack
-            </a>
-            .
-          </p>
         </CardSection>
       </div>
     );
@@ -160,7 +115,7 @@ export default async function RootLayout({
     return getPageContent(
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="mb-2 flex items-center max-w-[175px]">
-          <HeaderTitle>Danswer</HeaderTitle>
+          <HeaderTitle>EzHR</HeaderTitle>
           <Logo height={40} width={40} />
         </div>
         <CardSection className="w-full max-w-md">
