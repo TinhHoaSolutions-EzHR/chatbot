@@ -1,5 +1,6 @@
 ---
 title: EzHr-Chatbot
+hide_table_of_contents: true
 ---
 
 ![chatbot](https://socialify.git.ci/TinhHoaSolutions-EzHR/chatbot/image?description=1&issues=1&language=1&name=1&owner=1&pulls=1&theme=Light)
