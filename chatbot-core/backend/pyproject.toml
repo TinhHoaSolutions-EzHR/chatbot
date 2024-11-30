@@ -30,8 +30,9 @@ dependencies = [
   "pdfplumber>=0.11.4",
   "qdrant-client>=1.12.1",
   "minio>=7.2.12",
-  "pyodbc>=5.2.0",
   "sqlalchemy>=1.4.54",
+  "pymssql>=2.3.2",
+  "pyodbc>=5.2.0",
 ]
 
 [project.optional-dependencies]
@@ -94,11 +95,17 @@ testpaths = ["tests"]                     # Specify directories where tests are 
 python_files = ["test_*.py", "*_test.py"] # Test file pattern
 python_classes = ["Test*"]                # Class names to consider as tests
 python_functions = ["test_*"]             # Function names to consider as tests
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    # note the use of single quote below to denote "raw" strings in TOML
+    'ignore:.*U.*mode is deprecated:DeprecationWarning',
+]
 
 [dependency-groups]
 dev = [
     "pytest-coverage>=0.0",
     "pytest>=8.3.3",
-    "ipykernel>=6.29.5",
     "commitizen>=4.0.0",
+    "ipykernel>=6.29.5",
 ]

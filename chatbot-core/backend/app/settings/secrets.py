@@ -6,13 +6,13 @@ class Secrets:
     LLM_API_KEY = os.getenv("LLM_API_KEY")
 
     # Relational Database Credentials
-    MSSQL_HOST = os.getenv("MSSQL_HOST", "localhost")
+    MSSQL_HOST = os.getenv("MSSQL_HOST", "127.0.0.1")
     MSSQL_USER = os.getenv("MSSQL_USER", "SA")
     MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "P&ssword123")
     MSSQL_DB = os.getenv("MSSQL_DB", "ezhr_chatbot")
 
     # Minio Credentials
-    MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
+    MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "127.0.0.1:9000")
     MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
     MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 

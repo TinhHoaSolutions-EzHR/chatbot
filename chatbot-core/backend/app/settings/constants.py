@@ -52,5 +52,20 @@ class Constants:
     INGESTION_BATCH_SIZE = 32
     EMBEDDING_BATCH_SIZE = 50
     DIMENSIONS = 768
+    DISTANCE_METRIC_TYPE = "Cosine"
     LLM_MAX_OUTPUT_LENGTH = 512
     LLM_MAX_CONTEXT_WINDOW = 128_000  # max context window of gpt-4o-mini
+
+    # Unit Test
+    MINIO_TEST_BUCKET = "test-bucket"
+    MINIO_TEST_UPLOADED_OBJECT_NAME = "test.txt"
+    MINIO_TEST_FILE_CONTENT = b"EzHR Chatbot is a chatbot application that leverages the power of RAG (Retrieval-Augmented Generation) technique."
+
+    QDRANT_TEST_COLLECTION = "test-collection"
+    QDRANT_DIMENSIONS = 128
+    QDRANT_DISTANCE_METRIC_TYPE = "Cosine"
+
+    REDIS_TEST_KEY = "test-key"
+    REDIS_TEST_VALUE = "test-value"
+
+    MSSQL_TEST_DB_NAME = "tempdb"
