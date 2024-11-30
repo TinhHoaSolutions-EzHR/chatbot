@@ -1,9 +1,9 @@
 ---
-title: Getting Started
+title: API Reference
 sidebar_position: 1
 
 ---
 
-# Local Development Guide
+# API Reference
 
-Below you will find instructions on how to start developing EzHR Chatbot locally.
+This section provides detailed documentation for the Large Language Model (LLM) API, including endpoints, request parameters, response formats, and example usage. The LLM API serves as the core component of the LLM application, enabling users to interact with the language model for intelligent query responses.
