@@ -71,6 +71,24 @@
         "research",
         "review"
       ]
+    },
+    {
+      "login": "greyyT",
+      "name": "Nhan Nguyen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/118145239?v=4",
+      "profile": "https://greyyt.github.io/",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "data",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance",
+        "research",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
