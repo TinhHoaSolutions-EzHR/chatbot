@@ -1,7 +1,11 @@
-from pydantic import BaseModel, Field
-from sqlalchemy import Column, Integer, String, DateTime
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import Integer
+from sqlalchemy import String
 
 from app.models import Base
 
