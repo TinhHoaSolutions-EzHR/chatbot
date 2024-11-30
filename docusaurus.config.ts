@@ -35,6 +35,7 @@ const config: Config = {
           docItemComponent: '@theme/ApiItem', // Derived from docusaurus-theme-openapi
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
+          breadcrumbs: false,
         },
         blog: {
           showReadingTime: true,
@@ -72,6 +73,8 @@ const config: Config = {
     docs: {
       sidebar: {
         hideable: true,
+        autoCollapseCategories: true,
+
       },
     },
     navbar: {
@@ -85,14 +88,9 @@ const config: Config = {
           type: 'doc',
           docId: 'intro',
           position: 'left',
-          label: 'Local Development Guide',
+          label: 'API Reference',
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
-        {
-          label: 'Chatbot API',
-          position: 'left',
-          to: '/docs/chatbot-api/sample-backend',
-        },
+        { to: '/blog', label: 'Local Development Guide', position: 'left' },
         {
           href: 'https://github.com/TinhHoaSolutions-EzHR/chatbot',
           label: 'GitHub',
@@ -104,31 +102,23 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'API Reference',
           items: [
             {
-              label: 'Local Development Guide',
+              label: 'API Reference',
               to: '/docs/intro',
-            },
-            {
-              label: 'Chatbot API',
-              to: '/docs/chatbot-api/sample-backend',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'Local Development Guide',
           items: [
             {
-              label: 'Blog',
+              label: 'Local Development Guide',
               to: '/blog',
             },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/TinhHoaSolutions-EzHR/chatbot',
-            },
           ],
-        },
+        }
       ],
       copyright: `Copyright © ${new Date().getFullYear()} EzHR Chatbot.`,
     },

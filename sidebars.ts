@@ -19,13 +19,13 @@ const sidebars: SidebarsConfig = {
       dirName: '.',
     },
   ],
-  chatbotApiSidebar: [
-    {
-      type: 'category',
-      label: 'Chatbot API',
-      items: require('./docs/chatbot-api/sidebar.ts'),
-    },
-  ],
+  // chatbotApiSidebar: [
+  //   {
+  //     type: 'category',
+  //     label: 'Chatbot API',
+  //     items: require('./docs/chatbot-api/sidebar.ts'),
+  //   },
+  // ],
 };
 
 export default sidebars;
