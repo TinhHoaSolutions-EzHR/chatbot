@@ -29,6 +29,32 @@
         "security",
         "tutorial"
       ]
+    },
+    {
+      "login": "lelouvincx",
+      "name": "lelouvincx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40534905?v=4",
+      "profile": "https://github.com/lelouvincx",
+      "contributions": [
+        "question",
+        "bug",
+        "business",
+        "code",
+        "content",
+        "data",
+        "design",
+        "doc",
+        "eventOrganizing",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "research",
+        "review",
+        "tool",
+        "tutorial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
