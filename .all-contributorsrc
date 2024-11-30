@@ -1,0 +1,36 @@
+{
+  "projectName": "chatbot",
+  "projectOwner": "lelouvincx",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "src/pages/index.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "eslint",
+  "contributors": [
+    {
+      "login": "lekiet1214",
+      "name": "Le Kiet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50958432?v=4",
+      "profile": "https://github.com/lekiet1214",
+      "contributions": [
+        "blog",
+        "bug",
+        "code",
+        "content",
+        "doc",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "review",
+        "security",
+        "tutorial"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": false
+}
