@@ -39,6 +39,7 @@ import Image, { StaticImageData } from "next/image";
 import jiraSVG from "../../../public/Jira.svg";
 import confluenceSVG from "../../../public/Confluence.svg";
 import openAISVG from "../../../public/Openai.svg";
+import geminiSVG from "../../../public/Gemini.svg";
 import openSourceIcon from "../../../public/OpenSource.png";
 import litellmIcon from "../../../public/LiteLLM.jpg";
 
@@ -67,6 +68,7 @@ import s3Icon from "../../../public/S3.png";
 import r2Icon from "../../../public/r2.png";
 import salesforceIcon from "../../../public/Salesforce.png";
 import freshdeskIcon from "../../../public/Freshdesk.png";
+import firefliesIcon from "../../../public/Fireflies.png";
 
 import sharepointIcon from "../../../public/Sharepoint.png";
 import teamsIcon from "../../../public/Teams.png";
@@ -1095,6 +1097,11 @@ export const OpenAIIcon = ({
   className = defaultTailwindCSS,
 }: IconProps) => <LogoIcon size={size} className={className} src={openAISVG} />;
 
+export const GeminiIcon = ({
+  size = 16,
+  className = defaultTailwindCSS,
+}: IconProps) => <LogoIcon size={size} className={className} src={geminiSVG} />;
+
 export const VoyageIcon = ({
   size = 16,
   className = defaultTailwindCSS,
@@ -1291,6 +1298,13 @@ export const FreshdeskIcon = ({
   className = defaultTailwindCSS,
 }: IconProps) => (
   <LogoIcon size={size} className={className} src={freshdeskIcon} />
+);
+
+export const FirefliesIcon = ({
+  size = 16,
+  className = defaultTailwindCSS,
+}: IconProps) => (
+  <LogoIcon size={size} className={className} src={firefliesIcon} />
 );
 
 /* 

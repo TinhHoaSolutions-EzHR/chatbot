@@ -12,8 +12,17 @@ import Text from "@/components/ui/text";
 import Link from "next/link";
 import { SignInButton } from "../login/SignInButton";
 import AuthFlowContainer from "@/components/auth/AuthFlowContainer";
+import ReferralSourceSelector from "./ReferralSourceSelector";
+import { Separator } from "@/components/ui/separator";
 
-const Page = async () => {
+const Page = async (props: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const searchParams = await props.searchParams;
+  const nextUrl = Array.isArray(searchParams?.next)
+    ? searchParams?.next[0]
+    : searchParams?.next || null;
+
   // catch cases where the backend is completely unreachable here
   // without try / catch, will just raise an exception and the page
   // will not render
@@ -62,6 +71,13 @@ const Page = async () => {
           <h2 className="text-center text-xl text-strong font-bold">
             {cloud ? "Complete your sign up" : "Sign Up for Danswer"}
           </h2>
+          {cloud && (
+            <>
+              <div className="w-full flex flex-col items-center space-y-4 mb-4 mt-4">
+                <ReferralSourceSelector />
+              </div>
+            </>
+          )}
 
           {cloud && authUrl && (
             <div className="w-full justify-center">
@@ -77,12 +93,19 @@ const Page = async () => {
           <EmailPasswordForm
             isSignup
             shouldVerify={authTypeMetadata?.requiresVerification}
+            nextUrl={nextUrl}
           />
 
           <div className="flex">
             <Text className="mt-4 mx-auto">
               Already have an account?{" "}
-              <Link href="/auth/login" className="text-link font-medium">
+              <Link
+                href={{
+                  pathname: "/auth/login",
+                  query: { ...searchParams },
+                }}
+                className="text-link font-medium"
+              >
                 Log In
               </Link>
             </Text>
