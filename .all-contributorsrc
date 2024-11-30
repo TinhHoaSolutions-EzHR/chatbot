@@ -18,12 +18,10 @@
       "contributions": [
         "blog",
         "bug",
-        "code",
-        "content",
+        "code",        
         "doc",
         "example",
         "ideas",
-        "infra",
         "maintenance",
         "review",
         "security",
