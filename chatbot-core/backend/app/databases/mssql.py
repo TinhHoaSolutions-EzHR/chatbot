@@ -1,15 +1,17 @@
+import contextlib
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Generator
+from typing import AsyncGenerator, Iterator
 
+from app.databases.base import BaseConnector
 from app.utils.logger import LoggerFactory
 from app.settings import Constants, Secrets
 
 logger = LoggerFactory().get_logger(__name__)
 
 
-class MSSQLConnector:
+class MSSQLConnector(BaseConnector[Engine]):
     """
     MSSQL connector class
 
@@ -17,22 +19,16 @@ class MSSQLConnector:
     Purpose: Create a single instance of the database connection
     """
 
-    _instance: Engine = None
+    _o = Secrets
+    _required_keys = ["MSSQL_USER", "MSSQL_SA_PASSWORD", "MSSQL_HOST", "MSSQL_DB"]
 
     @classmethod
-    def get_instance(cls) -> Engine:
-        """
-        Get the instance of the database connection
-        """
-        if cls._instance is None:
-            cls._instance = cls()._create_engine()
-
-        return cls._instance
-
-    @classmethod
-    def _create_engine(cls) -> Engine | None:
+    def _create_client(cls) -> Engine:
         """
         Create the database connection if there is no any existing connection
+
+        Returns:
+            Engine: Database connection instance
         """
         try:
             uri = Constants.MSSQL_CONNECTOR_URI.format(
@@ -54,18 +50,38 @@ class MSSQLConnector:
             raise
 
 
+@contextlib.contextmanager
+def get_db_connector() -> Iterator[MSSQLConnector]:
+    """
+    Get the database connection
+
+    Yields:
+        Engine: Database connection instance
+    """
+    connector = MSSQLConnector()
+    yield connector
+
+
 # Get the engine from the MSSQLConnector singleton
-engine = MSSQLConnector.get_instance()
+with get_db_connector() as connector:
+    engine = connector.client
 
 # Create a session maker
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db_session() -> Generator[Session, None, None]:
+async def get_db_session() -> AsyncGenerator[Session, None]:
     """
-    Generate a database session for the applications
+    Provides a transactional scope around a series of operations.
+
+    Yields:
+        Session: Database session
+
+    Raises:
+        Exception: Any exception that occurs during the database session
     """
     session = SessionLocal()
+
     try:
         yield session
     finally:

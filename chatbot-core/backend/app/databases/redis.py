@@ -1,13 +1,16 @@
+import contextlib
 from llama_index.storage.kvstore.redis import RedisKVStore as RedisCache
 from redis import ConnectionPool, Redis
+from typing import Iterator
 
+from app.databases.base import BaseConnector
 from app.settings import Constants, Secrets
 from app.utils.logger import LoggerFactory
 
 logger = LoggerFactory().get_logger(__name__)
 
 
-class RedisConnector:
+class RedisConnector(BaseConnector[Redis]):
     """
     Redis connector class
 
@@ -15,22 +18,16 @@ class RedisConnector:
     Purpose: Create a single instance of the Redis connection
     """
 
-    _instance = None
+    _o = Secrets
+    _required_keys = ["REDIS_HOST", "REDIS_PORT"]
 
-    @classmethod
-    def get_instance(cls) -> Redis:
-        """
-        Get the instance of the Redis connection
-        """
-        if cls._instance is None:
-            cls._instance = cls()._create_redis_client()
-
-        return cls._instance
-
-    @classmethod
-    def _create_connection_pool(cls) -> ConnectionPool | None:
+    @staticmethod
+    def _create_connection_pool() -> ConnectionPool | None:
         """
         Create the Redis connection pool if there is no any existing connection pool
+
+        Returns:
+            ConnectionPool | None: Redis connection pool instance
         """
         try:
             return ConnectionPool(
@@ -44,9 +41,12 @@ class RedisConnector:
             raise
 
     @classmethod
-    def _create_redis_client(cls) -> Redis | None:
+    def _create_client(cls) -> Redis | None:
         """
         Create the Redis connection if there is no any existing connection
+
+        Returns:
+            Redis | None: Redis connection instance
         """
         try:
             connection_pool = cls._create_connection_pool()
@@ -55,9 +55,23 @@ class RedisConnector:
             logger.error(f"Error initializing Redis connection: {e}")
             raise
 
+    def get_cache_store(self) -> RedisCache:
+        """
+        Get the cache store instance
 
-def get_cache_store_client() -> RedisCache:
+        Returns:
+            RedisCache: Redis cache store instance
+        """
+        return RedisCache(redis_client=self.client)
+
+
+@contextlib.contextmanager
+def get_cache_connector() -> Iterator[RedisConnector]:
     """
-    Get the cache store instance
+    Get the cache connector instance
+
+    Yields:
+        Iterator[RedisConnector]: Redis cache connector instance
     """
-    return RedisCache(redis_client=RedisConnector.get_instance())
+    redis_connector = RedisConnector()
+    yield redis_connector
