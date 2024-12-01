@@ -203,7 +203,7 @@ export async function* sendMessage({
   yield* handleSSEStream<PacketType>(response);
 }
 
-export async function nameChatSession(chatSessionId: string, message: string) {
+export async function nameChatSession(chatSessionId: string) {
   const response = await fetch("/api/chat/rename-chat-session", {
     method: "PUT",
     headers: {
@@ -212,7 +212,6 @@ export async function nameChatSession(chatSessionId: string, message: string) {
     body: JSON.stringify({
       chat_session_id: chatSessionId,
       name: null,
-      first_message: message,
     }),
   });
   return response;
@@ -263,7 +262,6 @@ export async function renameChatSession(
     body: JSON.stringify({
       chat_session_id: chatSessionId,
       name: newName,
-      first_message: null,
     }),
   });
   return response;
@@ -639,19 +637,22 @@ export async function useScrollonStream({
   scrollableDivRef,
   scrollDist,
   endDivRef,
-  distance,
   debounceNumber,
-  waitForScrollRef,
+  mobile,
 }: {
   chatState: ChatState;
   scrollableDivRef: RefObject<HTMLDivElement>;
   waitForScrollRef: RefObject<boolean>;
   scrollDist: MutableRefObject<number>;
   endDivRef: RefObject<HTMLDivElement>;
-  distance: number;
   debounceNumber: number;
   mobile?: boolean;
 }) {
+  const mobileDistance = 900; // distance that should "engage" the scroll
+  const desktopDistance = 500; // distance that should "engage" the scroll
+
+  const distance = mobile ? mobileDistance : desktopDistance;
+
   const preventScrollInterference = useRef<boolean>(false);
   const preventScroll = useRef<boolean>(false);
   const blockActionRef = useRef<boolean>(false);
@@ -692,7 +693,7 @@ export async function useScrollonStream({
         endDivRef.current
       ) {
         // catch up if necessary!
-        const scrollAmount = scrollDist.current + 10000;
+        const scrollAmount = scrollDist.current + (mobile ? 1000 : 10000);
         if (scrollDist.current > 300) {
           // if (scrollDist.current > 140) {
           endDivRef.current.scrollIntoView();

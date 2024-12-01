@@ -191,19 +191,15 @@ const DocumentSetTable = ({
                   </TableCell>
                   <TableCell>
                     {documentSet.is_up_to_date ? (
-                      <Badge size="md" variant="success" icon={FiCheckCircle}>
+                      <Badge variant="success" icon={FiCheckCircle}>
                         Up to Date
                       </Badge>
                     ) : documentSet.cc_pair_descriptors.length > 0 ? (
-                      <Badge size="md" variant="in_progress" icon={FiClock}>
+                      <Badge variant="in_progress" icon={FiClock}>
                         Syncing
                       </Badge>
                     ) : (
-                      <Badge
-                        size="md"
-                        variant="destructive"
-                        icon={FiAlertTriangle}
-                      >
+                      <Badge variant="destructive" icon={FiAlertTriangle}>
                         Deleting
                       </Badge>
                     )}
@@ -211,7 +207,6 @@ const DocumentSetTable = ({
                   <TableCell>
                     {documentSet.is_public ? (
                       <Badge
-                        size="md"
                         variant={isEditable ? "success" : "default"}
                         icon={FiUnlock}
                       >
@@ -219,7 +214,6 @@ const DocumentSetTable = ({
                       </Badge>
                     ) : (
                       <Badge
-                        size="md"
                         variant={isEditable ? "in_progress" : "outline"}
                         icon={FiLock}
                       >
@@ -319,10 +313,8 @@ const Main = () => {
       {popup}
       <Text className="mb-3">
         <b>Document Sets</b> allow you to group logically connected documents
-        into a single bundle. These can then be used as filter when performing
-        searches in the web UI or attached to slack bots to limit the amount of
-        information the bot searches over when answering in a specific channel
-        or with a certain command.
+        into a single bundle. These can then be used as a filter when performing
+        searches to control the scope of information Danswer searches over.
       </Text>
 
       <div className="mb-3"></div>

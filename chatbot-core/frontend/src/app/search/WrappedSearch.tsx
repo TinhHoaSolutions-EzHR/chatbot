@@ -1,6 +1,6 @@
-'use client';
-import { SearchSection } from '@/components/search/SearchSection';
-import FunctionalWrapper from '../chat/shared_chat_search/FunctionalWrapper';
+"use client";
+import { SearchSection } from "@/components/search/SearchSection";
+import FunctionalWrapper from "../chat/shared_chat_search/FunctionalWrapper";
 
 export default function WrappedSearch({
   searchTypeDefault,
@@ -13,7 +13,11 @@ export default function WrappedSearch({
     <FunctionalWrapper
       initiallyToggled={initiallyToggled}
       content={(toggledSidebar, toggle) => (
-        <SearchSection toggle={toggle} toggledSidebar={toggledSidebar} defaultSearchType={searchTypeDefault} />
+        <SearchSection
+          toggle={toggle}
+          toggledSidebar={toggledSidebar}
+          defaultSearchType={searchTypeDefault}
+        />
       )}
     />
   );

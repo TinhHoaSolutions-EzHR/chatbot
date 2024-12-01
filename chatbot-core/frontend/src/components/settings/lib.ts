@@ -4,10 +4,6 @@ import {
   GatingType,
   Settings,
 } from "@/app/admin/settings/interfaces";
-import {
-  CUSTOM_ANALYTICS_ENABLED,
-  SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED,
-} from "@/lib/constants";
 import { fetchSS } from "@/lib/utilsSS";
 import { getWebVersion } from "@/lib/version";
 
@@ -29,12 +25,7 @@ export async function fetchCustomAnalyticsScriptSS() {
 
 export async function fetchSettingsSS(): Promise<CombinedSettings | null> {
   const tasks = [fetchStandardSettingsSS()];
-  if (SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED) {
-    tasks.push(fetchEnterpriseSettingsSS());
-    if (CUSTOM_ANALYTICS_ENABLED) {
-      tasks.push(fetchCustomAnalyticsScriptSS());
-    }
-  }
+
 
   try {
     const results = await Promise.all(tasks);

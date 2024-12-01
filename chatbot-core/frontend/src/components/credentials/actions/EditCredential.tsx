@@ -8,7 +8,6 @@ import { Form, Formik, FormikHelpers } from "formik";
 import { PopupSpec } from "@/components/admin/connectors/Popup";
 import {
   Credential,
-  getDisplayNameForCredentialKey,
 } from "@/lib/connectors/credentials";
 import { createEditingValidationSchema, createInitialValues } from "../lib";
 import { dictionaryType, formType } from "../types";
@@ -74,7 +73,7 @@ const EditCredential = ({
                 key={key}
                 name={key}
                 placeholder={value}
-                label={getDisplayNameForCredentialKey(key)}
+                label="removed"
                 type={
                   key.toLowerCase().includes("token") ||
                   key.toLowerCase().includes("password")

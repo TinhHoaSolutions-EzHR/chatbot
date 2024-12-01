@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
+from app.settings import Constants
+from app.settings import Secrets
 from app.utils.logger import LoggerFactory
-from app.settings import Constants, Secrets
 
 logger = LoggerFactory().get_logger(__name__)
 
