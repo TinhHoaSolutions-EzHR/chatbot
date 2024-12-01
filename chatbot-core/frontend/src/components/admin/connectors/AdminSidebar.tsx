@@ -3,11 +3,10 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { NEXT_PUBLIC_DO_NOT_USE_TOGGLE_OFF_DANSWER_POWERED } from "@/lib/constants";
 import { HeaderTitle } from "@/components/header/HeaderTitle";
 import { SettingsContext } from "@/components/settings/SettingsProvider";
 import { BackIcon } from "@/components/icons/icons";
-import { WarningCircle, WarningDiamond } from "@phosphor-icons/react";
+import { WarningCircle } from "@phosphor-icons/react";
 import {
   Tooltip,
   TooltipContent,
@@ -58,14 +57,12 @@ export function AdminSidebar({ collections }: { collections: Collection[] }) {
                       <HeaderTitle backgroundToggled={true}>
                         {enterpriseSettings.application_name}
                       </HeaderTitle>
-                      {!NEXT_PUBLIC_DO_NOT_USE_TOGGLE_OFF_DANSWER_POWERED && (
                         <p className="text-xs text-subtle">
-                          Powered by Danswer
+                          Powered by EzHR
                         </p>
-                      )}
                     </div>
                   ) : (
-                    <HeaderTitle backgroundToggled={true}>Danswer</HeaderTitle>
+                    <HeaderTitle backgroundToggled={true}>EzHR</HeaderTitle>
                   )}
                 </div>
               </div>
@@ -122,7 +119,7 @@ export function AdminSidebar({ collections }: { collections: Collection[] }) {
           key={"danswerVersion"}
         >
           <h2 className="text-xs text-text w-52 font-medium pb-2">
-            Danswer version: {combinedSettings.webVersion}
+            EzHR version: {combinedSettings.webVersion}
           </h2>
         </div>
       )}

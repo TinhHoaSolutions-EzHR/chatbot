@@ -3,7 +3,6 @@ import * as Yup from "yup";
 import { dictionaryType, formType } from "./types";
 import {
   Credential,
-  getDisplayNameForCredentialKey,
 } from "@/lib/connectors/credentials";
 
 export function createValidationSchema(json_values: dictionaryType) {
@@ -15,7 +14,7 @@ export function createValidationSchema(json_values: dictionaryType) {
         schemaFields[key] = Yup.string().optional();
       } else {
         schemaFields[key] = Yup.string().required(
-          `Please enter your ${getDisplayNameForCredentialKey(key)}`
+          `this should bne removed`
         );
       }
     }

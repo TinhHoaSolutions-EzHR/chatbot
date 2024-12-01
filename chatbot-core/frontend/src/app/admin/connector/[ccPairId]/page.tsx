@@ -25,7 +25,7 @@ import { ReIndexButton } from "./ReIndexButton";
 import { buildCCPairInfoUrl } from "./lib";
 import { CCPairFullInfo, ConnectorCredentialPairStatus } from "./types";
 import { EditableStringFieldDisplay } from "@/components/EditableStringFieldDisplay";
-import { Button } from "@/components/ui/button";
+
 
 // since the uploaded files are cleaned up after some period of time
 // re-indexing will not work for the file connector. Also, it would not
@@ -242,7 +242,8 @@ export default function Page(props: { params: Promise<{ ccPairId: string }> }) {
 
   return (
     <div className="mx-auto container">
-      <Main ccPairId={ccPairId} />
+      {/*<Main ccPairId={ccPairId} />*/}
+      This is a placeholder for the Main component.
     </div>
   );
 }

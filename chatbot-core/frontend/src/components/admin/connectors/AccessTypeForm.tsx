@@ -7,7 +7,7 @@ import {
 } from "@/lib/types";
 import { useUser } from "@/components/user/UserProvider";
 import { useField } from "formik";
-import { AutoSyncOptions } from "./AutoSyncOptions";
+
 import { usePaidEnterpriseFeaturesEnabled } from "@/components/settings/usePaidEnterpriseFeaturesEnabled";
 import { useEffect } from "react";
 
@@ -90,12 +90,6 @@ export function AccessTypeForm({
             }
             includeDefault={false}
           />
-
-          {access_type.value === "sync" && isAutoSyncSupported && (
-            <AutoSyncOptions
-              connectorType={connector as ValidAutoSyncSources}
-            />
-          )}
         </>
       )}
     </>
