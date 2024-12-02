@@ -1,3 +1,4 @@
+import threading
 from abc import ABC
 from abc import abstractmethod
 from typing import Generic
@@ -20,6 +21,7 @@ class BaseConnector(ABC, Generic[T]):
     _client: Optional[T] = None
     _o: Optional[object] = None
     _required_keys: List[str] = []
+    _lock = threading.Lock()  # Add thread safety
 
     def __new__(cls, *args, **kwargs) -> "BaseConnector[T]":
         """
@@ -28,13 +30,14 @@ class BaseConnector(ABC, Generic[T]):
         Returns:
             BaseConnector[T]: Connection instance
         """
-        if cls._instance is None:
-            # Validate the connection configuration
-            cls._validate_config(o=cls._o, required=cls._required_keys)
+        with cls._lock:  # Thread-safe instance creation
+            if cls._instance is None:
+                # Validate the connection configuration
+                cls._validate_config(o=cls._o, required=cls._required_keys)
 
-            # Create the connection instance & client
-            cls._instance = super(BaseConnector, cls).__new__(cls)
-            cls._instance._client = cls._create_client(*args, **kwargs)
+                # Create the connection instance & client
+                cls._instance = super(BaseConnector, cls).__new__(cls)
+                cls._instance._client = cls._create_client(*args, **kwargs)
 
         return cls._instance
 
@@ -43,10 +46,22 @@ class BaseConnector(ABC, Generic[T]):
         """
         Get the client instance
         """
-        if self._client is None:
-            raise RuntimeError(f"{self.__class__.__name__}: Client is not initialized")
+        with self._lock:  # Thread-safe client retrieval
+            if self._client is None:
+                raise RuntimeError(f"{self.__class__.__name__}: Client is not initialized")
 
         return self._client
+
+    @client.setter
+    def client(self, client: T) -> None:
+        """
+        Set the client instance
+
+        Args:
+            client (T): The client instance
+        """
+        with self._lock:
+            self._client = client
 
     @staticmethod
     def _validate_config(o: object, required: List[str]) -> None:
