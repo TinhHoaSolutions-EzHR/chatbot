@@ -8,9 +8,9 @@ from llama_index.llms.openai import OpenAI
 from app.settings import Constants
 
 
-def init_llamaindex_config(
-    llm_model: str = Constants.LLM_MODEL,
-    embedding_model: str = Constants.EMBEDDING_MODEL,
+def init_llamaindex_configurations(
+    llm_model: str,
+    embedding_model: str,
     callback_manager: CallbackManager | None = None,
 ) -> None:
     """
@@ -22,7 +22,7 @@ def init_llamaindex_config(
         callback_manager (CallbackManager, optional): Manager for handling callbacks. Defaults to None.
     """
     # Set the tokenizer for model
-    Settings.tokenizer = tiktoken.encoding_for_model(Constants.LLM_MODEL).encode
+    Settings.tokenizer = tiktoken.encoding_for_model(model_name=llm_model).encode
 
     # Set the LLM model with specified parameters
     Settings.llm = OpenAI(model=llm_model, temperature=0, callback_manager=callback_manager)

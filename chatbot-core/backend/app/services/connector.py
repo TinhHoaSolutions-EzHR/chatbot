@@ -1,6 +1,7 @@
 import json
 from typing import List
 from typing import Tuple
+from typing import Union
 
 from sqlalchemy.orm import Session
 
@@ -18,6 +19,12 @@ logger = LoggerFactory().get_logger(__name__)
 
 class ConnectorService(BaseService):
     def __init__(self, db_session: Session):
+        """
+        Connector service class for handling connector-related operations.
+
+        Args:
+            db_session (Session): Database session
+        """
         super().__init__(db_session=db_session)
 
     def get_connectors(self) -> Tuple[List[Connector], APIError | None]:
@@ -25,11 +32,11 @@ class ConnectorService(BaseService):
         Get all connectors
 
         Returns:
-            Tuple[List[Connector], APIError | None]: List of connector objects and APIError object if any error
+            Tuple[List[Connector], Union[APIError, None]]: List of connector objects and APIError object if any error
         """
         return ConnectorRepository(db_session=self._db_session).get_connectors()
 
-    def get_connector(self, connector_id: str) -> Tuple[Connector, APIError | None]:
+    def get_connector(self, connector_id: str) -> Tuple[Connector, Union[APIError, None]]:
         """
         Get connector by connector_id
 
@@ -37,11 +44,11 @@ class ConnectorService(BaseService):
             connector_id(str): Connector id
 
         Returns:
-            Tuple[Connector, APIError | None]: Connector object and APIError object if any error
+            Tuple[Connector, Union[APIError, None]]: Connector object and APIError object if any error
         """
         return ConnectorRepository(db_session=self._db_session).get_connector(connector_id=connector_id)
 
-    def create_connector(self, connector_request: ConnectorRequest) -> APIError | None:
+    def create_connector(self, connector_request: ConnectorRequest) -> Union[APIError, None]:
         """
         Create connector
 
@@ -49,7 +56,7 @@ class ConnectorService(BaseService):
             connector_request(ConnectorRequest): ConnectorRequest object
 
         Returns:
-            APIError | None: APIError object if any error
+            Union[APIError, None]: APIError object if any error
         """
         err = None
         try:
@@ -72,7 +79,7 @@ class ConnectorService(BaseService):
 
         return err
 
-    def update_connector(self, connector_id: str, connector_request: ConnectorRequest) -> APIError | None:
+    def update_connector(self, connector_id: str, connector_request: ConnectorRequest) -> Union[APIError, None]:
         """
         Update connector by connector_id
 
@@ -81,7 +88,7 @@ class ConnectorService(BaseService):
             connector_request(ConnectorRequest): ConnectorRequest object
 
         Returns:
-            APIError | None: APIError object if any error
+            Union[APIError, None]: APIError object if any error
         """
         err = None
         try:
@@ -100,7 +107,7 @@ class ConnectorService(BaseService):
 
         return err
 
-    def delete_connector(self, connector_id: str) -> APIError | None:
+    def delete_connector(self, connector_id: str) -> Union[APIError, None]:
         """
         Delete connector by connector_id
 
@@ -108,7 +115,7 @@ class ConnectorService(BaseService):
             connector_id(str): Connector id
 
         Returns:
-            APIError | None: APIError object if any error
+            Union[APIError, None]: APIError object if any error
         """
         try:
             with self._transaction():

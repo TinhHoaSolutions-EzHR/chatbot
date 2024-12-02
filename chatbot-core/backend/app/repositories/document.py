@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Union
 
 from app.models.api import APIError
 from app.models.document import DocumentMetadata
@@ -13,7 +14,7 @@ class DocumentRepository(BaseRepository):
     def __init__(self, db_session: Session):
         super().__init__(db_session=db_session)
 
-    def create_document_metadata(self, document_metadata: DocumentMetadata) -> APIError | None:
+    def create_document_metadata(self, document_metadata: DocumentMetadata) -> Union[APIError, None]:
         """
         Create document metadata
 
@@ -21,7 +22,7 @@ class DocumentRepository(BaseRepository):
             document(DocumentMetadata): Document metadata object
 
         Returns:
-            APIError | None: APIError object if any error
+            Union[APIError, None]: APIError object if any error
         """
         try:
             self._db_session.add(document_metadata)
