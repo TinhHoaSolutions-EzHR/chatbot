@@ -5,15 +5,10 @@ from typing import List
 from fastapi import File
 from fastapi import UploadFile
 from llama_index.core import Settings
-<<<<<<< HEAD
 from llama_index.core.extractors import KeywordExtractor
 from llama_index.core.extractors import QuestionsAnsweredExtractor
 from llama_index.core.ingestion import IngestionCache
 from llama_index.core.ingestion import IngestionPipeline
-=======
-from llama_index.core.extractors import KeywordExtractor, QuestionsAnsweredExtractor
-from llama_index.core.ingestion import IngestionCache, IngestionPipeline
->>>>>>> ddfb81e (refractor(backend): format all code)
 from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.core.schema import BaseNode
 from llama_index.vector_stores.qdrant import QdrantVectorStore

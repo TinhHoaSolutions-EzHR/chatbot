@@ -1,5 +1,6 @@
 from fastapi import Request
-from qdrant_client import QdrantClient, models
+from qdrant_client import models
+from qdrant_client import QdrantClient
 
 from app.databases.base import BaseConnector
 from app.settings import Constants

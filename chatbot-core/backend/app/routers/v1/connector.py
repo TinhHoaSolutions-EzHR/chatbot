@@ -1,9 +1,17 @@
-from typing import Annotated, List, Iterator
-from fastapi import APIRouter, File, HTTPException, UploadFile, Depends, status
+from collections.abc import Iterator
+from typing import Annotated
+from typing import List
+
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import File
+from fastapi import HTTPException
+from fastapi import status
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
-from app.databases.mssql import get_db_session
 from app.databases.minio import get_minio_connector
+from app.databases.mssql import get_db_session
 from app.databases.qdrant import get_qdrant_connector
 from app.databases.redis import get_redis_connector
 from app.models.api import APIResponse

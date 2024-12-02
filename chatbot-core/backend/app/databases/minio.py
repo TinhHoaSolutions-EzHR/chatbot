@@ -1,8 +1,9 @@
 import os
+from typing import BinaryIO
+
 from fastapi import Request
 from minio import Minio
 from minio.error import S3Error
-from typing import BinaryIO
 
 from app.databases.base import BaseConnector
 from app.settings import Secrets

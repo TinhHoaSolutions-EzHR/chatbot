@@ -1,6 +1,10 @@
-from sqlalchemy.engine import Engine, create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from typing import Iterator
+from collections.abc import Iterator
+
+from sqlalchemy.engine import create_engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
+
 from app.databases.base import BaseConnector
 from app.settings import Constants
 from app.settings import Secrets

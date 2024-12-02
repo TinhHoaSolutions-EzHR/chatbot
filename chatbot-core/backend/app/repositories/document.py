@@ -1,5 +1,6 @@
-from sqlalchemy.orm import Session
 from typing import Union
+
+from sqlalchemy.orm import Session
 
 from app.models.api import APIError
 from app.models.document import DocumentMetadata

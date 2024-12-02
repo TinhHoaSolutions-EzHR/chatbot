@@ -1,6 +1,7 @@
 from fastapi import Request
 from llama_index.storage.kvstore.redis import RedisKVStore as RedisCache
-from redis import ConnectionPool, Redis
+from redis import ConnectionPool
+from redis import Redis
 
 from app.databases.base import BaseConnector
 from app.settings import Constants
