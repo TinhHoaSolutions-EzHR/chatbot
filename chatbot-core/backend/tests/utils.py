@@ -1,5 +1,6 @@
-from minio import Minio
 from typing import List
+
+from minio import Minio
 
 
 def validate_config(o: object, required: List[str]) -> None:

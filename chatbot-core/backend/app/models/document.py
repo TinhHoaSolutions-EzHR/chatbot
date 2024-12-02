@@ -1,10 +1,17 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
-from sqlalchemy import DateTime, ForeignKey, String
-from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
-from sqlalchemy.orm import relationship, mapped_column, Mapped
-from typing import List, Optional
+from typing import List
+from typing import Optional
 from uuid import uuid4
+
+from pydantic import BaseModel
+from pydantic import Field
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import String
+from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models import Base
 

@@ -1,8 +1,12 @@
 import contextlib
 import os
-from fastapi import File, UploadFile
+from typing import Annotated
+from typing import List
+from typing import Tuple
+
+from fastapi import File
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
-from typing import List, Annotated, Tuple
 
 from app.databases.minio import get_object_storage_connector
 from app.models.api import APIError

@@ -1,9 +1,13 @@
 import json
+from typing import List
+from typing import Tuple
+
 from sqlalchemy.orm import Session
-from typing import List, Tuple
 
 from app.models.api import APIError
-from app.models.connector import Connector, ConnectorRequest, DocumentSource
+from app.models.connector import Connector
+from app.models.connector import ConnectorRequest
+from app.models.connector import DocumentSource
 from app.repositories.connector import ConnectorRepository
 from app.services.base import BaseService
 from app.utils.error_handler import ErrorCodesMappingNumber

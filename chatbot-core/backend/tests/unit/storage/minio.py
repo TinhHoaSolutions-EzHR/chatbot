@@ -1,13 +1,16 @@
 import tempfile
+from collections.abc import Iterator
+from pathlib import Path
+
 import pytest
 from minio import Minio
 from minio.error import S3Error
-from pathlib import Path
-from typing import Iterator
+from tests.utils import clean_minio_bucket
+from tests.utils import validate_config
 
-from app.settings import Constants, Secrets
+from app.settings import Constants
+from app.settings import Secrets
 from app.utils.logger import LoggerFactory
-from tests.utils import validate_config, clean_minio_bucket
 
 logger = LoggerFactory().get_logger(__name__)
 

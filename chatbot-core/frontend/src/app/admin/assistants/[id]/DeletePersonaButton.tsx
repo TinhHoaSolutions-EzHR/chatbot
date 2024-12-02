@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { deletePersona } from "./lib";
+import { deletePersona } from "../lib";
 import { useRouter } from "next/navigation";
-import { SuccessfulPersonaUpdateRedirectType } from "./enums";
+import { SuccessfulPersonaUpdateRedirectType } from "../enums";
 
 export function DeletePersonaButton({
   personaId,

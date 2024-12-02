@@ -104,17 +104,6 @@ export default function Page() {
           </Link>
         }
       />
-
-      <input
-        type="text"
-        ref={searchInputRef}
-        placeholder="Search connectors..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={handleKeyPress}
-        className="ml-1 w-96 h-9 flex-none rounded-md border border-border bg-background-50 px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-      />
-
       {Object.entries(categorizedSources)
         .filter(([_, sources]) => sources.length > 0)
         .map(([category, sources], categoryInd) => (

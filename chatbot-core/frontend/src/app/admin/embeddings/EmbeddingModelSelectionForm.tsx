@@ -64,7 +64,7 @@ export function EmbeddingModelSelection({
   const [showTentativeProvider, setShowTentativeProvider] =
     useState<CloudEmbeddingProvider | null>(null);
 
-  const [showUnconfiguredProvider, setShowUnconfiguredProvider] =
+  const [showUnconfiguredProvider] =
     useState<CloudEmbeddingProvider | null>(null);
   const [changeCredentialsProvider, setChangeCredentialsProvider] =
     useState<CloudEmbeddingProvider | null>(null);
@@ -85,8 +85,7 @@ export function EmbeddingModelSelection({
   const [showDeleteCredentialsModal, setShowDeleteCredentialsModal] =
     useState<boolean>(false);
 
-  const [showAddConnectorPopup, setShowAddConnectorPopup] =
-    useState<boolean>(false);
+  const [, setShowAddConnectorPopup] = useState<boolean>(false);
 
   const { data: embeddingModelDetails } = useSWR<CloudEmbeddingModel[]>(
     EMBEDDING_MODELS_ADMIN_URL,
@@ -168,8 +167,6 @@ export function EmbeddingModelSelection({
       {showTentativeProvider && (
         <ProviderCreationModal
           updateCurrentModel={updateCurrentModel}
-          isProxy={showTentativeProvider.provider_type == "LiteLLM"}
-          isAzure={showTentativeProvider.provider_type == "Azure"}
           selectedProvider={showTentativeProvider}
           onConfirm={() => {
             setShowTentativeProvider(showUnconfiguredProvider);
@@ -187,9 +184,6 @@ export function EmbeddingModelSelection({
 
       {changeCredentialsProvider && (
         <ChangeCredentialsModal
-          isProxy={changeCredentialsProvider.provider_type == "LiteLLM"}
-          isAzure={changeCredentialsProvider.provider_type == "Azure"}
-          useFileUpload={changeCredentialsProvider.provider_type == "Google"}
           onDeleted={() => {
             setChangeCredentialsProvider(null);
             mutateEmbeddingProviderDetails();

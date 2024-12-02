@@ -1,7 +1,10 @@
+from typing import Annotated
+from typing import List
+
 import pdfplumber
-from fastapi import File, UploadFile
+from fastapi import File
+from fastapi import UploadFile
 from llama_index.core import Document
-from typing import Annotated, List
 
 from app.utils.logger import LoggerFactory
 

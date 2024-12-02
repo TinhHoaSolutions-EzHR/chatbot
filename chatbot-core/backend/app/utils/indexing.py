@@ -1,12 +1,17 @@
-from fastapi import File, UploadFile
+from typing import Annotated
+from typing import Any
+from typing import List
+
+from fastapi import File
+from fastapi import UploadFile
 from llama_index.core import Settings
-from llama_index.core.storage.storage_context import StorageContext
-from llama_index.core.extractors import KeywordExtractor, QuestionsAnsweredExtractor
-from llama_index.core.ingestion import IngestionCache, IngestionPipeline
+from llama_index.core.extractors import KeywordExtractor
+from llama_index.core.extractors import QuestionsAnsweredExtractor
+from llama_index.core.ingestion import IngestionCache
+from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.core.schema import BaseNode
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from typing import Annotated, Any, List
 
 from app.databases.qdrant import get_vector_db_connector
 from app.databases.redis import get_cache_connector

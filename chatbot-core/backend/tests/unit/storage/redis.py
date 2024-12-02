@@ -1,10 +1,12 @@
+from collections.abc import Iterator
+
 import pytest
 from redis import Redis
 from redis.exceptions import ConnectionError
-from typing import Iterator
-
-from app.settings import Constants, Secrets
 from tests.utils import validate_config
+
+from app.settings import Constants
+from app.settings import Secrets
 
 
 @pytest.fixture

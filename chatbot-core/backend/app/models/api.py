@@ -1,5 +1,7 @@
+from typing import Any
+from typing import Optional
+
 from pydantic import BaseModel
-from typing import Optional, Any
 
 
 class APIResponse(BaseModel):

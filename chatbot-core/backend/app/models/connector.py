@@ -1,12 +1,18 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, Field
-from sqlalchemy import DateTime, String
+from typing import List
+from typing import Optional
+from uuid import UUID
+from uuid import uuid4
+
+from pydantic import BaseModel
+from pydantic import Field
+from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
-from sqlalchemy.orm import mapped_column, Mapped
-from typing import Optional, List
-from uuid import uuid4, UUID
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 
 from app.models import Base
 

@@ -1,7 +1,8 @@
 import tiktoken
 from llama_index.core import Settings
 from llama_index.core.callbacks import CallbackManager
-from llama_index.embeddings.openai import OpenAIEmbedding, OpenAIEmbeddingMode
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.embeddings.openai import OpenAIEmbeddingMode
 from llama_index.llms.openai import OpenAI
 
 from app.settings import Constants

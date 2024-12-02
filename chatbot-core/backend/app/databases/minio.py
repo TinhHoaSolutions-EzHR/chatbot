@@ -1,8 +1,10 @@
 import contextlib
 import os
+from collections.abc import Iterator
+from typing import BinaryIO
+
 from minio import Minio
 from minio.error import S3Error
-from typing import BinaryIO, Iterator
 
 from app.databases.base import BaseConnector
 from app.settings import Secrets

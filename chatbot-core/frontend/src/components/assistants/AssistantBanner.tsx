@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/tooltip";
 
 export default function AssistantBanner({
-                                          recentAssistants,
-                                          liveAssistant,
-                                          allAssistants,
-                                          onAssistantChange,
-                                        }: {
+  recentAssistants,
+  liveAssistant,
+  allAssistants,
+  onAssistantChange,
+}: {
   recentAssistants: Persona[];
   liveAssistant: Persona | undefined;
   allAssistants: Persona[];
@@ -31,8 +31,8 @@ export default function AssistantBanner({
               // Exclude current assistant
               assistant.id !== liveAssistant?.id &&
               // Exclude assistants already in recentAssistants
-              !recentAssistants.some((recent) => recent.id === assistant.id),
-          ),
+              !recentAssistants.some((recent) => recent.id === assistant.id)
+          )
         )
         // Take first 4
         .slice(0, 4)

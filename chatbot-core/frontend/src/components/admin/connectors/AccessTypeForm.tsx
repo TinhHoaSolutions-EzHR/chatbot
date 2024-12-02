@@ -7,7 +7,7 @@ import {
 } from "@/lib/types";
 import { useUser } from "@/components/user/UserProvider";
 import { useField } from "formik";
-import { AutoSyncOptions } from "./AutoSyncOptions";
+
 import { usePaidEnterpriseFeaturesEnabled } from "@/components/settings/usePaidEnterpriseFeaturesEnabled";
 import { useEffect } from "react";
 
@@ -62,7 +62,7 @@ export function AccessTypeForm({
     });
   }
 
-  if (isAutoSyncSupported && isAdmin && isPaidEnterpriseEnabled) {
+  if (isAutoSyncSupported && isPaidEnterpriseEnabled) {
     options.push({
       name: "Auto Sync Permissions",
       value: "sync",
@@ -73,7 +73,7 @@ export function AccessTypeForm({
 
   return (
     <>
-      {isPaidEnterpriseEnabled && isAdmin && (
+      {isPaidEnterpriseEnabled && (isAdmin || isAutoSyncSupported) && (
         <>
           <div>
             <label className="text-text-950 font-medium">Document Access</label>
@@ -90,12 +90,6 @@ export function AccessTypeForm({
             }
             includeDefault={false}
           />
-
-          {access_type.value === "sync" && isAutoSyncSupported && (
-            <AutoSyncOptions
-              connectorType={connector as ValidAutoSyncSources}
-            />
-          )}
         </>
       )}
     </>

@@ -8,6 +8,7 @@ interface UserPreferences {
   visible_assistants: number[];
   hidden_assistants: number[];
   default_model: string | null;
+  recent_assistants: number[];
 }
 
 export enum UserStatus {
@@ -17,10 +18,12 @@ export enum UserStatus {
 }
 
 export enum UserRole {
+  LIMITED = "limited",
   BASIC = "basic",
   ADMIN = "admin",
   CURATOR = "curator",
   GLOBAL_CURATOR = "global_curator",
+  EXT_PERM_USER = "ext_perm_user",
 }
 
 export const USER_ROLE_LABELS: Record<UserRole, string> = {
@@ -28,6 +31,17 @@ export const USER_ROLE_LABELS: Record<UserRole, string> = {
   [UserRole.ADMIN]: "Admin",
   [UserRole.GLOBAL_CURATOR]: "Global Curator",
   [UserRole.CURATOR]: "Curator",
+  [UserRole.LIMITED]: "Limited",
+  [UserRole.EXT_PERM_USER]: "External Permissioned User",
+};
+
+export const INVALID_ROLE_HOVER_TEXT: Partial<Record<UserRole, string>> = {
+  [UserRole.BASIC]: "Basic users can't perform any admin actions",
+  [UserRole.ADMIN]: "Admin users can perform all admin actions",
+  [UserRole.GLOBAL_CURATOR]:
+    "Global Curator users can perform admin actions for all groups they are a member of",
+  [UserRole.CURATOR]: "Curator role must be assigned in the Groups tab",
+
 };
 
 export interface User {
@@ -55,13 +69,14 @@ export type ValidInputTypes = "load_state" | "poll" | "event";
 export type ValidStatuses =
   | "success"
   | "completed_with_errors"
+  | "canceled"
   | "failed"
   | "in_progress"
   | "not_started";
 export type TaskStatus = "PENDING" | "STARTED" | "SUCCESS" | "FAILURE";
 export type Feedback = "like" | "dislike";
 export type AccessType = "public" | "private" | "sync";
-export type SessionType = "Chat" | "Search" | "Slack";
+export type SessionType = "Chat" | "Search";
 
 export interface DocumentBoostStatus {
   document_id: string;
@@ -180,36 +195,6 @@ export interface StandardAnswer {
   categories: StandardAnswerCategory[];
 }
 
-// SLACK BOT CONFIGS
-
-export type AnswerFilterOption =
-  | "well_answered_postfilter"
-  | "questionmark_prefilter";
-
-export interface ChannelConfig {
-  channel_names: string[];
-  respond_tag_only?: boolean;
-  respond_to_bots?: boolean;
-  respond_member_group_list?: string[];
-  answer_filters?: AnswerFilterOption[];
-  follow_up_tags?: string[];
-}
-
-export type SlackBotResponseType = "quotes" | "citations";
-
-export interface SlackBotConfig {
-  id: number;
-  persona: Persona | null;
-  channel_config: ChannelConfig;
-  response_type: SlackBotResponseType;
-  standard_answer_categories: StandardAnswerCategory[];
-  enable_auto_filters: boolean;
-}
-
-export interface SlackBotTokens {
-  bot_token: string;
-  app_token: string;
-}
 
 /* EE Only Types */
 export interface UserGroup {
@@ -225,60 +210,17 @@ export interface UserGroup {
 }
 
 const validSources = [
-  "web",
-  "github",
-  "gitlab",
-  "slack",
-  "google_drive",
-  "gmail",
-  "bookstack",
-  "confluence",
-  "jira",
-  "productboard",
-  "slab",
-  "notion",
-  "guru",
-  "gong",
-  "zulip",
-  "linear",
-  "hubspot",
-  "document360",
   "file",
-  "google_sites",
-  "loopio",
-  "dropbox",
-  "salesforce",
-  "sharepoint",
-  "teams",
-  "zendesk",
-  "discourse",
-  "axero",
-  "clickup",
-  "wikipedia",
-  "mediawiki",
-  "asana",
-  "s3",
-  "r2",
-  "google_cloud_storage",
-  "xenforo",
-  "oci_storage",
-  "not_applicable",
-  "ingestion_api",
-  "freshdesk",
 ] as const;
 
 export type ValidSources = (typeof validSources)[number];
 // The valid sources that are actually valid to select in the UI
-export type ConfigurableSources = Exclude<
-  ValidSources,
-  "not_applicable" | "ingestion_api"
->;
+export type ConfigurableSources = Exclude<  ValidSources,  "">;
 
 // The sources that have auto-sync support on the backend
 export const validAutoSyncSources = [
-  "confluence",
-  "google_drive",
-  "gmail",
-  "slack",
+  // "confluence",
+  // "google_drive",
+  // "gmail",
 ] as const;
 export type ValidAutoSyncSources = (typeof validAutoSyncSources)[number];

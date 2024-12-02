@@ -11,23 +11,18 @@ import {
   LLM_PROVIDERS_ADMIN_URL,
 } from "../../configuration/llm/constants";
 import { mutate } from "swr";
+import { testEmbedding } from "../pages/utils";
 
 export function ChangeCredentialsModal({
   provider,
   onConfirm,
   onCancel,
   onDeleted,
-  useFileUpload,
-  isProxy = false,
-  isAzure = false,
 }: {
   provider: CloudEmbeddingProvider;
   onConfirm: () => void;
   onCancel: () => void;
   onDeleted: () => void;
-  useFileUpload: boolean;
-  isProxy?: boolean;
-  isAzure?: boolean;
 }) {
   const [apiKey, setApiKey] = useState("");
   const [apiUrl, setApiUrl] = useState("");
@@ -112,16 +107,15 @@ export function ChangeCredentialsModal({
     const normalizedProviderType = provider.provider_type
       .toLowerCase()
       .split(" ")[0];
+
     try {
-      const testResponse = await fetch("/api/admin/embedding/test-embedding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider_type: normalizedProviderType,
-          api_key: apiKey,
-          api_url: apiUrl,
-          model_name: modelName,
-        }),
+      const testResponse = await testEmbedding({
+        provider_type: normalizedProviderType,
+        modelName,
+        apiKey,
+        apiUrl,
+        apiVersion: null,
+        deploymentName: null,
       });
 
       if (!testResponse.ok) {
@@ -146,7 +140,7 @@ export function ChangeCredentialsModal({
         throw new Error(
           errorData.detail ||
             `Failed to update provider- check your ${
-              isProxy ? "API URL" : "API key"
+              "API key"
             }`
         );
       }
@@ -163,120 +157,11 @@ export function ChangeCredentialsModal({
       width="max-w-3xl"
       icon={provider.icon}
       title={`Modify your ${provider.provider_type} ${
-        isProxy ? "Configuration" : "key"
+        "key"
       }`}
       onOutsideClick={onCancel}
     >
       <>
-        {!isAzure && (
-          <>
-            <p className="mb-4">
-              You can modify your configuration by providing a new API key
-              {isProxy ? " or API URL." : "."}
-            </p>
-
-            <div className="mb-4 flex flex-col gap-y-2">
-              <Label className="mt-2">API Key</Label>
-              {useFileUpload ? (
-                <>
-                  <Label className="mt-2">Upload JSON File</Label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".json"
-                    onChange={handleFileUpload}
-                    className="text-lg w-full p-1"
-                  />
-                  {fileName && <p>Uploaded file: {fileName}</p>}
-                </>
-              ) : (
-                <>
-                  <input
-                    className={`
-                        border 
-                        border-border 
-                        rounded 
-                        w-full 
-                        py-2 
-                        px-3 
-                        bg-background-emphasis
-                    `}
-                    value={apiKey}
-                    onChange={(e: any) => setApiKey(e.target.value)}
-                    placeholder="Paste your API key here"
-                  />
-                </>
-              )}
-
-              {isProxy && (
-                <>
-                  <Label className="mt-2">API URL</Label>
-
-                  <input
-                    className={`
-                        border 
-                        border-border 
-                        rounded 
-                        w-full 
-                        py-2 
-                        px-3 
-                        bg-background-emphasis
-                    `}
-                    value={apiUrl}
-                    onChange={(e: any) => setApiUrl(e.target.value)}
-                    placeholder="Paste your API URL here"
-                  />
-
-                  {deletionError && (
-                    <Callout type="danger" title="Error" className="mt-4">
-                      {deletionError}
-                    </Callout>
-                  )}
-
-                  <div>
-                    <Label className="mt-2">Test Model</Label>
-                    <p>
-                      Since you are using a liteLLM proxy, we&apos;ll need a
-                      model name to test the connection with.
-                    </p>
-                  </div>
-                  <input
-                    className={`
-                     border 
-                     border-border 
-                     rounded 
-                     w-full 
-                     py-2 
-                     px-3 
-                     bg-background-emphasis
-                 `}
-                    value={modelName}
-                    onChange={(e: any) => setModelName(e.target.value)}
-                    placeholder="Paste your model name here"
-                  />
-                </>
-              )}
-
-              {testError && (
-                <Callout type="danger" title="Error" className="my-4">
-                  {testError}
-                </Callout>
-              )}
-
-              <Button
-                className="mr-auto mt-4"
-                variant="submit"
-                onClick={() => handleSubmit()}
-                disabled={!apiKey}
-              >
-                Update Configuration
-              </Button>
-
-              <Separator />
-            </div>
-          </>
-        )}
-
         <Text className="mt-4 font-bold text-lg mb-2">
           You can delete your configuration.
         </Text>

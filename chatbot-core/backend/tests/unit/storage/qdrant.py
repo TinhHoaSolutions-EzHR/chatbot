@@ -1,9 +1,11 @@
+from collections.abc import Iterator
+
 import pytest
 from qdrant_client import QdrantClient
-from typing import Iterator
-
-from app.settings import Constants, Secrets
 from tests.utils import validate_config
+
+from app.settings import Constants
+from app.settings import Secrets
 
 
 @pytest.fixture

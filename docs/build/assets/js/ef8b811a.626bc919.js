@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocss=self.webpackChunkdocss||[]).push([[8947],{56600:e=>{e.exports=JSON.parse('{"authors":[{"name":"Le Kiet","page":{"permalink":"/blog/authors/lekiet"},"key":"lekiet","count":1}]}')}}]);

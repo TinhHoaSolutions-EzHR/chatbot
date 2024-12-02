@@ -4,16 +4,21 @@ import {
   getCurrentUserSS,
   getAuthTypeMetadataSS,
   AuthTypeMetadata,
-  getAuthUrlSS,
 } from "@/lib/userSS";
 import { redirect } from "next/navigation";
 import { EmailPasswordForm } from "../login/EmailPasswordForm";
 import Text from "@/components/ui/text";
 import Link from "next/link";
-import { SignInButton } from "../login/SignInButton";
 import AuthFlowContainer from "@/components/auth/AuthFlowContainer";
+import ReferralSourceSelector from "./ReferralSourceSelector";
+const Page = async (props: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const searchParams = await props.searchParams;
+  const nextUrl = Array.isArray(searchParams?.next)
+    ? searchParams?.next[0]
+    : searchParams?.next || null;
 
-const Page = async () => {
   // catch cases where the backend is completely unreachable here
   // without try / catch, will just raise an exception and the page
   // will not render
@@ -48,9 +53,6 @@ const Page = async () => {
   }
 
   let authUrl: string | null = null;
-  if (cloud && authTypeMetadata) {
-    authUrl = await getAuthUrlSS(authTypeMetadata.authType, null);
-  }
 
   return (
     <AuthFlowContainer>
@@ -62,27 +64,30 @@ const Page = async () => {
           <h2 className="text-center text-xl text-strong font-bold">
             {cloud ? "Complete your sign up" : "Sign Up for Danswer"}
           </h2>
-
-          {cloud && authUrl && (
-            <div className="w-full justify-center">
-              <SignInButton authorizeUrl={authUrl} authType="cloud" />
-              <div className="flex items-center w-full my-4">
-                <div className="flex-grow border-t border-background-300"></div>
-                <span className="px-4 text-gray-500">or</span>
-                <div className="flex-grow border-t border-background-300"></div>
+          {cloud && (
+            <>
+              <div className="w-full flex flex-col items-center space-y-4 mb-4 mt-4">
+                <ReferralSourceSelector />
               </div>
-            </div>
+            </>
           )}
 
           <EmailPasswordForm
             isSignup
             shouldVerify={authTypeMetadata?.requiresVerification}
+            nextUrl={nextUrl}
           />
 
           <div className="flex">
             <Text className="mt-4 mx-auto">
               Already have an account?{" "}
-              <Link href="/auth/login" className="text-link font-medium">
+              <Link
+                href={{
+                  pathname: "/auth/login",
+                  query: { ...searchParams },
+                }}
+                className="text-link font-medium"
+              >
                 Log In
               </Link>
             </Text>

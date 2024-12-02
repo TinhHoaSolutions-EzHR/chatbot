@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from app.routers import base
 from app.routers.v1 import connector
-from app.settings import Constants
+from app.settings.constants import Constants
 from app.utils.llama_index_configuation import init_llamaindex_config
 from app.utils.logger import LoggerFactory
 

@@ -1,5 +1,7 @@
+from typing import List
+from typing import Tuple
+
 from sqlalchemy.orm import Session
-from typing import List, Tuple
 
 from app.models.api import APIError
 from app.models.connector import Connector

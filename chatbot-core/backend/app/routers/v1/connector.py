@@ -1,11 +1,19 @@
-from typing import Annotated, List
-from fastapi import APIRouter, File, HTTPException, UploadFile, Depends, status
+from typing import Annotated
+from typing import List
+
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import File
+from fastapi import HTTPException
+from fastapi import status
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models.api import APIResponse
+from app.models.connector import ConnectorRequest
+from app.models.connector import ConnectorResponse
 from app.models.document import DocumentUploadResponse
-from app.models.connector import ConnectorRequest, ConnectorResponse
 from app.services.connector import ConnectorService
 from app.services.document import DocumentService
 from app.settings import Constants

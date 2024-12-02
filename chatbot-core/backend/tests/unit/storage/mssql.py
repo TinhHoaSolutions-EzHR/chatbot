@@ -1,11 +1,14 @@
+from collections.abc import Iterator
+
 import pytest
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
+from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
-from typing import Iterator
-
-from app.settings import Constants, Secrets
 from tests.utils import validate_config
+
+from app.settings import Constants
+from app.settings import Secrets
 
 
 @pytest.fixture

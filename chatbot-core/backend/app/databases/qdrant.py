@@ -1,9 +1,12 @@
 import contextlib
-from qdrant_client import QdrantClient, models
-from typing import Iterator
+from collections.abc import Iterator
+
+from qdrant_client import models
+from qdrant_client import QdrantClient
 
 from app.databases.base import BaseConnector
-from app.settings import Constants, Secrets
+from app.settings import Constants
+from app.settings import Secrets
 from app.utils.logger import LoggerFactory
 
 logger = LoggerFactory().get_logger(__name__)

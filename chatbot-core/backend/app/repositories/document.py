@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from typing import List, Tuple
 
 from app.models.api import APIError
 from app.models.document import DocumentMetadata

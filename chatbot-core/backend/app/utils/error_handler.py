@@ -31,5 +31,3 @@ class DatabaseTransactionError(BaseException):
     """
     Custom exception class for handling database transaction errors
     """
-
-    pass
