@@ -1,9 +1,6 @@
-import contextlib
-from collections.abc import Iterator
-
+from fastapi import Request
 from llama_index.storage.kvstore.redis import RedisKVStore as RedisCache
-from redis import ConnectionPool
-from redis import Redis
+from redis import ConnectionPool, Redis
 
 from app.databases.base import BaseConnector
 from app.settings import Constants
@@ -68,13 +65,14 @@ class RedisConnector(BaseConnector[Redis]):
         return RedisCache(redis_client=self.client)
 
 
-@contextlib.contextmanager
-def get_cache_connector() -> Iterator[RedisConnector]:
+def get_redis_connector(request: Request) -> RedisConnector:
     """
     Get the cache connector instance
 
-    Yields:
-        Iterator[RedisConnector]: Redis cache connector instance
+    Args:
+        request (Request): FastAPI request instance
+
+    Returns:
+        RedisConnector: Redis connector instance
     """
-    redis_connector = RedisConnector()
-    yield redis_connector
+    return request.app.state.redis_conn

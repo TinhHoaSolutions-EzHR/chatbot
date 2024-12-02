@@ -2,10 +2,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.databases.minio import MinioConnector
+from app.databases.qdrant import QdrantConnector
+from app.databases.redis import RedisConnector
 from app.routers import base
 from app.routers.v1 import connector
-from app.settings.constants import Constants
-from app.utils.llama_index_configuation import init_llamaindex_config
+from app.settings import Constants
+from app.utils.llama_index_configuration import init_llamaindex_configurations
 from app.utils.logger import LoggerFactory
 
 logger = LoggerFactory().get_logger(__name__)
@@ -19,9 +22,23 @@ async def lifespan(app: FastAPI):
     Args:
         app (FastAPI): FastAPI application instance
     """
+    # Initialize the Minio, Qdrant, and Redis connectors
+    app.state.minio_conn = MinioConnector()
+    app.state.qdrant_conn = QdrantConnector()
+    app.state.redis_conn = RedisConnector()
+
     # Initialize the LlamaIndex configuration (LLM and Embedding models)
-    init_llamaindex_config()
-    yield
+    init_llamaindex_configurations(
+        llm_model=Constants.LLM_MODEL,
+        embedding_model=Constants.EMBEDDING_MODEL,
+    )
+
+    try:
+        yield
+    finally:
+        # Close the Qdrant, and Redis connectors (Minio is closed automatically)
+        app.state.qdrant_conn.client.close()
+        app.state.redis_conn.client.close()
 
 
 def create_app() -> FastAPI:

@@ -1,10 +1,8 @@
-import contextlib
 import os
-from collections.abc import Iterator
-from typing import BinaryIO
-
+from fastapi import Request
 from minio import Minio
 from minio.error import S3Error
+from typing import BinaryIO
 
 from app.databases.base import BaseConnector
 from app.settings import Secrets
@@ -118,13 +116,14 @@ class MinioConnector(BaseConnector[Minio]):
                 data.seek(current_pos)
 
 
-@contextlib.contextmanager
-def get_object_storage_connector() -> Iterator[MinioConnector]:
+def get_minio_connector(request: Request) -> MinioConnector:
     """
     Get the instance of MinioConnector
 
-    Yields:
+    Args:
+        request (Request): FastAPI request object
+
+    Returns:
         MinioConnector: Object storage connection instance
     """
-    minio_connector = MinioConnector()
-    yield minio_connector
+    return request.app.state.minio_conn

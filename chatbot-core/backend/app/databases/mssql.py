@@ -1,12 +1,6 @@
-import contextlib
-from collections.abc import AsyncGenerator
-from collections.abc import Iterator
-
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.engine import Engine, create_engine
+from sqlalchemy.orm import sessionmaker, Session
+from typing import Iterator
 from app.databases.base import BaseConnector
 from app.settings import Constants
 from app.settings import Secrets
@@ -35,7 +29,7 @@ class MSSQLConnector(BaseConnector[Engine]):
             Engine: Database connection instance
         """
         try:
-            uri = Constants.MSSQL_CONNECTOR_URI.format(
+            url = Constants.MSSQL_CONNECTOR_URI.format(
                 user=Secrets.MSSQL_USER,
                 password=Secrets.MSSQL_SA_PASSWORD,
                 host=Secrets.MSSQL_HOST,
@@ -43,7 +37,7 @@ class MSSQLConnector(BaseConnector[Engine]):
                 driver=Constants.MSSQL_DRIVER,
             )
             return create_engine(
-                uri,
+                url=url,
                 pool_size=Constants.MSSQL_POOL_SIZE,
                 max_overflow=Constants.MSSQL_MAX_OVERFLOW,
                 pool_timeout=Constants.MSSQL_POOL_TIMEOUT,
@@ -54,27 +48,13 @@ class MSSQLConnector(BaseConnector[Engine]):
             raise
 
 
-@contextlib.contextmanager
-def get_db_connector() -> Iterator[MSSQLConnector]:
-    """
-    Get the database connection
-
-    Yields:
-        Engine: Database connection instance
-    """
-    connector = MSSQLConnector()
-    yield connector
-
-
-# Get the engine from the MSSQLConnector singleton
-with get_db_connector() as connector:
-    engine = connector.client
-
 # Create a session maker
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    bind=MSSQLConnector().client, expire_on_commit=False, class_=Session, autoflush=False, autocommit=False
+)
 
 
-async def get_db_session() -> AsyncGenerator[Session, None]:
+def get_db_session() -> Iterator[Session]:
     """
     Provides a transactional scope around a series of operations.
 
@@ -84,9 +64,5 @@ async def get_db_session() -> AsyncGenerator[Session, None]:
     Raises:
         Exception: Any exception that occurs during the database session
     """
-    session = SessionLocal()
-
-    try:
+    with SessionLocal() as session:
         yield session
-    finally:
-        session.close()

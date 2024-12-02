@@ -1,8 +1,5 @@
-import contextlib
-from collections.abc import Iterator
-
-from qdrant_client import models
-from qdrant_client import QdrantClient
+from fastapi import Request
+from qdrant_client import QdrantClient, models
 
 from app.databases.base import BaseConnector
 from app.settings import Constants
@@ -63,13 +60,14 @@ class QdrantConnector(BaseConnector[QdrantClient]):
         )
 
 
-@contextlib.contextmanager
-def get_vector_db_connector() -> Iterator[QdrantConnector]:
+def get_qdrant_connector(request: Request) -> QdrantConnector:
     """
     Get the instance of the vector database connection
 
-    Yield:
+    Args:
+        request (Request): FastAPI request object
+
+    Returns:
         QdrantConnector: Vector database connection instance
     """
-    qdrant_connector = QdrantConnector()
-    yield qdrant_connector
+    return request.app.state.qdrant_conn

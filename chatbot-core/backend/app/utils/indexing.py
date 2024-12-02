@@ -13,8 +13,8 @@ from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.core.schema import BaseNode
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
-from app.databases.qdrant import get_vector_db_connector
-from app.databases.redis import get_cache_connector
+from app.databases.qdrant import QdrantConnector
+from app.databases.redis import RedisConnector
 from app.settings import Constants
 from app.utils.pdf_reader import parse_pdf
 
@@ -46,36 +46,38 @@ def get_transformations() -> List[Any]:
 
 def index_document_to_vector_db(
     document: Annotated[UploadFile, File(description="PDF file")],
+    qdrant_connector: QdrantConnector,
+    redis_connector: RedisConnector,
 ) -> None:
     """
     Index a PDF document into the vector database.
 
     Args:
         document (UploadFile): PDF file
+        qdrant_connector (QdrantConnector): Vector database connection
+        redis_connector (RedisConnector): Cache store connection
     """
     # Parse PDF file into LlamaIndex Document objects
     documents = parse_pdf(document=document)
 
-    # Initialize the vector store for the ingestion pipeline
-    with get_vector_db_connector() as vector_db_connector:
-        # Create a collection in the vector database
-        vector_db_connector.create_collection(
-            collection_name=Constants.LLM_QDRANT_COLLECTION,
-        )
+    # Create a collection in the vector database
+    qdrant_connector.create_collection(
+        collection_name=Constants.LLM_QDRANT_COLLECTION,
+    )
 
-        vector_db_client = vector_db_connector.client
-        vector_store = QdrantVectorStore(
-            client=vector_db_client,
-            collection_name=Constants.LLM_QDRANT_COLLECTION,
-        )
+    # Initialize the vector store for the ingestion pipeline
+    qdrant_client = qdrant_connector.client
+    vector_store = QdrantVectorStore(
+        client=qdrant_client,
+        collection_name=Constants.LLM_QDRANT_COLLECTION,
+    )
 
     # Initialize the cache store for the ingestion pipeline
-    with get_cache_connector() as cache_connector:
-        cache_store = cache_connector.get_cache_store()
-        ingest_cache = IngestionCache(
-            cache=cache_store,
-            collection=Constants.LLM_REDIS_CACHE_COLLECTION,
-        )
+    redis_cache = redis_connector.get_cache_store()
+    ingest_cache = IngestionCache(
+        cache=redis_cache,
+        collection=Constants.LLM_REDIS_CACHE_COLLECTION,
+    )
 
     # Define transformation components (chunking + node postprocessors)
     transformations = get_transformations()

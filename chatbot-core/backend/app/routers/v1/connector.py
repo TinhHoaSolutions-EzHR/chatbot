@@ -1,15 +1,11 @@
-from typing import Annotated
-from typing import List
-
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import File
-from fastapi import HTTPException
-from fastapi import status
-from fastapi import UploadFile
+from typing import Annotated, List, Iterator
+from fastapi import APIRouter, File, HTTPException, UploadFile, Depends, status
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
+from app.databases.minio import get_minio_connector
+from app.databases.qdrant import get_qdrant_connector
+from app.databases.redis import get_redis_connector
 from app.models.api import APIResponse
 from app.models.connector import ConnectorRequest
 from app.models.connector import ConnectorResponse
@@ -28,6 +24,9 @@ router = APIRouter(prefix="/connectors", tags=["connectors", "documents"])
 def upload_documents(
     documents: Annotated[List[UploadFile], File(description="One or multiple documents")],
     db_session: Session = Depends(get_db_session),
+    minio_connector=Depends(get_minio_connector),
+    qdrant_connector=Depends(get_qdrant_connector),
+    redis_connector=Depends(get_redis_connector),
 ) -> None:
     """
     Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
@@ -35,9 +34,17 @@ def upload_documents(
     Args:
         files (List[UploadFile]): List of files to be uploaded.
         db_session (Session, optional): Database session. Defaults to relational database engine.
+        minio_connector (MinioConnector, optional): Object storage connection. Defaults to MinioConnector.
+        qdrant_connector (QdrantConnector, optional): Vector database connection. Defaults to QdrantConnector.
+        redis_connector (RedisConnector, optional): Cache store connection. Defaults to RedisConnector.
     """
     # Upload documents to object storage and trigger indexing pipeline
-    document_urls, err = DocumentService(db_session=db_session).upload_documents(documents=documents)
+    document_urls, err = DocumentService(
+        db_session=db_session,
+        minio_connector=minio_connector,
+        qdrant_connector=qdrant_connector,
+        redis_connector=redis_connector,
+    ).upload_documents(documents=documents)
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
@@ -57,7 +64,9 @@ def get_connectors(db_session: Session = Depends(get_db_session)) -> None:
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Get connectors
-    connectors, err = ConnectorService(db_session=db_session).get_connectors()
+    result: Iterator = ConnectorService(db_session=db_session).get_connectors()
+    connectors, err = result
+
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
