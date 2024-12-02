@@ -1,8 +1,10 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-from typing import List
+from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.orm import relationship, mapped_column, Mapped
+from typing import List, Optional
+from uuid import uuid4
 
 from app.models import Base
 
@@ -10,47 +12,41 @@ from app.models import Base
 class DocumentMetadata(Base):
     __tablename__ = "document_metadata"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, index=True)
-    description = Column(String)
-    object_url = Column(String)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    deleted_at = Column(DateTime, default=None, nullable=True)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=True)
+    document_url: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    tags = relationship(
-        "DocumentMetadataTags",
-        back_populates="document_metadata",
-        cascade="all, delete-orphan",
+    tags: Mapped[List["DocumentMetadataTags"]] = relationship(
+        "DocumentMetadataTags", back_populates="document_metadata", lazy="joined"
     )
 
 
 class DocumentMetadataTags(Base):
     __tablename__ = "document_metadata_tags"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, index=True)
-    document_metadata_id = Column(Integer, ForeignKey("document_metadata.id"))
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    deleted_at = Column(DateTime, default=None, nullable=True)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    document_metadata_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), ForeignKey("document_metadata.id"), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    document_metadata = relationship("DocumentMetadata", back_populates="tags")
-
-
-class DocumentMetadataRequest(BaseModel):
-    name: str = Field(..., description="Document name")
-    description: str = Field(..., description="Document description")
-    tags: List[str] = Field(default_factory=list, description="List of tags")
-
-    class Config:
-        from_attributes = True
+    document_metadata: Mapped[DocumentMetadata] = relationship("DocumentMetadata", back_populates="tags")
 
 
-class DocumentMetadataResponse(BaseModel):
-    name: str = Field(..., description="Document name")
-    description: str = Field(default="", description="Document description")
-    tags: List[str] = Field(default_factory=list, description="List of tags")
+class DocumentUploadResponse(BaseModel):
+    document_url: str = Field(..., description="Object URL")
 
     class Config:
         from_attributes = True
+        arbitrary_types_allowed = True

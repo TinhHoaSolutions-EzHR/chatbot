@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models.api import APIResponse
+from app.models.document import DocumentUploadResponse
 from app.models.connector import ConnectorRequest, ConnectorResponse
-from app.models.document import DocumentMetadataResponse
 from app.services.connector import ConnectorService
 from app.services.document import DocumentService
 from app.settings import Constants
@@ -13,12 +13,12 @@ from app.utils.api_response import BackendAPIResponse
 from app.utils.logger import LoggerFactory
 
 logger = LoggerFactory().get_logger(__name__)
-router = APIRouter(prefix="/connectors", tags=["connectors", "files"])
+router = APIRouter(prefix="/connectors", tags=["connectors", "documents"])
 
 
-@router.post("/files/upload", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/documents/upload", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def upload_documents(
-    files: Annotated[List[UploadFile], File(description="One or multiple documents")],
+    documents: Annotated[List[UploadFile], File(description="One or multiple documents")],
     db_session: Session = Depends(get_db_session),
 ) -> None:
     """
@@ -29,13 +29,14 @@ def upload_documents(
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Upload documents to object storage and trigger indexing pipeline
-    err = DocumentService(db_session=db_session).upload_documents(files=files)
+    document_urls, err = DocumentService(db_session=db_session).upload_documents(documents=documents)
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = [DocumentMetadataResponse(name=file.filename) for file in files]
+    data = [DocumentUploadResponse(document_url=document_url) for document_url in document_urls]
+
     return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
@@ -60,12 +61,12 @@ def get_connectors(db_session: Session = Depends(get_db_session)) -> None:
 
 
 @router.get("/{connector_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_connector(connector_id: int, db_session: Session = Depends(get_db_session)) -> None:
+def get_connector(connector_id: str, db_session: Session = Depends(get_db_session)) -> None:
     """
     Get connector by id.
 
     Args:
-        connector_id (int): Connector id
+        connector_id (str): Connector id
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Get connector by id
@@ -75,7 +76,10 @@ def get_connector(connector_id: int, db_session: Session = Depends(get_db_sessio
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = ConnectorResponse.model_validate(connector)
+    if connector:
+        data = ConnectorResponse.model_validate(connector)
+    else:
+        data = None
 
     return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
@@ -95,12 +99,15 @@ def create_connector(connector_request: ConnectorRequest, db_session: Session = 
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
+    # Parse response
+    data = connector_request.model_dump(exclude_unset=True)
+
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.patch("/{connector_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_connector(
-    connector_id: int, connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)
+    connector_id: str, connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)
 ) -> None:
     """
     Update connector by connector_id.
@@ -118,16 +125,19 @@ def update_connector(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
+    # Parse response
+    data = connector_request.model_dump(exclude_unset=True)
+
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.delete("/{connector_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_connector(connector_id: int, db_session: Session = Depends(get_db_session)) -> None:
+def delete_connector(connector_id: str, db_session: Session = Depends(get_db_session)) -> None:
     """
     Delete connector by connector_id.
 
     Args:
-        connector_id (int): Connector id
+        connector_id (str): Connector id
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Delete connector by id

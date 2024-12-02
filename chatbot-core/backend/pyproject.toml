@@ -30,9 +30,8 @@ dependencies = [
   "pdfplumber>=0.11.4",
   "qdrant-client>=1.12.1",
   "minio>=7.2.12",
-  "sqlalchemy>=1.4.54",
-  "pymssql>=2.3.2",
   "pyodbc>=5.2.0",
+  "sqlalchemy>=2.0.36",
 ]
 
 [project.optional-dependencies]

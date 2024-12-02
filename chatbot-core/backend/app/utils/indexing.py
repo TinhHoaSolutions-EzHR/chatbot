@@ -1,5 +1,6 @@
 from fastapi import File, UploadFile
 from llama_index.core import Settings
+from llama_index.core.storage.storage_context import StorageContext
 from llama_index.core.extractors import KeywordExtractor, QuestionsAnsweredExtractor
 from llama_index.core.ingestion import IngestionCache, IngestionPipeline
 from llama_index.core.node_parser import SemanticSplitterNodeParser
@@ -7,8 +8,8 @@ from llama_index.core.schema import BaseNode
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from typing import Annotated, Any, List
 
-from app.databases.qdrant import get_vector_db_client
-from app.databases.redis import get_cache_store_client
+from app.databases.qdrant import get_vector_db_connector
+from app.databases.redis import get_cache_connector
 from app.settings import Constants
 from app.utils.pdf_reader import parse_pdf
 
@@ -16,6 +17,9 @@ from app.utils.pdf_reader import parse_pdf
 def get_transformations() -> List[Any]:
     """
     Get the transformation components for the ingestion pipeline
+
+    Returns:
+        List[Any]: List of LlamaIndex transformation components
     """
     # Define node postprocessor methods
     extractors = [
@@ -36,24 +40,37 @@ def get_transformations() -> List[Any]:
 
 
 def index_document_to_vector_db(
-    file: Annotated[UploadFile, File(description="PDF file")],
+    document: Annotated[UploadFile, File(description="PDF file")],
 ) -> None:
-    # Parse PDF file into LlamaIndex Document objects
-    documents = parse_pdf(file)
+    """
+    Index a PDF document into the vector database.
 
-    # Define vector store
-    vector_db_client = get_vector_db_client()
-    vector_store = QdrantVectorStore(
-        client=vector_db_client,
-        collection_name=Constants.LLM_QDRANT_COLLECTION,
-    )
+    Args:
+        document (UploadFile): PDF file
+    """
+    # Parse PDF file into LlamaIndex Document objects
+    documents = parse_pdf(document=document)
+
+    # Initialize the vector store for the ingestion pipeline
+    with get_vector_db_connector() as vector_db_connector:
+        # Create a collection in the vector database
+        vector_db_connector.create_collection(
+            collection_name=Constants.LLM_QDRANT_COLLECTION,
+        )
+
+        vector_db_client = vector_db_connector.client
+        vector_store = QdrantVectorStore(
+            client=vector_db_client,
+            collection_name=Constants.LLM_QDRANT_COLLECTION,
+        )
 
     # Initialize the cache store for the ingestion pipeline
-    cache = get_cache_store_client()
-    ingest_cache = IngestionCache(
-        cache=cache,
-        collection=Constants.LLM_REDIS_CACHE_COLLECTION,
-    )
+    with get_cache_connector() as cache_connector:
+        cache_store = cache_connector.get_cache_store()
+        ingest_cache = IngestionCache(
+            cache=cache_store,
+            collection=Constants.LLM_REDIS_CACHE_COLLECTION,
+        )
 
     # Define transformation components (chunking + node postprocessors)
     transformations = get_transformations()

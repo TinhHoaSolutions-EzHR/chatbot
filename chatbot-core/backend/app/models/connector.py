@@ -1,8 +1,12 @@
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, DateTime, Integer, String, JSON
-from typing import Optional, List, Dict
+from sqlalchemy import DateTime, String
+from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.orm import mapped_column, Mapped
+from typing import Optional, List
+from uuid import uuid4, UUID
 
 from app.models import Base
 
@@ -15,13 +19,15 @@ class DocumentSource(str, Enum):
 class Connector(Base):
     __tablename__ = "connectors"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String)
-    source = Column(String)
-    connector_specific_config = Column(JSON)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    deleted_at = Column(DateTime, default=None, nullable=True)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    source: Mapped[DocumentSource] = mapped_column(SQLAlchemyEnum(DocumentSource, native_enum=False), nullable=False)
+    connector_specific_config: Mapped[str] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
 
 class ConnectorRequest(BaseModel):
@@ -34,13 +40,13 @@ class ConnectorRequest(BaseModel):
 
 
 class ConnectorResponse(BaseModel):
-    id: int = Field(..., description="Connector ID")
+    id: UUID = Field(..., description="Connector ID")
     name: str = Field(..., description="Connector name")
     source: DocumentSource = Field(..., description="Document source")
-    connector_specific_config: Optional[Dict] = Field(..., description="Connector specific configuration")
+    connector_specific_config: Optional[str] = Field(None, description="Connector specific configuration")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
-    deleted_at: Optional[datetime] = Field(..., description="Deleted at timestamp")
+    deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")
 
     class Config:
         from_attributes = True

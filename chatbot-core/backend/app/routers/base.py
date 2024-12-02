@@ -15,7 +15,7 @@ async def home():
         BackendAPIResponse()
         .set_data(
             {
-                "org": "Tinh Hoa Solutions",
+                "organization": "Tinh Hoa Solutions",
                 "description": "API for LLM-based Application Chatbot",
             }
         )
