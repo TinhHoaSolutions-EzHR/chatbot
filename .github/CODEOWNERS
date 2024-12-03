@@ -1,10 +1,10 @@
 # Chatbot-core team owns chatbot-core directory
-chatbot-core/ @chat-bot-team
+chatbot-core/ @TinhHoaSolutions-EzHR/chat-bot
 
 # Vanphongso team owns vanphongso directory
-vanphongso/ @van-phong-so-team
+vanphongso/ @TinhHoaSolutions-EzHR/van-phong-so
 
 # Both teams collaborate on shared resources
-deployment/ @chat-bot-team @van-phong-so-team
-docs/ @chat-bot-team @van-phong-so-team
+deployment/ @TinhHoaSolutions-EzHR/chat-bot @TinhHoaSolutions-EzHR/van-phong-so
+docs/ @TinhHoaSolutions-EzHR/chat-bot @TinhHoaSolutions-EzHR/van-phong-so
 
