@@ -26,7 +26,7 @@ function BackToDanswerButton() {
     <div className="absolute bottom-0 bg-background w-full flex border-t border-border py-4">
       <div className="mx-auto">
         <Button onClick={() => router.push("/chat")}>
-          Back to {enterpriseSettings?.application_name || "Danswer Chat"}
+          Back to {enterpriseSettings?.application_name || "EzHR Chat"}
         </Button>
       </div>
     </div>
