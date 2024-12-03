@@ -48,8 +48,7 @@ class MSSQLConnector(BaseConnector[Engine]):
                 pool_recycle=Constants.MSSQL_POOL_RECYCLE,
             )
         except Exception as e:
-            logger.error(f"Error initializing database: {e}")
-            raise
+            logger.error(f"Error initializing database: {e}", exc_info=True)
 
 
 # Create a session maker

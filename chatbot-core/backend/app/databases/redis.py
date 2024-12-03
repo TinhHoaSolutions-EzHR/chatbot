@@ -38,8 +38,7 @@ class RedisConnector(BaseConnector[Redis]):
                 max_connections=Constants.REDIS_MAX_CONNECTIONS,
             )
         except Exception as e:
-            logger.error(f"Error initializing Redis connection pool: {e}")
-            raise
+            logger.error(f"Error initializing Redis connection pool: {e}", exc_info=True)
 
     @classmethod
     def _create_client(cls) -> Redis | None:
@@ -53,8 +52,7 @@ class RedisConnector(BaseConnector[Redis]):
             connection_pool = cls._create_connection_pool()
             return Redis(connection_pool=connection_pool)
         except Exception as e:
-            logger.error(f"Error initializing Redis connection: {e}")
-            raise
+            logger.error(f"Error initializing Redis connection: {e}", exc_info=True)
 
     def get_cache_store(self) -> RedisCache:
         """

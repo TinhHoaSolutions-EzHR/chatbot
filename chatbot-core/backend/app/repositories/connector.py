@@ -51,7 +51,7 @@ class ConnectorRepository(BaseRepository):
             connector = self._db_session.query(Connector).filter(Connector.id == connector_id).first()
             return connector, None
         except Exception as e:
-            logger.error(f"Error getting connector: {e}")
+            logger.error(f"Error getting connector: {e}", exc_info=True)
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def create_connector(self, connector: Connector) -> Union[APIError, None]:
@@ -68,7 +68,7 @@ class ConnectorRepository(BaseRepository):
             self._db_session.add(connector)
             return None
         except Exception as e:
-            logger.error(f"Error creating connector: {e}")
+            logger.error(f"Error creating connector: {e}", exc_info=True)
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
@@ -88,7 +88,7 @@ class ConnectorRepository(BaseRepository):
             self._db_session.query(Connector).filter(Connector.id == connector_id).update(connector)
             return None
         except Exception as e:
-            logger.error(f"Error updating connector: {e}")
+            logger.error(f"Error updating connector: {e}", exc_info=True)
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
@@ -106,5 +106,5 @@ class ConnectorRepository(BaseRepository):
             self._db_session.query(Connector).filter(Connector.id == connector_id).delete()
             return None
         except Exception as e:
-            logger.error(f"Error deleting connector: {e}")
+            logger.error(f"Error deleting connector: {e}", exc_info=True)
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

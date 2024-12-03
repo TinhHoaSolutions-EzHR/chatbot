@@ -74,7 +74,7 @@ class ConnectorService(BaseService):
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
-            logger.error(f"Error creating connector: {e}")
+            logger.error(f"Error creating connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
         return err
@@ -102,7 +102,7 @@ class ConnectorService(BaseService):
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
-            logger.error(f"Error updating connector: {e}")
+            logger.error(f"Error updating connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
         return err
@@ -124,7 +124,7 @@ class ConnectorService(BaseService):
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
-            logger.error(f"Error deleting connector: {e}")
+            logger.error(f"Error deleting connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
         return err

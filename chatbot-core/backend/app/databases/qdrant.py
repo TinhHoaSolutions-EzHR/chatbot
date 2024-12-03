@@ -32,8 +32,7 @@ class QdrantConnector(BaseConnector[QdrantClient]):
         try:
             return QdrantClient(host=Secrets.QDRANT_HOST, port=Secrets.QDRANT_PORT)
         except Exception as e:
-            logger.error(f"Error initializing vector database: {e}")
-            raise
+            logger.error(f"Error initializing vector database: {e}", exc_info=True)
 
     def create_collection(
         self,

@@ -52,17 +52,6 @@ class BaseConnector(ABC, Generic[T]):
 
         return self._client
 
-    @client.setter
-    def client(self, client: T) -> None:
-        """
-        Set the client instance
-
-        Args:
-            client (T): The client instance
-        """
-        with self._lock:
-            self._client = client
-
     @staticmethod
     def _validate_config(o: object, required: List[str]) -> None:
         """

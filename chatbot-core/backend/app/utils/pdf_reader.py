@@ -29,7 +29,7 @@ def parse_pdf(
             for page in pdf.pages:
                 documents.append(Document(text=page.extract_text()))
     except Exception as e:
-        logger.error(f"Failed to parse PDF file: {e}")
+        logger.error(f"Failed to parse PDF file: {e}", exc_info=True)
         return None
 
     return documents

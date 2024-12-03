@@ -48,7 +48,7 @@ The project follows a structured flow:
                 embedding_models = self._db_session.query(EmbeddingModel).all()
                 return embedding_models, None
             except Exception as e:
-                logger.error(f"Error getting embedding models: {e}")
+                logger.error(f"Error getting embedding models: {e}", exc_info=True)
                 return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
     ```
 

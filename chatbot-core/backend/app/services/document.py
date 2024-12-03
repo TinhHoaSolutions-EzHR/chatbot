@@ -116,7 +116,7 @@ class DocumentService(BaseService):
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
-            logger.error(f"Error uploading documents: {e}")
+            logger.error(f"Error uploading documents: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
         return deduped_document_urls, err

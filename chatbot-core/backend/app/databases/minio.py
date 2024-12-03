@@ -39,21 +39,19 @@ class MinioConnector(BaseConnector[Minio]):
                 secure=False,
             )
         except S3Error as e:
-            logger.error(f"S3 error initializing object storage: {e}")
-            raise
+            logger.error(f"S3 error initializing object storage: {e}", exc_info=True)
         except Exception as e:
-            logger.error(f"Unexpected error initializing object storage: {e}")
-            raise
+            logger.error(f"Unexpected error initializing object storage: {e}", exc_info=True)
 
-    def _create_bucket(self, bucket_name: str) -> bool:
+    def _create_bucket(self, bucket_name: str) -> None:
         """
         Create a bucket in object storage
 
         Args:
             bucket_name (str): Bucket name
 
-        Returns:
-            bool: True if the bucket is created successfully, otherwise False
+        Raises:
+            S3Error: If there's an error with the S3 operation
         """
         try:
             # Check if the bucket exists
@@ -62,16 +60,12 @@ class MinioConnector(BaseConnector[Minio]):
                 # Create the bucket if it does not exist
                 logger.info(f"Bucket {bucket_name} not found. Creating...")
                 self.client.make_bucket(bucket_name)
-                return True
 
             logger.info(f"Bucket {bucket_name} already exists")
-            return False
         except S3Error as e:
-            logger.error(f"S3 error creating bucket {bucket_name}: {e}")
-            return False
+            logger.error(f"S3 error creating bucket {bucket_name}: {e}", exc_info=True)
         except Exception as e:
-            logger.error(f"Unexpected error creating bucket {bucket_name}: {e}")
-            return False
+            logger.error(f"Unexpected error creating bucket {bucket_name}: {e}", exc_info=True)
 
     def upload_files(self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None) -> None:
         """
@@ -106,11 +100,9 @@ class MinioConnector(BaseConnector[Minio]):
             # Upload the file to the bucket
             self.client.put_object(bucket_name=bucket_name, object_name=object_name, data=data, length=length)
         except S3Error as e:
-            logger.error(f"S3 error uploading file {object_name}: {e}")
-            raise
+            logger.error(f"S3 error uploading file {object_name}: {e}", exc_info=True)
         except Exception as e:
-            logger.error(f"Unexpected error uploading file {object_name}: {e}")
-            raise
+            logger.error(f"Unexpected error uploading file {object_name}: {e}", exc_info=True)
         finally:
             # Ensure the file pointer is reset to the original position
             if data.seekable():
