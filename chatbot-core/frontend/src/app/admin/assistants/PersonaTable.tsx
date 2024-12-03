@@ -126,7 +126,7 @@ export function PersonasTable() {
                     className="mr-1 my-auto cursor-pointer"
                     onClick={() =>
                       router.push(
-                        `/admin/assistants/${persona.id}?u=${Date.now()}`
+                        `/admin/assistants/?id=${persona.id}?u=${Date.now()}`
                       )
                     }
                   />
