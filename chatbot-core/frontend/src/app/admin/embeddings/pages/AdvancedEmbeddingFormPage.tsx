@@ -9,7 +9,7 @@ import {
   Label,
   SubLabel,
 } from "@/components/admin/connectors/Field";
-import NumberInput from "../../connectors/[connector]/pages/ConnectorInput/NumberInput";
+import NumberInput from "@/app/admin/connectors/pages/ConnectorInput/NumberInput";
 
 interface AdvancedEmbeddingFormPageProps {
   updateAdvancedEmbeddingDetails: (
