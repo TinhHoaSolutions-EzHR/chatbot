@@ -4,20 +4,22 @@
 .idea/
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.python-version
+**/.env
+**/.venv
+**/env/
+**/venv/
+**/ENV/
+**/env.bak/
+**/venv.bak/
+**/.python-version
 
-# Logs
+# Docs
 docs/.next
 docs/node_modules
-node_modules
-yarn-error.log
+
+# Logs
+**/node_modules
+**/yarn-error.log
 
 # Tools
-.ruff_cache/
+**/.ruff_cache/

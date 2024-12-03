@@ -39,7 +39,7 @@ export default function FixedLogo({
               </div>
             ) : (
               <HeaderTitle backgroundToggled={backgroundToggled}>
-                Danswer
+                EzHR
               </HeaderTitle>
             )}
           </div>
