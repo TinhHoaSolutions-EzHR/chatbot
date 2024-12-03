@@ -21,8 +21,6 @@ keywords = ["sample", "setuptools", "development"]
 dependencies = [
   "fastapi[standard]",
   "uvicorn==0.23.2",
-  "psycopg2-binary==2.9.10",
-  "sqlalchemy==1.4.54",
   "llama-index>=0.12.1",
   "llama-index-vector-stores-qdrant>=0.4.0",
   "llama-index-storage-chat-store-redis>=0.4.0",
@@ -31,6 +29,9 @@ dependencies = [
   "fastembed>=0.4.2",
   "pdfplumber>=0.11.4",
   "qdrant-client>=1.12.1",
+  "minio>=7.2.12",
+  "pyodbc>=5.2.0",
+  "sqlalchemy>=2.0.36",
 ]
 
 [project.optional-dependencies]
@@ -49,7 +50,7 @@ changelog_file = "CHANGELOG.md"
 [tool.ruff]
 target-version = "py311"
 line-length = 120
-exclude = ["*/migrations/*", "*/alembic/*", "*/__init__.py"]
+exclude = ["*/migrations/*", "*/alembic/*", "*/__init__.py", "backend.egg-info"]
 extend-exclude = ["*.ipynb"]
 indent-width = 4
 
@@ -93,10 +94,17 @@ testpaths = ["tests"]                     # Specify directories where tests are 
 python_files = ["test_*.py", "*_test.py"] # Test file pattern
 python_classes = ["Test*"]                # Class names to consider as tests
 python_functions = ["test_*"]             # Function names to consider as tests
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    # note the use of single quote below to denote "raw" strings in TOML
+    'ignore:.*U.*mode is deprecated:DeprecationWarning',
+]
 
 [dependency-groups]
 dev = [
     "pytest-coverage>=0.0",
     "pytest>=8.3.3",
+    "commitizen>=4.0.0",
     "ipykernel>=6.29.5",
 ]

@@ -2,6 +2,7 @@
 services:
   database:
     image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
     container_name: database
     user: root
     restart: always
@@ -10,7 +11,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
-      MSSQL_USER: "SA"
+      MSSQL_USER: ${MSSQL_USER}
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
     volumes:
       - mssql_data_volume:/var/opt/mssql/data
@@ -19,7 +20,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1;" || exit
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1;" || exit
       interval: 60s
       timeout: 10s
       retries: 3
@@ -55,11 +56,28 @@ services:
     networks:
       - backend
 
+  object_storage:
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
+    container_name: object_storage
+    # restart: always
+    ports:
+      - "9000:9000" # for web interface
+      - "9001:9001" # for S3 API
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - backend
+    command: server --console-address ":9001" /data
+
   # NOTE: Official port for api_server is 5000
   api_server:
     build:
       context: ../../chatbot-core/backend/
       dockerfile: Dockerfile
+    platform: linux/amd64
     container_name: api_server
     hostname: api_server
     restart: on-failure
@@ -74,6 +92,7 @@ services:
       - "5000:5000"
     env_file:
       - ./.env
+      - ../../chatbot-core/.env
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/app/:/app/app
       - ../../chatbot-core/backend/tests/:/app/tests
@@ -92,6 +111,7 @@ volumes:
   mssql_log_volume:
   mssql_backup_volume:
   qdrant_data_volume:
+  minio_data:
 
 networks:
   backend:

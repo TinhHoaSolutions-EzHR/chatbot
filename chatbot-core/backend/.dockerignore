@@ -3,3 +3,9 @@
 .gitignore
 README.md
 requirements.txt
+.venv/
+.ruff_cache
+Dockerfile
+.dockerignore
+backend.egg-info
+__pycache__/
