@@ -25,7 +25,6 @@ export function ToolsTable({ tools }: { tools: ToolSnapshot[] }) {
   return (
     <div>
       {popup}
-
       <Table>
         <TableHeader>
           <TableRow>
