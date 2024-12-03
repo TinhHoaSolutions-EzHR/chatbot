@@ -1,0 +1,10 @@
+# Chatbot-core team owns chatbot-core directory
+chatbot-core/ @chat-bot
+
+# Vanphongso team owns vanphongso directory
+vanphongso/ @van-phong-so
+
+# Both teams collaborate on shared resources
+deployment/ @chat-bot @van-phong-so
+docs/ @chat-bot @van-phong-so
+
