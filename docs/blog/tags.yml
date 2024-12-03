@@ -1,0 +1,10 @@
+development:
+  label: 'Development'
+  permalink: '/blog/development/'
+  description: 'Development related posts'
+
+donut:
+  label: 'Donut'
+  permalink: '/blog/donut/'
+  description: 'Donut related posts'
+  
