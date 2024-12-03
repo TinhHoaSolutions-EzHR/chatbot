@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import {
   AuthTypeMetadata,
   getAuthTypeMetadataSS,
@@ -19,6 +18,7 @@ import { fetchLLMProvidersSS } from "@/lib/llm/fetchLLMs";
 import { LLMProviderDescriptor } from "@/app/admin/configuration/llm/interfaces";
 import { Folder } from "@/app/chat/folders/interfaces";
 import { personaComparator } from "@/app/admin/assistants/lib";
+import { cookies } from "next/headers";
 import {
   SIDEBAR_TOGGLED_COOKIE_NAME,
   DOCUMENT_SIDEBAR_WIDTH_COOKIE_NAME,
@@ -58,13 +58,14 @@ type FetchOption =
   | "folders"
   | "userInputPrompts";
 
-/*
-NOTE: currently unused, but leaving here for future use.
+/* 
+NOTE: currently unused, but leaving here for future use. 
 */
 export async function fetchSomeChatData(
   searchParams: { [key: string]: string },
   fetchOptions: FetchOption[] = []
 ): Promise<FetchChatDataResult | { redirect: string }> {
+  const requestCookies = await cookies();
   const tasks: Promise<any>[] = [];
   const taskMap: Record<FetchOption, () => Promise<any>> = {
     user: getCurrentUserSS,
@@ -108,52 +109,52 @@ export async function fetchSomeChatData(
 
   for (let i = 0; i < fetchOptions.length; i++) {
     const option = fetchOptions[i];
-    const data = results[i];
+    const result = results[i];
 
     switch (option) {
       case "user":
         result.user = user;
         break;
       case "chatSessions":
-        result.chatSessions = data?.ok
-          ? ((await data.json()) as { sessions: ChatSession[] }).sessions
+        result.chatSessions = result?.ok
+          ? ((await result.json()) as { sessions: ChatSession[] }).sessions
           : [];
         break;
       case "ccPairs":
-        result.ccPairs = data?.ok
-          ? ((await data.json()) as CCPairBasicInfo[])
+        result.ccPairs = result?.ok
+          ? ((await result.json()) as CCPairBasicInfo[])
           : [];
         break;
       case "documentSets":
-        result.documentSets = data?.ok
-          ? ((await data.json()) as DocumentSet[])
+        result.documentSets = result?.ok
+          ? ((await result.json()) as DocumentSet[])
           : [];
         break;
       case "assistants":
-        const [rawAssistantsList, assistantsFetchError] = data as [
+        const [rawAssistantsList, assistantsFetchError] = result as [
           Persona[],
-            string | null,
+          string | null,
         ];
         result.assistants = rawAssistantsList
           .filter((assistant) => assistant.is_visible)
           .sort(personaComparator);
         break;
       case "tags":
-        result.tags = data?.ok
-          ? ((await data.json()) as { tags: Tag[] }).tags
+        result.tags = result?.ok
+          ? ((await result.json()) as { tags: Tag[] }).tags
           : [];
         break;
       case "llmProviders":
-        result.llmProviders = data || [];
+        result.llmProviders = result || [];
         break;
       case "folders":
-        result.folders = data?.ok
-          ? ((await data.json()) as { folders: Folder[] }).folders
+        result.folders = result?.ok
+          ? ((await result.json()) as { folders: Folder[] }).folders
           : [];
         break;
       case "userInputPrompts":
-        result.userInputPrompts = data?.ok
-          ? ((await data.json()) as InputPrompt[])
+        result.userInputPrompts = result?.ok
+          ? ((await result.json()) as InputPrompt[])
           : [];
         break;
     }
@@ -194,9 +195,9 @@ export async function fetchSomeChatData(
   }
 
   if (fetchOptions.includes("folders")) {
-    const openedFoldersCookie = Cookies.get("openedFolders");
+    const openedFoldersCookie = requestCookies.get("openedFolders");
     result.openedFolders = openedFoldersCookie
-      ? JSON.parse(openedFoldersCookie)
+      ? JSON.parse(openedFoldersCookie.value)
       : {};
   }
 
@@ -205,23 +206,23 @@ export async function fetchSomeChatData(
     ? parseInt(defaultAssistantIdRaw)
     : undefined;
 
-  const documentSidebarCookieInitialWidth = Cookies.get(
+  const documentSidebarCookieInitialWidth = requestCookies.get(
     DOCUMENT_SIDEBAR_WIDTH_COOKIE_NAME
   );
-  const sidebarToggled = Cookies.get(SIDEBAR_TOGGLED_COOKIE_NAME);
+  const sidebarToggled = requestCookies.get(SIDEBAR_TOGGLED_COOKIE_NAME);
 
   result.toggleSidebar = sidebarToggled
-    ? sidebarToggled.toLowerCase() === "true"
+    ? sidebarToggled.value.toLowerCase() === "true"
     : NEXT_PUBLIC_DEFAULT_SIDEBAR_OPEN;
 
   result.finalDocumentSidebarInitialWidth = documentSidebarCookieInitialWidth
-    ? parseInt(documentSidebarCookieInitialWidth)
+    ? parseInt(documentSidebarCookieInitialWidth.value)
     : undefined;
 
   if (fetchOptions.includes("ccPairs") && result.ccPairs) {
     const hasAnyConnectors = result.ccPairs.length > 0;
     result.shouldShowWelcomeModal =
-      !hasCompletedWelcomeFlowSS(Cookies.get()) &&
+      !hasCompletedWelcomeFlowSS(requestCookies) &&
       !hasAnyConnectors &&
       (!user || user.role === "admin");
 

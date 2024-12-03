@@ -6,7 +6,7 @@ import { AssistantEditor } from "@/app/admin/assistants/AssistantEditor";
 import { SuccessfulPersonaUpdateRedirectType } from "@/app/admin/assistants/enums";
 import { fetchAssistantEditorInfoSS } from "@/lib/assistants/fetchPersonaEditorInfoSS";
 import { DeletePersonaButton } from "@/app/admin/assistants/DeletePersonaButton";
-import { LargeBackButton } from "../LargeBackButton";
+import { LargeBackButton } from "../../LargeBackButton";
 import Title from "@/components/ui/title";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -28,7 +28,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             <CardSection>
               <AssistantEditor
                 {...values}
-                admin
                 defaultPublic={false}
                 redirectType={SuccessfulPersonaUpdateRedirectType.CHAT}
               />

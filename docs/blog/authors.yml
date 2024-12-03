@@ -1,0 +1,28 @@
+lekiet:
+  name: Le Kiet
+  title: Software Engineer | Data Scientist
+  page: true
+  url: https://github.com/lekiet1214/
+  image_url: https://avatars.githubusercontent.com/u/50958432?v=4
+  socials:
+    github: lekiet1214
+    x: lekiet0101
+
+a1k0n:
+  name: Andy Sloane
+  title: A very cool person
+  page: true
+  url: https://www.a1k0n.net/
+  image_url: https://pbs.twimg.com/profile_images/1276550107597434880/zQiDj5nM_400x400.jpg
+  socials:
+    github: a1k0n
+    x: a1k0n
+
+lelouvincx:
+  name: 9h
+  title: Just a random guy who loves coding.
+  page: true
+  url: https://lelouvincx.github.io/
+  image_url: https://avatars.githubusercontent.com/u/40534905?v=4
+  socials:
+    github: lelouvincx

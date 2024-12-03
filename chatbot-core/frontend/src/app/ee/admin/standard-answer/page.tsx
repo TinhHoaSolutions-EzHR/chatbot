@@ -321,15 +321,7 @@ const StandardAnswersTable = ({
         )}
         {paginatedStandardAnswers.length > 0 && (
           <>
-            <div className="mt-4">
-              <Text>
-                Ensure that you have added the category to the relevant{" "}
-                <a className="text-link" href="/admin/bot">
-                  Slack bot
-                </a>
-                .
-              </Text>
-            </div>
+
             <div className="mt-4 flex justify-center">
               <PageSelector
                 currentPage={currentPage}
@@ -390,13 +382,6 @@ const Main = () => {
   return (
     <div className="mb-8">
       {popup}
-
-      <Text className="mb-2">
-        Manage the standard answers for pre-defined questions.
-        <br />
-        Note: Currently, only questions asked from Slack can receive standard
-        answers.
-      </Text>
       {standardAnswers.length == 0 && (
         <Text className="mb-2">Add your first standard answer below!</Text>
       )}

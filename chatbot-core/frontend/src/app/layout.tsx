@@ -1,57 +1,63 @@
-import './globals.css';
+import "./globals.css";
 
-import { fetchEnterpriseSettingsSS, fetchSettingsSS } from '@/components/settings/lib';
-import { CUSTOM_ANALYTICS_ENABLED, SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED } from '@/lib/constants';
-import { Metadata } from 'next';
-import { buildClientUrl } from '@/lib/utilsSS';
-import { Inter } from 'next/font/google';
-import { EnterpriseSettings, GatingType } from './admin/settings/interfaces';
-import { HeaderTitle } from '@/components/header/HeaderTitle';
-import { Logo } from '@/components/Logo';
-import { fetchAssistantData } from '@/lib/chat/fetchAssistantdata';
-import { AppProvider } from '@/components/context/AppProvider';
-import { PHProvider } from './providers';
-import { getCurrentUserSS } from '@/lib/userSS';
-import CardSection from '@/components/admin/CardSection';
-import { Suspense } from 'react';
-import PostHogPageView from './PostHogPageView';
+import {
+  fetchEnterpriseSettingsSS,
+  fetchSettingsSS,
+} from "@/components/settings/lib";
+import { Metadata } from "next";
+import { buildClientUrl } from "@/lib/utilsSS";
+import { Inter } from "next/font/google";
+import { EnterpriseSettings, GatingType } from "./admin/settings/interfaces";
+import { HeaderTitle } from "@/components/header/HeaderTitle";
+import { Logo } from "@/components/Logo";
+import { fetchAssistantData } from "@/lib/chat/fetchAssistantdata";
+import { AppProvider } from "@/components/context/AppProvider";
+import { PHProvider } from "./providers";
+import { getCurrentUserSS } from "@/lib/userSS";
+import CardSection from "@/components/admin/CardSection";
+import { Suspense } from "react";
+import PostHogPageView from "./PostHogPageView";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  let logoLocation = buildClientUrl('/danswer.ico');
+  let logoLocation = buildClientUrl("/danswer.ico");
   let enterpriseSettings: EnterpriseSettings | null = null;
-  if (SERVER_SIDE_ONLY__PAID_ENTERPRISE_FEATURES_ENABLED) {
-    enterpriseSettings = await (await fetchEnterpriseSettingsSS()).json();
-    logoLocation =
-      enterpriseSettings && enterpriseSettings.use_custom_logo
-        ? '/api/enterprise-settings/logo'
-        : buildClientUrl('/danswer.ico');
-  }
+
+  enterpriseSettings = await (await fetchEnterpriseSettingsSS()).json();
+  logoLocation =
+    enterpriseSettings && enterpriseSettings.use_custom_logo
+      ? "/api/enterprise-settings/logo"
+      : buildClientUrl("/danswer.ico");
 
   return {
-    title: enterpriseSettings?.application_name ?? 'Danswer',
-    description: 'Question answering for your documents',
+    title: enterpriseSettings?.application_name ?? "EzHR",
+    description: "Question answering for your documents",
     icons: {
       icon: logoLocation,
     },
   };
 }
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [combinedSettings, assistantsData, user] = await Promise.all([
     fetchSettingsSS(),
     fetchAssistantData(),
     getCurrentUserSS(),
   ]);
 
-  const productGating = combinedSettings?.settings.product_gating ?? GatingType.NONE;
+  const productGating =
+    combinedSettings?.settings.product_gating ?? GatingType.NONE;
 
   const getPageContent = (content: React.ReactNode) => (
     <html lang="en" className={`${inter.variable} font-sans`}>
@@ -60,19 +66,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, interactive-widget=resizes-content"
         />
-        {CUSTOM_ANALYTICS_ENABLED && combinedSettings?.customAnalyticsScript && (
-          <script
-            type="text/javascript"
-            dangerouslySetInnerHTML={{
-              __html: combinedSettings.customAnalyticsScript,
-            }}
-          />
-        )}
       </head>
       <body className={`relative ${inter.variable} font-sans`}>
         <div
           className={`text-default min-h-screen bg-background ${
-            process.env.THEME_IS_DARK?.toLowerCase() === 'true' ? 'dark' : ''
+            process.env.THEME_IS_DARK?.toLowerCase() === "true" ? "dark" : ""
           }`}
         >
           <PHProvider>{content}</PHProvider>
@@ -85,18 +83,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     return getPageContent(
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="mb-2 flex items-center max-w-[175px]">
-          <HeaderTitle>Danswer</HeaderTitle>
+          <HeaderTitle>EzHR</HeaderTitle>
           <Logo height={40} width={40} />
         </div>
 
         <CardSection className="max-w-md">
           <h1 className="text-2xl font-bold mb-4 text-error">Error</h1>
           <p className="text-text-500">
-            Your Danswer instance was not configured properly and your settings could not be loaded. This could be due
-            to an admin configuration issue or an incomplete setup.
+            Your Danswer instance was not configured properly and your settings
+            could not be loaded. This could be due to an admin configuration
+            issue or an incomplete setup.
           </p>
           <p className="mt-4">
-            If you&apos;re an admin, please check{' '}
+            If you&apos;re an admin, please check{" "}
             <a
               className="text-link"
               href="https://docs.danswer.dev/introduction?utm_source=app&utm_medium=error_page&utm_campaign=config_error"
@@ -104,53 +103,45 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               rel="noopener noreferrer"
             >
               our docs
-            </a>{' '}
-            to see how to configure Danswer properly. If you&apos;re a user, please contact your admin to fix this
-            error.
-          </p>
-          <p className="mt-4">
-            For additional support and guidance, you can reach out to our community on{' '}
-            <a
-              className="text-link"
-              href="https://danswer.ai?utm_source=app&utm_medium=error_page&utm_campaign=config_error"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Slack
-            </a>
-            .
+            </a>{" "}
+            to see how to configure Danswer properly. If you&apos;re a user,
+            please contact your admin to fix this error.
           </p>
         </CardSection>
-      </div>,
+      </div>
     );
   }
   if (productGating === GatingType.FULL) {
     return getPageContent(
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="mb-2 flex items-center max-w-[175px]">
-          <HeaderTitle>Danswer</HeaderTitle>
+          <HeaderTitle>EzHR</HeaderTitle>
           <Logo height={40} width={40} />
         </div>
         <CardSection className="w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-4 text-error">Access Restricted</h1>
+          <h1 className="text-2xl font-bold mb-4 text-error">
+            Access Restricted
+          </h1>
           <p className="text-text-500 mb-4">
-            We regret to inform you that your access to Danswer has been temporarily suspended due to a lapse in your
-            subscription.
+            We regret to inform you that your access to Danswer has been
+            temporarily suspended due to a lapse in your subscription.
           </p>
           <p className="text-text-500 mb-4">
-            To reinstate your access and continue benefiting from Danswer&apos;s powerful features, please update your
-            payment information.
+            To reinstate your access and continue benefiting from Danswer&apos;s
+            powerful features, please update your payment information.
           </p>
           <p className="text-text-500">
-            If you&apos;re an admin, you can resolve this by visiting the billing section. For other users, please reach
-            out to your administrator to address this matter.
+            If you&apos;re an admin, you can resolve this by visiting the
+            billing section. For other users, please reach out to your
+            administrator to address this matter.
           </p>
         </CardSection>
-      </div>,
+      </div>
     );
   }
 
-  const { assistants, hasAnyConnectors, hasImageCompatibleModel } = assistantsData;
+  const { assistants, hasAnyConnectors, hasImageCompatibleModel } =
+    assistantsData;
 
   return getPageContent(
     <AppProvider
@@ -164,6 +155,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <PostHogPageView />
       </Suspense>
       {children}
-    </AppProvider>,
+    </AppProvider>
   );
 }

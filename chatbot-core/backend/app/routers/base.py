@@ -1,4 +1,5 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
+from fastapi import status
 
 from app.models.api import APIResponse
 from app.utils.api_response import BackendAPIResponse
@@ -6,8 +7,8 @@ from app.utils.api_response import BackendAPIResponse
 router = APIRouter(tags=["base"])
 
 
-@router.get("/", response_model=APIResponse)
-async def home():
+@router.get("/", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def home():
     """
     Just a simple home endpoint to show the API's information
     """
@@ -15,7 +16,7 @@ async def home():
         BackendAPIResponse()
         .set_data(
             {
-                "org": "Tinh Hoa Solutions",
+                "organization": "Tinh Hoa Solutions",
                 "description": "API for LLM-based Application Chatbot",
             }
         )
@@ -23,8 +24,8 @@ async def home():
     )
 
 
-@router.get("/ping", response_model=APIResponse)
-async def ping():
+@router.get("/ping", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def ping():
     """
     Just a simple ping endpoint to check if the API is running
     """

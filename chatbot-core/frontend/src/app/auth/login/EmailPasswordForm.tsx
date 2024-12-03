@@ -14,9 +14,13 @@ import { Spinner } from "@/components/Spinner";
 export function EmailPasswordForm({
   isSignup = false,
   shouldVerify,
+  referralSource,
+  nextUrl,
 }: {
   isSignup?: boolean;
   shouldVerify?: boolean;
+  referralSource?: string;
+  nextUrl?: string | null;
 }) {
   const router = useRouter();
   const { popup, setPopup } = usePopup();
@@ -39,7 +43,11 @@ export function EmailPasswordForm({
           if (isSignup) {
             // login is fast, no need to show a spinner
             setIsWorking(true);
-            const response = await basicSignup(values.email, values.password);
+            const response = await basicSignup(
+              values.email,
+              values.password,
+              referralSource
+            );
 
             if (!response.ok) {
               const errorDetail = (await response.json()).detail;
@@ -63,7 +71,7 @@ export function EmailPasswordForm({
               await requestEmailVerification(values.email);
               router.push("/auth/waiting-on-verification");
             } else {
-              router.push("/");
+              router.push(nextUrl ? encodeURI(nextUrl) : "/");
             }
           } else {
             setIsWorking(false);

@@ -1,5 +1,5 @@
-from typing import Optional, Any
-from fastapi import status
+from typing import Any
+from typing import Optional
 
 from app.models.api import APIResponse
 
