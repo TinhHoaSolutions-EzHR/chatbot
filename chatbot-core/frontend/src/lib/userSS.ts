@@ -25,10 +25,22 @@ export const getAuthTypeMetadataSS = async (): Promise<AuthTypeMetadata> => {
     requiresVerification: data.requires_verification,
   };
 };
+
 export const logoutSS = async (
+    authType: AuthType,
+    headers: Headers
 ): Promise<Response | null> => {
-  return null;
+
+      return await logoutStandardSS(headers);
 };
+
+const logoutStandardSS = async (headers: Headers): Promise<Response> => {
+  return await fetch(buildUrl("/auth/logout"), {
+    method: "POST",
+    headers: headers,
+  });
+};
+
 
 export const getCurrentUserSS = async (): Promise<User | null> => {
   try {

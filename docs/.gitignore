@@ -1,0 +1,23 @@
+# INFO: This is gitignore for all projects
+
+# Jetbrains
+.idea/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+docs/.next
+docs/node_modules
+node_modules
+yarn-error.log
+yarn-debug.log
+yarn.lock
+package-lock.json
+.docusaurus/
+docs/chatbot-api/*.mdx
+docs/chatbot-api/sidebar.ts

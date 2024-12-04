@@ -1,0 +1,121 @@
+{
+  "projectName": "chatbot",
+  "projectOwner": "TinhHoaSolutions-EzHR",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "src/pages/index.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "eslint",
+  "contributors": [
+    {
+      "login": "lekiet1214",
+      "name": "Le Kiet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50958432?v=4",
+      "profile": "https://github.com/lekiet1214",
+      "contributions": [
+        "blog",
+        "bug",
+        "code",        
+        "doc",
+        "example",
+        "ideas",
+        "maintenance",
+        "review",
+        "security",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "lelouvincx",
+      "name": "lelouvincx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40534905?v=4",
+      "profile": "https://github.com/lelouvincx",
+      "contributions": [
+        "question",
+        "bug",
+        "business",
+        "code",
+        "content",
+        "data",
+        "design",
+        "doc",
+        "eventOrganizing",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "research",
+        "review",
+        "tool",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "tuantran0910",
+      "name": "Trần Ngọc Tuấn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/94174684?v=4",
+      "profile": "https://www.tuantrann.work/",
+      "contributions": [
+        "bug",
+        "code",
+        "data",
+        "design",
+        "infra",
+        "maintenance",
+        "research",
+        "review"
+      ]
+    },
+    {
+      "login": "greyyT",
+      "name": "Nhan Nguyen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/118145239?v=4",
+      "profile": "https://greyyt.github.io/",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "data",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance",
+        "research",
+        "review"
+      ]
+    },
+    {
+      "login": "vn01122003",
+      "name": "TrungLune",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63691111?v=4",
+      "profile": "https://github.com/vn01122003",
+      "contributions": [
+        "code",
+        "ideas",
+        "infra",
+        "maintenance",
+        "research"
+      ]
+    },
+    {
+      "login": "TranThang0801",
+      "name": "Trần Xuân Thắng",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150577636?v=4",
+      "profile": "https://github.com/TranThang0801",
+      "contributions": [
+        "bug",
+        "data",
+        "ideas",
+        "research",
+        "test",
+        "userTesting"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": false
+}

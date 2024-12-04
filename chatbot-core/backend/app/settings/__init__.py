@@ -1,5 +1,5 @@
-from .constants import Constants
-from .secrets import Secrets
+from app.settings.constants import Constants
+from app.settings.secrets import Secrets
 
 
 __all__ = [
