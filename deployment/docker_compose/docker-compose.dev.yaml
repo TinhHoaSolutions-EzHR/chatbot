@@ -1,0 +1,123 @@
+# NOTE: pwd must be chatbot-core
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
+    container_name: database
+    user: root
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - mssql_data_volume:/var/opt/mssql/data
+      - mssql_log_volume:/var/opt/mssql/log
+      - mssql_backup_volume:/var/opt/mssql/backup
+    networks:
+      - backend
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1;" || exit
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  cache:
+    image: redis:7.4-alpine
+    container_name: cache
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    # docker silently mounts /data even without an explicit volume mount, which enables
+    # persistence. explicitly setting save and appendonly forces ephemeral behavior.
+    command: redis-server --save "" --appendonly no
+
+  index:
+    image: qdrant/qdrant:v1.12.4
+    container_name: index
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    expose:
+      - "6333" # for HTTP
+      - "6334" # for gRPC
+    configs:
+      - source: qdrant_config
+        target: ../data/qdrant/config/local.yaml
+    volumes:
+      - qdrant_data_volume:/qdrant/storage
+    networks:
+      - backend
+
+  object_storage:
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
+    container_name: object_storage
+    # restart: always
+    ports:
+      - "9000:9000" # for web interface
+      - "9001:9001" # for S3 API
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - backend
+    command: server --console-address ":9001" /data
+
+  # NOTE: Official port for api_server is 5000
+  api_server:
+    build:
+      context: ../../chatbot-core/backend/
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: api_server
+    hostname: api_server
+    restart: on-failure
+    depends_on:
+      - database
+      - cache
+      - index
+    command:
+      # ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+      ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "--port", "5000"]
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env
+      - ../../chatbot-core/.env
+    volumes: # INFO: Mount for auto-reload code changes
+      - ../../chatbot-core/backend/app/:/app/app
+      - ../../chatbot-core/backend/tests/:/app/tests
+    networks:
+      - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+
+volumes:
+  mssql_data_volume:
+  mssql_log_volume:
+  mssql_backup_volume:
+  qdrant_data_volume:
+  minio_data:
+
+networks:
+  backend:
+    driver: bridge
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO

@@ -1,6 +1,6 @@
-# This is the documentation for the EzHr-Chatbot project.
+# EzHr-Chatbot LLM-based Assistant
 
-# DO NOT MERGE THIS BRANCH OR ANY PULL REQUEST RELATED TO THIS BRANCH
+This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RAG and LlamaIndex to provide a conversational interface for the users.
 
 # THIS BRANCH IS FOR DOCUMENTATION PURPOSES ONLY
 

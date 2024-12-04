@@ -1,0 +1,69 @@
+default_language_version:
+  python: python3.11
+
+repos:
+  # This checks any wrong json schema
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.29.4
+    hooks:
+      - id: check-github-workflows
+        args: ["--verbose"]
+
+  # This checks for any potential detecting and preventing hardcoded secrets like
+  # passwords, API keys, and tokens in git repos. Gitleaks is an easy-to-use, all-in-one
+  # solution for detecting secrets, past or present, in your code.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.14.1
+    hooks:
+      - id: gitleaks
+
+  # Reorder python imports
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.14.0
+    hooks:
+      - id: reorder-python-imports
+        args: [
+            "--application-directories=chatbot-core/backend/app:chatbot-core/backend/tests",
+            "--unclassifiable-application-module=app", # app is the main module
+            "--py311-plus",
+          ]
+        # need to ignore alembic files, since reorder-python-imports gets confused
+        # and thinks that alembic is a local package since there is a folder
+        # in the backend directory called `alembic`
+        exclude: ^chatbot-core/backend/alembic
+
+  # The repo currently does not and should not have imports with side effects
+  # These settings will remove unused imports with side effects
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args: [
+            "-r", # recursive
+            "--remove-all-unused-imports",
+            "--ignore-init-module-imports",
+            "--remove-unused-variables",
+            "--verbose",
+            "--in-place",
+          ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
+    hooks:
+      # Run the ruff linter
+      - id: ruff
+        types_or: [python, pyi]
+        args: [--fix]
+      # Run the ruff formatter
+      - id: ruff-format
+        types_or: [python, pyi]
+
+  # INFO: wait for frontend to be ready
+  # This checks for any potential detecting and preventing hardcoded secrets like
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v3.1.0
+  #   hooks:
+  #     - id: prettier
+  #       types_or: [html, css, javascript, ts, tsx]
+  #       additional_dependencies:
+  #         - prettier
