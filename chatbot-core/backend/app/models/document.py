@@ -29,7 +29,7 @@ class DocumentMetadata(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    tags: Mapped[List["DocumentMetadataTags"]] = relationship(
+    tags: Mapped[List["DocumentMetadataTag"]] = relationship(
         "DocumentMetadataTags", back_populates="document_metadata", lazy="joined"
     )
 
