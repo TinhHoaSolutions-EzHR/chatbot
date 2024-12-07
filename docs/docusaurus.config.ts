@@ -8,7 +8,7 @@ import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
-const ORGANIZATION_NAME = "TinhHoaSolutions-EzHR";
+const ORGANIZATION_NAME = "greyy-nguyen";
 const PROJECT_NAME = "chatbot";
 
 const config: Config = {
