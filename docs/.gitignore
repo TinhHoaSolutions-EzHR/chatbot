@@ -21,3 +21,4 @@ package-lock.json
 .docusaurus/
 docs/chatbot-api/*.mdx
 docs/chatbot-api/sidebar.ts
+build/

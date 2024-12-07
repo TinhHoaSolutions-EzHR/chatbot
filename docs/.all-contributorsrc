@@ -4,7 +4,8 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
-    "src/pages/index.md"
+    "src/pages/index.md",
+    "README.md"
   ],
   "imageSize": 100,
   "commit": true,
