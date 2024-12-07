@@ -16,7 +16,6 @@ docs/node_modules
 node_modules
 yarn-error.log
 yarn-debug.log
-yarn.lock
 package-lock.json
 .docusaurus/
 docs/chatbot-api/*.mdx
