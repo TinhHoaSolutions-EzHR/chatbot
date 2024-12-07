@@ -1,9 +1,20 @@
+from collections.abc import Generator
+from typing import List
+from typing import Tuple
+from typing import Union
+
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from typing import Tuple, List, Generator
 
 from app.models.api import APIError
-from app.models.chat import ChatSession, ChatSessionRequest, ChatMessage, ChatMessageRequest
+from app.models.chat import ChatMessage
+from app.models.chat import ChatMessageRequest
+from app.models.chat import ChatSession
+from app.models.chat import ChatSessionRequest
+from app.models.prompt import Prompt
+from app.repositories.agent import AgentRepository
 from app.repositories.chat import ChatRepository
+from app.repositories.prompt import PromptRepository
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
 
@@ -26,17 +37,20 @@ class ChatService:
         """
         return ChatRepository(db_session=self._db_session).get_chat_sessions(user_id=user_id)
 
-    def get_chat_messages(self, chat_session_id: str) -> Tuple[List[ChatMessage], APIError | None]:
+    def get_chat_messages(self, chat_session_id: str, user_id: str) -> Tuple[List[ChatMessage], APIError | None]:
         """
         Get all chat messages of the chat session.
 
         Args:
             chat_session_id(str): Chat session id
+            user_id(str): User ids
 
         Returns:
             Tuple[List[ChatMessage], APIError | None]: List of chat message objects and APIError object if any error
         """
-        return ChatRepository(db_session=self._db_session).get_chat_messages(chat_session_id=chat_session_id)
+        return ChatRepository(db_session=self._db_session).get_chat_messages(
+            chat_session_id=chat_session_id, user_id=user_id
+        )
 
     def get_chat_session(self, chat_session_id: str, user_id: str) -> Tuple[ChatSession, APIError | None]:
         """
@@ -87,7 +101,7 @@ class ChatService:
             # Define chat session
             chat_session = ChatSession(
                 user_id=user_id,
-                persona_id=chat_session_request.persona_id,
+                agent_id=chat_session_request.agent_id,
                 description=chat_session_request.description,
             )
 
@@ -213,10 +227,65 @@ class ChatService:
 
         return err
 
-    @classmethod
-    def generate_stream_chat_message(cls) -> Generator[str, None, None]:
-        # TODO: Implement the chat message handling logic
-        yield "Message received"
+    def _create_chat_chain(
+        self, chat_session_id: str, user_id: str, stop_at_message_id: str
+    ) -> Tuple[Tuple[str, str], Union[APIError, None]]:
+        chat_messages, err = self.get_chat_messages(chat_session_id=chat_session_id, user_id=user_id)
+        if not chat_messages or err:
+            return (None, None), APIError(kind=ErrorCodesMappingNumber.CHAT_MESSAGES_NOT_FOUND.value)
+
+        chat_id_to_chat_message = {chat_message.id: chat_messages for chat_message in chat_messages}
+        root_message = chat_messages[0]
+        mainline_messages: list[ChatMessage] = []
+        current_message = root_message
+        while current_message:
+            child_message_id = current_message.latest_child_message_id
+
+            if not child_message_id or child_message_id == stop_at_message_id:
+                break
+            current_message = chat_id_to_chat_message.get(child_message_id)
+            mainline_messages.append(current_message)
+
+        return (mainline_messages[-1], mainline_messages[:-1]), None
+
+    def generate_stream_chat_message(
+        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
+    ) -> Union[Generator[str, None, None], Union[APIError, None]]:
+        # Get the chat session
+        chat_session, err = self.get_chat_session(chat_session_id=chat_session_id, user_id=user_id)
+        if err:
+            return err
+
+        chat_message_request.message
+        parent_message_id = chat_message_request.parent_message_id
+
+        # Get the agent
+        alternate_agent_id = chat_message_request.alternate_agent_id
+        if alternate_agent_id:
+            # Allows users to specify a temporary agent in the chat session
+            agent, err = AgentRepository(db_session=self._db_session).get_agent(agent_id=alternate_agent_id)
+            if err:
+                return err
+        else:
+            agent = chat_session.agent
+
+        if not agent:
+            return APIError(kind=ErrorCodesMappingNumber.AGENT_NOT_FOUND.value)
+
+        # If a prompt override is specified via the API, use that with highest priority
+        prompt_id = chat_message_request.prompt_id
+        if not prompt_id and agent.prompts:
+            # If the agent has prompts, use one with the flag default_prompt set to True
+            prompt_criteria = and_(Prompt.user_id.is_(None), Prompt.is_default_prompt.is_(True))
+            prompt, err = PromptRepository(db_session=self._db_session).get_prompt_by_criteria(criteria=prompt_criteria)
+            if err:
+                return err
+            prompt_id = prompt.id
+
+        if chat_message_request.is_regenerated:
+            final_msg, history_msg = self._create_chat_chain(
+                chat_session_id=chat_session_id, user_id=user_id, stop_at_message_id=parent_message_id
+            )
 
     def set_message_as_latest(self, chat_session_id: str, chat_message_id: str, user_id: str) -> APIError | None:
         """

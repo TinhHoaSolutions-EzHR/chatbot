@@ -1,10 +1,16 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models.api import APIResponse
-from app.models.chat import ChatSessionRequest, ChatSessionResponse, ChatMessageRequest, ChatMessageResponse
+from app.models.chat import ChatMessageRequest
+from app.models.chat import ChatMessageResponse
+from app.models.chat import ChatSessionRequest
+from app.models.chat import ChatSessionResponse
 from app.models.user import User
 from app.services.chat import ChatService
 from app.settings import Constants
@@ -195,8 +201,12 @@ def handle_new_chat_message(
         status_code, detail = ErrorCodesMappingNumber.EMPTY_CHAT_MESSAGE
         raise HTTPException(status_code=status_code, detail=detail)
 
+    user_id = user.id if user else None
+
     # Generate the content
-    content = ChatService.generate_stream_chat_message()
+    content = ChatService(db_session=db_session).generate_stream_chat_message(
+        chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user_id
+    )
 
     return StreamingResponse(content=content, media_type="text/event-stream")
 

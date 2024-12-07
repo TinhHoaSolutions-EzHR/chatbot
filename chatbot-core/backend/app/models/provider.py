@@ -3,11 +3,9 @@ from typing import List
 from typing import Optional
 from uuid import uuid4
 
-from pydantic import BaseModel
-from pydantic import Field
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -15,48 +13,38 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
 from app.models import Base
+from app.models.search import SearchSetting
 
 
-class DocumentMetadata(Base):
-    __tablename__ = "documents_metadata"
+class LLMProvider(Base):
+    __tablename__ = "llm_providers"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
-    hidden: Mapped[bool] = mapped_column(Boolean, default=False)
     name: Mapped[str] = mapped_column(String)
-    link: Mapped[str] = mapped_column(String)
-    last_synced_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    primary_owners: Mapped[List[str]] = mapped_column(String)
-    is_public: Mapped[bool] = mapped_column(Boolean, default=False)
+    provider: Mapped[str] = mapped_column(String)
+    api_key: Mapped[str] = mapped_column(String)
+    custom_config: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    default_model_name: Mapped[str] = mapped_column(String)
+    fast_default_model_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    display_model_names: Mapped[List[str]] = mapped_column(String)
+    is_default_provider: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    tags: Mapped[List["DocumentMetadataTag"]] = relationship("DocumentMetadataTags", back_populates="document_metadata")
 
-
-class DocumentMetadataTag(Base):
-    __tablename__ = "document_metadata_tags"
+class EmbeddingProvider(Base):
+    __tablename__ = "embedding_providers"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
-    tag_key: Mapped[str] = mapped_column(String)
-    tag_value: Mapped[str] = mapped_column(String)
-    document_metadata_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("document_metadata.id", ondelete="CASCADE")
-    )
+    api_key: Mapped[str] = mapped_column(String)
+    provider_type: Mapped[LLMProvider] = mapped_column(SQLAlchemyEnum(LLMProvider, native_enum=False))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    document_metadata: Mapped[DocumentMetadata] = relationship("DocumentMetadata", back_populates="tags")
-
-
-class DocumentUploadResponse(BaseModel):
-    document_url: str = Field(..., description="Object URL")
-
-    class Config:
-        from_attributes = True
-        arbitrary_types_allowed = True
+    search_settings: Mapped[List[SearchSetting]] = relationship("SearchSetting", back_populates="provider")

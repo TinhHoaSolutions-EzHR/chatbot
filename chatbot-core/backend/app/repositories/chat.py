@@ -1,9 +1,12 @@
+from typing import List
+from typing import Tuple
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from typing import List, Tuple
 
 from app.models.api import APIError
-from app.models.chat import ChatSession, ChatMessage
+from app.models.chat import ChatMessage
+from app.models.chat import ChatSession
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
 
@@ -31,19 +34,22 @@ class ChatRepository:
             logger.error(f"Error getting chat sessions: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_chat_messages(self, chat_session_id: str) -> Tuple[List[ChatSession], APIError | None]:
+    def get_chat_messages(self, chat_session_id: str, user_id: str) -> Tuple[List[ChatSession], APIError | None]:
         """
         Get all chat messages of the chat session.
 
         Args:
             chat_session_id(str): Chat session id
+            user_id(str): User id
 
         Returns:
             Tuple[List[ChatSession], APIError | None]: List of chat session objects and APIError object if any error
         """
         try:
             chat_messages = (
-                self._db_session.query(ChatMessage).filter(ChatMessage.chat_session_id == chat_session_id).all()
+                self._db_session.query(ChatMessage)
+                .filter(and_(ChatMessage.chat_session_id == chat_session_id, ChatSession.user_id == user_id))
+                .all()
             )
             return chat_messages, None
         except Exception as e:
