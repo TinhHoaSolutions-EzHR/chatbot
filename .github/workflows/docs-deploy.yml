@@ -34,7 +34,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18.x
           cache: "yarn" # This will cache the Yarn dependencies
           cache-dependency-path: docs/yarn.lock # Specify the path to the yarn.lock file
 
