@@ -35,7 +35,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: yarn
+          cache: "yarn" # This will cache the Yarn dependencies
+          cache-dependency-path: docs/yarn.lock # Specify the path to the yarn.lock file
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive
