@@ -5,8 +5,8 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - "docs/**" # Only trigger if changes are made in the docs folder
+    paths:
+      - "docs/**" # Only trigger if changes are made in the docs folder
   workflow_dispatch:
 
 permissions:
