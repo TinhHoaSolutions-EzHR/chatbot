@@ -106,6 +106,40 @@ services:
         max-size: "50m"
         max-file: "6"
 
+  web_server:
+    build:
+      context: ../../chatbot-core/frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api_server
+    restart: on-failure
+    container_name: web_server
+    hostname: web_server
+    ports:
+      - "3000:3000"
+
+  nginx:
+    image: nginx:1.23.4-alpine
+    restart: on-failure
+    depends_on:
+      - api_server
+      - web_server
+    environment:
+        - DOMAIN=localhost
+    ports:
+      - "80:80"
+      - "3000:80"
+    volumes:
+      - ../data/nginx:/etc/nginx/conf.d
+    logging:
+        driver: json-file
+        options:
+            max-size: "50m"
+            max-file: "6"
+    command: >
+      /bin/sh -c "dos2unix /etc/nginx/conf.d/run-nginx.sh
+      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+
 volumes:
   mssql_data_volume:
   mssql_log_volume:
