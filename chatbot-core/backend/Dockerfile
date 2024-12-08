@@ -28,9 +28,10 @@ WORKDIR /app
 
 # Install uv and dependencies
 COPY --from=ghcr.io/astral-sh/uv:0.5.4 /uv /uvx /bin/
-COPY pyproject.toml /app
-COPY uv.lock /app
-RUN uv sync --no-dev --frozen --no-cache --verbose
+RUN --mount=type=cache,target=/root/.cache/uv \
+  --mount=type=bind,source=uv.lock,target=uv.lock \
+  --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+  uv sync --no-dev --frozen --no-install-project --verbose
 
 # Cleanup for CVEs and size reduction
 # https://github.com/tornadoweb/tornado/issues/3107
@@ -54,6 +55,10 @@ RUN apt-get update && \
 
 # Copy the application into the container, including uv.lock
 COPY . /app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+  uv sync --frozen
 
 # Expose the port on which the application will run
 ENV PYTHONPATH=/app
