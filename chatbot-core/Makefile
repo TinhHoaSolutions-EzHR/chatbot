@@ -45,7 +45,7 @@ start:  ## Start stopped services
 
 clean:  ## Stop services and remove containers and volumes
 	@echo "Services and volumes have been removed..."
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down v
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down -v
 
 help:  ## Show this help
 	@echo "Available commands:"
