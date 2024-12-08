@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - "docs/**" # Only trigger if changes are made in the docs folder
-  workflow_dispatch:
 
 permissions:
   contents: read
