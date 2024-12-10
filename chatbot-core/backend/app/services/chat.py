@@ -3,7 +3,6 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from app.models.api import APIError
@@ -11,12 +10,12 @@ from app.models.chat import ChatMessage
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatSession
 from app.models.chat import ChatSessionRequest
-from app.models.prompt import Prompt
 from app.repositories.agent import AgentRepository
 from app.repositories.chat import ChatRepository
-from app.repositories.prompt import PromptRepository
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
+# from app.models.prompt import Prompt
+# from app.repositories.prompt import PromptRepository
 
 logger = LoggerFactory().get_logger(__name__)
 
@@ -257,7 +256,7 @@ class ChatService:
             return err
 
         chat_message_request.message
-        parent_message_id = chat_message_request.parent_message_id
+        chat_message_request.parent_message_id
 
         # Get the agent
         alternate_agent_id = chat_message_request.alternate_agent_id
@@ -272,20 +271,20 @@ class ChatService:
         if not agent:
             return APIError(kind=ErrorCodesMappingNumber.AGENT_NOT_FOUND.value)
 
-        # If a prompt override is specified via the API, use that with highest priority
-        prompt_id = chat_message_request.prompt_id
-        if not prompt_id and agent.prompts:
-            # If the agent has prompts, use one with the flag default_prompt set to True
-            prompt_criteria = and_(Prompt.user_id.is_(None), Prompt.is_default_prompt.is_(True))
-            prompt, err = PromptRepository(db_session=self._db_session).get_prompt_by_criteria(criteria=prompt_criteria)
-            if err:
-                return err
-            prompt_id = prompt.id
+        # # If a prompt override is specified via the API, use that with highest priority
+        # prompt_id = chat_message_request.prompt_id
+        # if not prompt_id and agent.prompts:
+        #     # If the agent has prompts, use one with the flag default_prompt set to True
+        #     prompt_criteria = and_(Prompt.user_id.is_(None), Prompt.is_default_prompt.is_(True))
+        #     prompt, err = PromptRepository(db_session=self._db_session).get_prompt_by_criteria(criteria=prompt_criteria)
+        #     if err:
+        #         return err
+        #     prompt_id = prompt.id
 
-        if chat_message_request.is_regenerated:
-            final_msg, history_msg = self._create_chat_chain(
-                chat_session_id=chat_session_id, user_id=user_id, stop_at_message_id=parent_message_id
-            )
+        # if chat_message_request.is_regenerated:
+        #     final_msg, history_msg = self._create_chat_chain(
+        #         chat_session_id=chat_session_id, user_id=user_id, stop_at_message_id=parent_message_id
+        #     )
 
     def set_message_as_latest(self, chat_session_id: str, chat_message_id: str, user_id: str) -> APIError | None:
         """

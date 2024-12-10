@@ -6,6 +6,7 @@ from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.routers import base
+from app.routers.v1 import chat
 from app.routers.v1 import connector
 from app.settings import Constants
 from app.utils.llama_index_configuration import init_llamaindex_configurations
@@ -59,6 +60,7 @@ def create_app() -> FastAPI:
     # Include application routers
     app.include_router(router=base.router)
     app.include_router(router=connector.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(router=chat.router, prefix=Constants.FASTAPI_PREFIX)
 
     return app
 

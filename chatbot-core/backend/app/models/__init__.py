@@ -1,5 +1,8 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import DeclarativeBase
+from app.models.agent import Agent
+from app.models.chat import ChatMessage
+from app.models.chat import ChatSession
 
-class Base(DeclarativeBase):
-    __abstract__ = True
+TABLES = ["Agent", "ChatSession", "ChatMessage"]
+ASSOCIATIONS = []
+
+__all__ = TABLES + ASSOCIATIONS

@@ -14,11 +14,11 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from app.models import Base
+from app.models.base import Base
 
 
 class DocumentMetadata(Base):
-    __tablename__ = "documents_metadata"
+    __tablename__ = "document_metadata"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
@@ -33,7 +33,7 @@ class DocumentMetadata(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    tags: Mapped[List["DocumentMetadataTag"]] = relationship("DocumentMetadataTags", back_populates="document_metadata")
+    tags: Mapped[List["DocumentMetadataTag"]] = relationship("DocumentMetadataTag", back_populates="document_metadata")
 
 
 class DocumentMetadataTag(Base):

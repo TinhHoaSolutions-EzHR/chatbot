@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 from typing import List
 from typing import Optional
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from sqlalchemy import Boolean
@@ -16,9 +19,15 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from typing_extensions import TypedDict
 
-from app.models import Base
-from app.models.relationship import AgentPrompt
+from app.models.base import Base
 from app.models.relationship import AgentTool
+from app.models.tool import Tool
+# from app.models.prompt import Prompt
+# from app.models.relationship import AgentPrompt
+
+if TYPE_CHECKING:
+    from app.models import ChatSession
+    from app.models import ChatMessage
 
 
 class StarterMessages(TypedDict):
@@ -39,7 +48,6 @@ class Agent(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
-    name: Mapped[str] = mapped_column(String(30))
     description: Mapped[str] = mapped_column(String(255))
     num_chunks: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     chunks_above: Mapped[int] = mapped_column(Integer)
@@ -57,6 +65,8 @@ class Agent(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    prompts = relationship("Prompt", secondary=AgentPrompt.__table__, back_populates="agents")
-    chat_sessions = relationship("ChatSession", back_populates="agents")
-    tools = relationship("Tool", secondary=AgentTool.__table__, back_populates="agents")
+    # Use string-based relationship to break circular import
+    # prompts: Mapped[List[Prompt]] = relationship("Prompt", secondary=AgentPrompt.__table__, back_populates="agents")
+    chat_sessions: Mapped[List[ChatSession]] = relationship("ChatSession", back_populates="agent")
+    chat_messages: Mapped[List[ChatMessage]] = relationship("ChatMessage", back_populates="agent")
+    tools: Mapped[List[Tool]] = relationship("Tool", secondary=AgentTool.__table__, back_populates="agents")

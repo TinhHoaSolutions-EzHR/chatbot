@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 from typing import List
@@ -13,8 +15,7 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from typing_extensions import TypedDict
 
-from app.models import Base
-from app.models.agent import Agent
+from app.models.base import Base
 from app.models.relationship import AgentTool
 
 
@@ -44,4 +45,4 @@ class Tool(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    agents: Mapped[List[Agent]] = relationship("Agent", secondary=AgentTool.__table__, back_populates="tools")
+    agents: Mapped[List] = relationship("Agent", secondary=AgentTool.__table__, back_populates="tools")

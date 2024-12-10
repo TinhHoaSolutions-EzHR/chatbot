@@ -14,7 +14,7 @@ from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from app.models import Base
+from app.models.base import Base
 
 
 class DocumentSource(str, Enum):
