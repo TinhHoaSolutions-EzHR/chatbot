@@ -14,13 +14,13 @@ from app.databases.minio import get_minio_connector
 from app.databases.mssql import get_db_session
 from app.databases.qdrant import get_qdrant_connector
 from app.databases.redis import get_redis_connector
-from app.models.api import APIResponse
 from app.models.connector import ConnectorRequest
 from app.models.connector import ConnectorResponse
 from app.models.document import DocumentUploadResponse
 from app.services.connector import ConnectorService
 from app.services.document import DocumentService
 from app.settings import Constants
+from app.utils.api_response import APIResponse
 from app.utils.api_response import BackendAPIResponse
 from app.utils.logger import LoggerFactory
 

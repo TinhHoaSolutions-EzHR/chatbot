@@ -6,6 +6,8 @@ from typing import List
 from typing import Optional
 from typing import TypeVar
 
+from app.utils.error_handler import ConnectorError
+
 T = TypeVar("T")
 
 
@@ -48,7 +50,7 @@ class BaseConnector(ABC, Generic[T]):
         """
         with self._lock:  # Thread-safe client retrieval
             if self._client is None:
-                raise RuntimeError(f"{self.__class__.__name__}: Client is not initialized")
+                raise ConnectorError(f"{self.__class__.__name__}: Client is not initialized")
 
         return self._client
 

@@ -1,12 +1,12 @@
 from typing import List
+from typing import Optional
 from typing import Tuple
-from typing import Union
 
 from sqlalchemy.orm import Session
 
-from app.models.api import APIError
 from app.models.connector import Connector
 from app.repositories.base import BaseRepository
+from app.utils.api_response import APIError
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
 
@@ -23,12 +23,12 @@ class ConnectorRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_connectors(self) -> Tuple[List[Connector], Union[APIError, None]]:
+    def get_connectors(self) -> Tuple[List[Connector], Optional[APIError]]:
         """
         Get all connectors
 
         Returns:
-            Tuple[List[Connector], Union[APIError, None]]: List of connector objects and APIError object if any error
+            Tuple[List[Connector], Optional[APIError]]: List of connector objects and APIError object if any error
         """
         try:
             connectors = self._db_session.query(Connector).all()
@@ -37,7 +37,7 @@ class ConnectorRepository(BaseRepository):
             logger.error(f"Error getting connectors: {e}", exc_info=True)
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_connector(self, connector_id: str) -> Tuple[Connector, Union[APIError, None]]:
+    def get_connector(self, connector_id: str) -> Tuple[Connector, Optional[APIError]]:
         """
         Get connector by connector_id
 
@@ -45,7 +45,7 @@ class ConnectorRepository(BaseRepository):
             connector_id(str): Connector id
 
         Returns:
-            Tuple[Connector, Union[APIError, None]]: Connector object and APIError object if any error
+            Tuple[Connector, Optional[APIError]]: Connector object and APIError object if any error
         """
         try:
             connector = self._db_session.query(Connector).filter(Connector.id == connector_id).first()
@@ -54,7 +54,7 @@ class ConnectorRepository(BaseRepository):
             logger.error(f"Error getting connector: {e}", exc_info=True)
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def create_connector(self, connector: Connector) -> Union[APIError, None]:
+    def create_connector(self, connector: Connector) -> Optional[APIError]:
         """
         Create connector
 
@@ -62,7 +62,7 @@ class ConnectorRepository(BaseRepository):
             connector(Connector): Connector object
 
         Returns:
-            Union[APIError, None]: APIError object if any error
+            Optional[APIError]: APIError object if any error
         """
         try:
             self._db_session.add(connector)
@@ -72,7 +72,7 @@ class ConnectorRepository(BaseRepository):
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_connector(self, connector_id: str, connector: Connector) -> Union[APIError, None]:
+    def update_connector(self, connector_id: str, connector: Connector) -> Optional[APIError]:
         """
         Update connector by connector_id
 
@@ -81,7 +81,7 @@ class ConnectorRepository(BaseRepository):
             connector(Connector): Connector object
 
         Returns:
-            Union[APIError, None]: APIError object if any error
+            Optional[APIError]: APIError object if any error
         """
         try:
             connector = {key: value for key, value in connector.__dict__.items() if not key.startswith("_")}
@@ -92,7 +92,7 @@ class ConnectorRepository(BaseRepository):
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def delete_connector(self, connector_id: str) -> Union[APIError, None]:
+    def delete_connector(self, connector_id: str) -> Optional[APIError]:
         """
         Delete connector by connector_id
 
@@ -100,7 +100,7 @@ class ConnectorRepository(BaseRepository):
             connector_id(str): Connector id
 
         Returns:
-            Union[APIError, None]: APIError object if any error
+            Optional[APIError]: APIError object if any error
         """
         try:
             self._db_session.query(Connector).filter(Connector.id == connector_id).delete()
