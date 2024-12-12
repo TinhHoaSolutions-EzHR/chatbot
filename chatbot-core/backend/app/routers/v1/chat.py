@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -6,14 +8,14 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
-from app.models.api import APIResponse
+from app.models import User
 from app.models.chat import ChatMessageRequest
-from app.models.chat import ChatMessageResponse
+from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
-from app.models.user import User
 from app.services.chat import ChatService
 from app.settings import Constants
+from app.utils.api_response import APIResponse
 from app.utils.api_response import BackendAPIResponse
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.logger import LoggerFactory
@@ -74,21 +76,13 @@ def get_chat_session(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    # Get chat messages
-    chat_messages, err = ChatService(db_session=db_session).get_chat_messages(chat_session_id=chat_session_id)
-    if err:
-        status_code, detail = err.kind
-        raise HTTPException(status_code=status_code, detail=detail)
-
     # Parse chat session
-    chat_session_response = ChatSessionResponse.model_validate(chat_session)
-    chat_session_response.messages = [
-        ChatMessageResponse.model_validate(chat_message) for chat_message in chat_messages
-    ]
+    if chat_session:
+        data = ChatSessionResponse.model_validate(chat_session)
+    else:
+        data = None
 
-    return (
-        BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=chat_session_response).respond()
-    )
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.post("/chat-sessions", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
@@ -115,7 +109,10 @@ def create_chat_session(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
+    # Parse response
+    data = chat_session_request.model_dump(exclude_unset=True)
+
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.put("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -144,10 +141,13 @@ def update_chat_session(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
+    # Parse response
+    data = chat_session_request.model_dump(exclude_unset=True)
+
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
-@router.delete("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+@router.delete("/chat-sessions/{chat_session_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_chat_session(
     chat_session_id: str,
     db_session: Session = Depends(get_db_session),
@@ -168,8 +168,6 @@ def delete_chat_session(
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
-
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
 
 
 @router.post(
@@ -197,7 +195,7 @@ def handle_new_chat_message(
     Returns:
         StreamingResponse: Streams the response to the new chat message.
     """
-    if not chat_message_request.message:
+    if chat_message_request.request_type != ChatMessageRequestType.REGENERATE and not chat_message_request.message:
         status_code, detail = ErrorCodesMappingNumber.EMPTY_CHAT_MESSAGE
         raise HTTPException(status_code=status_code, detail=detail)
 
@@ -207,38 +205,8 @@ def handle_new_chat_message(
     content = ChatService(db_session=db_session).generate_stream_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user_id
     )
-
-    return StreamingResponse(content=content, media_type="text/event-stream")
-
-
-@router.post(
-    "/chat-sessions/{chat_session_id}/messages/{chat_message_id}/latest",
-    response_model=APIResponse,
-    status_code=status.HTTP_200_OK,
-)
-def set_message_as_latest(
-    chat_session_id: str,
-    chat_message_id: str,
-    db_session: Session = Depends(get_db_session),
-    user: User | None = Depends(get_current_user),
-) -> None:
-    """
-    Set message as latest.
-
-    Args:
-        chat_session_id (str): Chat session id.
-        chat_message_id (str): Chat message id.
-        db_session (Session): Database session. Defaults to relational database session.
-        user (User | None): User object.
-    """
-    user_id = user.id if user else None
-
-    # Set message as latest
-    err = ChatService(db_session=db_session).set_message_as_latest(
-        chat_session_id=chat_session_id, chat_message_id=chat_message_id, user_id=user_id
-    )
-    if err:
-        status_code, detail = err.kind
+    if not isinstance(content, Generator):
+        status_code, detail = content
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
+    return StreamingResponse(content=content, media_type="text/event-stream")
