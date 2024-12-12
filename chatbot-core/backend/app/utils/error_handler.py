@@ -35,3 +35,15 @@ class DatabaseTransactionError(BaseException):
     """
     Custom exception class for handling database transaction errors
     """
+
+
+class ConnectorError(BaseException):
+    """
+    Custom exception class for handling connector errors
+    """
+
+
+class ConversationError(BaseException):
+    """
+    Custom exception class for handling chat message errors
+    """

@@ -32,7 +32,7 @@ The project follows a structured flow:
       def __init__(self, db_session: Session):
           self._db_session = db_session
 
-      def get_embedding_models(self) -> Tuple[List[EmbeddingModel], APIError | None]:
+      def get_embedding_models(self) -> Tuple[List[EmbeddingModel], Optional[APIError]]:
           return EmbeddingModelRepository(db_session=self._db_session).get_embedding_models()
   ```
 
@@ -43,7 +43,7 @@ The project follows a structured flow:
       def __init__(self, db_session: Session):
           self._db_session = db_session
 
-      def get_embedding_models(self) -> Tuple[List[EmbeddingModel], APIError | None]:
+      def get_embedding_models(self) -> Tuple[List[EmbeddingModel], Optional[APIError]]:
           try:
               embedding_models = self._db_session.query(EmbeddingModel).all()
               return embedding_models, None

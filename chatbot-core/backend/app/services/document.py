@@ -2,8 +2,8 @@ import contextlib
 import os
 from typing import Annotated
 from typing import List
+from typing import Optional
 from typing import Tuple
-from typing import Union
 
 from fastapi import File
 from fastapi import UploadFile
@@ -12,12 +12,12 @@ from sqlalchemy.orm import Session
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
-from app.models.api import APIError
 from app.models.document import DocumentMetadata
 from app.repositories.document import DocumentRepository
 from app.services.base import BaseService
 from app.settings import Constants
 from app.utils.accents_handler import remove_vietnamese_accents
+from app.utils.api_response import APIError
 from app.utils.error_handler import ErrorCodesMappingNumber
 from app.utils.indexing import index_document_to_vector_db
 from app.utils.logger import LoggerFactory
@@ -58,7 +58,7 @@ class DocumentService(BaseService):
     def upload_documents(
         self,
         documents: Annotated[List[UploadFile], File(description="One or multiple documents")],
-    ) -> Tuple[List[str], Union[APIError, None]]:
+    ) -> Tuple[List[str], Optional[APIError]]:
         """
         Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
 
@@ -66,7 +66,7 @@ class DocumentService(BaseService):
             documents (List[UploadFile]): List of documents to be uploaded.
 
         Returns:
-            Tuple[List[str], Union[APIError, None]]: List of document file paths and error if any.
+            Tuple[List[str], Optional[APIError]]: List of document file paths and error if any.
         """
         # Check if files are empty
         for document in documents:
