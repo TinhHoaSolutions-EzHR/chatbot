@@ -115,7 +115,7 @@ def create_chat_session(
     return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
-@router.put("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+@router.patch("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_chat_session(
     chat_session_id: str,
     chat_session_request: ChatSessionRequest,
