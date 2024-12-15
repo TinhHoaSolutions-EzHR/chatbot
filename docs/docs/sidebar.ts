@@ -1,11 +1,11 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 const sidebar: SidebarsConfig = {
   introSideBar: [
     {
-      type: 'category',
-      label: 'Chatbot API',
-      items: require('./chatbot-api/sidebar.ts'),
+      type: "category",
+      label: "Chatbot API",
+      items: require("./chatbot-api/sidebar.ts"),
     },
   ],
 };
