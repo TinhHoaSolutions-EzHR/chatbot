@@ -56,7 +56,7 @@ class QdrantConnector(BaseConnector[QdrantClient]):
         # Create a collection
         self._client.create_collection(
             collection_name=collection_name,
-            vectors_config=models.VectorsConfig(size=vector_size, distance=distance),
+            vectors_config=models.VectorParams(size=vector_size, distance=distance),
         )
 
 

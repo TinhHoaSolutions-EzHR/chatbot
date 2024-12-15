@@ -13,8 +13,8 @@ class Secrets:
 
     # Minio Credentials
     MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "127.0.0.1:9000")
-    MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "S3User")
-    MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "P&ssword123")
+    MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "S3User")
+    MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "P&ssword123")
 
     # Qdrant Credentials
     QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
