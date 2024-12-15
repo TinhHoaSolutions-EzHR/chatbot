@@ -56,9 +56,10 @@ services:
     networks:
       - backend
 
-  object_storage:
+  object-storage:
     image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
-    container_name: object_storage
+    container_name: object-storage
+    hostname: object-storage
     # restart: always
     ports:
       - "9000:9000" # for web interface
