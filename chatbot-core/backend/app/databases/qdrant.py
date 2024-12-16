@@ -1,6 +1,6 @@
 from fastapi import Request
-from qdrant_client import models
 from qdrant_client import QdrantClient
+from qdrant_client.models import VectorParams
 
 from app.databases.base import BaseConnector
 from app.settings import Constants
@@ -56,7 +56,7 @@ class QdrantConnector(BaseConnector[QdrantClient]):
         # Create a collection
         self._client.create_collection(
             collection_name=collection_name,
-            vectors_config=models.VectorsConfig(size=vector_size, distance=distance),
+            vectors_config=VectorParams(size=vector_size, distance=distance),
         )
 
 
