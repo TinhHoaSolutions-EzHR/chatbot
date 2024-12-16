@@ -10,11 +10,11 @@ from app.models.connector import ConnectorRequest
 from app.models.connector import DocumentSource
 from app.repositories.connector import ConnectorRepository
 from app.services.base import BaseService
-from app.utils.api_response import APIError
-from app.utils.error_handler import ErrorCodesMappingNumber
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class ConnectorService(BaseService):

@@ -16,13 +16,13 @@ from app.models.document import DocumentMetadata
 from app.repositories.document import DocumentRepository
 from app.services.base import BaseService
 from app.settings import Constants
-from app.utils.accents_handler import remove_vietnamese_accents
-from app.utils.api_response import APIError
-from app.utils.error_handler import ErrorCodesMappingNumber
-from app.utils.indexing import index_document_to_vector_db
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
+from app.utils.api.helpers import get_logger
+from app.utils.api.helpers import remove_vietnamese_accents
+from app.utils.llm.pipeline import index_document_to_vector_db
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class DocumentService(BaseService):

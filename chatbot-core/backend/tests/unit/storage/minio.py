@@ -10,9 +10,9 @@ from tests.utils import validate_config
 
 from app.settings import Constants
 from app.settings import Secrets
-from app.utils.logger import LoggerFactory
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 @pytest.fixture

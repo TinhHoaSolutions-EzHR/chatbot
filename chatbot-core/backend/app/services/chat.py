@@ -14,11 +14,11 @@ from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
 from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
-from app.utils.api_response import APIError
-from app.utils.error_handler import ConversationError
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ConversationError
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class ChatService(BaseService):

@@ -6,7 +6,7 @@ from typing import List
 from typing import Optional
 from typing import TypeVar
 
-from app.utils.error_handler import ConnectorError
+from app.utils.api.error_handler import ConnectorError
 
 T = TypeVar("T")
 
