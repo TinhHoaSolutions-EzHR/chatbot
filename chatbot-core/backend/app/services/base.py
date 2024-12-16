@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from sqlalchemy.orm import Session
 
-from app.utils.error_handler import DatabaseTransactionError
+from app.utils.api.error_handler import DatabaseTransactionError
 
 
 class BaseService:

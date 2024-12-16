@@ -47,3 +47,9 @@ class ConversationError(BaseException):
     """
     Custom exception class for handling chat message errors
     """
+
+
+class PdfParsingError(BaseException):
+    """
+    Custom exception class for handling PDF parsing errors
+    """

@@ -244,8 +244,9 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    agent_name: Optional[UUID] = Field(None, description="Agent name of the chat session")
+    one_shot: bool = Field(False, description="One shot chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
+    shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
 

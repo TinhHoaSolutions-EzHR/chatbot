@@ -16,7 +16,7 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.settings import Constants
-from app.utils.pdf_reader import parse_pdf
+from app.utils.api.helpers import parse_pdf
 
 
 def get_transformations() -> List[Any]:

@@ -8,7 +8,7 @@ from llama_index.llms.openai import OpenAI
 from app.settings import Constants
 
 
-def init_llamaindex_configurations(
+def init_llm_configurations(
     llm_model: str,
     embedding_model: str,
     callback_manager: CallbackManager | None = None,

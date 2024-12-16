@@ -15,14 +15,14 @@ from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
 from app.services.chat import ChatService
 from app.settings import Constants
-from app.utils.api_response import APIResponse
-from app.utils.api_response import BackendAPIResponse
-from app.utils.error_handler import ErrorCodesMappingNumber
-from app.utils.logger import LoggerFactory
-from app.utils.user_authentication import get_current_user
+from app.utils.api.api_response import APIResponse
+from app.utils.api.api_response import BackendAPIResponse
+from app.utils.api.error_handler import ErrorCodesMappingNumber
+from app.utils.api.helpers import get_logger
+from app.utils.user.authentication import get_current_user
 
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 router = APIRouter(prefix="/chat", tags=["chat", "session", "message"])
 
 
@@ -46,10 +46,12 @@ def get_chat_sessions(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse chat sessions
-    chat_sessions_response = [ChatSessionResponse.model_validate(chat_session) for chat_session in chat_sessions]
-    return (
-        BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=chat_sessions_response).respond()
-    )
+    if chat_sessions:
+        data = [ChatSessionResponse.model_validate(chat_session) for chat_session in chat_sessions]
+    else:
+        data = []
+
+    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
 
 
 @router.get("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)

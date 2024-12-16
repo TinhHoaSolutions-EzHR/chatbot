@@ -9,10 +9,10 @@ from app.routers import base
 from app.routers.v1 import chat
 from app.routers.v1 import connector
 from app.settings import Constants
-from app.utils.llama_index_configuration import init_llamaindex_configurations
-from app.utils.logger import LoggerFactory
+from app.utils.api.helpers import get_logger
+from app.utils.llm.helpers import init_llm_configurations
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
     app.state.redis_conn = RedisConnector()
 
     # Initialize the LlamaIndex configuration (LLM and Embedding models)
-    init_llamaindex_configurations(
+    init_llm_configurations(
         llm_model=Constants.LLM_MODEL,
         embedding_model=Constants.EMBEDDING_MODEL,
     )

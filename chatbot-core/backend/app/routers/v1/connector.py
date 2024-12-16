@@ -20,11 +20,11 @@ from app.models.document import DocumentUploadResponse
 from app.services.connector import ConnectorService
 from app.services.document import DocumentService
 from app.settings import Constants
-from app.utils.api_response import APIResponse
-from app.utils.api_response import BackendAPIResponse
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIResponse
+from app.utils.api.api_response import BackendAPIResponse
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 router = APIRouter(prefix="/connectors", tags=["connectors", "documents"])
 
 
