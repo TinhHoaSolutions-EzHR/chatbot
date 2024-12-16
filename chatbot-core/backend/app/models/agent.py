@@ -12,8 +12,8 @@ from sqlalchemy.orm import relationship
 from app.models.base import Base
 
 if TYPE_CHECKING:
-    from app.models.chat import ChatSession
-    from app.models.chat import ChatMessage
+    from app.models import ChatSession
+    from app.models import ChatMessage
 
 
 class Agent(Base):
