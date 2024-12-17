@@ -29,7 +29,7 @@ class Constants:
     EMPTY_CHAT_MESSAGE_MESSAGE = "Empty chat message"
 
     # Logger Configuration
-    LOGGER_LOG_LEVEL = logging.INFO
+    LOGGER_LOG_LEVEL = os.getenv("LOGGER_LOG_LEVEL", logging.INFO)
     LOGGER_LOG_TO_CONSOLE = True
     LOGGER_LOG_TO_FILE = False
     LOGGER_LOG_FILE_PATH = "api.log"
