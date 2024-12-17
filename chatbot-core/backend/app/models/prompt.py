@@ -21,7 +21,7 @@ class Prompt(Base):
     Tracks answer is being constructed for the prompt.
     """
 
-    __tablename__ = "prompts"
+    __tablename__ = "prompt"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
 

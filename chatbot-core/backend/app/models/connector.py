@@ -23,7 +23,7 @@ class DocumentSource(str, Enum):
 
 
 class Connector(Base):
-    __tablename__ = "connectors"
+    __tablename__ = "connector"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
