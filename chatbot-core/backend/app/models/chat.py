@@ -180,7 +180,6 @@ class ChatMessageRequest(BaseModel):
 
     class Config:
         from_attributes = True
-        arbitrary_types_allowed = True
 
 
 class ChatMessageResponse(BaseModel):
@@ -201,7 +200,6 @@ class ChatMessageResponse(BaseModel):
 
     class Config:
         from_attributes = True
-        arbitrary_types_allowed = True
 
 
 class ChatSessionRequest(BaseModel):
@@ -229,7 +227,6 @@ class ChatSessionRequest(BaseModel):
 
     class Config:
         from_attributes = True
-        arbitrary_types_allowed = True
 
 
 class ChatSessionResponse(BaseModel):
@@ -249,4 +246,3 @@ class ChatSessionResponse(BaseModel):
 
     class Config:
         from_attributes = True
-        arbitrary_types_allowed = True
