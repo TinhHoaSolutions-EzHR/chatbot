@@ -27,13 +27,18 @@ router = APIRouter(prefix="/chat", tags=["chat", "session", "message"])
 
 
 @router.get("/chat-sessions", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_chat_sessions(db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)) -> None:
+def get_chat_sessions(
+    db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)
+) -> BackendAPIResponse:
     """
     Get all chat sessions of the user.
 
     Args:
         db_session (Session): Database session. Defaults to relational database session.
         user (User): User object
+
+    Returns:
+        BackendAPIResponse: API response.
     """
     if not user:
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
@@ -59,7 +64,7 @@ def get_chat_session(
     chat_session_id: str,
     db_session: Session = Depends(get_db_session),
     user: User = Depends(get_current_user),
-) -> None:
+) -> BackendAPIResponse:
     """
     Get chat session by id.
 
@@ -67,6 +72,9 @@ def get_chat_session(
         chat_session_id (str): Chat session id.
         db_session (Session): Database session. Defaults to relational database session.
         user (User): User object.
+
+    Returns:
+        BackendAPIResponse: API response.
     """
     if not user:
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
@@ -94,7 +102,7 @@ def create_chat_session(
     chat_session_request: ChatSessionRequest,
     db_session: Session = Depends(get_db_session),
     user: User = Depends(get_current_user),
-) -> None:
+) -> BackendAPIResponse:
     """
     Create chat session.
 
@@ -102,6 +110,9 @@ def create_chat_session(
         chat_session_request (ChatSessionRequest): Chat session request object.
         db_session (Session): Database session. Defaults to relational database session.
         user (User): User object.
+
+    Returns:
+        BackendAPIResponse: API response
     """
     if not user:
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
@@ -127,7 +138,7 @@ def update_chat_session(
     chat_session_request: ChatSessionRequest,
     db_session: Session = Depends(get_db_session),
     user: User = Depends(get_current_user),
-) -> None:
+) -> BackendAPIResponse:
     """
     Update chat session.
 
@@ -136,6 +147,9 @@ def update_chat_session(
         chat_session_request (ChatSessionRequest): Chat session request object.
         db_session (Session): Database session. Defaults to relational database session.
         user (User): User object.
+
+    Returns:
+        BackendAPIResponse: API response
     """
     if not user:
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
