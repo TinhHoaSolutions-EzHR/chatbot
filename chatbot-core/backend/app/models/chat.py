@@ -33,6 +33,7 @@ if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
     from app.models import Prompt
+    from app.models import Folder
 
 
 class ChatMessageType(str, Enum):
@@ -89,6 +90,7 @@ class ChatSession(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
     user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agents.id"), nullable=True)
+    folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("folders.id"), nullable=True)
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     one_shot: Mapped[bool] = mapped_column(Boolean, default=False)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
@@ -104,8 +106,9 @@ class ChatSession(Base):
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
     # Define relationships
-    user: Mapped["User"] = relationship("User", back_populates="chat_sessions", cascade="save-update, merge")
-    agent: Mapped["Agent"] = relationship("Agent", back_populates="chat_sessions", cascade="save-update, merge")
+    user: Mapped["User"] = relationship("User", back_populates="chat_sessions")
+    agent: Mapped["Agent"] = relationship("Agent", back_populates="chat_sessions")
+    folder: Mapped["Folder"] = relationship("Folder", back_populates="chat_sessions")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
         "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
     )
@@ -213,7 +216,6 @@ class ChatSessionRequest(BaseModel):
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
     description: Optional[str] = Field(None, max_length=255, description="Description (Name) of the chat session")
-    one_shot: bool = Field(False, description="One shot chat session")
     shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
     current_alternate_model: Optional[str] = Field(None, description="Current alternate model")
 
@@ -244,7 +246,7 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    one_shot: bool = Field(False, description="One shot chat session")
+    folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
     shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
     created_at: datetime = Field(..., description="Created at timestamp")
