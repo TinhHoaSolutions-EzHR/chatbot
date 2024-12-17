@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
+from typing import Any
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
@@ -13,7 +14,6 @@ from uuid import uuid4
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import field_validator
-from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
@@ -90,7 +90,6 @@ class ChatSession(Base):
     user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agent.id"), nullable=True)
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    one_shot: Mapped[bool] = mapped_column(Boolean, default=False)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False), default=ChatSessionSharedStatus.PRIVATE
     )
@@ -136,7 +135,7 @@ class ChatMessage(Base):
     error_type: Mapped[Optional[ChatMessageErrorType]] = mapped_column(
         SQLAlchemyEnum(ChatMessageErrorType), nullable=True
     )
-    error: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), default=lambda: datetime.now(timezone.utc)
     )
@@ -152,12 +151,12 @@ class ChatMessage(Base):
     prompt: Mapped[Optional["Prompt"]] = relationship("Prompt", back_populates="chat_messages")
 
     @validates("token_count")
-    def validate_token_count(self, key, token_count) -> Union[int, None]:
+    def validate_token_count(self, key: Any, token_count: int) -> Union[int, None]:
         """
         Validate token count.
 
         Args:
-            key (str): Key.
+            key (Any): Key.
             token_count (int): Token count.
         """
         if token_count < 0:
@@ -213,7 +212,6 @@ class ChatSessionRequest(BaseModel):
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
     description: Optional[str] = Field(None, max_length=255, description="Description (Name) of the chat session")
-    one_shot: bool = Field(False, description="One shot chat session")
     shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
     current_alternate_model: Optional[str] = Field(None, description="Current alternate model")
 
@@ -244,7 +242,6 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    one_shot: bool = Field(False, description="One shot chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
     shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
     created_at: datetime = Field(..., description="Created at timestamp")
