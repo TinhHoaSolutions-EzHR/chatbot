@@ -124,7 +124,7 @@ class ChatMessage(Base):
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
-    alternate_agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agent.id"), nullable=True)
+    agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
     parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
     message: Mapped[str] = mapped_column(Text)
@@ -172,7 +172,7 @@ class ChatMessageRequest(BaseModel):
     """
 
     id: Optional[UUID] = Field(None, description="Chat message id")
-    alternate_agent_id: Optional[UUID] = Field(None, description="Alternate agent id")
+    agent_id: Optional[UUID] = Field(None, description="Current agent id")
     parent_message_id: Optional[UUID] = Field(None, description="Parent message id")
     child_message_id: Optional[UUID] = Field(None, description="Child message id")
     message: Optional[str] = Field(None, description="Message text", min_length=1, max_length=10000)
