@@ -37,7 +37,7 @@ class DocumentMetadata(Base):
 
 
 class DocumentMetadataTag(Base):
-    __tablename__ = "document_metadata_tags"
+    __tablename__ = "document_metadata_tag"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4

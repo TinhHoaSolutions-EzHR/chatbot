@@ -75,7 +75,7 @@ class ChatSessionSharedStatus(str, Enum):
     PRIVATE = "private"
 
 
-CHAT_MESSAGES_ID = "chat_messages.id"
+CHAT_MESSAGES_ID = "chat_message.id"
 
 
 class ChatSession(Base):
@@ -84,11 +84,11 @@ class ChatSession(Base):
     Tracks conversation details, sharing status, and associated messages.
     """
 
-    __tablename__ = "chat_sessions"
+    __tablename__ = "chat_session"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agents.id"), nullable=True)
+    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agent.id"), nullable=True)
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     one_shot: Mapped[bool] = mapped_column(Boolean, default=False)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
@@ -117,18 +117,18 @@ class ChatMessage(Base):
     Tracks message content, type, and associated metadata.
     """
 
-    __tablename__ = "chat_messages"
+    __tablename__ = "chat_message"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("chat_sessions.id", ondelete="CASCADE"), nullable=False
+        ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
-    alternate_agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agents.id"), nullable=True)
+    alternate_agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agent.id"), nullable=True)
     parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
     message: Mapped[str] = mapped_column(Text)
-    prompt_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("prompts.id"), nullable=True)
+    prompt_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("prompt.id"), nullable=True)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False), nullable=False

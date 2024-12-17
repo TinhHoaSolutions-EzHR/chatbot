@@ -22,7 +22,7 @@ class Agent(Base):
     Tracks chat sessions and messages that the agent is involved in.
     """
 
-    __tablename__ = "agents"
+    __tablename__ = "agent"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4

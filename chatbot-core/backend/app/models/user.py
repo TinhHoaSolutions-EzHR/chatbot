@@ -22,7 +22,7 @@ class User(Base):
     Tracks all information related to the user.
     """
 
-    __tablename__ = "users"
+    __tablename__ = "user"
     __table_args__ = {"extend_existing": True}
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
