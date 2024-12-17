@@ -28,6 +28,6 @@ class Agent(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
 
-    # Define relationships
-    chat_sessions: Mapped[List[ChatSession]] = relationship("ChatSession", back_populates="agent")
-    chat_messages: Mapped[List[ChatMessage]] = relationship("ChatMessage", back_populates="agent")
+    # Define relationships. We use the type hinting string to avoid circular imports.
+    chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
+    chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
