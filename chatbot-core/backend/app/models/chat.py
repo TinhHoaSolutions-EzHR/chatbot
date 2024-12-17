@@ -103,7 +103,7 @@ class ChatSession(Base):
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    # Define relationships
+    # Define relationships. We use the type hinting string to avoid circular imports.
     user: Mapped["User"] = relationship("User", back_populates="chat_sessions", cascade="save-update, merge")
     agent: Mapped["Agent"] = relationship("Agent", back_populates="chat_sessions", cascade="save-update, merge")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
@@ -145,7 +145,7 @@ class ChatMessage(Base):
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
-    # Define relationships
+    # Define relationships. We use the type hinting string to avoid circular imports.
     user: Mapped["User"] = relationship("User", back_populates="chat_messages")
     chat_session: Mapped["ChatSession"] = relationship("ChatSession", back_populates="chat_messages")
     agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
