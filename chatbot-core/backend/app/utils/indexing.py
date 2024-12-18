@@ -48,7 +48,7 @@ def big_get_transformations() -> List[Any]:
 
     return transformations
 
-def smail_get_transformations() -> List[Any]:
+def small_get_transformations() -> List[Any]:
     """
     Get the transformation components for the ingestion pipeline
 
@@ -111,7 +111,7 @@ def index_document_to_vector_db(
     )
 
     # Define transformation components (chunking + node postprocessors)
-    transformations = smail_get_transformations()
+    transformations = small_get_transformations()
 
     # Ingestion pipeline to vector database
     pipeline = IngestionPipeline(
