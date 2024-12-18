@@ -46,7 +46,9 @@ class ChatService(BaseService):
         """
         return self._chat_repository.get_chat_sessions(user_id=user_id)
 
-    def get_chat_session(self, chat_session_id: str, user_id: str) -> Tuple[ChatSession, Optional[APIError]]:
+    def get_chat_session(
+        self, chat_session_id: str, user_id: str
+    ) -> Tuple[ChatSession, Optional[APIError]]:
         """
         Get chat session by id.
 
@@ -57,11 +59,15 @@ class ChatService(BaseService):
         Returns:
             Tuple[ChatSession, Optional[APIError]]: Chat session object and APIError object if any error
         """
-        chat_session, err = self._chat_repository.get_chat_session(chat_session_id=chat_session_id, user_id=user_id)
+        chat_session, err = self._chat_repository.get_chat_session(
+            chat_session_id=chat_session_id, user_id=user_id
+        )
         if err:
             return None, err
 
-        chat_messages, err = self._chat_repository.get_chat_messages(chat_session_id=chat_session_id, user_id=user_id)
+        chat_messages, err = self._chat_repository.get_chat_messages(
+            chat_session_id=chat_session_id, user_id=user_id
+        )
         if err:
             return None, err
 
@@ -70,7 +76,9 @@ class ChatService(BaseService):
 
         return chat_session, None
 
-    def create_chat_session(self, chat_session_request: ChatSessionRequest, user_id: str) -> Optional[APIError]:
+    def create_chat_session(
+        self, chat_session_request: ChatSessionRequest, user_id: str
+    ) -> Optional[APIError]:
         """
         Create chat session.
 
@@ -137,7 +145,9 @@ class ChatService(BaseService):
         """
         with self._transaction():
             # Delete chat session
-            err = self._chat_repository.delete_chat_session(chat_session_id=chat_session_id, user_id=user_id)
+            err = self._chat_repository.delete_chat_session(
+                chat_session_id=chat_session_id, user_id=user_id
+            )
 
         return err if err else None
 
@@ -244,7 +254,11 @@ class ChatService(BaseService):
         return new_chat_request, None
 
     def _generate_chat_response(
-        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str, current_request_id: str
+        self,
+        chat_message_request: ChatMessageRequest,
+        chat_session_id: str,
+        user_id: str,
+        current_request_id: str,
     ) -> Tuple[ChatMessage, Optional[APIError]]:
         """
         Generate chat response message.
@@ -309,7 +323,9 @@ class ChatService(BaseService):
         if current_chat_request:
             parent_request_message_id = current_chat_request.parent_message_id
             err = self._chat_repository.delete_chat_message(
-                chat_message_id=current_chat_request.id, chat_session_id=chat_session_id, user_id=user_id
+                chat_message_id=current_chat_request.id,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
             )
             if err:
                 return err
@@ -318,7 +334,9 @@ class ChatService(BaseService):
         if current_chat_response:
             child_response_message_id = current_chat_response.child_message_id
             err = self._chat_repository.delete_chat_message(
-                chat_message_id=current_chat_response.id, chat_session_id=chat_session_id, user_id=user_id
+                chat_message_id=current_chat_response.id,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
             )
             if err:
                 return err
@@ -335,12 +353,16 @@ class ChatService(BaseService):
         elif parent_request_message_id:
             # Update the parent request message with the new child message id
             err = self._update_message_chain(
-                chat_session_id=chat_session_id, user_id=user_id, parent_message_id=parent_request_message_id
+                chat_session_id=chat_session_id,
+                user_id=user_id,
+                parent_message_id=parent_request_message_id,
             )
         elif child_response_message_id:
             # Update the next child message with the new parent message id
             err = self._update_message_chain(
-                chat_session_id=chat_session_id, user_id=user_id, child_message_id=child_response_message_id
+                chat_session_id=chat_session_id,
+                user_id=user_id,
+                child_message_id=child_response_message_id,
             )
         else:
             err = None
@@ -369,7 +391,9 @@ class ChatService(BaseService):
         """
         # Get the current chat message and its parent / child message (based on the message message)
         current_chat_message, err = self._chat_repository.get_chat_message(
-            chat_message_id=chat_message_request.id, chat_session_id=chat_session_id, user_id=user_id
+            chat_message_id=chat_message_request.id,
+            chat_session_id=chat_session_id,
+            user_id=user_id,
         )
         if err:
             return None, err
@@ -380,7 +404,9 @@ class ChatService(BaseService):
             # When the message is edited, the chat request is the current message
             current_chat_request = current_chat_message
             current_chat_response, err = self._chat_repository.get_chat_message(
-                chat_message_id=current_chat_message.child_message_id, chat_session_id=chat_session_id, user_id=user_id
+                chat_message_id=current_chat_message.child_message_id,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
             )
             if err:
                 return None, err
@@ -388,7 +414,9 @@ class ChatService(BaseService):
             # When the message is regenerated, the chat response is the current message
             current_chat_response = current_chat_message
             current_chat_request, err = self._chat_repository.get_chat_message(
-                chat_message_id=current_chat_message.parent_message_id, chat_session_id=chat_session_id, user_id=user_id
+                chat_message_id=current_chat_message.parent_message_id,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
             )
 
             # When the message is regenerated, keep the old request message and specify as new message in our chat session
@@ -495,7 +523,9 @@ class ChatService(BaseService):
         """
         with self._transaction():
             # Get the current chat session
-            chat_session, err = self._chat_repository.get_chat_session(chat_session_id=chat_session_id, user_id=user_id)
+            chat_session, err = self._chat_repository.get_chat_session(
+                chat_session_id=chat_session_id, user_id=user_id
+            )
             if err:
                 return err
 
@@ -510,7 +540,9 @@ class ChatService(BaseService):
             # Handle processing existing message (regenerate or edit the message)
             if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:
                 existing_chat_request, err = self._handle_existing_chat_message(
-                    chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user_id
+                    chat_message_request=chat_message_request,
+                    chat_session_id=chat_session_id,
+                    user_id=user_id,
                 )
                 if err:
                     return err
@@ -520,14 +552,18 @@ class ChatService(BaseService):
 
             elif chat_message_request.request_type == ChatMessageRequestType.EDIT:
                 _, err = self._handle_existing_chat_message(
-                    chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user_id
+                    chat_message_request=chat_message_request,
+                    chat_session_id=chat_session_id,
+                    user_id=user_id,
                 )
                 if err:
                     return err
 
             # Handle processing new message (query the LLM and generate the response)
             chat_response, err = self._handle_new_chat_message(
-                chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user_id
+                chat_message_request=chat_message_request,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
             )
             if err:
                 return err

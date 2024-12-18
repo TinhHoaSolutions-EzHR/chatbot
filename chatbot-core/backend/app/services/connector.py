@@ -46,7 +46,9 @@ class ConnectorService(BaseService):
         Returns:
             Tuple[Connector, Optional[APIError]]: Connector object and APIError object if any error
         """
-        return ConnectorRepository(db_session=self._db_session).get_connector(connector_id=connector_id)
+        return ConnectorRepository(db_session=self._db_session).get_connector(
+            connector_id=connector_id
+        )
 
     def create_connector(self, connector_request: ConnectorRequest) -> Optional[APIError]:
         """
@@ -62,7 +64,9 @@ class ConnectorService(BaseService):
         try:
             with self._transaction():
                 # Define connector
-                connector_specific_config = {"file_paths": [file_path for file_path in connector_request.file_paths]}
+                connector_specific_config = {
+                    "file_paths": [file_path for file_path in connector_request.file_paths]
+                }
                 connector = Connector(
                     name=connector_request.name,
                     source=DocumentSource.FILE,
@@ -70,7 +74,9 @@ class ConnectorService(BaseService):
                 )
 
                 # Create connector
-                err = ConnectorRepository(db_session=self._db_session).create_connector(connector=connector)
+                err = ConnectorRepository(db_session=self._db_session).create_connector(
+                    connector=connector
+                )
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()
@@ -79,7 +85,9 @@ class ConnectorService(BaseService):
 
         return err
 
-    def update_connector(self, connector_id: str, connector_request: ConnectorRequest) -> Optional[APIError]:
+    def update_connector(
+        self, connector_id: str, connector_request: ConnectorRequest
+    ) -> Optional[APIError]:
         """
         Update connector by connector_id
 
@@ -120,7 +128,9 @@ class ConnectorService(BaseService):
         try:
             with self._transaction():
                 # Delete connector
-                err = ConnectorRepository(db_session=self._db_session).delete_connector(connector_id=connector_id)
+                err = ConnectorRepository(db_session=self._db_session).delete_connector(
+                    connector_id=connector_id
+                )
         except Exception as e:
             # Rollback transaction
             self._db_session.rollback()

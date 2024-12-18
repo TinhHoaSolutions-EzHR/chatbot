@@ -30,10 +30,16 @@ class DocumentMetadata(Base):
     primary_owners: Mapped[List[str]] = mapped_column(String)
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now, onupdate=datetime.now
+    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
-    tags: Mapped[List["DocumentMetadataTag"]] = relationship("DocumentMetadataTag", back_populates="document_metadata")
+    tags: Mapped[List["DocumentMetadataTag"]] = relationship(
+        "DocumentMetadataTag", back_populates="document_metadata"
+    )
 
 
 class DocumentMetadataTag(Base):
@@ -48,10 +54,16 @@ class DocumentMetadataTag(Base):
         ForeignKey("document_metadata.id", ondelete="CASCADE")
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now)
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now, onupdate=datetime.now
+    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
-    document_metadata: Mapped[DocumentMetadata] = relationship("DocumentMetadata", back_populates="tags")
+    document_metadata: Mapped[DocumentMetadata] = relationship(
+        "DocumentMetadata", back_populates="tags"
+    )
 
 
 class DocumentUploadResponse(BaseModel):

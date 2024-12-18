@@ -53,7 +53,11 @@ class MSSQLConnector(BaseConnector[Engine]):
 
 # Create a session maker
 SessionLocal = sessionmaker(
-    bind=MSSQLConnector().client, expire_on_commit=False, class_=Session, autoflush=False, autocommit=False
+    bind=MSSQLConnector().client,
+    expire_on_commit=False,
+    class_=Session,
+    autoflush=False,
+    autocommit=False,
 )
 
 

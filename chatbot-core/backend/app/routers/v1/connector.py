@@ -60,7 +60,12 @@ def upload_documents(
     # Parse response
     data = [DocumentUploadResponse(document_url=document_url) for document_url in document_urls]
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -82,7 +87,12 @@ def get_connectors(db_session: Session = Depends(get_db_session)) -> None:
     # Parse response
     data = [ConnectorResponse.model_validate(connector) for connector in connectors]
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.get("/{connector_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -95,7 +105,9 @@ def get_connector(connector_id: str, db_session: Session = Depends(get_db_sessio
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Get connector by id
-    connector, err = ConnectorService(db_session=db_session).get_connector(connector_id=connector_id)
+    connector, err = ConnectorService(db_session=db_session).get_connector(
+        connector_id=connector_id
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
@@ -106,11 +118,18 @@ def get_connector(connector_id: str, db_session: Session = Depends(get_db_sessio
     else:
         data = None
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
-def create_connector(connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)) -> None:
+def create_connector(
+    connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)
+) -> None:
     """
     Create connector.
 
@@ -119,7 +138,9 @@ def create_connector(connector_request: ConnectorRequest, db_session: Session = 
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Create connector
-    err = ConnectorService(db_session=db_session).create_connector(connector_request=connector_request)
+    err = ConnectorService(db_session=db_session).create_connector(
+        connector_request=connector_request
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
@@ -127,12 +148,19 @@ def create_connector(connector_request: ConnectorRequest, db_session: Session = 
     # Parse response
     data = connector_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.patch("/{connector_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_connector(
-    connector_id: str, connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)
+    connector_id: str,
+    connector_request: ConnectorRequest,
+    db_session: Session = Depends(get_db_session),
 ) -> None:
     """
     Update connector by connector_id.
@@ -153,7 +181,12 @@ def update_connector(
     # Parse response
     data = connector_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.delete("/{connector_id}", status_code=status.HTTP_204_NO_CONTENT)

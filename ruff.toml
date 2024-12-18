@@ -1,5 +1,5 @@
 target-version = "py311"
-line-length = 120
+line-length = 100
 indent-width = 4
 
 # Exclude directories and files that are not part of the Python project.

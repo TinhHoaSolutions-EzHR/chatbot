@@ -23,7 +23,11 @@ class Prompt(Base):
 
     __tablename__ = "prompt"
 
-    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="prompt")
+    chat_messages: Mapped[List["ChatMessage"]] = relationship(
+        "ChatMessage", back_populates="prompt"
+    )
