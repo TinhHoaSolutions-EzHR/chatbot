@@ -49,7 +49,7 @@ class ChatRepository(BaseRepository):
 
     def get_chat_messages(
         self, chat_session_id: str, user_id: str
-    ) -> Tuple[List[ChatSession], Optional[APIError]]:
+    ) -> Tuple[List[ChatMessage], Optional[APIError]]:
         """
         Get all chat messages of the chat session. Sort by created_at in ascending order.
 
@@ -58,7 +58,7 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[List[ChatSession], Optional[APIError]]: List of chat session objects and APIError object if any error
+            Tuple[List[ChatMessage], Optional[APIError]]: List of chat message objects and APIError object if any error
         """
         try:
             chat_messages = (
@@ -80,7 +80,7 @@ class ChatRepository(BaseRepository):
 
     def get_chat_session(
         self, chat_session_id: str, user_id: str
-    ) -> Tuple[ChatSession, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
         """
         Get chat session by id.
 
@@ -89,7 +89,7 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[ChatSession, Optional[APIError]]: Chat session object and APIError object if any error
+            Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
         try:
             chat_session = (
@@ -104,7 +104,7 @@ class ChatRepository(BaseRepository):
 
     def get_chat_message(
         self, chat_message_id: str, chat_session_id: str, user_id: str
-    ) -> Tuple[ChatMessage, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
         Get chat message by id.
 
@@ -114,7 +114,7 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[ChatMessage, Optional[APIError]]: Chat message object and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat message object and APIError object if any error
         """
         try:
             chat_message = (
@@ -148,7 +148,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error creating chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def create_chat_message(self, chat_message: ChatMessage) -> Optional[APIError]:
@@ -166,7 +165,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error creating chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_session(
@@ -195,7 +193,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_message(
@@ -229,7 +226,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_chat_session(self, chat_session_id: str, user_id: str) -> Optional[APIError]:
@@ -250,7 +246,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error deleting chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_chat_message(
@@ -278,5 +273,4 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error deleting chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

@@ -27,6 +27,9 @@ class ConnectorService(BaseService):
         """
         super().__init__(db_session=db_session)
 
+        # Define repositories
+        self._connector_repo = ConnectorRepository(db_session=self._db_session)
+
     def get_connectors(self) -> Tuple[List[Connector], Optional[APIError]]:
         """
         Get all connectors
@@ -34,9 +37,9 @@ class ConnectorService(BaseService):
         Returns:
             Tuple[List[Connector], Optional[APIError]]: List of connector objects and APIError object if any error
         """
-        return ConnectorRepository(db_session=self._db_session).get_connectors()
+        return self._connector_repo.get_connectors()
 
-    def get_connector(self, connector_id: str) -> Tuple[Connector, Optional[APIError]]:
+    def get_connector(self, connector_id: str) -> Tuple[Optional[Connector], Optional[APIError]]:
         """
         Get connector by connector_id
 
@@ -44,11 +47,9 @@ class ConnectorService(BaseService):
             connector_id(str): Connector id
 
         Returns:
-            Tuple[Connector, Optional[APIError]]: Connector object and APIError object if any error
+            Tuple[Optional[Connector], Optional[APIError]]: Connector object and APIError object if any error
         """
-        return ConnectorRepository(db_session=self._db_session).get_connector(
-            connector_id=connector_id
-        )
+        return self._connector_repo.get_connector(connector_id=connector_id)
 
     def create_connector(self, connector_request: ConnectorRequest) -> Optional[APIError]:
         """
@@ -74,12 +75,8 @@ class ConnectorService(BaseService):
                 )
 
                 # Create connector
-                err = ConnectorRepository(db_session=self._db_session).create_connector(
-                    connector=connector
-                )
+                err = self._connector_repo.create_connector(connector=connector)
         except Exception as e:
-            # Rollback transaction
-            self._db_session.rollback()
             logger.error(f"Error creating connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
@@ -104,12 +101,10 @@ class ConnectorService(BaseService):
                 # Define connector
                 connector = Connector(name=connector_request.name)
 
-                err = ConnectorRepository(db_session=self._db_session).update_connector(
+                err = self._connector_repo.update_connector(
                     connector_id=connector_id, connector=connector
                 )
         except Exception as e:
-            # Rollback transaction
-            self._db_session.rollback()
             logger.error(f"Error updating connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
@@ -125,15 +120,12 @@ class ConnectorService(BaseService):
         Returns:
             Optional[APIError]: APIError object if any error
         """
+        err = None
         try:
             with self._transaction():
                 # Delete connector
-                err = ConnectorRepository(db_session=self._db_session).delete_connector(
-                    connector_id=connector_id
-                )
+                err = self._connector_repo.delete_connector(connector_id=connector_id)
         except Exception as e:
-            # Rollback transaction
-            self._db_session.rollback()
             logger.error(f"Error deleting connector: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 

@@ -42,8 +42,6 @@ class DocumentService(BaseService):
             qdrant_connector (QdrantConnector, optional): Vector database connection. Defaults to None.
             redis_connector (RedisConnector, optional): Cache store connection. Defaults to None.
         """
-        super().__init__(db_session=db_session)
-
         if minio_connector and not isinstance(minio_connector, MinioConnector):
             raise ValueError("Invalid Minio connector")
         if qdrant_connector and not isinstance(qdrant_connector, QdrantConnector):
@@ -51,9 +49,15 @@ class DocumentService(BaseService):
         if redis_connector and not isinstance(redis_connector, RedisConnector):
             raise ValueError("Invalid Redis connector")
 
+        super().__init__(db_session=db_session)
+
+        # Define storage connections
         self._minio_connector = minio_connector
         self._qdrant_connector = qdrant_connector
         self._redis_connector = redis_connector
+
+        # Define repositories
+        self._document_repo = DocumentRepository(db_session=self._db_session)
 
     def upload_documents(
         self,
@@ -96,9 +100,9 @@ class DocumentService(BaseService):
                             name=document.filename,
                             document_url=file_path,
                         )
-                        err = DocumentRepository(
-                            db_session=self._db_session
-                        ).create_document_metadata(document_metadata=document_metadata)
+                        err = self._document_repo.create_document_metadata(
+                            document_metadata=document_metadata
+                        )
 
                     # Upload file to object storage
                     self._minio_connector.upload_files(
@@ -118,8 +122,6 @@ class DocumentService(BaseService):
                         redis_connector=self._redis_connector,
                     )
         except Exception as e:
-            # Rollback transaction
-            self._db_session.rollback()
             logger.error(f"Error uploading documents: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
