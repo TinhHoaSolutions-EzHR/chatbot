@@ -28,6 +28,7 @@ from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
 
 from app.models.base import Base
+from app.settings.constants import Constants
 
 if TYPE_CHECKING:
     from app.models import Agent
@@ -197,6 +198,27 @@ class ChatMessage(Base):
         if token_count < 0:
             raise ValueError("Token count must be greater than or equal to zero.")
         return token_count
+
+    @validates("message")
+    def validate_message(self, key: Any, message: str) -> str:
+        """
+        Validate message.
+
+        Args:
+            key (Any): Key.
+            message (str): Message.
+
+        Returns:
+            str: Validated message.
+        """
+        # Strip whitespace
+        message = message.strip()
+
+        # Limit user message length
+        if self.message_type == ChatMessageType.USER:
+            message = message[: Constants.MAX_USER_MESSAGE_LENGTH]
+
+        return message
 
 
 class ChatMessageRequest(BaseModel):

@@ -70,3 +70,6 @@ class Constants:
     REDIS_TEST_VALUE = "test-value"
 
     MSSQL_TEST_DB_NAME = "tempdb"
+
+    # Chat Message
+    MAX_USER_MESSAGE_LENGTH = 2000
