@@ -179,10 +179,11 @@ class ChatService(BaseService):
         """
         # Update parent message's child reference
         if parent_message_id:
+            parent_updated_message = ChatMessage(child_message_id=child_message_id)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=parent_message_id,
-                chat_message=ChatMessage(child_message_id=child_message_id),
+                chat_message=parent_updated_message,
                 user_id=user_id,
             )
             if err:
@@ -190,10 +191,11 @@ class ChatService(BaseService):
 
         # Update child message's parent reference
         if child_message_id:
+            child_updated_message = ChatMessage(parent_message_id=parent_message_id)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=child_message_id,
-                chat_message=ChatMessage(parent_message_id=parent_message_id),
+                chat_message=child_updated_message,
                 user_id=user_id,
             )
             if err:
@@ -242,10 +244,12 @@ class ChatService(BaseService):
 
         # Update the child_message_id of the latest chat response (if any)
         if latest_chat_response:
+            logger.info("Updating the child_message_id of the latest chat response message")
+            latest_updated_chat_response = ChatMessage(child_message_id=new_chat_request.id)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=latest_chat_response.id,
-                chat_message=ChatMessage(child_message_id=new_chat_request.id),
+                chat_message=latest_updated_chat_response,
                 user_id=user_id,
             )
             if err:
@@ -316,6 +320,7 @@ class ChatService(BaseService):
         Returns:
             Optional[APIError]: APIError object if any error
         """
+        # Get the parent and child message ids of the current response message
         parent_request_message_id = None
         child_response_message_id = None
 
@@ -343,6 +348,9 @@ class ChatService(BaseService):
 
         # Update the message chain
         if parent_request_message_id and child_response_message_id:
+            logger.info(
+                "Updating the child_message_id of the parent of the request message, parent_message_id of the next child message"
+            )
             # Update the child_message_id of the parent of the request message, parent_message_id of the next child message
             err = self._update_message_chain(
                 chat_session_id=chat_session_id,
@@ -351,6 +359,7 @@ class ChatService(BaseService):
                 child_message_id=child_response_message_id,
             )
         elif parent_request_message_id:
+            logger.info("Updating the parent request message with the new child message id")
             # Update the parent request message with the new child message id
             err = self._update_message_chain(
                 chat_session_id=chat_session_id,
@@ -358,6 +367,7 @@ class ChatService(BaseService):
                 parent_message_id=parent_request_message_id,
             )
         elif child_response_message_id:
+            logger.info("Updating the next child message with the new parent message id")
             # Update the next child message with the new parent message id
             err = self._update_message_chain(
                 chat_session_id=chat_session_id,
@@ -401,6 +411,7 @@ class ChatService(BaseService):
         # Define the current chat request and response
         # When regenerating or editing message, we need to care about the couple of request and response messages
         if current_chat_message.message_type == ChatMessageType.USER:
+            logger.info("Editing the existing request message. Current chat message is a request message.")
             # When the message is edited, the chat request is the current message
             current_chat_request = current_chat_message
             current_chat_response, err = self._chat_repository.get_chat_message(
@@ -411,6 +422,7 @@ class ChatService(BaseService):
             if err:
                 return None, err
         elif current_chat_message.message_type == ChatMessageType.ASSISTANT:
+            logger.info("Regenerating the existing request message. Current chat message is a response message.")
             # When the message is regenerated, the chat response is the current message
             current_chat_response = current_chat_message
             current_chat_request, err = self._chat_repository.get_chat_message(
@@ -468,6 +480,7 @@ class ChatService(BaseService):
         # If there are no any chat messages, the request message is the first message
         latest_chat_response = None
         if current_chat_messages:
+            logger.info("The chat session has existing messages.")
             # Get the latest chat message
             latest_chat_response = current_chat_messages[-1]
 
@@ -496,10 +509,11 @@ class ChatService(BaseService):
         self._db_session.flush()
 
         # Update the child_message_id of the current request message as the new response message
+        updated_message = ChatMessage(child_message_id=chat_response.id)
         err = self._chat_repository.update_chat_message(
             chat_session_id=chat_session_id,
             chat_message_id=new_chat_request.id,
-            chat_message=ChatMessage(child_message_id=chat_response.id),
+            chat_message=updated_message,
             user_id=user_id,
         )
         if err:
@@ -532,6 +546,7 @@ class ChatService(BaseService):
             # Create chat session if it does not exist
             is_chat_session_exists = chat_session is not None
             if not is_chat_session_exists:
+                logger.info(f"Chat session does not exist. Creating a new chat session with id: {chat_session_id}")
                 chat_session = ChatSession(id=chat_session_id, user_id=user_id)
                 err = self._chat_repository.create_chat_session(chat_session=chat_session)
                 if err:
@@ -539,6 +554,7 @@ class ChatService(BaseService):
 
             # Handle processing existing message (regenerate or edit the message)
             if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:
+                logger.info("Regenerating the existing chat message")
                 existing_chat_request, err = self._handle_existing_chat_message(
                     chat_message_request=chat_message_request,
                     chat_session_id=chat_session_id,
@@ -551,6 +567,7 @@ class ChatService(BaseService):
                 chat_message_request.message = existing_chat_request.message
 
             elif chat_message_request.request_type == ChatMessageRequestType.EDIT:
+                logger.info("Editing the existing chat message")
                 _, err = self._handle_existing_chat_message(
                     chat_message_request=chat_message_request,
                     chat_session_id=chat_session_id,
