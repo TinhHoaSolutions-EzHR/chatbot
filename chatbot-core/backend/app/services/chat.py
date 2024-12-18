@@ -411,7 +411,9 @@ class ChatService(BaseService):
         # Define the current chat request and response
         # When regenerating or editing message, we need to care about the couple of request and response messages
         if current_chat_message.message_type == ChatMessageType.USER:
-            logger.info("Editing the existing request message. Current chat message is a request message.")
+            logger.info(
+                "Editing the existing request message. Current chat message is a request message."
+            )
             # When the message is edited, the chat request is the current message
             current_chat_request = current_chat_message
             current_chat_response, err = self._chat_repository.get_chat_message(
@@ -422,7 +424,9 @@ class ChatService(BaseService):
             if err:
                 return None, err
         elif current_chat_message.message_type == ChatMessageType.ASSISTANT:
-            logger.info("Regenerating the existing request message. Current chat message is a response message.")
+            logger.info(
+                "Regenerating the existing request message. Current chat message is a response message."
+            )
             # When the message is regenerated, the chat response is the current message
             current_chat_response = current_chat_message
             current_chat_request, err = self._chat_repository.get_chat_message(
@@ -546,7 +550,9 @@ class ChatService(BaseService):
             # Create chat session if it does not exist
             is_chat_session_exists = chat_session is not None
             if not is_chat_session_exists:
-                logger.info(f"Chat session does not exist. Creating a new chat session with id: {chat_session_id}")
+                logger.info(
+                    f"Chat session does not exist. Creating a new chat session with id: {chat_session_id}"
+                )
                 chat_session = ChatSession(id=chat_session_id, user_id=user_id)
                 err = self._chat_repository.create_chat_session(chat_session=chat_session)
                 if err:
