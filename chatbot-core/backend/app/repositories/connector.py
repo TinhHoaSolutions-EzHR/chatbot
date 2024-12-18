@@ -37,7 +37,7 @@ class ConnectorRepository(BaseRepository):
             logger.error(f"Error getting connectors: {e}", exc_info=True)
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_connector(self, connector_id: str) -> Tuple[Connector, Optional[APIError]]:
+    def get_connector(self, connector_id: str) -> Tuple[Optional[Connector], Optional[APIError]]:
         """
         Get connector by connector_id
 
@@ -45,7 +45,7 @@ class ConnectorRepository(BaseRepository):
             connector_id(str): Connector id
 
         Returns:
-            Tuple[Connector, Optional[APIError]]: Connector object and APIError object if any error
+            Tuple[Optional[Connector], Optional[APIError]]: Connector object and APIError object if any error
         """
         try:
             connector = (
@@ -71,7 +71,6 @@ class ConnectorRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error creating connector: {e}", exc_info=True)
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_connector(self, connector_id: str, connector: Connector) -> Optional[APIError]:
@@ -93,7 +92,6 @@ class ConnectorRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating connector: {e}", exc_info=True)
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_connector(self, connector_id: str) -> Optional[APIError]:

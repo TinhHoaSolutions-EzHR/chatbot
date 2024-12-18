@@ -45,6 +45,9 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """
     Construct and configure the FastAPI application
+
+    Returns:
+        FastAPI: FastAPI application instance
     """
 
     # Initialize FastAPI application
@@ -55,7 +58,9 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    logger.info(f"API {Constants.FASTAPI_NAME} {Constants.FASTAPI_VERSION} started successfully")
+    logger.info(
+        f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"
+    )
 
     # Include application routers
     app.include_router(router=base.router)

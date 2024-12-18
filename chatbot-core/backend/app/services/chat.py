@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 
 
 class ChatService(BaseService):
-    def __init__(self, db_session: Session) -> None:
+    def __init__(self, db_session: Session):
         """
         Chat service class for handling chat-related operations.
 
@@ -48,7 +48,7 @@ class ChatService(BaseService):
 
     def get_chat_session(
         self, chat_session_id: str, user_id: str
-    ) -> Tuple[ChatSession, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
         """
         Get chat session by id.
 
@@ -57,7 +57,7 @@ class ChatService(BaseService):
             user_id(str): User id
 
         Returns:
-            Tuple[ChatSession, Optional[APIError]]: Chat session object and APIError object if any error
+            Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
         chat_session, err = self._chat_repository.get_chat_session(
             chat_session_id=chat_session_id, user_id=user_id
@@ -208,7 +208,7 @@ class ChatService(BaseService):
         message: str,
         message_type: ChatMessageType,
         latest_chat_response: Optional[ChatMessage] = None,
-    ) -> Tuple[ChatMessage, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
         Make chat request message.
 
@@ -220,7 +220,7 @@ class ChatService(BaseService):
             latest_chat_response(ChatMessage): Latest chat response message. Defaults to None
 
         Returns:
-            Tuple[ChatMessage, Optional[APIError]]: Chat request message and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat request message and APIError object if any error
         """
         # Define the parent message id as the latest chat response id (if any)
         parent_message_id = latest_chat_response.id if latest_chat_response else None
@@ -263,7 +263,7 @@ class ChatService(BaseService):
         chat_session_id: str,
         user_id: str,
         current_request_id: str,
-    ) -> Tuple[ChatMessage, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
         Generate chat response message.
         The input message is used to query the LLM model and generate the response message.
@@ -276,7 +276,7 @@ class ChatService(BaseService):
             latest_response_id(str): Latest response message id. Defaults to None
 
         Returns:
-            Tuple[Union[ChatMessage, None], Optional[APIError]]: Chat response message and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat response message and APIError object if any error
         """
         # Generate chat response
         # TODO: Implement the logic to query the LLM model and generate the response
@@ -397,7 +397,7 @@ class ChatService(BaseService):
             user_id(str): User id
 
         Returns:
-            Tuple[Union[str, None], Optional[APIError]]: Chat response message and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat response message and APIError object if any error
         """
         # Get the current chat message and its parent / child message (based on the message message)
         current_chat_message, err = self._chat_repository.get_chat_message(

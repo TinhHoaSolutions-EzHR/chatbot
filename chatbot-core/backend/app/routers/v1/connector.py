@@ -1,4 +1,3 @@
-from collections.abc import Iterator
 from typing import Annotated
 from typing import List
 
@@ -35,7 +34,7 @@ def upload_documents(
     minio_connector=Depends(get_minio_connector),
     qdrant_connector=Depends(get_qdrant_connector),
     redis_connector=Depends(get_redis_connector),
-) -> None:
+) -> BackendAPIResponse:
     """
     Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
 
@@ -45,6 +44,9 @@ def upload_documents(
         minio_connector (MinioConnector, optional): Object storage connection. Defaults to MinioConnector.
         qdrant_connector (QdrantConnector, optional): Vector database connection. Defaults to QdrantConnector.
         redis_connector (RedisConnector, optional): Cache store connection. Defaults to RedisConnector.
+
+    Returns:
+        BackendAPIResponse: API response with the uploaded document URLs.
     """
     # Upload documents to object storage and trigger indexing pipeline
     document_urls, err = DocumentService(
@@ -58,7 +60,10 @@ def upload_documents(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = [DocumentUploadResponse(document_url=document_url) for document_url in document_urls]
+    if document_urls:
+        data = [DocumentUploadResponse(document_url=document_url) for document_url in document_urls]
+    else:
+        data = []
 
     return (
         BackendAPIResponse()
@@ -69,23 +74,27 @@ def upload_documents(
 
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_connectors(db_session: Session = Depends(get_db_session)) -> None:
+def get_connectors(db_session: Session = Depends(get_db_session)) -> BackendAPIResponse:
     """
     Get all connectors.
 
     Args:
         db_session (Session, optional): Database session. Defaults to relational database engine.
+
+    Returns:
+        BackendAPIResponse: API response with the list of connectors.
     """
     # Get connectors
-    result: Iterator = ConnectorService(db_session=db_session).get_connectors()
-    connectors, err = result
-
+    connectors, err = ConnectorService(db_session=db_session).get_connectors()
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = [ConnectorResponse.model_validate(connector) for connector in connectors]
+    if connectors:
+        data = [ConnectorResponse.model_validate(connector) for connector in connectors]
+    else:
+        data = []
 
     return (
         BackendAPIResponse()
@@ -96,13 +105,18 @@ def get_connectors(db_session: Session = Depends(get_db_session)) -> None:
 
 
 @router.get("/{connector_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_connector(connector_id: str, db_session: Session = Depends(get_db_session)) -> None:
+def get_connector(
+    connector_id: str, db_session: Session = Depends(get_db_session)
+) -> BackendAPIResponse:
     """
     Get connector by id.
 
     Args:
         connector_id (str): Connector id
         db_session (Session, optional): Database session. Defaults to relational database engine.
+
+    Returns:
+        BackendAPIResponse: API response with the connector information.
     """
     # Get connector by id
     connector, err = ConnectorService(db_session=db_session).get_connector(
@@ -129,13 +143,16 @@ def get_connector(connector_id: str, db_session: Session = Depends(get_db_sessio
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def create_connector(
     connector_request: ConnectorRequest, db_session: Session = Depends(get_db_session)
-) -> None:
+) -> BackendAPIResponse:
     """
     Create connector.
 
     Args:
         name (str): Connector name
         db_session (Session, optional): Database session. Defaults to relational database engine.
+
+    Returns:
+        BackendAPIResponse: API response with the created connector information.
     """
     # Create connector
     err = ConnectorService(db_session=db_session).create_connector(
@@ -161,7 +178,7 @@ def update_connector(
     connector_id: str,
     connector_request: ConnectorRequest,
     db_session: Session = Depends(get_db_session),
-) -> None:
+) -> BackendAPIResponse:
     """
     Update connector by connector_id.
 
@@ -169,6 +186,9 @@ def update_connector(
         connector_id (int): Connector id
         name (str): Connector name
         db_session (Session, optional): Database session. Defaults to relational database engine.
+
+    Returns:
+        BackendAPIResponse: API response with the updated connector information.
     """
     # Update connector
     err = ConnectorService(db_session=db_session).update_connector(
