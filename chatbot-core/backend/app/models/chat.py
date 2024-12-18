@@ -86,25 +86,42 @@ class ChatSession(Base):
 
     __tablename__ = "chat_session"
 
-    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-    agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("agent.id"), nullable=True)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
+    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
+    agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey("agent.id"), nullable=True
+    )
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
-        SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False), default=ChatSessionSharedStatus.PRIVATE
+        SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
+        default=ChatSessionSharedStatus.PRIVATE,
     )
     current_alternate_model: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    user: Mapped["User"] = relationship("User", back_populates="chat_sessions", cascade="save-update, merge")
-    agent: Mapped["Agent"] = relationship("Agent", back_populates="chat_sessions", cascade="save-update, merge")
+    user: Mapped["User"] = relationship(
+        "User", back_populates="chat_sessions", cascade="save-update, merge"
+    )
+    agent: Mapped["Agent"] = relationship(
+        "Agent", back_populates="chat_sessions", cascade="save-update, merge"
+    )
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
         "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
     )
@@ -118,16 +135,26 @@ class ChatMessage(Base):
 
     __tablename__ = "chat_message"
 
-    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
+    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
     agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
-    parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
-    child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey(CHAT_MESSAGES_ID), nullable=True)
+    parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+    )
+    child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+    )
     message: Mapped[str] = mapped_column(Text)
-    prompt_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("prompt.id"), nullable=True)
+    prompt_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey("prompt.id"), nullable=True
+    )
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False), nullable=False
@@ -137,16 +164,24 @@ class ChatMessage(Base):
     )
     error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
     user: Mapped["User"] = relationship("User", back_populates="chat_messages")
-    chat_session: Mapped["ChatSession"] = relationship("ChatSession", back_populates="chat_messages")
+    chat_session: Mapped["ChatSession"] = relationship(
+        "ChatSession", back_populates="chat_messages"
+    )
     agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
     prompt: Mapped[Optional["Prompt"]] = relationship("Prompt", back_populates="chat_messages")
 
@@ -176,7 +211,9 @@ class ChatMessageRequest(BaseModel):
     child_message_id: Optional[UUID] = Field(None, description="Child message id")
     message: Optional[str] = Field(None, description="Message text", min_length=1, max_length=10000)
     prompt_id: Optional[UUID] = Field(None, description="Prompt id")
-    request_type: ChatMessageRequestType = Field(description="Request type", default=ChatMessageRequestType.NEW)
+    request_type: ChatMessageRequestType = Field(
+        description="Request type", default=ChatMessageRequestType.NEW
+    )
 
     class Config:
         from_attributes = True
@@ -209,8 +246,12 @@ class ChatSessionRequest(BaseModel):
     """
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
-    description: Optional[str] = Field(None, max_length=255, description="Description (Name) of the chat session")
-    shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
+    description: Optional[str] = Field(
+        None, max_length=255, description="Description (Name) of the chat session"
+    )
+    shared_status: ChatSessionSharedStatus = Field(
+        ChatSessionSharedStatus.PRIVATE, description="Shared status"
+    )
     current_alternate_model: Optional[str] = Field(None, description="Current alternate model")
 
     @field_validator("description")
@@ -240,7 +281,9 @@ class ChatSessionResponse(BaseModel):
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
-    shared_status: ChatSessionSharedStatus = Field(ChatSessionSharedStatus.PRIVATE, description="Shared status")
+    shared_status: ChatSessionSharedStatus = Field(
+        ChatSessionSharedStatus.PRIVATE, description="Shared status"
+    )
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
 

@@ -68,9 +68,13 @@ def test_bucket_exists(minio_client: Minio) -> None:
             bucket.name for bucket in buckets
         ], f"Expected bucket '{bucket_name}' to be exist, but it was not."
     except S3Error as e:
-        pytest.fail(f"MinIO error while uploading file: {e}. Bucket '{bucket_name}' does not exist.")
+        pytest.fail(
+            f"MinIO error while uploading file: {e}. Bucket '{bucket_name}' does not exist."
+        )
     except Exception as e:
-        pytest.fail(f"Unexpected error while checking if bucket exists: {e}. Bucket '{bucket_name}' does not exist.")
+        pytest.fail(
+            f"Unexpected error while checking if bucket exists: {e}. Bucket '{bucket_name}' does not exist."
+        )
     finally:
         # Clean up the bucket
         clean_minio_bucket(minio_client=minio_client, bucket_name=bucket_name)
@@ -97,12 +101,18 @@ def test_upload_file(minio_client: Minio) -> None:
         minio_client.make_bucket(bucket_name)
 
         # Upload file to the bucket
-        minio_client.fput_object(bucket_name=bucket_name, object_name=object_name, file_path=file_path)
+        minio_client.fput_object(
+            bucket_name=bucket_name, object_name=object_name, file_path=file_path
+        )
 
         # Verify the file exists in the bucket
         uploaded_objects = minio_client.list_objects(bucket_name=bucket_name)
         uploaded_object = next(
-            (uploaded_object for uploaded_object in uploaded_objects if uploaded_object.object_name == object_name),
+            (
+                uploaded_object
+                for uploaded_object in uploaded_objects
+                if uploaded_object.object_name == object_name
+            ),
             None,
         )
         assert (
@@ -143,7 +153,9 @@ def test_download_file(minio_client: Minio) -> None:
         minio_client.make_bucket(bucket_name)
 
         # Upload file to the bucket
-        minio_client.fput_object(bucket_name=bucket_name, object_name=object_name, file_path=original_file_path)
+        minio_client.fput_object(
+            bucket_name=bucket_name, object_name=object_name, file_path=original_file_path
+        )
 
         # Download file from the bucket
         response = minio_client.get_object(
@@ -157,10 +169,15 @@ def test_download_file(minio_client: Minio) -> None:
             downloaded_file_path = Path(temp_downloaded_file.name)
 
         # Verify the file was downloaded
-        assert downloaded_file_path.exists(), f"Expected file '{object_name}' to be downloaded, but it was not."
+        assert (
+            downloaded_file_path.exists()
+        ), f"Expected file '{object_name}' to be downloaded, but it was not."
 
         # Verify the contents of the downloaded file is the same as the original file
-        with original_file_path.open("rb") as original_file, downloaded_file_path.open("rb") as downloaded_file:
+        with (
+            original_file_path.open("rb") as original_file,
+            downloaded_file_path.open("rb") as downloaded_file,
+        ):
             original_content = original_file.read()
             downloaded_content = downloaded_file.read()
             assert (
@@ -201,7 +218,9 @@ def test_delete_file(minio_client: Minio) -> None:
         minio_client.make_bucket(bucket_name)
 
         # Upload file to the bucket
-        minio_client.fput_object(bucket_name=bucket_name, object_name=object_name, file_path=file_path)
+        minio_client.fput_object(
+            bucket_name=bucket_name, object_name=object_name, file_path=file_path
+        )
 
         # Delete the file from the bucket
         minio_client.remove_object(bucket_name=bucket_name, object_name=object_name)
@@ -209,7 +228,11 @@ def test_delete_file(minio_client: Minio) -> None:
         # Verify the file was deleted
         uploaded_objects = minio_client.list_objects(bucket_name=bucket_name)
         uploaded_object = next(
-            (uploaded_object for uploaded_object in uploaded_objects if uploaded_object.object_name == object_name),
+            (
+                uploaded_object
+                for uploaded_object in uploaded_objects
+                if uploaded_object.object_name == object_name
+            ),
             None,
         )
         assert (

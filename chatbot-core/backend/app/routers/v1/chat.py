@@ -56,10 +56,17 @@ def get_chat_sessions(
     else:
         data = []
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
-@router.get("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    "/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK
+)
 def get_chat_session(
     chat_session_id: str,
     db_session: Session = Depends(get_db_session),
@@ -94,7 +101,12 @@ def get_chat_session(
     else:
         data = None
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.post("/chat-sessions", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
@@ -129,10 +141,17 @@ def create_chat_session(
     # Parse response
     data = chat_session_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
-@router.patch("/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+@router.patch(
+    "/chat-sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_200_OK
+)
 def update_chat_session(
     chat_session_id: str,
     chat_session_request: ChatSessionRequest,
@@ -166,7 +185,12 @@ def update_chat_session(
     # Parse response
     data = chat_session_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.delete("/chat-sessions/{chat_session_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -188,7 +212,9 @@ def delete_chat_session(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Delete chat session
-    err = ChatService(db_session=db_session).delete_chat_session(chat_session_id=chat_session_id, user_id=user.id)
+    err = ChatService(db_session=db_session).delete_chat_session(
+        chat_session_id=chat_session_id, user_id=user.id
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
@@ -223,7 +249,10 @@ def handle_new_chat_message(
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
         raise HTTPException(status_code=status_code, detail=detail)
 
-    if chat_message_request.request_type != ChatMessageRequestType.REGENERATE and not chat_message_request.message:
+    if (
+        chat_message_request.request_type != ChatMessageRequestType.REGENERATE
+        and not chat_message_request.message
+    ):
         status_code, detail = ErrorCodesMappingNumber.EMPTY_CHAT_MESSAGE
         raise HTTPException(status_code=status_code, detail=detail)
 

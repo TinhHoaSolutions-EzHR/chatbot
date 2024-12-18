@@ -81,7 +81,11 @@ class DocumentService(BaseService):
                 # Auto close file after reading
                 with contextlib.closing(document.file):
                     # Generate file name
-                    file_name = remove_vietnamese_accents(input_str=document.filename).replace(" ", "_").lower()
+                    file_name = (
+                        remove_vietnamese_accents(input_str=document.filename)
+                        .replace(" ", "_")
+                        .lower()
+                    )
                     file_path = os.path.join(Constants.MINIO_DOCUMENT_BUCKET, file_name)
 
                     logger.info(f"Uploading document: {document.filename}")
@@ -92,9 +96,9 @@ class DocumentService(BaseService):
                             name=document.filename,
                             document_url=file_path,
                         )
-                        err = DocumentRepository(db_session=self._db_session).create_document_metadata(
-                            document_metadata=document_metadata
-                        )
+                        err = DocumentRepository(
+                            db_session=self._db_session
+                        ).create_document_metadata(document_metadata=document_metadata)
 
                     # Upload file to object storage
                     self._minio_connector.upload_files(

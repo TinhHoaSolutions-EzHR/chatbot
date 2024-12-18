@@ -49,7 +49,7 @@ changelog_file = "CHANGELOG.md"
 
 [tool.ruff]
 target-version = "py311"
-line-length = 120
+line-length = 100
 exclude = ["*/migrations/*", "*/alembic/*", "*/__init__.py", "backend.egg-info"]
 extend-exclude = ["*.ipynb"]
 indent-width = 4
@@ -82,7 +82,7 @@ skip-magic-trailing-comma = false
 typeCheckingMode = "off"
 
 [tool.black]
-line-length = 120
+line-length = 100
 extend-exclude = ""
 
 [tool.pytest.ini_options]
@@ -90,21 +90,21 @@ extend-exclude = ""
 # addopts = "--ignore=path/to/test_file.py --ignore=path/to/another_test_file.py"
 
 # Enable verbose output
-testpaths = ["tests"]                     # Specify directories where tests are located
+testpaths = ["tests"] # Specify directories where tests are located
 python_files = ["test_*.py", "*_test.py"] # Test file pattern
-python_classes = ["Test*"]                # Class names to consider as tests
-python_functions = ["test_*"]             # Function names to consider as tests
+python_classes = ["Test*"] # Class names to consider as tests
+python_functions = ["test_*"] # Function names to consider as tests
 filterwarnings = [
-    "error",
-    "ignore::UserWarning",
-    # note the use of single quote below to denote "raw" strings in TOML
-    'ignore:.*U.*mode is deprecated:DeprecationWarning',
+  "error",
+  "ignore::UserWarning",
+  # note the use of single quote below to denote "raw" strings in TOML
+  'ignore:.*U.*mode is deprecated:DeprecationWarning',
 ]
 
 [dependency-groups]
 dev = [
-    "pytest-coverage>=0.0",
-    "pytest>=8.3.3",
-    "commitizen>=4.0.0",
-    "ipykernel>=6.29.5",
+  "pytest-coverage>=0.0",
+  "pytest>=8.3.3",
+  "commitizen>=4.0.0",
+  "ipykernel>=6.29.5",
 ]

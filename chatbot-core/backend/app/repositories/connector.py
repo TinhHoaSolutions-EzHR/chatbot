@@ -48,7 +48,9 @@ class ConnectorRepository(BaseRepository):
             Tuple[Connector, Optional[APIError]]: Connector object and APIError object if any error
         """
         try:
-            connector = self._db_session.query(Connector).filter(Connector.id == connector_id).first()
+            connector = (
+                self._db_session.query(Connector).filter(Connector.id == connector_id).first()
+            )
             return connector, None
         except Exception as e:
             logger.error(f"Error getting connector: {e}", exc_info=True)
@@ -84,7 +86,9 @@ class ConnectorRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
-            connector = {key: value for key, value in connector.__dict__.items() if not key.startswith("_")}
+            connector = {
+                key: value for key, value in connector.__dict__.items() if not key.startswith("_")
+            }
             self._db_session.query(Connector).filter(Connector.id == connector_id).update(connector)
             return None
         except Exception as e:
