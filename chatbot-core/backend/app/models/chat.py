@@ -14,6 +14,7 @@ from uuid import uuid4
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import field_validator
+from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
@@ -164,6 +165,7 @@ class ChatMessage(Base):
         SQLAlchemyEnum(ChatMessageErrorType), nullable=True
     )
     error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    is_sensitive: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -236,6 +238,7 @@ class ChatMessageRequest(BaseModel):
     request_type: ChatMessageRequestType = Field(
         description="Request type", default=ChatMessageRequestType.NEW
     )
+    is_sensitive: bool = Field(False, description="Sensitive message flag")
 
     class Config:
         from_attributes = True
@@ -254,6 +257,7 @@ class ChatMessageResponse(BaseModel):
     message_type: ChatMessageType = Field(..., description="Message type")
     parent_message_id: Optional[UUID] = Field(None, description="Parent message id")
     child_message_id: Optional[UUID] = Field(None, description="Latest child message id")
+    is_sensitive: bool = Field(False, description="Sensitive message flag")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
 
@@ -308,6 +312,7 @@ class ChatSessionResponse(BaseModel):
     )
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
+    deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")
 
     class Config:
         from_attributes = True
