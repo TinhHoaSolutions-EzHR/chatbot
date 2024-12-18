@@ -12,6 +12,8 @@ from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.core.schema import BaseNode
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.storage.docstore import SimpleDocumentStore
 
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
@@ -19,7 +21,7 @@ from app.settings import Constants
 from app.utils.pdf_reader import parse_pdf
 
 
-def get_transformations() -> List[Any]:
+def big_get_transformations() -> List[Any]:
     """
     Get the transformation components for the ingestion pipeline
 
@@ -35,6 +37,7 @@ def get_transformations() -> List[Any]:
     ]
 
     # Define chunking method
+
     semantic_splitter = SemanticSplitterNodeParser(
         buffer_size=1,
         breakpoint_percentile_threshold=95,
@@ -42,6 +45,32 @@ def get_transformations() -> List[Any]:
     )
 
     transformations = [semantic_splitter] + extractors
+
+    return transformations
+
+def smail_get_transformations() -> List[Any]:
+    """
+    Get the transformation components for the ingestion pipeline
+
+    Returns:
+        List[Any]: List of LlamaIndex transformation components
+    """
+    # TODO: Add two fields `issue_date` (datetime) and `outdated` (bool) to the document metadata
+
+    # Define node postprocessor methods
+    extractors = [
+        QuestionsAnsweredExtractor(llm=Settings.llm, questions=2),
+        KeywordExtractor(llm=Settings.llm, keywords=5),
+    ]
+
+    # Define chunking method
+
+    splitter = SentenceSplitter(
+        chunk_size=512,
+        chunk_overlap=20
+    )
+
+    transformations = [splitter] + extractors
 
     return transformations
 
@@ -82,7 +111,7 @@ def index_document_to_vector_db(
     )
 
     # Define transformation components (chunking + node postprocessors)
-    transformations = get_transformations()
+    transformations = smail_get_transformations()
 
     # Ingestion pipeline to vector database
     pipeline = IngestionPipeline(
@@ -103,3 +132,30 @@ def index_document_to_vector_db(
         node.embedding = node_embedding
 
     vector_store.add(nodes=nodes)
+
+def index_document_to_docstore(
+    document: Annotated[UploadFile, File(description="PDF file")],
+) -> None:
+    """
+    Index a PDF document into the vector database.
+
+    Args:
+        document (UploadFile): PDF file
+        qdrant_connector (QdrantConnector): Vector database connection
+        redis_connector (RedisConnector): Cache store connection
+    """
+    # Parse PDF file into LlamaIndex Document objects
+    documents = parse_pdf(document=document)
+    docstore = SimpleDocumentStore()
+
+    # Define transformation components (chunking + node postprocessors)
+    transformations = big_get_transformations()
+
+    # Ingestion pipeline to vector database
+    pipeline = IngestionPipeline(
+        name="EzHR Chatbot Indexing Pipeline",
+        transformations=transformations,
+    )
+    nodes: List[BaseNode] = pipeline.run(documents=documents, show_progress=True)
+
+    docstore.add_documents(nodes)
