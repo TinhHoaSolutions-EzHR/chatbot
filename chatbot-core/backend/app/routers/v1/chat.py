@@ -11,6 +11,7 @@ from app.databases.mssql import get_db_session
 from app.models import User
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
+from app.models.chat import ChatMessageResponse
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
 from app.services.chat import ChatService
@@ -97,7 +98,17 @@ def get_chat_session(
 
     # Parse chat session
     if chat_session:
+        chat_messages, err = ChatService(db_session=db_session).get_chat_messages(
+            chat_session_id=chat_session_id, user_id=user.id
+        )
+        if err:
+            status_code, detail = err.kind
+            raise HTTPException(status_code=status_code, detail=detail)
+
         data = ChatSessionResponse.model_validate(chat_session)
+        data.messages = [
+            ChatMessageResponse.model_validate(chat_message) for chat_message in chat_messages
+        ]
     else:
         data = None
 

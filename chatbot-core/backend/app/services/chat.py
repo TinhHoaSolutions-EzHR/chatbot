@@ -59,22 +59,26 @@ class ChatService(BaseService):
         Returns:
             Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
-        chat_session, err = self._chat_repository.get_chat_session(
+        return self._chat_repository.get_chat_session(
             chat_session_id=chat_session_id, user_id=user_id
         )
-        if err:
-            return None, err
 
-        chat_messages, err = self._chat_repository.get_chat_messages(
+    def get_chat_messages(
+        self, chat_session_id: str, user_id: str
+    ) -> Tuple[List[ChatMessage], Optional[APIError]]:
+        """
+        Get all chat messages of the chat session.
+
+        Args:
+            chat_session_id(str): Chat session id
+            user_id(str): User id
+
+        Returns:
+            Tuple[List[ChatMessage], Optional[APIError]]: List of chat message objects and APIError object if any error
+        """
+        return self._chat_repository.get_chat_messages(
             chat_session_id=chat_session_id, user_id=user_id
         )
-        if err:
-            return None, err
-
-        # Set chat messages to the chat session
-        chat_session.chat_messages = chat_messages
-
-        return chat_session, None
 
     def create_chat_session(
         self, chat_session_request: ChatSessionRequest, user_id: str
