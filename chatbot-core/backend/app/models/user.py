@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from sqlalchemy import Boolean
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -33,7 +34,9 @@ class User(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
     recent_agent_ids: Mapped[str] = mapped_column(str, default_factory=str)
+    auto_scroll: Mapped[bool] = mapped_column(Boolean, default=True)
 
+    # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="user")
     folders: Mapped[List["Folder"]] = relationship("Folder", back_populates="user")
 
@@ -45,6 +48,7 @@ class UserSettingRequest(BaseModel):
     """
 
     current_agent_id: Optional[UUID] = Field(None, title="Current using agent ID")
+    auto_scroll: bool = Field(True, title="Auto scroll chat messages")
 
     class Config:
         from_attributes = True

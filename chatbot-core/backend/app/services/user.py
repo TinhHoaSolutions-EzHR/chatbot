@@ -63,9 +63,8 @@ class UserService(BaseService):
             Optional[APIError]: API error response
         """
         with self._transaction():
-            recent_agent_ids = user.recent_agent_ids
-
             # Handle update recent agents
+            recent_agent_ids = user.recent_agent_ids
             if user_setting_request.current_agent_id:
                 current_agent_id = user_setting_request.current_agent_id
                 recent_agent_ids = self._handle_recent_agents(
@@ -74,6 +73,9 @@ class UserService(BaseService):
 
                 # Update user recent agents
                 user.recent_agent_ids = recent_agent_ids
+
+            # Update other user settings
+            user.auto_scroll = user_setting_request.auto_scroll
 
             err = self._user_repo.update_user(user_id=user.id, user=user)
 
