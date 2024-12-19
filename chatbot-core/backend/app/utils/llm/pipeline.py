@@ -16,7 +16,7 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.settings import Constants
-from app.utils.pdf_reader import parse_pdf
+from app.utils.api.helpers import parse_pdf
 
 
 def get_transformations() -> List[Any]:
@@ -99,7 +99,9 @@ def index_document_to_vector_db(
     # TODO: Will be deleted after figuring out why vector embeddings
     # are not being stored in the Qdrant database when calling IngestionPipeline.run()
     for node in nodes:
-        node_embedding = Settings.embed_model.get_text_embedding(node.get_content(metadata_mode="all"))
+        node_embedding = Settings.embed_model.get_text_embedding(
+            node.get_content(metadata_mode="all")
+        )
         node.embedding = node_embedding
 
     vector_store.add(nodes=nodes)

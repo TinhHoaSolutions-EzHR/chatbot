@@ -1,21 +1,27 @@
-from typing import Union
+from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.models.api import APIError
 from app.models.document import DocumentMetadata
 from app.repositories.base import BaseRepository
-from app.utils.error_handler import ErrorCodesMappingNumber
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class DocumentRepository(BaseRepository):
     def __init__(self, db_session: Session):
+        """
+        Document repository class for handling document-related database operations.
+
+        Args:
+            db_session (Session): Database session
+        """
         super().__init__(db_session=db_session)
 
-    def create_document_metadata(self, document_metadata: DocumentMetadata) -> Union[APIError, None]:
+    def create_document_metadata(self, document_metadata: DocumentMetadata) -> Optional[APIError]:
         """
         Create document metadata
 
@@ -23,13 +29,11 @@ class DocumentRepository(BaseRepository):
             document(DocumentMetadata): Document metadata object
 
         Returns:
-            Union[APIError, None]: APIError object if any error
+            Optional[APIError]: APIError object if any error
         """
         try:
             self._db_session.add(document_metadata)
-            self._db_session.commit()
             return None
         except Exception as e:
             logger.error(f"Error creating document: {e}", exc_info=True)
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

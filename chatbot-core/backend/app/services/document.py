@@ -2,8 +2,8 @@ import contextlib
 import os
 from typing import Annotated
 from typing import List
+from typing import Optional
 from typing import Tuple
-from typing import Union
 
 from fastapi import File
 from fastapi import UploadFile
@@ -12,17 +12,17 @@ from sqlalchemy.orm import Session
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
-from app.models.api import APIError
 from app.models.document import DocumentMetadata
 from app.repositories.document import DocumentRepository
 from app.services.base import BaseService
 from app.settings import Constants
-from app.utils.accents_handler import remove_vietnamese_accents
-from app.utils.error_handler import ErrorCodesMappingNumber
-from app.utils.indexing import index_document_to_vector_db
-from app.utils.logger import LoggerFactory
+from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
+from app.utils.api.helpers import get_logger
+from app.utils.api.helpers import remove_vietnamese_accents
+from app.utils.llm.pipeline import index_document_to_vector_db
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class DocumentService(BaseService):
@@ -42,8 +42,6 @@ class DocumentService(BaseService):
             qdrant_connector (QdrantConnector, optional): Vector database connection. Defaults to None.
             redis_connector (RedisConnector, optional): Cache store connection. Defaults to None.
         """
-        super().__init__(db_session=db_session)
-
         if minio_connector and not isinstance(minio_connector, MinioConnector):
             raise ValueError("Invalid Minio connector")
         if qdrant_connector and not isinstance(qdrant_connector, QdrantConnector):
@@ -51,14 +49,20 @@ class DocumentService(BaseService):
         if redis_connector and not isinstance(redis_connector, RedisConnector):
             raise ValueError("Invalid Redis connector")
 
+        super().__init__(db_session=db_session)
+
+        # Define storage connections
         self._minio_connector = minio_connector
         self._qdrant_connector = qdrant_connector
         self._redis_connector = redis_connector
 
+        # Define repositories
+        self._document_repo = DocumentRepository(db_session=self._db_session)
+
     def upload_documents(
         self,
         documents: Annotated[List[UploadFile], File(description="One or multiple documents")],
-    ) -> Tuple[List[str], Union[APIError, None]]:
+    ) -> Tuple[List[str], Optional[APIError]]:
         """
         Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
 
@@ -66,7 +70,7 @@ class DocumentService(BaseService):
             documents (List[UploadFile]): List of documents to be uploaded.
 
         Returns:
-            Tuple[List[str], Union[APIError, None]]: List of document file paths and error if any.
+            Tuple[List[str], Optional[APIError]]: List of document file paths and error if any.
         """
         # Check if files are empty
         for document in documents:
@@ -81,7 +85,11 @@ class DocumentService(BaseService):
                 # Auto close file after reading
                 with contextlib.closing(document.file):
                     # Generate file name
-                    file_name = remove_vietnamese_accents(input_str=document.filename).replace(" ", "_").lower()
+                    file_name = (
+                        remove_vietnamese_accents(input_str=document.filename)
+                        .replace(" ", "_")
+                        .lower()
+                    )
                     file_path = os.path.join(Constants.MINIO_DOCUMENT_BUCKET, file_name)
 
                     logger.info(f"Uploading document: {document.filename}")
@@ -92,7 +100,7 @@ class DocumentService(BaseService):
                             name=document.filename,
                             document_url=file_path,
                         )
-                        err = DocumentRepository(db_session=self._db_session).create_document_metadata(
+                        err = self._document_repo.create_document_metadata(
                             document_metadata=document_metadata
                         )
 
@@ -114,8 +122,6 @@ class DocumentService(BaseService):
                         redis_connector=self._redis_connector,
                     )
         except Exception as e:
-            # Rollback transaction
-            self._db_session.rollback()
             logger.error(f"Error uploading documents: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
