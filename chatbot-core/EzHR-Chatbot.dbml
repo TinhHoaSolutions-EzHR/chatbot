@@ -27,6 +27,7 @@ Project "EzHR-Chatbot" {
 11. document_metadata_tag: Tags for documents
 12. llm_provider: LLM service configurations
 13. embedding_provider: Embedding service configurations
+14. user_setting: User-specific settings
 
 ### Key Relationships:
 1. agent -> prompt: One-to-one (system prompt)
@@ -36,6 +37,7 @@ Project "EzHR-Chatbot" {
 5. feedback -> chat_message: Many-to-one
 6. document_metadata_tag -> document_metadata: Many-to-one
 7. agent_tool: Many-to-many between agents and tools
+8. user_setting -> user: One-to-one
 '''
 }
 
@@ -108,8 +110,22 @@ TABLE chatbot_core.user {
   is_admin boolean [not null, default: false, note: 'Whether user is admin or not.']
   is_verified boolean [not null, default: false, note: 'Whether user is verified via email or not.']
   role user_role [not null, note: 'Role of the user. E.g. admin, user.']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 
   Note: 'User table to store basic user details.'
+}
+
+TABLE chatbot_core.user_setting {
+  id uuid [unique, not null, primary key]
+  recent_agent_id uuid [null, ref: > chatbot_core.agent.id, note: 'Recent agent id used by the user.']
+  auto_scroll boolean [not null, default: true, note: 'Whether auto scroll is enabled or not.']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  Note: 'Table to store user settings.'
 }
 
 TABLE chatbot_core.agent {
