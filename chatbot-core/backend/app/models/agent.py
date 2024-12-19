@@ -14,6 +14,7 @@ from app.models.base import Base
 if TYPE_CHECKING:
     from app.models import ChatSession
     from app.models import ChatMessage
+    from app.models import Prompt
 
 
 class Agent(Base):
@@ -31,3 +32,4 @@ class Agent(Base):
     # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
     chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
+    prompt: Mapped[Prompt] = relationship("Prompt", back_populates="agent")
