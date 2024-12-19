@@ -20,7 +20,7 @@ from app.databases.redis import RedisConnector
 from app.settings import Constants
 from app.utils.pdf_reader import parse_pdf
 
-
+# draft from POC_1
 def big_get_transformations() -> List[Any]:
     """
     Get the transformation components for the ingestion pipeline
