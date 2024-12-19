@@ -12,6 +12,8 @@ from pydantic import BaseModel
 from pydantic import Field
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -33,21 +35,35 @@ class Folder(Base):
 
     __tablename__ = "folders"
 
-    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    name: Mapped[Optional[str]] = mapped_column(str, nullable=True)
-    display_priority: Mapped[Optional[int]] = mapped_column(int, nullable=True, default=0)
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
+    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    display_priority: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=0)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
     # Define relationships
-    user: Mapped["User"] = relationship("User", back_populates="chat_sessions", cascade="save-update, merge")
-    chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="folder")
+    user: Mapped["User"] = relationship(
+        "User", back_populates="chat_sessions", cascade="save-update, merge"
+    )
+    chat_sessions: Mapped[List["ChatSession"]] = relationship(
+        "ChatSession", back_populates="folder"
+    )
 
     def __lt__(self, other: Folder) -> bool:
         if not isinstance(other, Folder):
