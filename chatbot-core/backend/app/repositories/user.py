@@ -32,6 +32,7 @@ class UserRepository(BaseRepository):
             Optional[APIError]: API error response
         """
         try:
+            user = {key: value for key, value in user.__dict__.items() if not key.startswith("_")}
             self._db_session.query(User).filter(User.id == user_id).update(user)
             return None
         except Exception as e:
