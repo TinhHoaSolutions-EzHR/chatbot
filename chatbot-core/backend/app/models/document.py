@@ -23,7 +23,6 @@ class DocumentMetadata(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
-    hidden: Mapped[bool] = mapped_column(Boolean, default=False)
     name: Mapped[str] = mapped_column(String)
     link: Mapped[str] = mapped_column(String)
     last_synced_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
