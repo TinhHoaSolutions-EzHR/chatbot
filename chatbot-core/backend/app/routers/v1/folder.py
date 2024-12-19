@@ -48,12 +48,19 @@ def get_folders(
     else:
         data = []
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def create_folder(
-    folder_request: FolderRequest, db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)
+    folder_request: FolderRequest,
+    db_session: Session = Depends(get_db_session),
+    user: User = Depends(get_current_user),
 ) -> BackendAPIResponse:
     """
     Create a new chat folder.
@@ -69,7 +76,9 @@ def create_folder(
     user_id = user.id if user else None
 
     # Create chat folder
-    err = FolderService(db_session=db_session).create_folder(folder_request=folder_request, user_id=user_id)
+    err = FolderService(db_session=db_session).create_folder(
+        folder_request=folder_request, user_id=user_id
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
@@ -77,7 +86,12 @@ def create_folder(
     # Parse chat folder
     data = folder_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.patch("/{folder_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -112,13 +126,20 @@ def update_folder(
     # Parse chat folder
     data = folder_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
-@router.delete("/{folder_id}", response_model=APIResponse, status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{folder_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_folder(
-    folder_id: str, db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)
-) -> BackendAPIResponse:
+    folder_id: str,
+    db_session: Session = Depends(get_db_session),
+    user: User = Depends(get_current_user),
+) -> None:
     """
     Delete chat folder by ID.
 
@@ -126,9 +147,6 @@ def delete_folder(
         folder_id (str): Folder ID
         db_session (Session): Database session. Defaults to relational database session.
         user (User): User object
-
-    Returns:
-        BackendAPIResponse: API response
     """
     user_id = user.id if user else None
 
@@ -138,11 +156,11 @@ def delete_folder(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).respond()
-
 
 @router.post(
-    "/{folder_id}/chat_sessions/{chat_session_id}", response_model=APIResponse, status_code=status.HTTP_201_CREATED
+    "/{folder_id}/chat_sessions/{chat_session_id}",
+    response_model=APIResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 def add_chat_session_to_folder(
     folder_id: str,
@@ -172,10 +190,17 @@ def add_chat_session_to_folder(
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=None).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=None)
+        .respond()
+    )
 
 
-@router.delete("/{folder_id}/chat_sessions/{chat_session_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{folder_id}/chat_sessions/{chat_session_id}", status_code=status.HTTP_204_NO_CONTENT
+)
 def remove_chat_session_from_folder(
     folder_id: str,
     chat_session_id: str,
