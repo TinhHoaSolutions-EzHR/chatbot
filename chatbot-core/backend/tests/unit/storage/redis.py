@@ -53,7 +53,9 @@ def test_redis_set_get(redis_client: Redis) -> None:
 
         # Get the value by key
         retrieved_value = redis_client.get(name=key)
-        assert redis_client.get(key) == retrieved_value, f"Expected to get {value}, but got {retrieved_value}."
+        assert (
+            redis_client.get(key) == retrieved_value
+        ), f"Expected to get {value}, but got {retrieved_value}."
     except ConnectionError as e:
         pytest.fail(f"Connection error while setting and getting from Redis: {e}.")
     except Exception as e:
