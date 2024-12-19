@@ -8,11 +8,8 @@ from app.databases.redis import RedisConnector
 from app.routers import base
 from app.routers.v1 import chat
 from app.routers.v1 import connector
-<<<<<<< HEAD
 from app.routers.v1 import folder
-=======
 from app.routers.v1 import user
->>>>>>> 34c25bb (fix(backend): bug not declare router and type of list to save in db)
 from app.settings import Constants
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import init_llm_configurations

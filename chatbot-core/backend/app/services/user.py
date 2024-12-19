@@ -4,9 +4,9 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.models import User
+from app.models.user import User
 from app.models.user import UserSettingRequest
-from app.repositories.user import UserRepository
+from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
 from app.utils.api.helpers import get_logger
@@ -24,7 +24,7 @@ class UserService(BaseService):
         """
         super().__init__(db_session=db_session)
 
-        self._user_repo = UserRepository(db_session=db_session)
+        self._user_setting_repo = UserSettingRepository(db_session=db_session)
 
     def _handle_recent_agents(
         self, recent_agent_ids: Optional[List[str]], current_agent_id: str
@@ -70,8 +70,16 @@ class UserService(BaseService):
             Optional[APIError]: API error response
         """
         with self._transaction():
+            # Get current user setting
+            user_setting, err = self._user_setting_repo.get_user_setting(user_id=user.id)
+            if err:
+                return err
+
             # Handle update recent agents
-            recent_agent_ids = json.loads(user.recent_agent_ids) if user.recent_agent_ids else []
+            recent_agent_ids = (
+                json.loads(user_setting.recent_agent_ids) if user_setting.recent_agent_ids else []
+            )
+            logger.info(f"Current recent agent IDs: {recent_agent_ids}")
             if user_setting_request.current_agent_id:
                 current_agent_id = str(user_setting_request.current_agent_id)
                 recent_agent_ids = self._handle_recent_agents(
@@ -79,11 +87,13 @@ class UserService(BaseService):
                 )
 
                 # Update user recent agents
-                user.recent_agent_ids = json.dumps(recent_agent_ids)
+                user_setting.recent_agent_ids = json.dumps(recent_agent_ids)
 
             # Update other user settings
-            user.auto_scroll = user_setting_request.auto_scroll
+            user_setting.auto_scroll = user_setting_request.auto_scroll
 
-            err = self._user_repo.update_user(user_id=user.id, user=user)
+            err = self._user_setting_repo.update_user_setting(
+                user_id=user.id, user_setting=user_setting
+            )
 
         return err if err else None
