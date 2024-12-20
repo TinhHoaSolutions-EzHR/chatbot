@@ -21,8 +21,11 @@ WORKDIR /app
 # pull in source code / package.json / package-lock.json
 COPY . .
 
+# Potential to avoid dependacy conflicts
+# RUN rm -rf node_modules
+
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # needed to get the `standalone` dir we expect later
 ENV NEXT_PRIVATE_STANDALONE=true
