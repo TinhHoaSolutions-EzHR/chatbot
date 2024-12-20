@@ -173,6 +173,8 @@ services:
     hostname: web_server
     ports:
       - "3000:3000"
+    networks:
+      - frontend
 
   nginx:
     image: nginx:1.23.4-alpine
@@ -195,6 +197,9 @@ services:
     command: >
       /bin/sh -c "dos2unix /etc/nginx/conf.d/run-nginx.sh
       && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+    networks:
+      - backend
+      - frontend
 
 volumes:
   mssql_data_volume:
@@ -205,6 +210,8 @@ volumes:
 
 networks:
   backend:
+    driver: bridge
+  frontend:
     driver: bridge
 
 configs:
