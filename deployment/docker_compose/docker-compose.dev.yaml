@@ -76,7 +76,7 @@ services:
       - backend
     command: server --console-address ":9001" /data
 
-  # NOTE: Official port for api_server is 5000
+  # NOTE: Official port for api-server is 5000
   api-server:
     build:
       context: ../../chatbot-core/backend/
@@ -110,15 +110,15 @@ services:
         max-size: "50m"
         max-file: "6"
 
-  web_server:
+  web-server:
     build:
       context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
     depends_on:
-      - api_server
+      - api-server
     restart: on-failure
-    container_name: web_server
-    hostname: web_server
+    container_name: web-server
+    hostname: web-server
     ports:
       - "3000:3000"
     networks:
@@ -128,8 +128,8 @@ services:
     image: nginx:1.23.4-alpine
     restart: on-failure
     depends_on:
-      - api_server
-      - web_server
+      - api-server
+      - web-server
     environment:
         - DOMAIN=localhost
     ports:
