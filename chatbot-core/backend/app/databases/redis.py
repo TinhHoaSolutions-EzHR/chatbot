@@ -6,9 +6,9 @@ from redis import Redis
 from app.databases.base import BaseConnector
 from app.settings import Constants
 from app.settings import Secrets
-from app.utils.logger import LoggerFactory
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class RedisConnector(BaseConnector[Redis]):

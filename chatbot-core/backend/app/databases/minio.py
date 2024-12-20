@@ -7,9 +7,9 @@ from minio.error import S3Error
 
 from app.databases.base import BaseConnector
 from app.settings import Secrets
-from app.utils.logger import LoggerFactory
+from app.utils.api.helpers import get_logger
 
-logger = LoggerFactory().get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class MinioConnector(BaseConnector[Minio]):
@@ -67,7 +67,9 @@ class MinioConnector(BaseConnector[Minio]):
         except Exception as e:
             logger.error(f"Unexpected error creating bucket {bucket_name}: {e}", exc_info=True)
 
-    def upload_files(self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None) -> None:
+    def upload_files(
+        self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None
+    ) -> None:
         """
         Upload files to object storage
 
@@ -98,7 +100,9 @@ class MinioConnector(BaseConnector[Minio]):
                 data.seek(current_pos)
 
             # Upload the file to the bucket
-            self.client.put_object(bucket_name=bucket_name, object_name=object_name, data=data, length=length)
+            self.client.put_object(
+                bucket_name=bucket_name, object_name=object_name, data=data, length=length
+            )
         except S3Error as e:
             logger.error(f"S3 error uploading file {object_name}: {e}", exc_info=True)
         except Exception as e:

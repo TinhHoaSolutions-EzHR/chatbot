@@ -8,11 +8,14 @@ import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
+const ORGANIZATION_NAME = "TinhHoaSolutions-EzHR";
+const PROJECT_NAME = "chatbot";
+
 const config: Config = {
   title: "EzHR Chatbot Local Development Guide",
   tagline: "EzHR Chatbot Documentation",
-  url: "https://ezhrchatbot.pages.dev/",
-  baseUrl: "/",
+  url: `https://${ORGANIZATION_NAME.toLowerCase()}.github.io`,
+  baseUrl: `/${PROJECT_NAME}/`,
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
@@ -20,8 +23,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "TinhHoaSolutions-EzHR", // Usually your GitHub org/username.
-  projectName: "chatbot",
+  organizationName: ORGANIZATION_NAME,
+  projectName: PROJECT_NAME,
 
   presets: [
     [
@@ -31,8 +34,7 @@ const config: Config = {
           sidebarPath: require.resolve("./sidebars.ts"),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/TinhHoaSolutions-EzHR/chatbot/tree/main/docs",
+          editUrl: `https://github.com/${ORGANIZATION_NAME}/${PROJECT_NAME}/tree/main/docs`,
           docItemComponent: "@theme/ApiItem", // Derived from docusaurus-theme-openapi
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],

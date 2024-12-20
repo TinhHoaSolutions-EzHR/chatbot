@@ -54,7 +54,9 @@ def test_qdrant_create_collection(qdrant_client: QdrantClient) -> None:
 
         # Check if the collection was created successfully
         collection = qdrant_client.collection_exists(collection_name=collection_name)
-        assert collection is True, f"Expected collection '{collection_name}' to be created, but it was not."
+        assert (
+            collection is True
+        ), f"Expected collection '{collection_name}' to be created, but it was not."
     except Exception as e:
         pytest.fail(f"Unexpected error while creating Qdrant collection: {e}.")
     finally:

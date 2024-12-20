@@ -26,9 +26,10 @@ class Constants:
     FORBIDDEN_REQUEST_MESSAGE = "Forbidden request"
     NOT_FOUND_MESSAGE = "Not found"
     INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
+    EMPTY_CHAT_MESSAGE_MESSAGE = "Empty chat message"
 
     # Logger Configuration
-    LOGGER_LOG_LEVEL = logging.INFO
+    LOGGER_LOG_LEVEL = os.getenv("LOGGER_LOG_LEVEL", logging.INFO)
     LOGGER_LOG_TO_CONSOLE = True
     LOGGER_LOG_TO_FILE = False
     LOGGER_LOG_FILE_PATH = "api.log"
@@ -69,3 +70,6 @@ class Constants:
     REDIS_TEST_VALUE = "test-value"
 
     MSSQL_TEST_DB_NAME = "tempdb"
+
+    # Chat Message
+    MAX_USER_MESSAGE_LENGTH = 2000
