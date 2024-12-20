@@ -1,57 +1,33 @@
-"use client";
+'use client';
 
-import { AdminSidebar } from "@/components/admin/connectors/AdminSidebar";
+import { AdminSidebar } from '@/components/admin/connectors/AdminSidebar';
 import {
-  ClipboardIcon,
-  NotebookIconSkeleton,
   ConnectorIconSkeleton,
-  ThumbsUpIconSkeleton,
-  ToolIconSkeleton,
   CpuIconSkeleton,
-  UsersIconSkeleton,
-  GroupsIconSkeleton,
-  KeyIconSkeleton,
-  ShieldIconSkeleton,
-  DatabaseIconSkeleton,
-  SettingsIconSkeleton,
-  PaintingIconSkeleton,
-  ZoomInIconSkeleton,
-
-  DocumentSetIconSkeleton,
-  AssistantsIconSkeleton,
-  ClosedBookIcon,
+  NotebookIconSkeleton,
   SearchIcon,
-  DocumentIcon2,
-} from "@/components/icons/icons";
-import { UserRole } from "@/lib/types";
-import { FiActivity, FiBarChart2 } from "react-icons/fi";
-import { UserDropdown } from "../UserDropdown";
-import { User } from "@/lib/types";
-import { usePathname } from "next/navigation";
-import { SettingsContext } from "../settings/SettingsProvider";
-import { useContext } from "react";
-import { Cloud } from "@phosphor-icons/react";
+  UsersIconSkeleton,
+} from '@/components/icons/icons';
+import { User, UserRole } from '@/lib/types';
+import { UserDropdown } from '../UserDropdown';
+import { usePathname } from 'next/navigation';
+import { SettingsContext } from '../settings/SettingsProvider';
+import { useContext } from 'react';
 
 export function ClientLayout({
   user,
   children,
   enableEnterprise,
-  enableCloud,
 }: {
   user: User | null;
   children: React.ReactNode;
   enableEnterprise: boolean;
-  enableCloud: boolean;
 }) {
-  const isCurator =
-    user?.role === UserRole.CURATOR || user?.role === UserRole.GLOBAL_CURATOR;
+  const isCurator = user?.role === UserRole.CURATOR || user?.role === UserRole.GLOBAL_CURATOR;
   const pathname = usePathname();
   const settings = useContext(SettingsContext);
 
-  if (
-    pathname.startsWith("/admin/connectors") ||
-    pathname.startsWith("/admin/embeddings")
-  ) {
+  if (pathname.startsWith('/admin/connectors') || pathname.startsWith('/admin/embeddings')) {
     return <>{children}</>;
   }
 
@@ -62,31 +38,25 @@ export function ClientLayout({
           <AdminSidebar
             collections={[
               {
-                name: "Connectors",
+                name: 'Connectors',
                 items: [
                   {
                     name: (
                       <div className="flex">
-                        <NotebookIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
+                        <NotebookIconSkeleton className="text-icon-settings-sidebar" size={18} />
                         <div className="ml-1">Existing Connectors</div>
                       </div>
                     ),
-                    link: "/admin/indexing/status",
+                    link: '/admin/indexing/status',
                   },
                   {
                     name: (
                       <div className="flex">
-                        <ConnectorIconSkeleton
-                          className="text-icon-settings-sidebar"
-                          size={18}
-                        />
+                        <ConnectorIconSkeleton className="text-icon-settings-sidebar" size={18} />
                         <div className="ml-1.5">Add Connector</div>
                       </div>
                     ),
-                    link: "/admin/add-connector",
+                    link: '/admin/add-connector',
                   },
                 ],
               },
@@ -193,43 +163,20 @@ export function ClientLayout({
               //       : []),
               //   ],
               // },
-              ...(isCurator
-                ? [
-                    {
-                      name: "User Management",
-                      items: [
-                        {
-                          name: (
-                            <div className="flex">
-                              <GroupsIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
-                              <div className="ml-1">Groups</div>
-                            </div>
-                          ),
-                          link: "/admin/groups",
-                        },
-                      ],
-                    },
-                  ]
-                : []),
+
               ...(!isCurator
                 ? [
                     {
-                      name: "Configuration",
+                      name: 'Configuration',
                       items: [
                         {
                           name: (
                             <div className="flex">
-                              <CpuIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
+                              <CpuIconSkeleton className="text-icon-settings-sidebar" size={18} />
                               <div className="ml-1">LLM</div>
                             </div>
                           ),
-                          link: "/admin/configuration/llm",
+                          link: '/admin/configuration/llm',
                         },
                         {
                           error: settings?.settings.needs_reindexing,
@@ -239,7 +186,7 @@ export function ClientLayout({
                               <div className="ml-1">Search Settings</div>
                             </div>
                           ),
-                          link: "/admin/configuration/search",
+                          link: '/admin/configuration/search',
                         },
                         // {
                         //   name: (
@@ -253,36 +200,17 @@ export function ClientLayout({
                       ],
                     },
                     {
-                      name: "User Management",
+                      name: 'User Management',
                       items: [
                         {
                           name: (
                             <div className="flex">
-                              <UsersIconSkeleton
-                                className="text-icon-settings-sidebar"
-                                size={18}
-                              />
+                              <UsersIconSkeleton className="text-icon-settings-sidebar" size={18} />
                               <div className="ml-1">Users</div>
                             </div>
                           ),
-                          link: "/admin/users",
+                          link: '/admin/users',
                         },
-                        ...(enableEnterprise
-                          ? [
-                              // {
-                              //   name: (
-                              //     <div className="flex">
-                              //       <GroupsIconSkeleton
-                              //         className="text-icon-settings-sidebar"
-                              //         size={18}
-                              //       />
-                              //       <div className="ml-1">Groups</div>
-                              //     </div>
-                              //   ),
-                              //   link: "/admin/groups",
-                              // },
-                            ]
-                          : []),
                         // {
                         //   name: (
                         //     <div className="flex">
@@ -385,22 +313,7 @@ export function ClientLayout({
                     //           },
                     //         ]
                     //       : []),
-                    //     ...(enableCloud
-                    //       ? [
-                    //           {
-                    //             name: (
-                    //               <div className="flex">
-                    //                 <Cloud
-                    //                   className="text-icon-settings-sidebar"
-                    //                   size={18}
-                    //                 />
-                    //                 <div className="ml-1">Cloud Settings</div>
-                    //               </div>
-                    //             ),
-                    //             link: "/admin/cloud-settings",
-                    //           },
-                    //         ]
-                    //       : []),
+                    //
                     //   ],
                     // },
                   ]
@@ -412,9 +325,7 @@ export function ClientLayout({
           <div className="fixed bg-background left-0 gap-x-4 mb-8 px-4 py-2 w-full items-center flex justify-end">
             <UserDropdown />
           </div>
-          <div className="pt-20 flex overflow-y-auto overflow-x-hidden h-full px-4 md:px-12">
-            {children}
-          </div>
+          <div className="pt-20 flex overflow-y-auto overflow-x-hidden h-full px-4 md:px-12">{children}</div>
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import type { NextRequest } from "next/server";
 // be run before the config is defined e.g. if we try and do a .map it will complain
 export const config = {
   matcher: [
-    "/admin/groups/:path*",
     "/admin/performance/usage/:path*",
     "/admin/performance/query-history/:path*",
     "/admin/whitelabeling/:path*",
@@ -13,7 +12,6 @@ export const config = {
     "/admin/standard-answer/:path*",
 
     // Cloud only
-    "/admin/cloud-settings/:path*",
   ],
 };
 
