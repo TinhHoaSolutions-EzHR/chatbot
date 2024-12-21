@@ -91,13 +91,7 @@ class AgentService(BaseService):
         """
         with self._transaction():
             # Define to-be-updated agent
-            agent = Agent(
-                name=agent_request.name,
-                description=agent_request.description,
-                is_visible=agent_request.is_visible,
-                display_priority=agent_request.display_priority,
-                uploaded_image_id=agent_request.uploaded_image_id,
-            )
+            agent = agent_request.model_dump(exclude_unset=True)
 
             # Update agent
             err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
