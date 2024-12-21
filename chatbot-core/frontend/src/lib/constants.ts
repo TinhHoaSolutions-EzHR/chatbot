@@ -7,7 +7,7 @@ export type AuthType =
   | "cloud";
 
 export const HOST_URL = process.env.WEB_DOMAIN || "http://127.0.0.1:3000";
-export const INTERNAL_URL = process.env.INTERNAL_URL || "http://127.0.0.1:8080";
+export const INTERNAL_URL = process.env.INTERNAL_URL || "http://127.0.0.1:5000";
 
 export const NEXT_PUBLIC_NEW_CHAT_DIRECTS_TO_SAME_PERSONA =
   process.env.NEXT_PUBLIC_NEW_CHAT_DIRECTS_TO_SAME_PERSONA?.toLowerCase() ===
