@@ -13,6 +13,7 @@ class ErrorCodesMappingNumber(Enum):
     # TODO: Think about adding more error codes here
     AGENT_NOT_FOUND = (404, "Agent not specified or found for chat session")
     CHAT_MESSAGES_NOT_FOUND = (404, "Chat message not found")
+    UNABLE_TO_UPLOAD_FILE_TO_MINIO = (500, "Unable to upload file to Minio")
 
 
 class BaseException(Exception):
