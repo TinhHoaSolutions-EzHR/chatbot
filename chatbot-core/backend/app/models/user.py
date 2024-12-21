@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from app.models import ChatSession
     from app.models import ChatMessage
     from app.models import Folder
+    from app.models import Agent
 
 
 class User(Base):
@@ -33,3 +34,4 @@ class User(Base):
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="user")
     chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="user")
     folders: Mapped[List["Folder"]] = relationship("Folder", back_populates="user")
+    agents: Mapped[List["Agent"]] = relationship("Agent", back_populates="user")
