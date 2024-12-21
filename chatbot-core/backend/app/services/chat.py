@@ -125,6 +125,7 @@ class ChatService(BaseService):
             chat_session = ChatSession(
                 description=chat_session_request.description,
                 agent_id=chat_session_request.agent_id,
+                folder_id=chat_session_request.folder_id,
                 shared_status=chat_session_request.shared_status,
                 current_alternate_model=chat_session_request.current_alternate_model,
             )

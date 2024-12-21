@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
     from app.models import Prompt
+    from app.models import Folder
 
 
 class ChatMessageType(str, Enum):
@@ -97,6 +98,9 @@ class ChatSession(Base):
     agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("agent.id"), nullable=True
     )
+    folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey("folder.id"), nullable=True
+    )
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
@@ -124,6 +128,7 @@ class ChatSession(Base):
     agent: Mapped["Agent"] = relationship(
         "Agent", back_populates="chat_sessions", cascade="save-update, merge"
     )
+    folder: Mapped["Folder"] = relationship("Folder", back_populates="chat_sessions")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
         "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
     )
@@ -272,6 +277,7 @@ class ChatSessionRequest(BaseModel):
     """
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
+    folder_id: Optional[str] = Field(None, description="Folder id of the chat session")
     description: Optional[str] = Field(
         None, max_length=255, description="Description (Name) of the chat session"
     )
@@ -307,6 +313,7 @@ class ChatSessionResponse(BaseModel):
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
+    folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     shared_status: ChatSessionSharedStatus = Field(
         ChatSessionSharedStatus.PRIVATE, description="Shared status"
     )
