@@ -38,6 +38,7 @@ class Constants:
 
     # Minio Configuration
     MINIO_DOCUMENT_BUCKET = os.getenv("MINIO_DOCUMENT_BUCKET", "documents")
+    MINIO_IMAGE_BUCKET = os.getenv("MINIO_IMAGE_BUCKET", "images")
 
     # Redis Configuration
     REDIS_DB_NUM = 0
@@ -73,3 +74,10 @@ class Constants:
 
     # Chat Message
     MAX_USER_MESSAGE_LENGTH = 2000
+
+    # Identicon Configuration
+    AGENT_AVATAR_IDENTICON_FOREGROUND_COLOR = ["#d73027", "#f46d43", "#fdae61", "#fee08b"]
+    AGENT_AVATAR_IDENTICON_BACKGROUND_COLOR = "rgb(224,224,224)"
+    AGENT_AVATAR_IDENTICON_WIDTH = 200
+    AGENT_AVATAR_IDENTICON_HEIGHT = 200
+    AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT = "png"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
@@ -11,6 +12,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import model_validator
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -61,9 +63,7 @@ class Agent(Base):
     )
     is_visible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     display_priority: Mapped[int] = mapped_column(String, nullable=False, default=0)
-    uploaded_image_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
-    )
+    uploaded_image_path: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -96,7 +96,13 @@ class AgentRequest(BaseModel):
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     display_priority: int = Field(0, description="Agent display priority")
-    uploaded_image_id: Optional[UUID] = Field(None, description="Uploaded image id")
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
 
     class Config:
         from_attributes = True
@@ -115,7 +121,7 @@ class AgentResponse(BaseModel):
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     display_priority: int = Field(0, description="Agent display priority")
-    uploaded_image_id: Optional[UUID] = Field(None, description="Uploaded image id")
+    uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
     deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")

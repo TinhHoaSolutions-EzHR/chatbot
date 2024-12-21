@@ -69,7 +69,7 @@ class MinioConnector(BaseConnector[Minio]):
 
     def upload_files(
         self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None
-    ) -> None:
+    ) -> bool:
         """
         Upload files to object storage
 
@@ -78,6 +78,9 @@ class MinioConnector(BaseConnector[Minio]):
             data (BinaryIO): File data
             bucket_name (str): Bucket name
             length (int, optional): File length. Defaults to None.
+
+        Returns:
+            bool: True if the file is uploaded successfully, False otherwise
 
         Raises:
             S3Error: If there's an error with the S3 operation
@@ -103,10 +106,14 @@ class MinioConnector(BaseConnector[Minio]):
             self.client.put_object(
                 bucket_name=bucket_name, object_name=object_name, data=data, length=length
             )
+
+            return True
         except S3Error as e:
             logger.error(f"S3 error uploading file {object_name}: {e}", exc_info=True)
+            return False
         except Exception as e:
             logger.error(f"Unexpected error uploading file {object_name}: {e}", exc_info=True)
+            return False
         finally:
             # Ensure the file pointer is reset to the original position
             if data.seekable():
