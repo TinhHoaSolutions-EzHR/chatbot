@@ -99,11 +99,11 @@ services:
       retries: 3
       start_period: 3s
 
-  object-storage:
+  object_storage:
     image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
-    container_name: object-storage
-    hostname: object-storage
-    restart: always
+    container_name: object_storage
+    hostname: object_storage
+    # restart: always
     ports:
       - "9000:9000" # for web interface
       - "9001:9001" # for S3 API
@@ -121,14 +121,14 @@ services:
       timeout: 10s
       retries: 3
 
-  # NOTE: Official port for api-server is 5000
-  api-server:
+  # NOTE: Official port for api_server is 5000
+  api_server:
     build:
       context: ../../chatbot-core/backend/
       dockerfile: Dockerfile
     platform: linux/amd64
-    container_name: api-server
-    hostname: api-server
+    container_name: api_server
+    hostname: api_server
     restart: on-failure
     depends_on:
       database:
@@ -166,15 +166,15 @@ services:
     build:
       context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
-    depends_on:
-      - api-server
+    container_name: web_server
+    hostname: web_server
     restart: on-failure
-    container_name: web-server
-    hostname: web-server
+    depends_on:
+      - api_server
     ports:
       - "3000:3000"
     networks:
-      - frontend
+      - backend
 
   nginx:
     image: nginx:1.23.4-alpine
@@ -183,23 +183,22 @@ services:
       - api-server
       - web-server
     environment:
-        - DOMAIN=localhost
+      - DOMAIN=localhost
     ports:
-      - "80:80"
+      - "8000:80"
       - "3000:80"
     volumes:
       - ../data/nginx:/etc/nginx/conf.d
+    networks:
+      - frontend
     logging:
-        driver: json-file
-        options:
-            max-size: "50m"
-            max-file: "6"
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
     command: >
       /bin/sh -c "dos2unix /etc/nginx/conf.d/run-nginx.sh
       && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
-    networks:
-      - backend
-      - frontend
 
 volumes:
   mssql_data_volume:
