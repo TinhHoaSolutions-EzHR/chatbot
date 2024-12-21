@@ -1,3 +1,5 @@
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -86,20 +88,21 @@ class AgentRepository(BaseRepository):
             logger.error(f"Error creating agent: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_agent(self, agent_id: str, agent: Agent, user_id: str) -> Optional[APIError]:
+    def update_agent(
+        self, agent_id: str, agent: Dict[str, Any], user_id: str
+    ) -> Optional[APIError]:
         """
         Update an agent.
 
         Args:
             agent_id(str): Agent id
-            agent(Agent): Agent object
+            agent(Dict[str, Any]): Agent object
             user_id(str): User id
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         try:
-            agent = {key: value for key, value in agent.__dict__.items() if not key.startswith("_")}
             self._db_session.query(Agent).filter(
                 and_(Agent.id == agent_id, Agent.user_id == user_id)
             ).update(agent)
