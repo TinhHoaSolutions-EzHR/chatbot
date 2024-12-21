@@ -1,9 +1,15 @@
+from typing import Optional
+
 from fastapi import APIRouter
+from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
+from app.databases.minio import get_minio_connector
+from app.databases.minio import MinioConnector
 from app.databases.mssql import get_db_session
 from app.models import User
 from app.models.agent import AgentRequest
@@ -30,8 +36,8 @@ def get_agents(
     Get all agents.
 
     Args:
-        db_session (Session, optional): Database session. Defaults to relational database engine.
-        user (User, optional): Current user. Defaults to get_current_user.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
 
     Returns:
         BackendAPIResponse: API response with the list of agents.
@@ -71,8 +77,8 @@ def get_agent(
 
     Args:
         agent_id (str): Agent id
-        db_session (Session, optional): Database session. Defaults to relational database engine.
-        user (User, optional): Current user. Defaults to get_current_user.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
 
     Returns:
         BackendAPIResponse: API response with the agent.
@@ -103,8 +109,10 @@ def get_agent(
 
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def create_agent(
-    agent_request: AgentRequest,
+    agent_request: AgentRequest = Body(...),
+    file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
+    minio_connector: MinioConnector = Depends(get_minio_connector),
     user: User = Depends(get_current_user),
 ) -> BackendAPIResponse:
     """
@@ -112,8 +120,9 @@ def create_agent(
 
     Args:
         agent_request (AgentRequest): Agent request object.
-        db_session (Session, optional): Database session. Defaults to relational database engine.
-        user (User, optional): Current user. Defaults to get_current_user.
+        file (Optional[UploadFile]): File object. Defaults to None.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
 
     Returns:
         BackendAPIResponse: API response with the created agent.
@@ -123,8 +132,8 @@ def create_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Create agent
-    err = AgentService(db_session=db_session).create_agent(
-        agent_request=agent_request, user_id=user.id
+    err = AgentService(db_session=db_session, minio_connector=minio_connector).create_agent(
+        agent_request=agent_request, user_id=user.id, file=file
     )
     if err:
         status_code, detail = err.kind
@@ -154,8 +163,8 @@ def update_agent(
     Args:
         agent_id (str): Agent id
         agent_request (AgentRequest): Agent request object.
-        db_session (Session, optional): Database session. Defaults to relational database engine.
-        user (User, optional): Current user. Defaults to get_current_user.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
 
     Returns:
         BackendAPIResponse: API response with the updated agent.
@@ -194,8 +203,8 @@ def delete_agent(
 
     Args:
         agent_id (str): Agent id
-        db_session (Session, optional): Database session. Defaults to relational database engine.
-        user (User, optional): Current user. Defaults to get_current_user.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
 
     Returns:
         None
