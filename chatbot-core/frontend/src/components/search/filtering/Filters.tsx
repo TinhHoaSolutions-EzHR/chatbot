@@ -1,38 +1,20 @@
-import React, { useState } from "react";
-import { DocumentSet, Tag, ValidSources } from "@/lib/types";
-import { SourceMetadata } from "@/lib/search/interfaces";
-import {
-  GearIcon,
-  InfoIcon,
-  MinusIcon,
-  PlusCircleIcon,
-  PlusIcon,
-  defaultTailwindCSS,
-} from "../../icons/icons";
-import { HoverPopup } from "../../HoverPopup";
-import {
-  FiBook,
-  FiBookmark,
-  FiFilter,
-  FiMap,
-  FiTag,
-  FiX,
-} from "react-icons/fi";
-import { DateRangeSelector } from "../DateRangeSelector";
-import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
-import { FilterDropdown } from "./FilterDropdown";
-import { listSourceMetadata } from "@/lib/sources";
-import { SourceIcon } from "@/components/SourceIcon";
-import { TagFilter } from "./TagFilter";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { PopoverContent } from "@radix-ui/react-popover";
-import { CalendarIcon } from "lucide-react";
-import {
-  buildDateString,
-  getDateRangeString,
-  getTimeAgoString,
-} from "@/lib/dateUtils";
+import React from 'react';
+import { DocumentSet, Tag, ValidSources } from '@/lib/types';
+import { SourceMetadata } from '@/lib/search/interfaces';
+import { defaultTailwindCSS, InfoIcon } from '../../icons/icons';
+import { HoverPopup } from '../../HoverPopup';
+import { FiBook, FiBookmark, FiFilter, FiMap, FiTag, FiX } from 'react-icons/fi';
+import { DateRangeSelector } from '../DateRangeSelector';
+import { DateRangePickerValue } from '@/components/DateRangeSelector';
+import { FilterDropdown } from './FilterDropdown';
+import { listSourceMetadata } from '@/lib/sources';
+import { SourceIcon } from '@/components/SourceIcon';
+import { TagFilter } from './TagFilter';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverTrigger } from '@/components/ui/popover';
+import { PopoverContent } from '@radix-ui/react-popover';
+import { CalendarIcon } from 'lucide-react';
+import { getDateRangeString } from '@/lib/dateUtils';
 
 const SectionTitle = ({ children }: { children: string }) => (
   <div className="font-bold text-xs mt-2 flex">{children}</div>
@@ -40,9 +22,7 @@ const SectionTitle = ({ children }: { children: string }) => (
 
 export interface SourceSelectorProps {
   timeRange: DateRangePickerValue | null;
-  setTimeRange: React.Dispatch<
-    React.SetStateAction<DateRangePickerValue | null>
-  >;
+  setTimeRange: React.Dispatch<React.SetStateAction<DateRangePickerValue | null>>;
   showDocSidebar?: boolean;
   selectedSources: SourceMetadata[];
   setSelectedSources: React.Dispatch<React.SetStateAction<SourceMetadata[]>>;
@@ -71,10 +51,8 @@ export function SourceSelector({
 }: SourceSelectorProps) {
   const handleSelect = (source: SourceMetadata) => {
     setSelectedSources((prev: SourceMetadata[]) => {
-      if (
-        prev.map((source) => source.internalName).includes(source.internalName)
-      ) {
-        return prev.filter((s) => s.internalName !== source.internalName);
+      if (prev.map(source => source.internalName).includes(source.internalName)) {
+        return prev.filter(s => s.internalName !== source.internalName);
       } else {
         return [...prev, source];
       }
@@ -84,7 +62,7 @@ export function SourceSelector({
   const handleDocumentSetSelect = (documentSetName: string) => {
     setSelectedDocumentSets((prev: string[]) => {
       if (prev.includes(documentSetName)) {
-        return prev.filter((s) => s !== documentSetName);
+        return prev.filter(s => s !== documentSetName);
       } else {
         return [...prev, documentSetName];
       }
@@ -97,9 +75,7 @@ export function SourceSelector({
     if (allSourcesSelected) {
       setSelectedSources([]);
     } else {
-      const allSources = listSourceMetadata().filter((source) =>
-        existingSources.includes(source.internalName)
-      );
+      const allSources = listSourceMetadata().filter(source => existingSources.includes(source.internalName));
       setSelectedSources(allSources);
     }
   };
@@ -107,7 +83,7 @@ export function SourceSelector({
   return (
     <div
       className={`hidden ${
-        showDocSidebar ? "4xl:block" : "!block"
+        showDocSidebar ? '4xl:block' : '!block'
       } duration-1000 flex ease-out transition-all transform origin-top-right`}
     >
       <div className="mb-4 pb-2 flex border-b border-border text-emphasis">
@@ -120,30 +96,21 @@ export function SourceSelector({
           <div className="cursor-pointer">
             <SectionTitle>Time Range</SectionTitle>
             <p className="text-sm text-default mt-2">
-              {timeRange?.from
-                ? getDateRangeString(timeRange.from, timeRange.to)
-                : "Since"}
+              {timeRange?.from ? getDateRangeString(timeRange.from, timeRange.to) : 'Since'}
             </p>
           </div>
         </PopoverTrigger>
-        <PopoverContent
-          className="bg-background border-border border rounded-md z-[200] p-0"
-          align="start"
-        >
+        <PopoverContent className="bg-background border-border border rounded-md z-[200] p-0" align="start">
           <Calendar
             mode="range"
-            selected={
-              timeRange
-                ? { from: new Date(timeRange.from), to: new Date(timeRange.to) }
-                : undefined
-            }
-            onSelect={(daterange) => {
+            selected={timeRange ? { from: new Date(timeRange.from), to: new Date(timeRange.to) } : undefined}
+            onSelect={daterange => {
               const initialDate = daterange?.from || new Date();
               const endDate = daterange?.to || new Date();
               setTimeRange({
                 from: initialDate,
                 to: endDate,
-                selectValue: timeRange?.selectValue || "",
+                selectValue: timeRange?.selectValue || '',
               });
             }}
             className="rounded-md "
@@ -156,11 +123,7 @@ export function SourceSelector({
           <div className="mt-4 mb-2">
             <SectionTitle>Tags</SectionTitle>
           </div>
-          <TagFilter
-            tags={availableTags}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-          />
+          <TagFilter tags={availableTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
         </>
       )}
 
@@ -179,25 +142,21 @@ export function SourceSelector({
           </div>
           <div className="px-1">
             {listSourceMetadata()
-              .filter((source) => existingSources.includes(source.internalName))
-              .map((source) => (
+              .filter(source => existingSources.includes(source.internalName))
+              .map(source => (
                 <div
                   key={source.internalName}
                   className={
-                    "flex cursor-pointer w-full items-center " +
-                    "py-1.5 my-1.5 rounded-lg px-2 select-none " +
-                    (selectedSources
-                      .map((source) => source.internalName)
-                      .includes(source.internalName)
-                      ? "bg-hover"
-                      : "hover:bg-hover-light")
+                    'flex cursor-pointer w-full items-center ' +
+                    'py-1.5 my-1.5 rounded-lg px-2 select-none ' +
+                    (selectedSources.map(source => source.internalName).includes(source.internalName)
+                      ? 'bg-hover'
+                      : 'hover:bg-hover-light')
                   }
                   onClick={() => handleSelect(source)}
                 >
                   <SourceIcon sourceType={source.internalName} iconSize={16} />
-                  <span className="ml-2 text-sm text-default">
-                    {source.displayName}
-                  </span>
+                  <span className="ml-2 text-sm text-default">{source.displayName}</span>
                 </div>
               ))}
           </div>
@@ -210,16 +169,14 @@ export function SourceSelector({
             <SectionTitle>Knowledge Sets</SectionTitle>
           </div>
           <div className="px-1">
-            {availableDocumentSets.map((documentSet) => (
+            {availableDocumentSets.map(documentSet => (
               <div key={documentSet.name} className="my-1.5 flex">
                 <div
                   key={documentSet.name}
                   className={
-                    "flex cursor-pointer w-full items-center " +
-                    "py-1.5 rounded-lg px-2 " +
-                    (selectedDocumentSets.includes(documentSet.name)
-                      ? "bg-hover"
-                      : "hover:bg-hover-light")
+                    'flex cursor-pointer w-full items-center ' +
+                    'py-1.5 rounded-lg px-2 ' +
+                    (selectedDocumentSets.includes(documentSet.name) ? 'bg-hover' : 'hover:bg-hover-light')
                   }
                   onClick={() => handleDocumentSetSelect(documentSet.name)}
                 >
@@ -248,18 +205,11 @@ export function SourceSelector({
   );
 }
 
-export function SelectedBubble({
-  children,
-  onClick,
-}: {
-  children: string | JSX.Element;
-  onClick: () => void;
-}) {
+export function SelectedBubble({ children, onClick }: { children: string | JSX.Element; onClick: () => void }) {
   return (
     <div
       className={
-        "flex cursor-pointer items-center border border-border " +
-        "py-1 my-1.5 rounded-lg px-2 w-fit hover:bg-hover"
+        'flex cursor-pointer items-center border border-border ' + 'py-1 my-1.5 rounded-lg px-2 w-fit hover:bg-hover'
       }
       onClick={onClick}
     >
@@ -281,9 +231,9 @@ export function HorizontalFilters({
 }: SourceSelectorProps) {
   const handleSourceSelect = (source: SourceMetadata) => {
     setSelectedSources((prev: SourceMetadata[]) => {
-      const prevSourceNames = prev.map((source) => source.internalName);
+      const prevSourceNames = prev.map(source => source.internalName);
       if (prevSourceNames.includes(source.internalName)) {
-        return prev.filter((s) => s.internalName !== source.internalName);
+        return prev.filter(s => s.internalName !== source.internalName);
       } else {
         return [...prev, source];
       }
@@ -293,7 +243,7 @@ export function HorizontalFilters({
   const handleDocumentSetSelect = (documentSetName: string) => {
     setSelectedDocumentSets((prev: string[]) => {
       if (prev.includes(documentSetName)) {
-        return prev.filter((s) => s !== documentSetName);
+        return prev.filter(s => s !== documentSetName);
       } else {
         return [...prev, documentSetName];
       }
@@ -301,9 +251,7 @@ export function HorizontalFilters({
   };
 
   const allSources = listSourceMetadata();
-  const availableSources = allSources.filter((source) =>
-    existingSources.includes(source.internalName)
-  );
+  const availableSources = allSources.filter(source => existingSources.includes(source.internalName));
 
   return (
     <div>
@@ -313,7 +261,7 @@ export function HorizontalFilters({
         </div>
 
         <FilterDropdown
-          options={availableSources.map((source) => {
+          options={availableSources.map(source => {
             return {
               key: source.displayName,
               display: (
@@ -324,12 +272,8 @@ export function HorizontalFilters({
               ),
             };
           })}
-          selected={selectedSources.map((source) => source.displayName)}
-          handleSelect={(option) =>
-            handleSourceSelect(
-              allSources.find((source) => source.displayName === option.key)!
-            )
-          }
+          selected={selectedSources.map(source => source.displayName)}
+          handleSelect={option => handleSourceSelect(allSources.find(source => source.displayName === option.key)!)}
           icon={
             <div className="my-auto mr-2 w-[16px] h-[16px]">
               <FiMap size={16} />
@@ -339,7 +283,7 @@ export function HorizontalFilters({
         />
 
         <FilterDropdown
-          options={availableDocumentSets.map((documentSet) => {
+          options={availableDocumentSets.map(documentSet => {
             return {
               key: documentSet.name,
               display: (
@@ -353,7 +297,7 @@ export function HorizontalFilters({
             };
           })}
           selected={selectedDocumentSets}
-          handleSelect={(option) => handleDocumentSetSelect(option.key)}
+          handleSelect={option => handleDocumentSetSelect(option.key)}
           icon={
             <div className="my-auto mr-2 w-[16px] h-[16px]">
               <FiBook size={16} />
@@ -371,11 +315,8 @@ export function HorizontalFilters({
             </SelectedBubble>
           )}
           {existingSources.length > 0 &&
-            selectedSources.map((source) => (
-              <SelectedBubble
-                key={source.internalName}
-                onClick={() => handleSourceSelect(source)}
-              >
+            selectedSources.map(source => (
+              <SelectedBubble key={source.internalName} onClick={() => handleSourceSelect(source)}>
                 <>
                   <SourceIcon sourceType={source.internalName} iconSize={16} />
                   <span className="ml-2 text-sm">{source.displayName}</span>
@@ -383,11 +324,8 @@ export function HorizontalFilters({
               </SelectedBubble>
             ))}
           {selectedDocumentSets.length > 0 &&
-            selectedDocumentSets.map((documentSetName) => (
-              <SelectedBubble
-                key={documentSetName}
-                onClick={() => handleDocumentSetSelect(documentSetName)}
-              >
+            selectedDocumentSets.map(documentSetName => (
+              <SelectedBubble key={documentSetName} onClick={() => handleDocumentSetSelect(documentSetName)}>
                 <>
                   <div>
                     <FiBookmark />
@@ -417,8 +355,8 @@ export function HorizontalSourceSelector({
 }: SourceSelectorProps) {
   const handleSourceSelect = (source: SourceMetadata) => {
     setSelectedSources((prev: SourceMetadata[]) => {
-      if (prev.map((s) => s.internalName).includes(source.internalName)) {
-        return prev.filter((s) => s.internalName !== source.internalName);
+      if (prev.map(s => s.internalName).includes(source.internalName)) {
+        return prev.filter(s => s.internalName !== source.internalName);
       } else {
         return [...prev, source];
       }
@@ -428,7 +366,7 @@ export function HorizontalSourceSelector({
   const handleDocumentSetSelect = (documentSetName: string) => {
     setSelectedDocumentSets((prev: string[]) => {
       if (prev.includes(documentSetName)) {
-        return prev.filter((s) => s !== documentSetName);
+        return prev.filter(s => s !== documentSetName);
       } else {
         return [...prev, documentSetName];
       }
@@ -437,14 +375,8 @@ export function HorizontalSourceSelector({
 
   const handleTagSelect = (tag: Tag) => {
     setSelectedTags((prev: Tag[]) => {
-      if (
-        prev.some(
-          (t) => t.tag_key === tag.tag_key && t.tag_value === tag.tag_value
-        )
-      ) {
-        return prev.filter(
-          (t) => !(t.tag_key === tag.tag_key && t.tag_value === tag.tag_value)
-        );
+      if (prev.some(t => t.tag_key === tag.tag_key && t.tag_value === tag.tag_value)) {
+        return prev.filter(t => !(t.tag_key === tag.tag_key && t.tag_value === tag.tag_value));
       } else {
         return [...prev, tag];
       }
@@ -484,37 +416,26 @@ export function HorizontalSourceSelector({
               w-fit
               gap-x-1
               hover:bg-hover
-              bg-hover-light
               flex
               items-center
-              bg-background-search-filter
               `}
           >
             <CalendarIcon className="h-4 w-4" />
 
-            {timeRange?.from
-              ? getDateRangeString(timeRange.from, timeRange.to)
-              : "Since"}
+            {timeRange?.from ? getDateRangeString(timeRange.from, timeRange.to) : 'Since'}
           </div>
         </PopoverTrigger>
-        <PopoverContent
-          className="bg-background border-border border rounded-md z-[200] p-0"
-          align="start"
-        >
+        <PopoverContent className="bg-background border-border border rounded-md z-[200] p-0" align="start">
           <Calendar
             mode="range"
-            selected={
-              timeRange
-                ? { from: new Date(timeRange.from), to: new Date(timeRange.to) }
-                : undefined
-            }
-            onSelect={(daterange) => {
+            selected={timeRange ? { from: new Date(timeRange.from), to: new Date(timeRange.to) } : undefined}
+            onSelect={daterange => {
               const initialDate = daterange?.from || new Date();
               const endDate = daterange?.to || new Date();
               setTimeRange({
                 from: initialDate,
                 to: endDate,
-                selectValue: timeRange?.selectValue || "",
+                selectValue: timeRange?.selectValue || '',
               });
             }}
             className="rounded-md "
@@ -526,8 +447,8 @@ export function HorizontalSourceSelector({
         <FilterDropdown
           backgroundColor="bg-background-search-filter"
           options={listSourceMetadata()
-            .filter((source) => existingSources.includes(source.internalName))
-            .map((source) => ({
+            .filter(source => existingSources.includes(source.internalName))
+            .map(source => ({
               key: source.internalName,
               display: (
                 <>
@@ -536,12 +457,8 @@ export function HorizontalSourceSelector({
                 </>
               ),
             }))}
-          selected={selectedSources.map((source) => source.internalName)}
-          handleSelect={(option) =>
-            handleSourceSelect(
-              listSourceMetadata().find((s) => s.internalName === option.key)!
-            )
-          }
+          selected={selectedSources.map(source => source.internalName)}
+          handleSelect={option => handleSourceSelect(listSourceMetadata().find(s => s.internalName === option.key)!)}
           icon={<FiMap size={16} />}
           defaultDisplay="Sources"
           dropdownColor="bg-background-search-filter-dropdown"
@@ -555,12 +472,12 @@ export function HorizontalSourceSelector({
       {availableDocumentSets.length > 0 && (
         <FilterDropdown
           backgroundColor="bg-background-search-filter"
-          options={availableDocumentSets.map((documentSet) => ({
+          options={availableDocumentSets.map(documentSet => ({
             key: documentSet.name,
             display: <>{documentSet.name}</>,
           }))}
           selected={selectedDocumentSets}
-          handleSelect={(option) => handleDocumentSetSelect(option.key)}
+          handleSelect={option => handleDocumentSetSelect(option.key)}
           icon={<FiBook size={16} />}
           defaultDisplay="Sets"
           resetValues={resetDocuments}
@@ -574,7 +491,7 @@ export function HorizontalSourceSelector({
       {availableTags.length > 0 && (
         <FilterDropdown
           backgroundColor="bg-background-search-filter"
-          options={availableTags.map((tag) => ({
+          options={availableTags.map(tag => ({
             key: `${tag.tag_key}=${tag.tag_value}`,
             display: (
               <span className="text-sm">
@@ -584,14 +501,10 @@ export function HorizontalSourceSelector({
               </span>
             ),
           }))}
-          selected={selectedTags.map(
-            (tag) => `${tag.tag_key}=${tag.tag_value}`
-          )}
-          handleSelect={(option) => {
-            const [tag_key, tag_value] = option.key.split("=");
-            const selectedTag = availableTags.find(
-              (tag) => tag.tag_key === tag_key && tag.tag_value === tag_value
-            );
+          selected={selectedTags.map(tag => `${tag.tag_key}=${tag.tag_value}`)}
+          handleSelect={option => {
+            const [tag_key, tag_value] = option.key.split('=');
+            const selectedTag = availableTags.find(tag => tag.tag_key === tag_key && tag.tag_value === tag_value);
             if (selectedTag) {
               handleTagSelect(selectedTag);
             }

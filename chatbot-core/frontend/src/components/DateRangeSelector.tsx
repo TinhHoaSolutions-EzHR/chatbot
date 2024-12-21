@@ -1,18 +1,13 @@
-import React, { memo, useMemo, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { getXDaysAgo } from "./dateUtils";
-import { Separator } from "@/components/ui/separator";
+import React, { memo, useState } from 'react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { getXDaysAgo } from '@/lib/dateUtils';
 
-export const THIRTY_DAYS = "30d";
+export const THIRTY_DAYS = '30d';
 
 export type DateRangePickerValue = DateRange & {
   selectValue: string;
@@ -36,14 +31,14 @@ export const DateRangeSelector = memo(function DateRangeSelector({
 
   const presets = [
     {
-      label: "Last 30 days",
+      label: 'Last 30 days',
       value: {
         from: getXDaysAgo(30),
         to: getXDaysAgo(0),
       },
     },
     {
-      label: "Today",
+      label: 'Today',
       value: {
         from: getXDaysAgo(1),
         to: getXDaysAgo(0),
@@ -57,20 +52,16 @@ export const DateRangeSelector = memo(function DateRangeSelector({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !value && "text-muted-foreground"
-            )}
+            className={cn('w-[300px] justify-start text-left font-normal', !value && 'text-muted-foreground')}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {value?.from ? (
               value.to ? (
                 <>
-                  {format(value.from, "LLL dd, y")} -{" "}
-                  {format(value.to, "LLL dd, y")}
+                  {format(value.from, 'LLL dd, y')} - {format(value.to, 'LLL dd, y')}
                 </>
               ) : (
-                format(value.from, "LLL dd, y")
+                format(value.from, 'LLL dd, y')
               )
             ) : (
               <span>Pick a date range</span>
@@ -83,7 +74,7 @@ export const DateRangeSelector = memo(function DateRangeSelector({
             mode="range"
             defaultMonth={value?.from}
             selected={value}
-            onSelect={(range) => {
+            onSelect={range => {
               if (range?.from && range?.to) {
                 onValueChange({ from: range.from, to: range.to });
               }
@@ -91,7 +82,7 @@ export const DateRangeSelector = memo(function DateRangeSelector({
             numberOfMonths={2}
           />
           <div className="border-t p-3">
-            {presets.map((preset) => (
+            {presets.map(preset => (
               <Button
                 key={preset.label}
                 variant="ghost"

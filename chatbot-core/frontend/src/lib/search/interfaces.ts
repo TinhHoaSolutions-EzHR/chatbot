@@ -1,10 +1,10 @@
-import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
-import { Tag, ValidSources } from "../types";
-import { Persona } from "@/app/admin/assistants/interfaces";
+import { DateRangePickerValue } from '@/components/DateRangeSelector';
+import { Tag, ValidSources } from '../types';
+import { Persona } from '@/app/admin/assistants/interfaces';
 
 export const FlowType = {
-  SEARCH: "search",
-  QUESTION_ANSWER: "question-answer",
+  SEARCH: 'search',
+  QUESTION_ANSWER: 'question-answer',
 };
 export type FlowType = (typeof FlowType)[keyof typeof FlowType];
 export const SearchType = {

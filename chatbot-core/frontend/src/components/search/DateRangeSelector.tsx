@@ -1,9 +1,9 @@
-import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
-import { FiCalendar, FiChevronDown, FiXCircle } from "react-icons/fi";
-import { CustomDropdown } from "../Dropdown";
-import { timeRangeValues } from "@/app/config/timeRange";
-import { TimeRangeSelector } from "@/components/filters/TimeRangeSelector";
-import { cn } from "@/lib/utils";
+import { DateRangePickerValue } from '@/components/DateRangeSelector';
+import { FiCalendar, FiChevronDown, FiXCircle } from 'react-icons/fi';
+import { CustomDropdown } from '../Dropdown';
+import { timeRangeValues } from '@/app/config/timeRange';
+import { TimeRangeSelector } from '@/components/filters/TimeRangeSelector';
+import { cn } from '@/lib/utils';
 
 export function DateRangeSelector({
   value,
@@ -23,8 +23,8 @@ export function DateRangeSelector({
           <TimeRangeSelector
             value={value}
             className={cn(
-              "border border-border bg-background rounded-lg flex flex-col w-64 max-h-96 overflow-y-auto flex overscroll-contain",
-              className
+              'border border-border bg-background rounded-lg flex flex-col w-64 max-h-96 overflow-y-auto flex overscroll-contain',
+              className,
             )}
             timeRangeValues={timeRangeValues}
             onValueChange={onValueChange}
@@ -44,20 +44,20 @@ export function DateRangeSelector({
             cursor-pointer 
             hover:bg-hover`}
         >
-          <FiCalendar className="flex-none my-auto mr-2" />{" "}
+          <FiCalendar className="flex-none my-auto mr-2" />{' '}
           <p className="line-clamp-1">
             {isHorizontal ? (
-              "Date"
+              'Date'
             ) : value?.selectValue ? (
               <div className="text-emphasis">{value.selectValue}</div>
             ) : (
-              "Any time..."
+              'Any time...'
             )}
           </p>
           {value?.selectValue ? (
             <div
               className="my-auto ml-auto p-0.5 rounded-full w-fit"
-              onClick={(e) => {
+              onClick={e => {
                 onValueChange(null);
                 e.stopPropagation();
               }}

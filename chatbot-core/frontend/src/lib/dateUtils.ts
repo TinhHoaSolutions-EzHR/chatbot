@@ -1,10 +1,28 @@
-import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
-
 export function getXDaysAgo(daysAgo: number) {
   const today = new Date();
   const daysAgoDate = new Date(today);
   daysAgoDate.setDate(today.getDate() - daysAgo);
   return daysAgoDate;
+}
+
+export function convertDateToEndOfDay(date?: Date | null) {
+  if (!date) {
+    return date;
+  }
+
+  const dateCopy = new Date(date);
+  dateCopy.setHours(23, 59, 59, 999);
+  return dateCopy;
+}
+
+export function convertDateToStartOfDay(date?: Date | null) {
+  if (!date) {
+    return date;
+  }
+
+  const dateCopy = new Date(date);
+  dateCopy.setHours(0, 0, 0, 0);
+  return dateCopy;
 }
 
 export function getXYearsAgo(yearsAgo: number) {
@@ -20,10 +38,7 @@ export const timestampToDateString = (timestamp: string) => {
   const month = date.getMonth() + 1; // getMonth() is zero-based
   const day = date.getDate();
 
-  const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
-    .toString()
-    .padStart(2, "0")}`;
-  return formattedDate;
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 };
 
 // Options for formatting the date
@@ -51,10 +66,8 @@ export const timestampToReadableDate = (timestamp: string) => {
 
 export const buildDateString = (date: Date | null) => {
   return date
-    ? `${Math.round(
-        (new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-      )} days ago`
-    : "Select a time range";
+    ? `${Math.round((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24))} da,ys ago`
+    : 'Select a time range';
 };
 
 export const getDateRangeString = (from: Date | null, to: Date | null) => {
@@ -63,8 +76,7 @@ export const getDateRangeString = (from: Date | null, to: Date | null) => {
   const now = new Date();
   const fromDiffMs = now.getTime() - from.getTime();
   const toDiffMs = now.getTime() - to.getTime();
-
-  const fromDiffDays = Math.floor(fromDiffMs / (1000 * 60 * 60 * 24));
+  Math.floor(fromDiffMs / (1000 * 60 * 60 * 24));
   const toDiffDays = Math.floor(toDiffMs / (1000 * 60 * 60 * 24));
 
   const fromString = getTimeAgoString(from);
