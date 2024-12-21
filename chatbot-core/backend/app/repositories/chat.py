@@ -84,7 +84,7 @@ class ChatRepository(BaseRepository):
 
     def get_chat_session(
         self, chat_session_id: str, user_id: str
-    ) -> Tuple[ChatSession, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
         """
         Get chat session by id.
 
@@ -93,7 +93,7 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[ChatSession, Optional[APIError]]: Chat session object and APIError object if any error
+            Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
         try:
             chat_session = (
@@ -108,7 +108,7 @@ class ChatRepository(BaseRepository):
 
     def get_chat_message(
         self, chat_message_id: str, chat_session_id: str, user_id: str
-    ) -> Tuple[ChatMessage, Optional[APIError]]:
+    ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
         Get chat message by id.
 
@@ -118,7 +118,7 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[ChatMessage, Optional[APIError]]: Chat message object and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat message object and APIError object if any error
         """
         try:
             chat_message = (
