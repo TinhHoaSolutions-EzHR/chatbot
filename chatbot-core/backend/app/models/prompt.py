@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List
+from typing import Optional
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -17,6 +18,7 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models import ChatMessage
+    from app.models import Agent
 
 
 class Prompt(Base):
@@ -31,10 +33,10 @@ class Prompt(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
     agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
-    name: Mapped[str] = mapped_column(String)
-    description: Mapped[str] = mapped_column(String)
-    system_prompt: Mapped[str] = mapped_column(Text)
-    task_prompt: Mapped[str] = mapped_column(Text)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Optional[Mapped[str]] = mapped_column(String, nullable=True)
+    system_prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    task_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     include_citations: Mapped[bool] = mapped_column(Boolean, default=True)
     # Whether the prompt is datetime aware. If true, the prompt will be used to construct a datetime answer.
     datetime_aware: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -43,4 +45,4 @@ class Prompt(Base):
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
         "ChatMessage", back_populates="prompt"
     )
-    agent = Mapped["Agent"] = relationship("Agent", back_populates="prompt")
+    agent: Mapped["Agent"] = relationship("Agent", back_populates="prompt")

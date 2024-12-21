@@ -32,4 +32,4 @@ class Agent(Base):
     # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
     chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
-    prompt: Mapped[Prompt] = relationship("Prompt", back_populates="agent")
+    prompt: Mapped["Prompt"] = relationship("Prompt", back_populates="agent")
