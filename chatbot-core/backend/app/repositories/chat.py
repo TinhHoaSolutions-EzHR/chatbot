@@ -152,7 +152,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error creating chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def create_chat_message(self, chat_message: ChatMessage) -> Optional[APIError]:
@@ -170,7 +169,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error creating chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_session(
@@ -199,7 +197,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_message(
@@ -233,7 +230,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_chat_session(self, chat_session_id: str, user_id: str) -> Optional[APIError]:
@@ -254,7 +250,6 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error deleting chat session: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_chat_message(
@@ -282,5 +277,4 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error deleting chat message: {e}")
-            self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
