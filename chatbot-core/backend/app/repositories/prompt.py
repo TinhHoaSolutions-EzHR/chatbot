@@ -1,3 +1,5 @@
+from typing import Any
+from typing import Dict
 from typing import Optional
 from typing import Tuple
 
@@ -56,21 +58,18 @@ class PromptRepository(BaseRepository):
             logger.error(f"Error creating prompt: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_prompt(self, prompt_id: str, prompt: Prompt) -> Optional[APIError]:
+    def update_prompt(self, prompt_id: str, prompt: Dict[str, Any]) -> Optional[APIError]:
         """
         Update a prompt.
 
         Args:
             prompt_id(str): Prompt id
-            prompt(Prompt): Prompt object
+            prompt(Dict[str, Any]): Prompt object
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         try:
-            prompt = {
-                key: value for key, value in prompt.__dict__.items() if not key.startswith("_")
-            }
             self._db_session.query(Prompt).filter(Prompt.id == prompt_id).update(prompt)
             return None
         except Exception as e:
