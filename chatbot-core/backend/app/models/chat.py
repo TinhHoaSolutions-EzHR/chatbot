@@ -98,7 +98,9 @@ class ChatSession(Base):
     agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("agent.id"), nullable=True
     )
-    folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(ForeignKey("folders.id"), nullable=True)
+    folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey("folder.id"), nullable=True
+    )
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
@@ -275,6 +277,7 @@ class ChatSessionRequest(BaseModel):
     """
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
+    folder_id: Optional[str] = Field(None, description="Folder id of the chat session")
     description: Optional[str] = Field(
         None, max_length=255, description="Description (Name) of the chat session"
     )

@@ -5,7 +5,6 @@ from typing import Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import and_
 
-from app.models import ChatSession
 from app.models import Folder
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
@@ -38,7 +37,6 @@ class FolderRepository(BaseRepository):
         try:
             folders = (
                 self._db_session.query(Folder)
-                .join(ChatSession, Folder.id == ChatSession.folder_id)
                 .filter(Folder.user_id == user_id)
                 .order_by(Folder.created_at.desc())
                 .all()
@@ -48,7 +46,9 @@ class FolderRepository(BaseRepository):
             logger.error(f"Error getting folders: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_folder(self, folder_id: str, user_id: str) -> Tuple[Optional[Folder], Optional[APIError]]:
+    def get_folder(
+        self, folder_id: str, user_id: str
+    ) -> Tuple[Optional[Folder], Optional[APIError]]:
         """
         Get folder by ID.
 
@@ -61,7 +61,9 @@ class FolderRepository(BaseRepository):
         """
         try:
             folder = (
-                self._db_session.query(Folder).filter(and_(Folder.id == folder_id, Folder.user_id == user_id)).first()
+                self._db_session.query(Folder)
+                .filter(and_(Folder.id == folder_id, Folder.user_id == user_id))
+                .first()
             )
             return folder, None
         except Exception as e:
@@ -98,10 +100,12 @@ class FolderRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
-            folder = {key: value for key, value in folder.__dict__.items() if not key.startswith("_")}
-            self._db_session.query(Folder).filter(and_(Folder.id == folder_id, Folder.user_id == user_id)).update(
-                folder
-            )
+            folder = {
+                key: value for key, value in folder.__dict__.items() if not key.startswith("_")
+            }
+            self._db_session.query(Folder).filter(
+                and_(Folder.id == folder_id, Folder.user_id == user_id)
+            ).update(folder)
             return None
         except Exception as e:
             logger.error(f"Error updating folder: {e}")
@@ -119,7 +123,9 @@ class FolderRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
-            self._db_session.query(Folder).filter(and_(Folder.id == folder_id, Folder.user_id == user_id)).delete()
+            self._db_session.query(Folder).filter(
+                and_(Folder.id == folder_id, Folder.user_id == user_id)
+            ).delete()
             return None
         except Exception as e:
             logger.error(f"Error deleting folder: {e}")

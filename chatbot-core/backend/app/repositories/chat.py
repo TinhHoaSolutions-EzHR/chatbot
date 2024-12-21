@@ -25,7 +25,9 @@ class ChatRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_chat_sessions(self, user_id: str, **filter) -> Tuple[List[ChatSession], Optional[APIError]]:
+    def get_chat_sessions(
+        self, user_id: str, **filter
+    ) -> Tuple[List[ChatSession], Optional[APIError]]:
         """
         Get all chat sessions of the user. Sort by updated_at in descending order.
 
@@ -49,7 +51,9 @@ class ChatRepository(BaseRepository):
             logger.error(f"Error getting chat sessions: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_chat_messages(self, chat_session_id: str, user_id: str) -> Tuple[List[ChatSession], Optional[APIError]]:
+    def get_chat_messages(
+        self, chat_session_id: str, user_id: str
+    ) -> Tuple[List[ChatMessage], Optional[APIError]]:
         """
         Get all chat messages of the chat session. Sort by created_at in ascending order.
 
@@ -58,12 +62,17 @@ class ChatRepository(BaseRepository):
             user_id(str): User id
 
         Returns:
-            Tuple[List[ChatSession], Optional[APIError]]: List of chat session objects and APIError object if any error
+            Tuple[List[ChatMessage], Optional[APIError]]: List of chat message objects and APIError object if any error
         """
         try:
             chat_messages = (
                 self._db_session.query(ChatMessage)
-                .filter(and_(ChatMessage.chat_session_id == chat_session_id, ChatMessage.user_id == user_id))
+                .filter(
+                    and_(
+                        ChatMessage.chat_session_id == chat_session_id,
+                        ChatMessage.user_id == user_id,
+                    )
+                )
                 .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .order_by(ChatMessage.created_at.asc())
                 .all()
@@ -73,7 +82,9 @@ class ChatRepository(BaseRepository):
             logger.error(f"Error getting chat messages: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def get_chat_session(self, chat_session_id: str, user_id: str) -> Tuple[ChatSession, Optional[APIError]]:
+    def get_chat_session(
+        self, chat_session_id: str, user_id: str
+    ) -> Tuple[ChatSession, Optional[APIError]]:
         """
         Get chat session by id.
 
@@ -162,7 +173,9 @@ class ChatRepository(BaseRepository):
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_chat_session(self, chat_session_id: str, chat_session: ChatSession, user_id: str) -> Optional[APIError]:
+    def update_chat_session(
+        self, chat_session_id: str, chat_session: ChatSession, user_id: str
+    ) -> Optional[APIError]:
         """
         Update chat session.
 
@@ -175,7 +188,11 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
-            chat_session = {key: value for key, value in chat_session.__dict__.items() if not key.startswith("_")}
+            chat_session = {
+                key: value
+                for key, value in chat_session.__dict__.items()
+                if not key.startswith("_")
+            }
             self._db_session.query(ChatSession).filter(
                 and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id)
             ).update(chat_session)
@@ -201,7 +218,11 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
-            chat_message = {key: value for key, value in chat_message.__dict__.items() if not key.startswith("_")}
+            chat_message = {
+                key: value
+                for key, value in chat_message.__dict__.items()
+                if not key.startswith("_")
+            }
             self._db_session.query(ChatMessage).filter(
                 and_(
                     ChatMessage.id == chat_message_id,
@@ -236,7 +257,9 @@ class ChatRepository(BaseRepository):
             self._db_session.rollback()
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def delete_chat_message(self, chat_message_id: str, chat_session_id: str, user_id: str) -> Optional[APIError]:
+    def delete_chat_message(
+        self, chat_message_id: str, chat_session_id: str, user_id: str
+    ) -> Optional[APIError]:
         """
         Delete chat message by id.
 

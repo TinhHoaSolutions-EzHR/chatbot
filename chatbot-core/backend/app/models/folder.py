@@ -21,6 +21,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.models.base import Base
+from app.models.chat import ChatSessionResponse
 
 if TYPE_CHECKING:
     from app.models import User
@@ -33,13 +34,13 @@ class Folder(Base):
     Tracks and organizes chat sessions that are stored in the folder.
     """
 
-    __tablename__ = "folders"
+    __tablename__ = "folder"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
     user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
     name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     display_priority: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=0)
@@ -58,9 +59,7 @@ class Folder(Base):
     )
 
     # Define relationships
-    user: Mapped["User"] = relationship(
-        "User", back_populates="chat_sessions", cascade="save-update, merge"
-    )
+    user: Mapped["User"] = relationship("User", back_populates="folders")
     chat_sessions: Mapped[List["ChatSession"]] = relationship(
         "ChatSession", back_populates="folder"
     )
@@ -84,6 +83,9 @@ class FolderRequest(BaseModel):
 
     name: Optional[str] = Field(None, description="Folder name")
 
+    class Config:
+        from_attributes = True
+
 
 class FolderResponse(BaseModel):
     """
@@ -95,4 +97,7 @@ class FolderResponse(BaseModel):
     user_id: UUID = Field(..., description="User ID")
     name: Optional[str] = Field(None, description="Folder name")
     display_priority: Optional[int] = Field(0, description="Folder display priority")
-    chat_sessions: List[ChatSession] = Field([], description="Chat sessions in the folder")
+    chat_sessions: List[ChatSessionResponse] = Field([], description="Chat sessions in the folder")
+
+    class Config:
+        from_attributes = True
