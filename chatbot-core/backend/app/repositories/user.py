@@ -51,7 +51,7 @@ class UserSettingRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_user_setting(self, user_id: str) -> Tuple[UserSetting, Optional[APIError]]:
+    def get_user_settings(self, user_id: str) -> Tuple[UserSetting, Optional[APIError]]:
         """
         Get user settings by user ID.
 
@@ -67,10 +67,10 @@ class UserSettingRepository(BaseRepository):
             )
             return user_setting, None
         except Exception as e:
-            logger.error(f"Error getting user setting: {e}")
+            logger.error(f"Error getting user settings: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_user_setting(self, user_id: str, user_setting: UserSetting) -> Optional[APIError]:
+    def update_user_settings(self, user_id: str, user_settings: UserSetting) -> Optional[APIError]:
         """
         Update user settings.
 
@@ -81,13 +81,8 @@ class UserSettingRepository(BaseRepository):
             Optional[APIError]: API error response
         """
         try:
-            user_setting = {
-                key: value
-                for key, value in user_setting.__dict__.items()
-                if not key.startswith("_")
-            }
             self._db_session.query(UserSetting).filter(UserSetting.id == user_id).update(
-                user_setting
+                user_settings
             )
             return None
         except Exception as e:
