@@ -14,6 +14,7 @@ from pydantic import Field
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -51,7 +52,7 @@ class Agent(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
     user_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
+        ForeignKey("user.id", ondelete="CASCADE"), nullable=True
     )
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -108,7 +109,13 @@ class AgentResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="Agent id")
+    user_id: Optional[UUID] = Field(None, description="User id")
+    name: str = Field(..., description="Agent name")
+    description: Optional[str] = Field(None, description="Agent description")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
+    is_visible: bool = Field(True, description="Agent visibility")
+    display_priority: int = Field(0, description="Agent display priority")
+    uploaded_image_id: Optional[UUID] = Field(None, description="Uploaded image id")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
     deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")

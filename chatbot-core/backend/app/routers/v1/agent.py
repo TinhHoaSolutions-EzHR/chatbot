@@ -123,13 +123,15 @@ def create_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Create agent
-    err = AgentService(db_session=db_session).create_agent(agent_request=agent_request)
+    err = AgentService(db_session=db_session).create_agent(
+        agent_request=agent_request, user_id=user.id
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = AgentRequest.model_dump(exclude_unset=True)
+    data = agent_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
@@ -171,7 +173,7 @@ def update_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = AgentRequest.model_dump(exclude_unset=True)
+    data = agent_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
