@@ -88,8 +88,8 @@ class FolderService(BaseService):
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
-            # Define folder
-            folder = Folder(name=folder_request.name)
+            # Define to-be-updated folder
+            folder = folder_request.model_dump(exclude_unset=True)
 
             # Update folder
             err = self._folder_repo.update_folder(

@@ -1,3 +1,5 @@
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -87,22 +89,21 @@ class FolderRepository(BaseRepository):
             logger.error(f"Error creating folder: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_folder(self, folder_id: str, folder: Folder, user_id: str) -> Optional[APIError]:
+    def update_folder(
+        self, folder_id: str, folder: Dict[str, Any], user_id: str
+    ) -> Optional[APIError]:
         """
         Update folder.
 
         Args:
             folder_id (str): Folder ID
-            folder (Folder): Folder object
+            folder (Dict[str, Any]): Folder object
             user_id (str): User ID
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         try:
-            folder = {
-                key: value for key, value in folder.__dict__.items() if not key.startswith("_")
-            }
             self._db_session.query(Folder).filter(
                 and_(Folder.id == folder_id, Folder.user_id == user_id)
             ).update(folder)
