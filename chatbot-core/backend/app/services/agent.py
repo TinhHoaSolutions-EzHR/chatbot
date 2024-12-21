@@ -51,12 +51,13 @@ class AgentService(BaseService):
         """
         return self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
 
-    def create_agent(self, agent_request: AgentRequest) -> Optional[APIError]:
+    def create_agent(self, agent_request: AgentRequest, user_id: str) -> Optional[APIError]:
         """
         Create a new agent.
 
         Args:
             agent_request(AgentRequest): Agent request object
+            user_id(str): User id
 
         Returns:
             Optional[APIError]: APIError object if any error
@@ -64,6 +65,7 @@ class AgentService(BaseService):
         with self._transaction():
             # Define agent
             agent = Agent(
+                user_id=user_id,
                 name=agent_request.name,
                 description=agent_request.description,
                 agent_type=agent_request.agent_type,
