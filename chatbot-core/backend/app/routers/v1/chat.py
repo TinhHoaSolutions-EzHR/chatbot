@@ -9,11 +9,12 @@ from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models import User
-from app.models.chat import ChatFeedbackRequest, ChatMessageRequest
+from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageResponse
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
+from app.models.chat import ChatFeedbackRequest
 from app.services.chat import ChatService
 from app.settings import Constants
 from app.utils.api.api_response import APIResponse
