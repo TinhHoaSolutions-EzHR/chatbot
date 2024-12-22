@@ -100,6 +100,22 @@ class UserSettingRequest(BaseModel):
     current_agent_id: Optional[UUID] = Field(None, title="Current using agent ID")
     auto_scroll: bool = Field(True, title="Auto scroll chat messages")
     default_model: Optional[str] = Field(None, title="Default model for the user")
+    maximum_chat_retention_days: Optional[int] = Field(None, title="Maximum chat retention days")
+
+    class Config:
+        from_attributes = True
+
+
+class UserSettingResponse(BaseModel):
+    """
+    Pydantic model for user settings response.
+    Defines the fields that can be returned in the user settings.
+    """
+
+    recent_agent_ids: Optional[List[UUID]] = Field(None, title="List of recent agent IDs")
+    auto_scroll: bool = Field(..., title="Auto scroll chat messages")
+    default_model: Optional[str] = Field(None, title="Default model for the user")
+    maximum_chat_retention_days: Optional[int] = Field(None, title="Maximum chat retention days")
 
     class Config:
         from_attributes = True

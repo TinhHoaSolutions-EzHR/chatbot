@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 from app.databases.mssql import get_db_session
 from app.models import User
 from app.models.user import UserSettingRequest
-from app.services.user import UserService
+from app.models.user import UserSettingResponse
+from app.services.user import UserSettingService
 from app.settings import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
@@ -17,6 +18,50 @@ from app.utils.user.authentication import get_current_user
 
 logger = get_logger(__name__)
 router = APIRouter(prefix="/users/me", tags=["user", "setting"])
+
+
+@router.get("/settings", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def get_user_settings(
+    db_session: Session = Depends(get_db_session),
+    user: User = Depends(get_current_user),
+) -> BackendAPIResponse:
+    """
+    Get user settings.
+
+    Args:
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object
+
+    Returns:
+        BackendAPIResponse: API response
+    """
+    if not user:
+        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
+        raise HTTPException(
+            status_code=status_code,
+            detail=detail,
+        )
+
+    # Get user settings
+    user_settings, err = UserSettingService(db_session=db_session).get_user_settings(
+        user_id=user.id
+    )
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse user settings
+    if user_settings:
+        data = UserSettingResponse.model_validate(user_settings)
+    else:
+        data = None
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.patch("/settings", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -44,8 +89,8 @@ def update_user_settings(
         )
 
     # Update user settings
-    err = UserService(db_session=db_session).update_user_settings(
-        user=user,
+    err = UserSettingService(db_session=db_session).update_user_settings(
+        user_id=user.id,
         user_setting_request=user_setting_request,
     )
     if err:
