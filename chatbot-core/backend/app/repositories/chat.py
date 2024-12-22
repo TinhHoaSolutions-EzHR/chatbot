@@ -67,13 +67,13 @@ class ChatRepository(BaseRepository):
         try:
             chat_messages = (
                 self._db_session.query(ChatMessage)
+                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .filter(
                     and_(
                         ChatMessage.chat_session_id == chat_session_id,
-                        ChatMessage.user_id == user_id,
+                        ChatSession.user_id == user_id,
                     )
                 )
-                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .order_by(ChatMessage.created_at.asc())
                 .all()
             )
@@ -123,11 +123,12 @@ class ChatRepository(BaseRepository):
         try:
             chat_message = (
                 self._db_session.query(ChatMessage)
+                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .filter(
                     and_(
                         ChatMessage.id == chat_message_id,
                         ChatMessage.chat_session_id == chat_session_id,
-                        ChatMessage.user_id == user_id,
+                        ChatSession.user_id == user_id,
                     )
                 )
                 .first()
@@ -215,6 +216,17 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Verify the chat session belongs to the user
+            chat_session = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+
+            if not chat_session:
+                return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
+
+            # Update the chat message
             chat_message = {
                 key: value
                 for key, value in chat_message.__dict__.items()
@@ -224,7 +236,6 @@ class ChatRepository(BaseRepository):
                 and_(
                     ChatMessage.id == chat_message_id,
                     ChatMessage.chat_session_id == chat_session_id,
-                    ChatMessage.user_id == user_id,
                 )
             ).update(chat_message)
             return None
@@ -267,11 +278,21 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Verify the chat session belongs to the user
+            chat_session = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+
+            if not chat_session:
+                return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
+
+            # Delete the chat message
             self._db_session.query(ChatMessage).filter(
                 and_(
                     ChatMessage.id == chat_message_id,
                     ChatMessage.chat_session_id == chat_session_id,
-                    ChatMessage.user_id == user_id,
                 )
             ).delete()
             return None
