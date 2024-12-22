@@ -31,6 +31,26 @@ services:
       retries: 3
       start_period: 3s
 
+  database.configurator:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
+    user: root
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ../data/mssql/:/docker-entrypoint-initdb.d
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - backend
+    command: >
+      /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
+      echo 'Database configured!'"
+
   cache:
     image: redis:7.4-alpine
     container_name: cache
