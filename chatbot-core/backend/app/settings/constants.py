@@ -73,3 +73,6 @@ class Constants:
 
     # Chat Message
     MAX_USER_MESSAGE_LENGTH = 2000
+
+    # User Settings
+    MAX_RECENT_AGENTS = 5
