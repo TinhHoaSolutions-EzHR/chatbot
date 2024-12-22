@@ -110,7 +110,7 @@ services:
         max-size: "50m"
         max-file: "6"
 
-  web-server:
+  web_server:
     build:
       context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
@@ -128,8 +128,8 @@ services:
     image: nginx:1.23.4-alpine
     restart: on-failure
     depends_on:
-      - api-server
-      - web-server
+      - api_server
+      - web_server
     environment:
       - DOMAIN=localhost
     ports:
