@@ -16,7 +16,7 @@ from app.utils.api.helpers import get_logger
 from app.utils.user.authentication import get_current_user
 
 logger = get_logger(__name__)
-router = APIRouter(prefix="/users", tags=["user", "setting"])
+router = APIRouter(prefix="/users/me", tags=["user", "setting"])
 
 
 @router.patch("/settings", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -55,4 +55,9 @@ def update_user_settings(
     # Parse user settings
     data = user_setting_request.model_dump(exclude_unset=True)
 
-    return BackendAPIResponse().set_message(message=Constants.API_SUCCESS).set_data(data=data).respond()
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
