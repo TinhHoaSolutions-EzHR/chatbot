@@ -145,9 +145,6 @@ class ChatMessage(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
-    )
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
@@ -186,7 +183,6 @@ class ChatMessage(Base):
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    user: Mapped["User"] = relationship("User", back_populates="chat_messages")
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
     )
