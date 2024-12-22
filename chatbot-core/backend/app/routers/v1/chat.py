@@ -301,12 +301,7 @@ def create_chat_feedback(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Create chat feedback
-    err = ChatService(db_session=db_session).create_chat_feedback(
-        chat_message_id=chat_feedback_request.chat_message_id,
-        user_id=user.id,
-        rating=chat_feedback_request.rating,
-        feedback_text=chat_feedback_request.feedback_text,
-    )
+    err = ChatService(db_session=db_session).create_chat_feedback(chat_feedback_request)
 
     if err:
         status_code, detail = err.kind

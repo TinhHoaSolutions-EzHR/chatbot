@@ -13,6 +13,7 @@ from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
+from app.models.chat import ChatFeedbackRequest
 from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
@@ -600,16 +601,13 @@ class ChatService(BaseService):
         yield chat_response
 
     def create_chat_feedback(
-        self, chat_message_id: str, user_id: str, rating: int, feedback_text: Optional[str]
+        self, chat_feedback_request: ChatFeedbackRequest
     ) -> Optional[APIError]:
         """
         Create chat feedback.
 
         Args:
-            chat_message_id(str): Chat message id
-            user_id(str): User id
-            rating(int): Rating
-            feedback_text(Optional[str]): Feedback text
+            chat_feedback_request: ChatFeedbackRequest
 
         Returns:
             Optional[APIError]: APIError object if any error
@@ -617,10 +615,9 @@ class ChatService(BaseService):
         with self._transaction():
             # Define chat feedback
             chat_feedback = ChatFeedback(
-                chat_message_id=chat_message_id,
-                user_id=user_id,
-                rating=rating,
-                feedback_text=feedback_text,
+                chat_message_id=chat_feedback_request.chat_message_id,
+                is_positive=chat_feedback_request.is_positive,
+                feedback_text=chat_feedback_request.feedback_text,
             )
 
             # Create chat feedback
