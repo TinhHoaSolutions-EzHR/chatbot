@@ -1,9 +1,14 @@
+import hashlib
 import logging
+import os
 import sys
+from datetime import datetime
+from io import BytesIO
 from typing import Annotated
 from typing import List
 
 import pdfplumber
+import pydenticon
 from fastapi import File
 from fastapi import UploadFile
 from llama_index.core import Document
@@ -99,3 +104,59 @@ def get_logger(
             logger.addHandler(file_handler)
 
     return logger
+
+
+def construct_file_path(object_name: str, user_id: str = None) -> str:
+    """
+    Construct file path in Minio.
+
+    Args:
+        object_name (str): Name of the object.
+        user_id (str): User id. Defaults to None.
+
+    Returns:
+        str: File path in Minio.
+    """
+    file_name = (
+        (remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower())
+        + "_"
+        + user_id
+        + "_"
+        + datetime.now().strftime("%Y%m%d%H%M%S")
+        + ".png"
+    )
+    file_path = os.path.join(Constants.MINIO_IMAGE_BUCKET, file_name)
+
+    return file_path
+
+
+def generate_avatar_image(data: str) -> BytesIO:
+    """
+    Generate an avatar image.
+
+    Args:
+        data (str): Data to generate the avatar.
+
+    Returns:
+        BytesIO: Avatar image.
+    """
+    generator = pydenticon.Generator(
+        rows=5,
+        columns=5,
+        digest=hashlib.sha1,
+        foreground=Constants.AGENT_AVATAR_IDENTICON_FOREGROUND_COLOR,
+        background=Constants.AGENT_AVATAR_IDENTICON_BACKGROUND_COLOR,
+    )
+
+    # Generate the image
+    image_data = generator.generate(
+        data=data,
+        width=Constants.AGENT_AVATAR_IDENTICON_WIDTH,
+        height=Constants.AGENT_AVATAR_IDENTICON_HEIGHT,
+        output_format=Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT,
+    )
+
+    # Convert to BinaryIO
+    agent_avatar = BytesIO(image_data)
+
+    return agent_avatar

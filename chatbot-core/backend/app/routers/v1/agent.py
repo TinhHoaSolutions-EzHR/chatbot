@@ -122,6 +122,7 @@ def create_agent(
         agent_request (AgentRequest): Agent request object.
         file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
+        minio_connector (MinioConnector): Minio connector object.
         user (User): User object.
 
     Returns:
@@ -153,8 +154,10 @@ def create_agent(
 @router.patch("/{agent_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_agent(
     agent_id: str,
-    agent_request: AgentRequest,
+    agent_request: AgentRequest = Body(...),
+    file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
+    minio_connector: MinioConnector = Depends(get_minio_connector),
     user: User = Depends(get_current_user),
 ) -> BackendAPIResponse:
     """
@@ -163,7 +166,9 @@ def update_agent(
     Args:
         agent_id (str): Agent id
         agent_request (AgentRequest): Agent request object.
+        file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
+        minio_connector (MinioConnector): Minio connector object.
         user (User): User object.
 
     Returns:
@@ -174,8 +179,8 @@ def update_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Update agent
-    err = AgentService(db_session=db_session).update_agent(
-        agent_id=agent_id, agent_request=agent_request, user_id=user.id
+    err = AgentService(db_session=db_session, minio_connector=minio_connector).update_agent(
+        agent_id=agent_id, agent_request=agent_request, user_id=user.id, file=file
     )
     if err:
         status_code, detail = err.kind
@@ -196,6 +201,7 @@ def update_agent(
 def delete_agent(
     agent_id: str,
     db_session: Session = Depends(get_db_session),
+    minio_connector: MinioConnector = Depends(get_minio_connector),
     user: User = Depends(get_current_user),
 ) -> None:
     """
@@ -204,6 +210,7 @@ def delete_agent(
     Args:
         agent_id (str): Agent id
         db_session (Session): Database session. Defaults to relational database session.
+        minio_connector (MinioConnector): Minio connector object
         user (User): User object.
 
     Returns:
@@ -214,7 +221,9 @@ def delete_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Delete agent
-    err = AgentService(db_session=db_session).delete_agent(agent_id=agent_id, user_id=user.id)
+    err = AgentService(db_session=db_session, minio_connector=minio_connector).delete_agent(
+        agent_id=agent_id, user_id=user.id
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)

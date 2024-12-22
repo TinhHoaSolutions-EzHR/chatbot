@@ -67,7 +67,7 @@ class MinioConnector(BaseConnector[Minio]):
         except Exception as e:
             logger.error(f"Unexpected error creating bucket {bucket_name}: {e}", exc_info=True)
 
-    def upload_files(
+    def upload_file(
         self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None
     ) -> bool:
         """
@@ -106,7 +106,6 @@ class MinioConnector(BaseConnector[Minio]):
             self.client.put_object(
                 bucket_name=bucket_name, object_name=object_name, data=data, length=length
             )
-
             return True
         except S3Error as e:
             logger.error(f"S3 error uploading file {object_name}: {e}", exc_info=True)
@@ -118,6 +117,35 @@ class MinioConnector(BaseConnector[Minio]):
             # Ensure the file pointer is reset to the original position
             if data.seekable():
                 data.seek(current_pos)
+
+    def delete_file(self, object_name: str, bucket_name: str) -> bool:
+        """
+        Delete files from object storage
+
+        Args:
+            object_name (str): Object name
+            bucket_name (str): Bucket name
+
+        Returns:
+            bool: True if the file is deleted successfully, False otherwise
+
+        Raises:
+            S3Error: If there's an error with the S3 operation
+            ValueError: If the required attributes are missing
+        """
+        if not object_name or not bucket_name:
+            raise ValueError("Missing required attributes: object_name, bucket_name")
+
+        try:
+            # Delete the file from the bucket
+            self.client.remove_object(bucket_name=bucket_name, object_name=object_name)
+            return True
+        except S3Error as e:
+            logger.error(f"S3 error deleting file {object_name}: {e}", exc_info=True)
+            return False
+        except Exception as e:
+            logger.error(f"Unexpected error deleting file {object_name}: {e}", exc_info=True)
+            return False
 
 
 def get_minio_connector(request: Request) -> MinioConnector:
