@@ -103,7 +103,7 @@ def get_logger(
     return logger
 
 
-def get_database_url():
+def get_database_url() -> str:
     """
     Get the database URL.
 
