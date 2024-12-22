@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.models import ChatMessage
 from app.models import ChatSession
+from app.models import ChatFeedback
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageType
@@ -597,3 +598,32 @@ class ChatService(BaseService):
                 return err
 
         yield chat_response
+
+    def create_chat_feedback(
+        self, chat_message_id: str, user_id: str, rating: int, feedback_text: Optional[str]
+    ) -> Optional[APIError]:
+        """
+        Create chat feedback.
+
+        Args:
+            chat_message_id(str): Chat message id
+            user_id(str): User id
+            rating(int): Rating
+            feedback_text(Optional[str]): Feedback text
+
+        Returns:
+            Optional[APIError]: APIError object if any error
+        """
+        with self._transaction():
+            # Define chat feedback
+            chat_feedback = ChatFeedback(
+                chat_message_id=chat_message_id,
+                user_id=user_id,
+                rating=rating,
+                feedback_text=feedback_text,
+            )
+
+            # Create chat feedback
+            err = self._chat_feedback_repository.create_chat_feedback(chat_feedback=chat_feedback)
+
+        return err if err else None

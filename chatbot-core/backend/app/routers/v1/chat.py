@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models import User
-from app.models.chat import ChatMessageRequest
+from app.models.chat import ChatFeedbackRequest, ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageResponse
 from app.models.chat import ChatSessionRequest
@@ -276,3 +276,47 @@ def handle_new_chat_message(
         raise HTTPException(status_code=status_code, detail=detail)
 
     return StreamingResponse(content=content, media_type="text/event-stream")
+
+
+@router.post("/feedback", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
+def create_chat_feedback(
+    chat_feedback_request: ChatFeedbackRequest,
+    db_session: Session = Depends(get_db_session),
+    user: User = Depends(get_current_user),
+) -> BackendAPIResponse:
+    """
+    Create chat feedback.
+
+    Args:
+        chat_feedback_request (ChatFeedbackRequest): Chat feedback request object.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
+
+    Returns:
+        BackendAPIResponse: API response
+    """
+    if not user:
+        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Create chat feedback
+    err = ChatService(db_session=db_session).create_chat_feedback(
+        chat_message_id=chat_feedback_request.chat_message_id,
+        user_id=user.id,
+        rating=chat_feedback_request.rating,
+        feedback_text=chat_feedback_request.feedback_text,
+    )
+
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse response
+    data = chat_feedback_request.model_dump(exclude_unset=True)
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
