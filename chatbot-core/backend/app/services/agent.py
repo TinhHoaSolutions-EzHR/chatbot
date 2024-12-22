@@ -8,8 +8,11 @@ from sqlalchemy.orm import Session
 
 from app.databases.minio import MinioConnector
 from app.models import Agent
+from app.models import Prompt
 from app.models.agent import AgentRequest
+from app.models.prompt import PromptRequest
 from app.repositories.agent import AgentRepository
+from app.repositories.prompt import PromptRepository
 from app.services.base import BaseService
 from app.settings import Constants
 from app.utils.api.api_response import APIError
@@ -33,6 +36,7 @@ class AgentService(BaseService):
         super().__init__(db_session)
 
         self._agent_repo = AgentRepository(db_session=db_session)
+        self._prompt_repo = PromptRepository(db_session=db_session)
         self._minio_connector = minio_connector
 
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
@@ -72,9 +76,9 @@ class AgentService(BaseService):
         Upload agent avatar to Minio.
 
         Args:
-            agent_avatar (BytesIO): Agent avatar image
-            agent_name (str): Agent name
-            user_id (str): User id
+            agent_avatar (BytesIO): Agent avatar image.
+            agent_name (str): Agent name.
+            user_id (str): User id.
             delete_existing_image (bool, optional): Whether to delete existing image. Defaults to False.
             existing_image_path (str, optional): Existing image path. Defaults to None.
 
@@ -108,20 +112,54 @@ class AgentService(BaseService):
         return file_path, None
 
     def create_agent(
-        self, agent_request: AgentRequest, user_id: str, file: Optional[UploadFile] = None
+        self,
+        agent_request: AgentRequest,
+        prompt_request: PromptRequest,
+        user_id: str,
+        file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
         """
         Create a new agent.
 
         Args:
-            agent_request (AgentRequest): Agent request object
-            user_id (str): User id
+            agent_request (AgentRequest): Agent request object.
+            prompt_request (PromptRequest): Prompt request object.
+            user_id (str): User id.
             file (Optional[UploadFile]): File object. Defaults to None.
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
+            # Define prompt and create it
+            prompt = Prompt(
+                name=prompt_request.name,
+                description=prompt_request.description,
+                system_prompt=prompt_request.system_prompt,
+                task_prompt=prompt_request.task_prompt,
+            )
+            err = self._prompt_repo.create_prompt(prompt=prompt)
+            if err:
+                return err
+
+            # Flush to get the agent id
+            self._db_session.flush()
+
+            # Define agent and create it
+            agent = Agent(
+                user_id=user_id,
+                prompt_id=prompt.id,
+                name=agent_request.name,
+                description=agent_request.description,
+                agent_type=agent_request.agent_type,
+            )
+            err = self._agent_repo.create_agent(agent=agent)
+            if err:
+                return err
+
+            # Flush to get the agent id
+            self._db_session.flush()
+
             # Upload image to Minio if file is provided. Otherwise, use the generated image.
             agent_avatar = None
             if not file:
@@ -136,24 +174,21 @@ class AgentService(BaseService):
             if err:
                 return err
 
-            # Define agent
-            agent = Agent(
-                user_id=user_id,
-                name=agent_request.name,
-                description=agent_request.description,
-                agent_type=agent_request.agent_type,
-                uploaded_image_path=file_path,
+            # Update agent with image path
+            to_update_agent = {"uploaded_image_path": file_path}
+            err = self._agent_repo.update_agent(
+                agent_id=agent.id, agent=to_update_agent, user_id=user_id
             )
+            if err:
+                return err
 
-            # Create agent
-            err = self._agent_repo.create_agent(agent=agent)
-
-        return err if err else None
+        return None
 
     def update_agent(
         self,
         agent_id: str,
         agent_request: AgentRequest,
+        prompt_request: PromptRequest,
         user_id: str,
         file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
@@ -161,26 +196,34 @@ class AgentService(BaseService):
         Update an agent.
 
         Args:
-            agent_id (str): Agent id
-            agent_request (AgentRequest): Agent request object
-            user_id (str): User id
+            agent_id (str): Agent id.
+            agent_request (AgentRequest): Agent request object.
+            prompt_request (PromptRequest): Prompt request object.
+            user_id (str): User id.
             file (Optional[UploadFile]): File object. Defaults to None.
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
+            # Get existing agent
+            existing_agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
+            if err:
+                return err
+
+            # Define to-be-updated prompt
+            prompt = prompt_request.model_dump(exclude_unset=True, exclude_defaults=True)
+
+            # Update prompt
+            err = self._prompt_repo.update_prompt(prompt_id=existing_agent.prompt_id, prompt=prompt)
+            if err:
+                return err
+
             # Define to-be-updated agent
             agent = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
 
             # Upload new image to Minio if file is provided.
             if file:
-                # Get existing agent
-                existing_agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
-                if err:
-                    return err
-
-                # Upload image to Minio
                 file_path, err = self._upload_agent_avatar(
                     agent_avatar=file.file,
                     agent_name=existing_agent.name,
@@ -196,23 +239,35 @@ class AgentService(BaseService):
 
             # Update agent
             err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
+            if err:
+                return err
 
-        return err if err else None
+        return None
 
     def delete_agent(self, agent_id: str, user_id: str) -> Optional[APIError]:
         """
         Delete an agent.
 
         Args:
-            agent_id (str): Agent id
-            user_id (str): User id
+            agent_id (str): Agent id.
+            user_id (str): User id.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Optional[APIError]: APIError object if any error.
         """
         with self._transaction():
             # Get existing agent
             existing_agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
+            if err:
+                return err
+
+            # Delete prompt
+            err = self._prompt_repo.delete_prompt(prompt_id=existing_agent.prompt_id)
+            if err:
+                return err
+
+            # Delete agent
+            err = self._agent_repo.delete_agent(agent_id=agent_id, user_id=user_id)
             if err:
                 return err
 
@@ -228,7 +283,4 @@ class AgentService(BaseService):
                         kind=ErrorCodesMappingNumber.UNABLE_TO_DELETE_FILE_IN_MINIO.value
                     )
 
-            # Delete agent
-            err = self._agent_repo.delete_agent(agent_id=agent_id, user_id=user_id)
-
-        return err if err else None
+        return None

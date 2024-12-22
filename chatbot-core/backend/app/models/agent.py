@@ -56,6 +56,7 @@ class Agent(Base):
     user_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"), nullable=True
     )
+    prompt_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("prompt.id"), nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     agent_type: Mapped[AgentType] = mapped_column(
@@ -81,8 +82,8 @@ class Agent(Base):
     # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
     chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
-    prompt: Mapped["Prompt"] = relationship("Prompt", back_populates="agent")
     user: Mapped[Optional["User"]] = relationship("User", back_populates="agents")
+    prompt: Mapped["Prompt"] = relationship("Prompt", back_populates="agent")
 
 
 class AgentRequest(BaseModel):
