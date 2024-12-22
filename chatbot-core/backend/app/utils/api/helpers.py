@@ -52,6 +52,41 @@ def parse_pdf(
     return documents
 
 
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        "DEBUG": "\033[36m",  # Cyan
+        "INFO": "\033[32m",  # Green
+        "WARNING": "\033[33m",  # Yellow
+        "ERROR": "\033[31m",  # Red
+        "CRITICAL": "\033[1;31m",  # Bold Red
+        "NOTSET": "\033[91m",  # Reset
+        "NOTICE": "\033[94m",  # Blue
+    }
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record.
+
+        Args:
+            record (logging.LogRecord): Log record.
+
+        Returns:
+            str: Formatted log message.
+        """
+        # Get the log level name
+        levelname = record.levelname
+        if levelname in self.COLORS:
+            prefix = self.COLORS[levelname]
+            suffix = "\033[0m"
+
+            # Format the log message
+            formatted_message = super().format(record)
+            level_display = f"{prefix}{levelname}{suffix}:"
+            return f"{level_display.ljust(18)} {formatted_message}"
+
+        return super().format(record)
+
+
 def get_logger(
     name: str,
     log_level: str | int = Constants.LOGGER_LOG_LEVEL,
@@ -79,14 +114,24 @@ def get_logger(
     logger = logging.getLogger(name=name)
     logger.setLevel(log_level)
 
+    uvicorn_logger = logging.getLogger("uvicorn.access")
+    uvicorn_logger.handlers = []
+    uvicorn_logger.setLevel(log_level)
+
     if not logger.hasHandlers():
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        formatter = ColoredFormatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p",
+        )
 
         if log_to_console:
             console_handler = logging.StreamHandler(sys.stdout)
             console_handler.setLevel(log_level)
             console_handler.setFormatter(formatter)
             logger.addHandler(console_handler)
+
+            if uvicorn_logger:
+                uvicorn_logger.addHandler(console_handler)
 
         if log_to_file:
             file_handler = logging.handlers.RotatingFileHandler(
@@ -97,5 +142,8 @@ def get_logger(
             file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+            if uvicorn_logger:
+                uvicorn_logger.addHandler(console_handler)
 
     return logger
