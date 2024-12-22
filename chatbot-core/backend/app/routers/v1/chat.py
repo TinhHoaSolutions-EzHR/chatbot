@@ -14,6 +14,7 @@ from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageResponse
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
+from app.models.chat import ChatFeedbackRequest
 from app.services.chat import ChatService
 from app.settings import Constants
 from app.utils.api.api_response import APIResponse
@@ -276,3 +277,42 @@ def handle_new_chat_message(
         raise HTTPException(status_code=status_code, detail=detail)
 
     return StreamingResponse(content=content, media_type="text/event-stream")
+
+
+@router.post("/feedback", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
+def create_chat_feedback(
+    chat_feedback_request: ChatFeedbackRequest,
+    db_session: Session = Depends(get_db_session),
+    user: User = Depends(get_current_user),
+) -> BackendAPIResponse:
+    """
+    Create chat feedback.
+
+    Args:
+        chat_feedback_request (ChatFeedbackRequest): Chat feedback request object.
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object.
+
+    Returns:
+        BackendAPIResponse: API response
+    """
+    if not user:
+        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Create chat feedback
+    err = ChatService(db_session=db_session).create_chat_feedback(chat_feedback_request)
+
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    # Parse response
+    data = chat_feedback_request.model_dump(exclude_unset=True)
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
