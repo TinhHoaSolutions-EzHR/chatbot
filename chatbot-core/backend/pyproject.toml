@@ -42,6 +42,9 @@ test = ["pytest", "coverage"]
 [project.scripts]
 main = "app:main"
 
+[tool.setuptools]
+py-modules = ["app"]
+
 [tool.semantic_release]
 version_variable = "app/__init__.py:__version__"
 branch = "main"

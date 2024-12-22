@@ -17,7 +17,7 @@ class Constants:
     MSSQL_POOL_TIMEOUT = 30
     MSSQL_POOL_RECYCLE = 3600
     MSSQL_DRIVER = "ODBC+Driver+17+for+SQL+Server"
-    MSSQL_CONNECTOR_URI = "mssql+pyodbc://{user}:{password}@{host}/{db_name}?driver={driver}"
+    MSSQL_CONNECTOR_URI = "mssql+pyodbc://{user}:{password}@{host}/{db_name}?driver={driver}&TrustServerCertificate=yes"
 
     # Error Handler
     API_SUCCESS = "Success"
