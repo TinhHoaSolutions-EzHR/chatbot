@@ -358,7 +358,7 @@ class ChatFeedbackRequest(BaseModel):
     """
 
     chat_message_id: UUID = Field(..., description="Chat message id")
-    is_positive: Boolean = Field(None, description="Feedback rating")
+    is_positive: bool = Field(..., description="Feedback rating")
     feedback_text: Optional[str] = Field(None, description="Feedback text")
 
     class Config:
