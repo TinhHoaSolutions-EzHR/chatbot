@@ -21,11 +21,35 @@ services:
     networks:
       - backend
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1;" || exit
-      interval: 60s
+      test:
+        [
+          "CMD-SHELL",
+          '/opt/mssql-tools18/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P $$MSSQL_SA_PASSWORD -d master -C -Q "SELECT 1;" || exit 1',
+        ]
+      interval: 10s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 3s
+
+  database.configurator:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
+    user: root
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ../data/mssql/:/docker-entrypoint-initdb.d
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - backend
+    command: >
+      /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
+      echo 'Database configured!'"
 
   cache:
     image: redis:7.4-alpine
@@ -39,9 +63,19 @@ services:
     # docker silently mounts /data even without an explicit volume mount, which enables
     # persistence. explicitly setting save and appendonly forces ephemeral behavior.
     command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 3s
 
   index:
-    image: qdrant/qdrant:v1.12.4
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM qdrant/qdrant:v1.12.4
+        RUN apt-get update -yq && apt-get install -yqq curl
     container_name: index
     hostname: index
     restart: always
@@ -58,12 +92,18 @@ services:
       - qdrant_data_volume:/qdrant/storage
     networks:
       - backend
+    healthcheck:
+      test: curl -s http://localhost:6333/healthz | grep -q 'healthz check passed' || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 3s
 
   object-storage:
     image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
     container_name: object-storage
     hostname: object-storage
-    # restart: always
+    restart: always
     ports:
       - "9000:9000" # for web interface
       - "9001:9001" # for S3 API
@@ -75,6 +115,11 @@ services:
     networks:
       - backend
     command: server --console-address ":9001" /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # NOTE: Official port for api_server is 5000
   api-server:
@@ -86,18 +131,25 @@ services:
     hostname: api-server
     restart: on-failure
     depends_on:
-      - database
-      - cache
-      - index
-    command:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      index:
+        condition: service_healthy
+      # INFO: for production
       # ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
-      ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "--port", "5000"]
+    command: >
+      /bin/sh -c "uv run alembic upgrade head &&
+      echo 'starting api server' &&
+      uv run fastapi dev --host 0.0.0.0 --port 5000"
     ports:
       - "5000:5000"
     env_file:
       - ./.env
       - ../../chatbot-core/.env
     volumes: # INFO: Mount for auto-reload code changes
+      - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
       - ../../chatbot-core/backend/tests/:/app/tests
     networks:

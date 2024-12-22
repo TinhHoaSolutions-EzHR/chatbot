@@ -1,7 +1,6 @@
 .vscode/
 .python-version
 .gitignore
-README.md
 requirements.txt
 .venv/
 .ruff_cache

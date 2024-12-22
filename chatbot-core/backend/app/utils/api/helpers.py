@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from typing import Annotated
 from typing import List
@@ -9,6 +10,7 @@ from fastapi import UploadFile
 from llama_index.core import Document
 
 from app.settings import Constants
+from app.settings import Secrets
 from app.utils.api.error_handler import PdfParsingError
 
 
@@ -147,3 +149,28 @@ def get_logger(
                 uvicorn_logger.addHandler(console_handler)
 
     return logger
+
+
+def get_database_url() -> str:
+    """
+    Get the database URL.
+
+    Returns:
+        str: Database URL.
+
+    Example:
+        >>> get_database_url()
+        'mssql+pyodbc://sa:password@localhost/db_name?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes
+    """
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        # Try create the database URL from the environment variables
+        database_url = Constants.MSSQL_CONNECTOR_URI.format(
+            user=Secrets.MSSQL_USER,
+            password=Secrets.MSSQL_SA_PASSWORD,
+            host=Secrets.MSSQL_HOST,
+            db_name=Secrets.MSSQL_DB,
+            driver=Constants.MSSQL_DRIVER,
+        )
+
+    return database_url
