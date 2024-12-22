@@ -190,6 +190,9 @@ class ChatMessage(Base):
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
     )
+    chat_feedbacks: Mapped[List["ChatFeedback"]] = relationship(
+        "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
+    )
     agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
     prompt: Mapped[Optional["Prompt"]] = relationship("Prompt", back_populates="chat_messages")
 
@@ -320,6 +323,47 @@ class ChatSessionResponse(BaseModel):
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
     deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")
+
+    class Config:
+        from_attributes = True
+
+
+class ChatFeedback(Base):
+    """
+    Represents feedback for a chat message.
+    Tracks user feedback, rating, and associated metadata.
+    """
+
+    __tablename__ = "chat_feedback"
+
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
+    chat_message_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("chat_message.id", ondelete="CASCADE"), nullable=False
+    )
+    is_positive: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    feedback_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    chat_message: Mapped["ChatMessage"] = relationship(
+        "ChatMessage", back_populates="chat_feedbacks"
+    )
+
+
+class ChatFeedbackRequest(BaseModel):
+    """
+    Pydantic model for creating chat feedback.
+    Provides validation for incoming chat feedback requests.
+    """
+
+    chat_message_id: UUID = Field(..., description="Chat message id")
+    is_positive: Boolean = Field(None, description="Feedback rating")
+    feedback_text: Optional[str] = Field(None, description="Feedback text")
 
     class Config:
         from_attributes = True

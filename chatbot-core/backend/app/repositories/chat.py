@@ -7,6 +7,7 @@ from sqlalchemy.sql import and_
 
 from app.models import ChatMessage
 from app.models import ChatSession
+from app.models import ChatFeedback
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
@@ -277,4 +278,21 @@ class ChatRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error deleting chat message: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def create_chat_feedback(self, chat_feedback: ChatFeedback) -> Optional[APIError]:
+        """
+        Create chat feedback.
+
+        Args:
+            chat_feedback(ChatFeedback): Chat feedback object
+
+        Returns:
+            Optional[APIError]: APIError object if any error
+        """
+        try:
+            self._db_session.add(chat_feedback)
+            return None
+        except Exception as e:
+            logger.error(f"Error creating chat feedback: {e}", exc_info=True)
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
