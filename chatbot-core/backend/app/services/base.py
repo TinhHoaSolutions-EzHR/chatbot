@@ -24,9 +24,6 @@ class BaseService:
         Context manager for handling transaction
         """
         try:
-            # Begin the transaction
-            self._db_session.begin()
-
             # Yield the control back to the caller
             yield
 

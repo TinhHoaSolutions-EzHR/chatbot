@@ -234,7 +234,6 @@ class ChatService(BaseService):
 
         # Create chat request message
         new_chat_request = ChatMessage(
-            user_id=user_id,
             chat_session_id=chat_session_id,
             parent_message_id=parent_message_id,
             message=message,
@@ -268,7 +267,6 @@ class ChatService(BaseService):
         self,
         chat_message_request: ChatMessageRequest,
         chat_session_id: str,
-        user_id: str,
         current_request_id: str,
     ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
@@ -278,7 +276,6 @@ class ChatService(BaseService):
         Args:
             chat_message_request(ChatMessageRequest): Chat message request object
             chat_session_id(str): Chat session id
-            user_id(str): User id
             current_request_id(str): Current request message id
             latest_response_id(str): Latest response message id. Defaults to None
 
@@ -289,7 +286,6 @@ class ChatService(BaseService):
         # TODO: Implement the logic to query the LLM model and generate the response
         response_message = chat_message_request.message + " (Response)"
         current_chat_response = ChatMessage(
-            user_id=user_id,
             chat_session_id=chat_session_id,
             parent_message_id=current_request_id,
             message=response_message,
@@ -508,7 +504,6 @@ class ChatService(BaseService):
 
         # Generate chat response
         chat_response, err = self._generate_chat_response(
-            user_id=user_id,
             chat_message_request=chat_message_request,
             chat_session_id=chat_session_id,
             current_request_id=new_chat_request.id,

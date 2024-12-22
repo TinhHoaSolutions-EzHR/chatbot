@@ -5,6 +5,7 @@ from app.models.chat import ChatFeedback
 from app.models.folder import Folder
 from app.models.prompt import Prompt
 from app.models.user import User
+from app.models.user import UserSetting
 
 __all__ = [
     "Agent",
@@ -14,4 +15,5 @@ __all__ = [
     "Prompt",
     "User",
     "Folder",
+    "UserSetting",
 ]

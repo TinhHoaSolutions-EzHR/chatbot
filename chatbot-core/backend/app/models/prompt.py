@@ -34,7 +34,7 @@ class Prompt(Base):
     )
     agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
-    description: Optional[Mapped[str]] = mapped_column(String, nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     system_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     task_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     include_citations: Mapped[bool] = mapped_column(Boolean, default=True)
