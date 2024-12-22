@@ -25,6 +25,26 @@ export function convertDateToStartOfDay(date?: Date | null) {
   return dateCopy;
 }
 
+export function convertDateToEndOfDay(date?: Date | null) {
+  if (!date) {
+    return date;
+  }
+
+  const dateCopy = new Date(date);
+  dateCopy.setHours(23, 59, 59, 999);
+  return dateCopy;
+}
+
+export function convertDateToStartOfDay(date?: Date | null) {
+  if (!date) {
+    return date;
+  }
+
+  const dateCopy = new Date(date);
+  dateCopy.setHours(0, 0, 0, 0);
+  return dateCopy;
+}
+
 export function getXYearsAgo(yearsAgo: number) {
   const today = new Date();
   const yearsAgoDate = new Date(today);
@@ -67,6 +87,7 @@ export const timestampToReadableDate = (timestamp: string) => {
 export const buildDateString = (date: Date | null) => {
   return date
     ? `${Math.round((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24))} days ago`
+
     : 'Select a time range';
 };
 
