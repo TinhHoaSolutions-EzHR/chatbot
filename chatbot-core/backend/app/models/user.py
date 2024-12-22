@@ -72,6 +72,7 @@ class UserSetting(Base):
     )
     recent_agent_ids: Mapped[str] = mapped_column(String, default="")
     auto_scroll: Mapped[bool] = mapped_column(Boolean, default=True)
+    default_model: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -98,6 +99,7 @@ class UserSettingRequest(BaseModel):
 
     current_agent_id: Optional[UUID] = Field(None, title="Current using agent ID")
     auto_scroll: bool = Field(True, title="Auto scroll chat messages")
+    default_model: Optional[str] = Field(None, title="Default model for the user")
 
     class Config:
         from_attributes = True
