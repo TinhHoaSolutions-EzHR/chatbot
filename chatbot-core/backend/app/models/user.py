@@ -59,6 +59,21 @@ class User(Base):
     user_setting: Mapped["UserSetting"] = relationship("UserSetting", back_populates="user")
 
 
+class UserResponse(BaseModel):
+    """
+    Pydantic model for user response.
+    Defines the fields that can be returned in the user.
+    """
+
+    id: UUID = Field(..., description="User ID")
+    created_at: datetime = Field(..., description="Created at")
+    updated_at: datetime = Field(..., description="Updated at")
+    deleted_at: Optional[datetime] = Field(None, description="Deleted at")
+
+    class Config:
+        from_attributes = True
+
+
 class UserSetting(Base):
     """
     Represents the user settings in the chatbot system.
@@ -97,9 +112,29 @@ class UserSettingRequest(BaseModel):
     Defines the fields that can be updated in the user settings.
     """
 
-    current_agent_id: Optional[UUID] = Field(None, title="Current using agent ID")
-    auto_scroll: bool = Field(True, title="Auto scroll chat messages")
-    default_model: Optional[str] = Field(None, title="Default model for the user")
+    current_agent_id: Optional[UUID] = Field(None, description="Current using agent ID")
+    auto_scroll: bool = Field(True, description="Auto scroll chat messages")
+    default_model: Optional[str] = Field(None, description="Default model for the user")
+    maximum_chat_retention_days: Optional[int] = Field(
+        None, description="Maximum chat retention days"
+    )
+
+    class Config:
+        from_attributes = True
+
+
+class UserSettingResponse(BaseModel):
+    """
+    Pydantic model for user settings response.
+    Defines the fields that can be returned in the user settings.
+    """
+
+    recent_agent_ids: Optional[List[UUID]] = Field(None, description="List of recent agent IDs")
+    auto_scroll: bool = Field(..., description="Auto scroll chat messages")
+    default_model: Optional[str] = Field(None, description="Default model for the user")
+    maximum_chat_retention_days: Optional[int] = Field(
+        None, description="Maximum chat retention days"
+    )
 
     class Config:
         from_attributes = True

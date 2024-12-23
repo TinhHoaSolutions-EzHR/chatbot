@@ -3,10 +3,11 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from sqlalchemy.orm import Session
 
-from app.models.user import User
+from app.models import UserSetting
 from app.models.user import UserSettingRequest
 from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
@@ -18,7 +19,7 @@ from app.utils.api.helpers import get_logger
 logger = get_logger(__name__)
 
 
-class UserService(BaseService):
+class UserSettingService(BaseService):
     def __init__(self, db_session: Session):
         """
         User service class for handling user-related operations.
@@ -29,6 +30,26 @@ class UserService(BaseService):
         super().__init__(db_session=db_session)
 
         self._user_setting_repo = UserSettingRepository(db_session=db_session)
+
+    def get_user_settings(self, user_id: str) -> Tuple[Optional[UserSetting], Optional[APIError]]:
+        """
+        Get user settings.
+
+        Args:
+            user_id (str): User ID
+
+        Returns:
+            Tuple[Optional[UserSetting], Optional[APIError]]: User settings and API error response
+        """
+        user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
+        if err:
+            return None, err
+
+        # Load recent agent IDs as a list
+        if user_settings and user_settings.recent_agent_ids:
+            user_settings.recent_agent_ids = json.loads(user_settings.recent_agent_ids)
+
+        return user_settings, None
 
     def _handle_recent_agents(
         self, recent_agent_ids: Optional[List[str]], current_agent_id: str
@@ -58,23 +79,23 @@ class UserService(BaseService):
         return recent_agent_ids
 
     def update_user_settings(
-        self, user: User, user_setting_request: UserSettingRequest
+        self, user_id: str, user_setting_request: UserSettingRequest
     ) -> Optional[APIError]:
         """
         Update user settings.
 
         Args:
-            user (User): User object
-            user_setting_request (UserSettingRequest): User setting request object
+            user_id (str): User ID.
+            user_setting_request (UserSettingRequest): User setting request object.
 
         Returns:
-            Optional[APIError]: API error response
+            Optional[APIError]: API error response.
         """
         with self._transaction():
             user_settings: Dict[str, Any] = user_setting_request.model_dump(exclude_unset=True)
 
             # Fetch existing user setting
-            existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user.id)
+            existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
             if err:
                 return err
 
@@ -99,7 +120,7 @@ class UserService(BaseService):
 
             # Update user settings
             err = self._user_setting_repo.update_user_settings(
-                user_id=user.id, user_settings=user_settings
+                user_id=user_id, user_settings=user_settings
             )
 
         return err if err else None

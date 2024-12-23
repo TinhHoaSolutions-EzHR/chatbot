@@ -255,7 +255,6 @@ class ChatMessageResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="Chat message id")
-    user_id: UUID = Field(..., description="User id")
     chat_session_id: UUID = Field(..., description="Chat session id")
     message: str = Field(..., description="Message text")
     message_type: ChatMessageType = Field(..., description="Message type")
