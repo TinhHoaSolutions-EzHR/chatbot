@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.models import User
+from app.models.user import UserResponse
 from app.models.user import UserSettingRequest
 from app.models.user import UserSettingResponse
 from app.services.user import UserSettingService
@@ -18,6 +19,38 @@ from app.utils.user.authentication import get_current_user
 
 logger = get_logger(__name__)
 router = APIRouter(prefix="/users/me", tags=["user", "setting"])
+
+
+@router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def get_user(
+    user: User = Depends(get_current_user),
+) -> BackendAPIResponse:
+    """
+    Get user.
+
+    Args:
+        db_session (Session): Database session. Defaults to relational database session.
+        user (User): User object
+
+    Returns:
+        BackendAPIResponse: API response
+    """
+    if not user:
+        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
+        raise HTTPException(
+            status_code=status_code,
+            detail=detail,
+        )
+
+    # Parse user
+    data = UserResponse.model_validate(user)
+
+    return (
+        BackendAPIResponse()
+        .set_message(message=Constants.API_SUCCESS)
+        .set_data(data=data)
+        .respond()
+    )
 
 
 @router.get("/settings", response_model=APIResponse, status_code=status.HTTP_200_OK)

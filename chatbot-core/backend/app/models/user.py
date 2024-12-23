@@ -59,6 +59,21 @@ class User(Base):
     user_setting: Mapped["UserSetting"] = relationship("UserSetting", back_populates="user")
 
 
+class UserResponse(BaseModel):
+    """
+    Pydantic model for user response.
+    Defines the fields that can be returned in the user.
+    """
+
+    id: UUID = Field(..., description="User ID")
+    created_at: datetime = Field(..., description="Created at")
+    updated_at: datetime = Field(..., description="Updated at")
+    deleted_at: Optional[datetime] = Field(None, description="Deleted at")
+
+    class Config:
+        from_attributes = True
+
+
 class UserSetting(Base):
     """
     Represents the user settings in the chatbot system.
