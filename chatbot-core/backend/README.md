@@ -83,7 +83,7 @@ This backend uses FastAPI, Uvicorn, and LlamaIndex.
 
 1. Clone the repository.
 
-2. Install [uv](https://docs.astral.sh/uv/) and then use it to install all packages.
+2. Install [uv](https://docs.astral.sh/uv/) >= 0.5.4 and then use it to install all packages.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -100,24 +100,76 @@ NOTE: All packages information is stored in `pyproject.toml`
 
 4. Install [docker-compose](https://docs.docker.com/compose/install/)
 
-5. Start the development docker compose
+5. Create the environment file from example
+
+```bash
+cp .env.example .env.development
+```
+
+(Optional) If you want to use [direnv](https://direnv.net/), you can use the .envrc file
+
+```bash
+cp .envrc.sample .envrc
+direnv allow
+```
+
+Then the environment variables from `.env.development` will be loaded and unloaded when you enter and exit the directory.
+
+6. Start the development docker compose
 
 ```bash
 
 cd chatbot-core
+make build
 make up
-
 ```
 
-The docker compose will be built and started. The API server will be available at `http://localhost:5000`.
+The docker compose will build services and start. The API server will be available at `http://localhost:5000`.
 
-6. (Optional) If you want to run the server locally, you can run the following command:
+7. (Optional) If you want to run the server locally, you can run the following command:
 
 ```bash
-
 uv sync
 uv run fastapi dev --port 5000
-
 ```
 
 `uv` tool will create a virtual environment and install all the dependencies. The FastAPI server will be available at `http://localhost:5000`.
+
+8. To exec any commands, you can use the following command:
+
+```bash
+make exec SERVICES=api_server COMMAND="<your command here>"
+```
+
+### Alembic
+
+This project uses Alembic for database migrations. To work with Alembic, first you need to ensure these requirements are met:
+
+1. Develop under docker compose environment.
+2. The database connection string is set in the `.env.development` file: `DATABASE_URL`. Default value to `DATABASE_URL="mssql+pyodbc://SA:P%%26ssword123@database:1433/chatbot_core?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes"`
+3. Running and healthy database service.
+4. The `api_server` service is running.
+5. Edited one of those models in `backend/app/models/` directory.
+
+To create a new migration, run the following command:
+
+```bash
+cd chatbot-core
+make alembic-revision "<your migration message here>"
+```
+
+This command will create a new migration file in the `backend/alembic/versions/` directory.
+
+To upgrade the database to the latest migration, run the following command:
+
+```bash
+cd chatbot-core
+make alembic-upgrade-head
+```
+
+To downgrade the database to the previous migration, run the following command:
+
+```bash
+cd chatbot-core
+make exec SERVICES=api_server COMMAND="uv run alembic downgrade -1"
+```
