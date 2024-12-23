@@ -147,7 +147,7 @@ services:
       - "5000:5000"
     env_file:
       - ./.env
-      - ../../chatbot-core/.env.${ENV}
+      - ../../chatbot-core/.env.${ENV} # INFO: ENV here can be development or production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
