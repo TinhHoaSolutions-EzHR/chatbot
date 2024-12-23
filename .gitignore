@@ -12,6 +12,8 @@
 **/env.bak/
 **/venv.bak/
 **/.python-version
+**/.env.*
+chatbot-core/.envrc
 
 # Docs
 docs/.next
