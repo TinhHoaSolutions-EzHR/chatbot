@@ -121,7 +121,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # NOTE: Official port for api_server is 5000
+  # NOTE: Official port for api-server is 5000
   api-server:
     build:
       context: ../../chatbot-core/backend/
@@ -147,7 +147,7 @@ services:
       - "5000:5000"
     env_file:
       - ./.env
-      - ../../chatbot-core/.env
+      - ../../chatbot-core/.env.${ENV} # INFO: ENV here can be development or production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
