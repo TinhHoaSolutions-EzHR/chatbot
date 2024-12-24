@@ -138,7 +138,7 @@ uv run fastapi dev --port 5000
 8. To exec any commands, you can use the following command:
 
 ```bash
-make exec SERVICES=api_server COMMAND="<your command here>"
+make exec SERVICES=api-server COMMAND="<your command here>"
 ```
 
 ### Alembic
@@ -148,7 +148,7 @@ This project uses Alembic for database migrations. To work with Alembic, first y
 1. Develop under docker compose environment.
 2. The database connection string is set in the `.env.development` file: `DATABASE_URL`. Default value to `DATABASE_URL="mssql+pyodbc://SA:P%%26ssword123@database:1433/chatbot_core?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes"`
 3. Running and healthy database service.
-4. The `api_server` service is running.
+4. The `api-server` service is running.
 5. Edited one of those models in `backend/app/models/` directory.
 
 To create a new migration, run the following command:
@@ -171,5 +171,5 @@ To downgrade the database to the previous migration, run the following command:
 
 ```bash
 cd chatbot-core
-make exec SERVICES=api_server COMMAND="uv run alembic downgrade -1"
+make exec SERVICES=api-server COMMAND="uv run alembic downgrade -1"
 ```

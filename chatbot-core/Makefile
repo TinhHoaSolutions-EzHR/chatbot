@@ -88,10 +88,10 @@ clean:  ## Stop services and remove containers and volumes
 	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down -v
 
 alembic-revision:
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core exec api_server uv run alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core exec api-server uv run alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
 
 alembic-upgrade-head:
-	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core exec api_server uv run alembic upgrade head
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core exec api-server uv run alembic upgrade head
 
 test:  ## TODO: Run tests
 	@echo "Running tests..."
