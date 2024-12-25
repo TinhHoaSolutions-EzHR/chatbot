@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
-import { User } from "./types";
-import { buildUrl } from "./utilsSS";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-import { AuthType, SERVER_SIDE_ONLY__CLOUD_ENABLED } from "./constants";
+import { cookies } from 'next/headers';
+import { User } from './types';
+import { buildUrl } from './utilsSS';
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { AuthType } from './constants';
 
 export interface AuthTypeMetadata {
   authType: AuthType;
@@ -51,8 +51,7 @@ export const getCurrentUserSS = async (): Promise<User | null> => {
     if (!response.ok) {
       return null;
     }
-    const user = await response.json();
-    return user;
+    return await response.json();
   } catch (e) {
     console.log(`Error fetching user: ${e}`);
     return null;
