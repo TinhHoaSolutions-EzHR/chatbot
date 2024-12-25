@@ -11,18 +11,12 @@ export interface AuthTypeMetadata {
 }
 
 export const getAuthTypeMetadataSS = async (): Promise<AuthTypeMetadata> => {
-  const res = await fetch(buildUrl("/auth/type"));
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  const data: { auth_type: string; requires_verification: boolean } =
-    await res.json();
   let authType: AuthType;
-  authType = data.auth_type as AuthType;
+  authType = 'basic' as AuthType;
   return {
     authType,
     autoRedirect: false,
-    requiresVerification: data.requires_verification,
+    requiresVerification: false,
   };
 };
 
