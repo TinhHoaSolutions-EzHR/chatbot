@@ -7,6 +7,7 @@ from sqlalchemy.sql import and_
 
 from app.models import ChatMessage
 from app.models import ChatSession
+from app.models import ChatFeedback
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
@@ -25,23 +26,27 @@ class ChatRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_chat_sessions(self, user_id: str) -> Tuple[List[ChatSession], Optional[APIError]]:
+    def get_chat_sessions(
+        self, user_id: str, **filter
+    ) -> Tuple[List[ChatSession], Optional[APIError]]:
         """
         Get all chat sessions of the user. Sort by updated_at in descending order.
 
         Args:
             user_id(str): User id
+            **filter: Additional filters
 
         Returns:
             Tuple[List[ChatSession], Optional[APIError]]: List of chat session objects and APIError object if any error
         """
         try:
-            chat_sessions = (
-                self._db_session.query(ChatSession)
-                .filter(ChatSession.user_id == user_id)
-                .order_by(ChatSession.updated_at.desc())
-                .all()
-            )
+            query = self._db_session.query(ChatSession).filter(ChatSession.user_id == user_id)
+
+            # Apply additional filters
+            for field, value in filter.items():
+                query = query.filter(getattr(ChatSession, field) == value)
+
+            chat_sessions = query.order_by(ChatSession.updated_at.desc()).all()
             return chat_sessions, None
         except Exception as e:
             logger.error(f"Error getting chat sessions: {e}")
@@ -63,13 +68,13 @@ class ChatRepository(BaseRepository):
         try:
             chat_messages = (
                 self._db_session.query(ChatMessage)
+                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .filter(
                     and_(
                         ChatMessage.chat_session_id == chat_session_id,
-                        ChatMessage.user_id == user_id,
+                        ChatSession.user_id == user_id,
                     )
                 )
-                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .order_by(ChatMessage.created_at.asc())
                 .all()
             )
@@ -119,11 +124,12 @@ class ChatRepository(BaseRepository):
         try:
             chat_message = (
                 self._db_session.query(ChatMessage)
+                .join(ChatSession, ChatMessage.chat_session_id == ChatSession.id)
                 .filter(
                     and_(
                         ChatMessage.id == chat_message_id,
                         ChatMessage.chat_session_id == chat_session_id,
-                        ChatMessage.user_id == user_id,
+                        ChatSession.user_id == user_id,
                     )
                 )
                 .first()
@@ -211,6 +217,17 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Verify the chat session belongs to the user
+            chat_session = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+
+            if not chat_session:
+                return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
+
+            # Update the chat message
             chat_message = {
                 key: value
                 for key, value in chat_message.__dict__.items()
@@ -220,7 +237,6 @@ class ChatRepository(BaseRepository):
                 and_(
                     ChatMessage.id == chat_message_id,
                     ChatMessage.chat_session_id == chat_session_id,
-                    ChatMessage.user_id == user_id,
                 )
             ).update(chat_message)
             return None
@@ -263,14 +279,41 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Verify the chat session belongs to the user
+            chat_session = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+
+            if not chat_session:
+                return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
+
+            # Delete the chat message
             self._db_session.query(ChatMessage).filter(
                 and_(
                     ChatMessage.id == chat_message_id,
                     ChatMessage.chat_session_id == chat_session_id,
-                    ChatMessage.user_id == user_id,
                 )
             ).delete()
             return None
         except Exception as e:
             logger.error(f"Error deleting chat message: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def create_chat_feedback(self, chat_feedback: ChatFeedback) -> Optional[APIError]:
+        """
+        Create chat feedback.
+
+        Args:
+            chat_feedback(ChatFeedback): Chat feedback object
+
+        Returns:
+            Optional[APIError]: APIError object if any error
+        """
+        try:
+            self._db_session.add(chat_feedback)
+            return None
+        except Exception as e:
+            logger.error(f"Error creating chat feedback: {e}", exc_info=True)
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

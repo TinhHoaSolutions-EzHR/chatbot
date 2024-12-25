@@ -8,6 +8,8 @@ from app.databases.redis import RedisConnector
 from app.routers import base
 from app.routers.v1 import chat
 from app.routers.v1 import connector
+from app.routers.v1 import folder
+from app.routers.v1 import user
 from app.settings import Constants
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import init_llm_configurations
@@ -66,6 +68,8 @@ def create_app() -> FastAPI:
     app.include_router(router=base.router)
     app.include_router(router=connector.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=chat.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(router=folder.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
 
     return app
 

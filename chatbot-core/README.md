@@ -2,44 +2,82 @@
 
 This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RAG and LlamaIndex to provide a conversational interface for the users.
 
-## Components
+## Installation
 
-### API Server
+### Prerequisites
 
-This is the API server for the EzHr-Chatbot LLM-based assistant. It is built using FastAPI and LlamaIndex for LLM framework coding.
+- Python >= 3.11.10 (specified at `.tool-versions` and `pyproject.toml`)
+- uv >= 0.5.4. [Installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+- Docker and Docker Compose. [Installation guide](https://docs.docker.com/get-docker/)
+- NodeJS >= 16.13.0 (specified at `.tool-versions`) and yarn (optional)
+
+### Setup installation
 
 For developing and testing purposes, we can use the Docker compose to run the API server.
 
-Go to the chatbot-core directory
+1. Go to the chatbot-core directory
 
 ```bash
 cd chatbot-core
 ```
 
-Create the environment file from example
+2. Create the environment file from example
 
 ```bash
-cp .env.example .env
+cp .env.example .env.development
 ```
 
-Build the docker image
+(Optional) If you want to use [direnv](https://direnv.net/), you can use the .envrc file
+
+```bash
+cp .envrc.sample .envrc
+direnv allow
+```
+
+Then the environment variables from `.env.development` will be loaded and unloaded when you enter and exit the directory.
+
+3. Build the docker image:
 
 ```bash
 make build
-# Or
+# Or this command
 docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbot-core build
 ```
 
-Run the docker container
+4. Run the docker container
 
 ```bash
 make up
 ```
 
-Ping the API Server
+5. Ping the API Server
 
 ```bash
-curl http://localhost:5000/ping | jq
+curl http://localhost:5000/health | jq
+```
+
+6. For more commands, you can use the Makefile in `chatbot-core`
+
+```bash
+make help
+```
+
+7. To stop the container
+
+```bash
+make down
+```
+
+8. To remove the container
+
+```bash
+make clean
 ```
 
 Every necessary commands are in the Makefile. You can use `make help` to see all available commands.
+
+## Components
+
+### API Server
+
+This is the backend API server for the EzHr-Chatbot LLM-based assistant. It is built using FastAPI and LlamaIndex for LLM framework coding.

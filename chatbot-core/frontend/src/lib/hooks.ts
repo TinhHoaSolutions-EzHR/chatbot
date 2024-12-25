@@ -1,36 +1,14 @@
-"use client";
-import {
-  ConnectorIndexingStatus,
-  DocumentBoostStatus,
-  Tag,
-  UserGroup,
-} from "@/lib/types";
-import useSWR, { mutate, useSWRConfig } from "swr";
-import { errorHandlingFetcher } from "./fetcher";
-import { useContext, useEffect, useState } from "react";
-import { DateRangePickerValue } from "@/app/ee/admin/performance/DateRangeSelector";
-import { SourceMetadata } from "./search/interfaces";
-import { destructureValue } from "./llm/utils";
-import { ChatSession } from "@/app/chat/interfaces";
-import { UsersResponse } from "./users/interfaces";
-import { Credential } from "./connectors/credentials";
-import { SettingsContext } from "@/components/settings/SettingsProvider";
-import { PersonaCategory } from "@/app/admin/assistants/interfaces";
-
-const CREDENTIAL_URL = "/api/manage/admin/credential";
-
-export const usePublicCredentials = () => {
-  const { mutate } = useSWRConfig();
-  const swrResponse = useSWR<Credential<any>[]>(
-    CREDENTIAL_URL,
-    errorHandlingFetcher
-  );
-
-  return {
-    ...swrResponse,
-    refreshCredentials: () => mutate(CREDENTIAL_URL),
-  };
-};
+'use client';
+import { ConnectorIndexingStatus, DocumentBoostStatus, Tag, UserGroup } from '@/lib/types';
+import useSWR, { mutate, useSWRConfig } from 'swr';
+import { errorHandlingFetcher } from './fetcher';
+import React, { useContext, useEffect, useState } from 'react';
+import { DateRangePickerValue } from '@/components/DateRangeSelector';
+import { SourceMetadata } from './search/interfaces';
+import { destructureValue } from './llm/utils';
+import { ChatSession } from '@/app/chat/interfaces';
+import { SettingsContext } from '@/components/settings/SettingsProvider';
+import { PersonaCategory } from '@/app/admin/assistants/interfaces';
 
 const buildReactedDocsUrl = (ascending: boolean, limit: number) => {
   return `/api/manage/admin/doc-boosts?ascending=${ascending}&limit=${limit}`;
@@ -48,29 +26,12 @@ export const useMostReactedToDocuments = (
     refreshDocs: () => mutate(url),
   };
 };
-
-export const useObjectState = <T>(
-  initialValue: T
-): [T, (update: Partial<T>) => void] => {
-  const [state, setState] = useState<T>(initialValue);
-  const set = (update: Partial<T>) => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        ...update,
-      };
-    });
-  };
-  return [state, set];
-};
-
 const INDEXING_STATUS_URL = "/api/manage/admin/connector/indexing-status";
 
 export const useConnectorCredentialIndexingStatus = (
   refreshInterval = 30000, // 30 seconds
   getEditable = false
 ) => {
-  const { mutate } = useSWRConfig();
   const url = `${INDEXING_STATUS_URL}${getEditable ? "?get_editable=true" : ""}`;
   const swrResponse = useSWR<ConnectorIndexingStatus<any, any>[]>(
     url,
@@ -80,7 +41,6 @@ export const useConnectorCredentialIndexingStatus = (
 
   return {
     ...swrResponse,
-    refreshIndexingStatus: () => mutate(url),
   };
 };
 
@@ -97,7 +57,7 @@ export const useCategories = () => {
   };
 };
 
-export const useTimeRange = (initialValue?: DateRangePickerValue) => {
+export const useTimeRange = () => {
   return useState<DateRangePickerValue | null>(null);
 };
 
@@ -133,18 +93,6 @@ export function useFilters(): FilterManager {
     setSelectedTags,
   };
 }
-
-export const useUsers = () => {
-  const url = "/api/manage/users";
-
-  const swrResponse = useSWR<UsersResponse>(url, errorHandlingFetcher);
-
-  return {
-    ...swrResponse,
-    refreshIndexingStatus: () => mutate(url),
-  };
-};
-
 export interface LlmOverride {
   name: string;
   provider: string;

@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
     from app.models import Prompt
+    from app.models import Folder
 
 
 class ChatMessageType(str, Enum):
@@ -97,6 +98,9 @@ class ChatSession(Base):
     agent_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("agent.id"), nullable=True
     )
+    folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
+        ForeignKey("folder.id"), nullable=True
+    )
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
@@ -124,6 +128,7 @@ class ChatSession(Base):
     agent: Mapped["Agent"] = relationship(
         "Agent", back_populates="chat_sessions", cascade="save-update, merge"
     )
+    folder: Mapped["Folder"] = relationship("Folder", back_populates="chat_sessions")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
         "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
     )
@@ -139,9 +144,6 @@ class ChatMessage(Base):
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
-    )
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
@@ -181,9 +183,11 @@ class ChatMessage(Base):
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    user: Mapped["User"] = relationship("User", back_populates="chat_messages")
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
+    )
+    chat_feedbacks: Mapped[List["ChatFeedback"]] = relationship(
+        "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
     )
     agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
     prompt: Mapped[Optional["Prompt"]] = relationship("Prompt", back_populates="chat_messages")
@@ -251,7 +255,6 @@ class ChatMessageResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="Chat message id")
-    user_id: UUID = Field(..., description="User id")
     chat_session_id: UUID = Field(..., description="Chat session id")
     message: str = Field(..., description="Message text")
     message_type: ChatMessageType = Field(..., description="Message type")
@@ -272,6 +275,7 @@ class ChatSessionRequest(BaseModel):
     """
 
     agent_id: Optional[str] = Field(None, description="Agent id of the chat session")
+    folder_id: Optional[str] = Field(None, description="Folder id of the chat session")
     description: Optional[str] = Field(
         None, max_length=255, description="Description (Name) of the chat session"
     )
@@ -307,12 +311,54 @@ class ChatSessionResponse(BaseModel):
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
     messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
+    folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     shared_status: ChatSessionSharedStatus = Field(
         ChatSessionSharedStatus.PRIVATE, description="Shared status"
     )
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
     deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")
+
+    class Config:
+        from_attributes = True
+
+
+class ChatFeedback(Base):
+    """
+    Represents feedback for a chat message.
+    Tracks user feedback, rating, and associated metadata.
+    """
+
+    __tablename__ = "chat_feedback"
+
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
+    chat_message_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("chat_message.id", ondelete="CASCADE"), nullable=False
+    )
+    is_positive: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    feedback_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    chat_message: Mapped["ChatMessage"] = relationship(
+        "ChatMessage", back_populates="chat_feedbacks"
+    )
+
+
+class ChatFeedbackRequest(BaseModel):
+    """
+    Pydantic model for creating chat feedback.
+    Provides validation for incoming chat feedback requests.
+    """
+
+    chat_message_id: UUID = Field(..., description="Chat message id")
+    is_positive: bool = Field(..., description="Feedback rating")
+    feedback_text: Optional[str] = Field(None, description="Feedback text")
 
     class Config:
         from_attributes = True

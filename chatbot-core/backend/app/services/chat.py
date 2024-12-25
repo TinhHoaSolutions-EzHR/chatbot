@@ -8,10 +8,12 @@ from sqlalchemy.orm import Session
 
 from app.models import ChatMessage
 from app.models import ChatSession
+from app.models import ChatFeedback
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
+from app.models.chat import ChatFeedbackRequest
 from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
@@ -125,6 +127,7 @@ class ChatService(BaseService):
             chat_session = ChatSession(
                 description=chat_session_request.description,
                 agent_id=chat_session_request.agent_id,
+                folder_id=chat_session_request.folder_id,
                 shared_status=chat_session_request.shared_status,
                 current_alternate_model=chat_session_request.current_alternate_model,
             )
@@ -231,7 +234,6 @@ class ChatService(BaseService):
 
         # Create chat request message
         new_chat_request = ChatMessage(
-            user_id=user_id,
             chat_session_id=chat_session_id,
             parent_message_id=parent_message_id,
             message=message,
@@ -265,7 +267,6 @@ class ChatService(BaseService):
         self,
         chat_message_request: ChatMessageRequest,
         chat_session_id: str,
-        user_id: str,
         current_request_id: str,
     ) -> Tuple[Optional[ChatMessage], Optional[APIError]]:
         """
@@ -275,7 +276,6 @@ class ChatService(BaseService):
         Args:
             chat_message_request(ChatMessageRequest): Chat message request object
             chat_session_id(str): Chat session id
-            user_id(str): User id
             current_request_id(str): Current request message id
             latest_response_id(str): Latest response message id. Defaults to None
 
@@ -286,7 +286,6 @@ class ChatService(BaseService):
         # TODO: Implement the logic to query the LLM model and generate the response
         response_message = chat_message_request.message + " (Response)"
         current_chat_response = ChatMessage(
-            user_id=user_id,
             chat_session_id=chat_session_id,
             parent_message_id=current_request_id,
             message=response_message,
@@ -505,7 +504,6 @@ class ChatService(BaseService):
 
         # Generate chat response
         chat_response, err = self._generate_chat_response(
-            user_id=user_id,
             chat_message_request=chat_message_request,
             chat_session_id=chat_session_id,
             current_request_id=new_chat_request.id,
@@ -596,3 +594,28 @@ class ChatService(BaseService):
                 return err
 
         yield chat_response
+
+    def create_chat_feedback(
+        self, chat_feedback_request: ChatFeedbackRequest
+    ) -> Optional[APIError]:
+        """
+        Create chat feedback.
+
+        Args:
+            chat_feedback_request: ChatFeedbackRequest
+
+        Returns:
+            Optional[APIError]: APIError object if any error
+        """
+        with self._transaction():
+            # Define chat feedback
+            chat_feedback = ChatFeedback(
+                chat_message_id=chat_feedback_request.chat_message_id,
+                is_positive=chat_feedback_request.is_positive,
+                feedback_text=chat_feedback_request.feedback_text,
+            )
+
+            # Create chat feedback
+            err = self._chat_feedback_repository.create_chat_feedback(chat_feedback=chat_feedback)
+
+        return err if err else None
