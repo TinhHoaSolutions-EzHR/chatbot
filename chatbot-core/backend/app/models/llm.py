@@ -2,14 +2,18 @@ from __future__ import annotations
 
 from datetime import datetime
 from datetime import timezone
+from typing import Any
+from typing import Dict
+from typing import List
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from sqlalchemy import Boolean
 from sqlalchemy import DateTime
-from sqlalchemy import Integer
+from sqlalchemy import Float
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -19,29 +23,26 @@ from sqlalchemy.sql import func
 from app.models.base import Base
 
 
-class LLMModel(Base):
+class LLMProvider(Base):
     """
-    Represents an llm model that is used for generating responses.
-    Tracks and organizes llm models that are stored in the database.
+    Represents an LLM provider that is stored in the database.
+    Tracks and organizes LLM providers that are stored in the database.
     """
 
-    __tablename__ = "llm_model"
+    __tablename__ = "llm_provider"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
     name: Mapped[str] = mapped_column(String, nullable=False)
-    provider: Mapped[str] = mapped_column(String, nullable=False)
-    model_type: Mapped[str] = mapped_column(String, nullable=False)
     api_key: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    base_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    context_length: Mapped[int] = mapped_column(Integer, nullable=False)
-    max_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
-    temperature: Mapped[float] = mapped_column(Integer, nullable=False, default=0.7)
-    top_p: Mapped[float] = mapped_column(Integer, nullable=False, default=1.0)
-    frequency_penalty: Mapped[float] = mapped_column(Integer, nullable=False, default=0.0)
-    presence_penalty: Mapped[float] = mapped_column(Integer, nullable=False, default=0.0)
-    is_active: Mapped[bool] = mapped_column(Integer, nullable=False, default=False)
+    api_base: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    temperature: Mapped[float] = mapped_column(Float, nullable=False, default=0.7)
+    model_names: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    model_config: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    current_model: Mapped[str] = mapped_column(String, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_default_provider: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -57,52 +58,52 @@ class LLMModel(Base):
     )
 
 
-class LLMModelRequest(BaseModel):
+class LLMProviderRequest(BaseModel):
     """
-    Pydantic model for llm model request.
-    Defines the structure of llm model data received from the client.
+    Pydantic model for LLM provider request.
+    Defines the structure of LLM provider data received from the client.
     """
 
-    name: Optional[str] = Field(None, description="The name of the llm model.")
-    provider: Optional[str] = Field(None, description="The provider of the llm model.")
-    model_type: Optional[str] = Field(None, description="The type of the llm model.")
-    api_key: Optional[str] = Field(None, description="The api key of the llm model.")
-    base_url: Optional[str] = Field(None, description="The base url of the llm model.")
-    context_length: Optional[int] = Field(None, description="The context length of the llm model.")
-    max_tokens: Optional[int] = Field(None, description="The max tokens of the llm model.")
-    temperature: float = Field(0.7, description="The temperature of the llm model.")
-    top_p: float = Field(1.0, description="The top p of the llm model.")
-    frequency_penalty: float = Field(0.0, description="The frequency penalty of the llm model.")
-    presence_penalty: float = Field(0.0, description="The presence penalty of the llm model.")
-    is_active: bool = Field(False, description="The active status of the llm model.")
+    name: Optional[str] = Field(None, description="The name of the LLM provider.")
+    api_key: Optional[str] = Field(None, description="The api key of the LLM provider.")
+    api_base: Optional[str] = Field(None, description="The api base of the LLM provider.")
+    temperature: float = Field(
+        0.7, description="The temperature of the LLM provider.", ge=0.0, le=1.0
+    )
+    model_names: Optional[List[str]] = Field(
+        default_factory=list, description="The model names of the LLM provider."
+    )
+    model_config: Optional[Dict[str, Any]] = Field(
+        default_factory=dict, description="The model config of the LLM provider."
+    )
+    current_model: Optional[str] = Field(None, description="The current model of the LLM provider.")
+    is_active: bool = Field(False, description="The active status of the LLM provider.")
+    is_default_provider: bool = Field(False, description="The default status of the LLM provider.")
 
     class Config:
         from_attributes = True
 
 
-class LLMModelResponse(BaseModel):
+class LLMProviderResponse(BaseModel):
     """
-    Pydantic model for llm model response.
-    Defines the structure of llm model data returned to the client.
+    Pydantic model for LLM provider response.
+    Defines the structure of LLM provider data returned to the client.
     """
 
-    id: UUID = Field(..., description="The unique identifier of the llm model.")
-    name: str = Field(..., description="The name of the llm model.")
-    provider: str = Field(..., description="The provider of the llm model.")
-    model_type: str = Field(..., description="The type of the llm model.")
-    api_key: Optional[str] = Field(None, description="The api key of the llm model.")
-    base_url: Optional[str] = Field(None, description="The base url of the llm model.")
-    context_length: int = Field(..., description="The context length of the llm model.")
-    max_tokens: int = Field(..., description="The max tokens of the llm model.")
-    temperature: float = Field(0.7, description="The temperature of the llm model.")
-    top_p: float = Field(1.0, description="The top p of the llm model.")
-    frequency_penalty: float = Field(0.0, description="The frequency penalty of the llm model.")
-    presence_penalty: float = Field(0.0, description="The presence penalty of the llm model.")
-    is_active: bool = Field(False, description="The active status of the llm model.")
-    created_at: datetime = Field(..., description="The creation timestamp of the llm model.")
-    updated_at: datetime = Field(..., description="The update timestamp of the llm model.")
+    id: UUID = Field(..., description="The unique identifier of the LLM provider.")
+    name: str = Field(..., description="The name of the LLM provider.")
+    api_key: Optional[str] = Field(None, description="The api key of the LLM provider.")
+    api_base: Optional[str] = Field(None, description="The api base of the LLM provider.")
+    temperature: float = Field(0.7, description="The temperature of the LLM provider.")
+    model_names: Optional[str] = Field(None, description="The model names of the LLM provider.")
+    model_config: Optional[str] = Field(None, description="The model config of the LLM provider.")
+    current_model: str = Field(..., description="The current model of the LLM provider.")
+    is_active: bool = Field(False, description="The active status of the LLM provider.")
+    is_default_provider: bool = Field(False, description="The default status of the LLM provider.")
+    created_at: datetime = Field(..., description="The creation timestamp of the LLM provider.")
+    updated_at: datetime = Field(..., description="The update timestamp of the LLM provider.")
     deleted_at: Optional[datetime] = Field(
-        None, description="The deletion timestamp of the llm model."
+        None, description="The deletion timestamp of the LLM provider."
     )
 
     class Config:

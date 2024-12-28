@@ -2,13 +2,16 @@ from __future__ import annotations
 
 from datetime import datetime
 from datetime import timezone
+from enum import Enum
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from sqlalchemy import Boolean
 from sqlalchemy import DateTime
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
@@ -19,10 +22,18 @@ from sqlalchemy.sql import func
 from app.models.base import Base
 
 
-class EmbeddingModel(Base):
+class EmbeddingProviderType(Enum):
+    OPENAI = "openai"
+    GEMINI = "gemini"
+    COHERE = "cohere"
+    VOYAGE = "voyage"
+    AZURE_OPENAI = "azure_openai"
+
+
+class EmbeddingProvider(Base):
     """
-    Represents an embedding model that is used for embedding text.
-    Tracks and organizes embedding models that are stored in the database.
+    Represents an embedding provider that is used for embedding text.
+    Tracks and organizes embedding providers that are stored in the database.
     """
 
     __tablename__ = "embedding_model"
@@ -30,15 +41,17 @@ class EmbeddingModel(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
-    name: Mapped[str] = mapped_column(String, nullable=False)
-    provider: Mapped[str] = mapped_column(String, nullable=False)
-    model_type: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[EmbeddingProviderType] = mapped_column(
+        SQLAlchemyEnum(EmbeddingProviderType, native_enum=False),
+        default=EmbeddingProviderType.OPENAI,
+    )
     api_key: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    base_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    api_base: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     dimensions: Mapped[int] = mapped_column(Integer, nullable=False)
-    max_input_length: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    batch_size: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    is_active: Mapped[bool] = mapped_column(Integer, nullable=False, default=False)
+    embed_batch_size: Mapped[int] = mapped_column(Integer, nullable=False, default=10)
+    current_model: Mapped[str] = mapped_column(String, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_default_provider: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -54,52 +67,60 @@ class EmbeddingModel(Base):
     )
 
 
-class EmbeddingModelRequest(BaseModel):
+class EmbeddingProviderRequest(BaseModel):
     """
-    Pydantic model for embedding model request.
-    Defines the structure of embedding model data received from the client.
+    Pydantic model for embedding provider request.
+    Defines the structure of embedding provider data received from the client.
     """
 
-    name: Optional[str] = Field(None, description="Folder name")
-    provider: Optional[str] = Field(None, description="Provider of the embedding model")
-    model_type: Optional[str] = Field(None, description="Type of the embedding model")
-    api_key: Optional[str] = Field(None, description="API key for the embedding model")
-    base_url: Optional[str] = Field(None, description="Base URL for the embedding model")
+    name: Optional[EmbeddingProviderType] = Field(
+        EmbeddingProviderType.OPENAI, description="The name of the embedding provider"
+    )
+    api_key: Optional[str] = Field(None, description="API key for the embedding provider")
+    api_base: Optional[str] = Field(None, description="Base URL for the embedding provider")
     dimensions: Optional[int] = Field(
         None, description="Number of dimensions in the embedding model"
     )
-    max_input_length: Optional[int] = Field(
-        None, description="Maximum input length for the embedding model"
+    embed_batch_size: Optional[int] = Field(10, description="Batch size for the embedding model")
+    current_model: Optional[str] = Field(
+        None, description="The current model of the embedding provider."
     )
-    batch_size: int = Field(1, description="Batch size for the embedding model")
-    is_active: bool = Field(False, description="Whether the embedding model is active")
+    is_active: bool = Field(False, description="The active status of the embedding provider.")
+    is_default_provider: bool = Field(
+        False, description="The default status of the embedding provider."
+    )
 
     class Config:
         from_attributes = True
 
 
-class EmbeddingModelResponse(BaseModel):
+class EmbeddingProviderResponse(BaseModel):
     """
-    Pydantic model for embedding model response.
-    Defines the structure of embedding model data returned to the client.
+    Pydantic model for embedding provider response.
+    Defines the structure of embedding provider data returned to the client.
     """
 
-    id: UUID = Field(..., description="Folder ID")
-    name: str = Field(..., description="Folder name")
-    provider: str = Field(..., description="Provider of the embedding model")
-    model_type: str = Field(..., description="Type of the embedding model")
-    api_key: Optional[str] = Field(None, description="API key for the embedding model")
-    base_url: Optional[str] = Field(None, description="Base URL for the embedding model")
-    dimensions: int = Field(..., description="Number of dimensions in the embedding model")
-    max_input_length: Optional[int] = Field(
-        None, description="Maximum input length for the embedding model"
+    id: UUID = Field(..., description="The unique identifier of the embedding provider")
+    name: EmbeddingProviderType = Field(
+        EmbeddingProviderType.OPENAI, description="The name of the embedding provider"
     )
-    batch_size: int = Field(1, description="Batch size for the embedding model")
-    is_active: bool = Field(False, description="Whether the embedding model is active")
-    created_at: datetime = Field(..., description="Time when the embedding model was created")
-    updated_at: datetime = Field(..., description="Time when the embedding model was last updated")
+    api_key: Optional[str] = Field(None, description="API key for the embedding provider")
+    api_base: Optional[str] = Field(None, description="Base URL for the embedding provider")
+    dimensions: Optional[int] = Field(
+        None, description="Number of dimensions in the embedding model"
+    )
+    embed_batch_size: int = Field(10, description="Batch size for the embedding model")
+    current_model: str = Field(..., description="The current model of the embedding provider.")
+    is_active: bool = Field(False, description="The active status of the embedding provider.")
+    is_default_provider: bool = Field(
+        False, description="The default status of the embedding provider."
+    )
+    created_at: datetime = Field(
+        ..., description="The creation timestamp of the embedding provider."
+    )
+    updated_at: datetime = Field(..., description="The update timestamp of the embedding provider.")
     deleted_at: Optional[datetime] = Field(
-        None, description="Time when the embedding model was deleted"
+        None, description="The deletion timestamp of the embedding provider."
     )
 
     class Config:

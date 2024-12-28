@@ -5,9 +5,9 @@ from fastapi import status
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
-from app.models.embedding import EmbeddingModelRequest
-from app.models.embedding import EmbeddingModelResponse
-from app.services.embedding import EmbeddingModelService
+from app.models.embedding import EmbeddingProviderRequest
+from app.models.embedding import EmbeddingProviderResponse
+from app.services.embedding import EmbeddingProviderService
 from app.settings import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
@@ -15,13 +15,13 @@ from app.utils.api.helpers import get_logger
 
 
 logger = get_logger(__name__)
-router = APIRouter(prefix="/embedding-models", tags=["embedding", "provider", "model"])
+router = APIRouter(prefix="/providers/embeddings", tags=["embedding", "provider", "model"])
 
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_embedding_models(db_session: Session = Depends(get_db_session)) -> BackendAPIResponse:
+def get_embedding_providers(db_session: Session = Depends(get_db_session)) -> BackendAPIResponse:
     """
-    Get all embedding models of the application.
+    Get all embedding providers of the application.
 
     Args:
         db_session (Session): Database session. Defaults to relational database session.
@@ -29,17 +29,19 @@ def get_embedding_models(db_session: Session = Depends(get_db_session)) -> Backe
     Returns:
         BackendAPIResponse: API response
     """
-    # Get embedding models of the application
-    embedding_models, err = EmbeddingModelService(db_session=db_session).get_embedding_models()
+    # Get embedding providers of the application
+    embedding_providers, err = EmbeddingProviderService(
+        db_session=db_session
+    ).get_embedding_providers()
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    # Parse embedding models
-    if embedding_models:
+    # Parse embedding providers
+    if embedding_providers:
         data = [
-            EmbeddingModelResponse.model_validate(embedding_model)
-            for embedding_model in embedding_models
+            EmbeddingProviderResponse.model_validate(embedding_provider)
+            for embedding_provider in embedding_providers
         ]
     else:
         data = []
@@ -52,31 +54,31 @@ def get_embedding_models(db_session: Session = Depends(get_db_session)) -> Backe
     )
 
 
-@router.get("/{embedding_model_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def get_embedding_model(
-    embedding_model_id: int, db_session: Session = Depends(get_db_session)
+@router.get("/{embedding_provider_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def get_embedding_provider(
+    embedding_provider_id: int, db_session: Session = Depends(get_db_session)
 ) -> BackendAPIResponse:
     """
-    Get embedding model by ID.
+    Get embedding provider by ID.
 
     Args:
-        embedding_model_id (int): Embedding model ID
+        embedding_provider_id (int): Embedding provider ID.
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
         BackendAPIResponse: API response
     """
-    # Get embedding model by ID
-    embedding_model, err = EmbeddingModelService(db_session=db_session).get_embedding_model(
-        embedding_model_id=embedding_model_id
-    )
+    # Get embedding provider by ID
+    embedding_provider, err = EmbeddingProviderService(
+        db_session=db_session
+    ).get_embedding_provider(embedding_provider_id=embedding_provider_id)
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    # Parse embedding model
-    if embedding_model:
-        data = EmbeddingModelResponse.model_validate(embedding_model)
+    # Parse embedding provider
+    if embedding_provider:
+        data = EmbeddingProviderResponse.model_validate(embedding_provider)
     else:
         data = None
 
@@ -88,66 +90,34 @@ def get_embedding_model(
     )
 
 
-@router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
-def create_embedding_model(
-    embedding_model_request: EmbeddingModelRequest, db_session: Session = Depends(get_db_session)
-) -> BackendAPIResponse:
-    """
-    Create a new embedding model.
-
-    Args:
-        embedding_model_request (EmbeddingModelRequest): Embedding model request object
-        db_session (Session): Database session. Defaults to relational database session.
-
-    Returns:
-        BackendAPIResponse: API response
-    """
-    # Create embedding model
-    err = EmbeddingModelService(db_session=db_session).create_embedding_model(
-        embedding_model_request=embedding_model_request
-    )
-    if err:
-        status_code, detail = err.kind
-        raise HTTPException(status_code=status_code, detail=detail)
-
-    # Parse response
-    data = embedding_model_request.model_dump(exclude_unset=True)
-
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
-
-
-@router.put("/{embedding_model_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
-def update_embedding_model(
-    embedding_model_id: int,
-    embedding_model_request: EmbeddingModelRequest,
+@router.put("/{embedding_provider_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+def update_embedding_provider(
+    embedding_provider_id: int,
+    embedding_provider_request: EmbeddingProviderRequest,
     db_session: Session = Depends(get_db_session),
 ) -> BackendAPIResponse:
     """
-    Update embedding model by ID.
+    Update embedding provider by ID.
 
     Args:
-        embedding_model_id (int): Embedding model ID
-        embedding_model_request (EmbeddingModelRequest): Embedding model request object
+        embedding_provider_id (int): Embedding provider ID
+        embedding_provider_request (EmbeddingProviderRequest): Embedding provider request object
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
         BackendAPIResponse: API response
     """
-    # Update embedding model by ID
-    err = EmbeddingModelService(db_session=db_session).update_embedding_model(
-        embedding_model_id=embedding_model_id, embedding_model_request=embedding_model_request
+    # Update embedding provider by ID
+    err = EmbeddingProviderService(db_session=db_session).update_embedding_provider(
+        embedding_provider_id=embedding_provider_id,
+        embedding_provider_request=embedding_provider_request,
     )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = embedding_model_request.model_dump(exclude_unset=True)
+    data = embedding_provider_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
@@ -157,18 +127,20 @@ def update_embedding_model(
     )
 
 
-@router.delete("/{embedding_model_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_embedding_model(embedding_model_id: int, db_session: Session = Depends(get_db_session)):
+@router.delete("/{embedding_provider_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_embedding_provider(
+    embedding_provider_id: int, db_session: Session = Depends(get_db_session)
+):
     """
-    Delete embedding model by ID.
+    Delete embedding provider by ID.
 
     Args:
-        embedding_model_id (int): Embedding model ID
+        embedding_provider_id (int): Embedding provider ID
         db_session (Session): Database session. Defaults to relational database session.
     """
-    # Delete embedding model by ID
-    err = EmbeddingModelService(db_session=db_session).delete_embedding_model(
-        embedding_model_id=embedding_model_id
+    # Delete embedding provider by ID
+    err = EmbeddingProviderService(db_session=db_session).delete_embedding_provider(
+        embedding_provider_id=embedding_provider_id
     )
     if err:
         status_code, detail = err.kind
