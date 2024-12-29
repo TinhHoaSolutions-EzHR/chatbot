@@ -56,7 +56,9 @@ class Agent(Base):
     user_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"), nullable=True
     )
-    prompt_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("prompt.id"), nullable=False)
+    prompt_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("prompt.id", ondelete="CASCADE"), nullable=False
+    )
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     agent_type: Mapped[AgentType] = mapped_column(
