@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
+from typing import Any
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
@@ -17,6 +18,7 @@ from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
 
 from app.models.base import Base
@@ -63,6 +65,24 @@ class EmbeddingProvider(Base):
         DateTime(timezone=True), nullable=True, default=None
     )
 
+    @validates("dimensions", "embed_batch_size")
+    def validate_positive(self, key: Any, value: int) -> int:
+        """
+        Validate that the value of the key is positive.
+
+        Args:
+            key (Any): The key to validate.
+            value (int): The value to validate.
+
+        Returns:
+            int: The validated value.
+        """
+        # Value of the key must be positive
+        if value < 0:
+            raise ValueError(f"{key} must be positive.")
+
+        return value
+
 
 class EmbeddingProviderRequest(BaseModel):
     """
@@ -77,9 +97,11 @@ class EmbeddingProviderRequest(BaseModel):
         None, description="API key for the embedding provider", exclude=True
     )
     dimensions: Optional[int] = Field(
-        None, description="Number of dimensions in the embedding model"
+        None, description="Number of dimensions in the embedding model", gt=0
     )
-    embed_batch_size: Optional[int] = Field(10, description="Batch size for the embedding model")
+    embed_batch_size: Optional[int] = Field(
+        10, description="Batch size for the embedding model", gt=0
+    )
     current_model: Optional[str] = Field(
         None, description="The current model of the embedding provider."
     )

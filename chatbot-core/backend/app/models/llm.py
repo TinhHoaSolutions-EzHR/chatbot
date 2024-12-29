@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
+from typing import Any
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
@@ -17,6 +18,7 @@ from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
 
 from app.models.base import Base
@@ -66,6 +68,23 @@ class LLMProvider(Base):
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True, default=None
     )
+
+    @validates("temperature")
+    def validate_temperature(self, key: Any, value: float) -> float:
+        """
+        Validate that the temperature is between 0.0 and 1.0.
+
+        Args:
+            key (Any): The key of the attribute.
+            value (float): The value of the attribute.
+
+        Returns:
+            float: The validated temperature
+        """
+        if value < 0.0 or value > 1.0:
+            raise ValueError("Temperature must be between 0.0 and 1.0.")
+
+        return value
 
 
 class LLMProviderRequest(BaseModel):
