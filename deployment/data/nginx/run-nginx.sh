@@ -11,7 +11,7 @@ echo
 while true; do
 	# Use curl to send a request and capture the HTTP status code
 	# NOTE: default port of api_server is 5000
-	status_code=$(curl -o /dev/null -s -w "%{http_code}\n" "http://api_server:5000/health")
+	status_code=$(curl -o /dev/null -s -w "%{http_code}\n" "http://api-server:5000/health")
 
 	# Check if the status code is 200
 	if [ "$status_code" -eq 200 ]; then
