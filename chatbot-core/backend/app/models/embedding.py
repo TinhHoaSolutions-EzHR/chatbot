@@ -26,8 +26,6 @@ class EmbeddingProviderType(Enum):
     OPENAI = "openai"
     GEMINI = "gemini"
     COHERE = "cohere"
-    VOYAGE = "voyage"
-    AZURE_OPENAI = "azure_openai"
 
 
 class EmbeddingProvider(Base):
@@ -46,7 +44,6 @@ class EmbeddingProvider(Base):
         default=EmbeddingProviderType.OPENAI,
     )
     api_key: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    api_base: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     dimensions: Mapped[int] = mapped_column(Integer, nullable=False)
     embed_batch_size: Mapped[int] = mapped_column(Integer, nullable=False, default=10)
     current_model: Mapped[str] = mapped_column(String, nullable=False)
@@ -73,11 +70,12 @@ class EmbeddingProviderRequest(BaseModel):
     Defines the structure of embedding provider data received from the client.
     """
 
-    name: Optional[EmbeddingProviderType] = Field(
+    name: EmbeddingProviderType = Field(
         EmbeddingProviderType.OPENAI, description="The name of the embedding provider"
     )
-    api_key: Optional[str] = Field(None, description="API key for the embedding provider")
-    api_base: Optional[str] = Field(None, description="Base URL for the embedding provider")
+    api_key: Optional[str] = Field(
+        None, description="API key for the embedding provider", exclude=True
+    )
     dimensions: Optional[int] = Field(
         None, description="Number of dimensions in the embedding model"
     )
@@ -104,8 +102,6 @@ class EmbeddingProviderResponse(BaseModel):
     name: EmbeddingProviderType = Field(
         EmbeddingProviderType.OPENAI, description="The name of the embedding provider"
     )
-    api_key: Optional[str] = Field(None, description="API key for the embedding provider")
-    api_base: Optional[str] = Field(None, description="Base URL for the embedding provider")
     dimensions: Optional[int] = Field(
         None, description="Number of dimensions in the embedding model"
     )

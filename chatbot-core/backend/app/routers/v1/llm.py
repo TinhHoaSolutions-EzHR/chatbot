@@ -14,7 +14,7 @@ from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
-router = APIRouter(prefix="/providers/llm", tags=["llm", "provider", "model"])
+router = APIRouter(prefix="/providers/llms", tags=["llm", "provider", "model"])
 
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
@@ -28,7 +28,7 @@ def get_llm_providers(
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
-        BackendAPIResponse: API response
+        BackendAPIResponse: API response.
     """
     # Get llm providers of the application
     llm_providers, err = LLMProviderService(db_session=db_session).get_llm_providers()
@@ -62,7 +62,7 @@ def get_llm_provider(
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
-        BackendAPIResponse: API response
+        BackendAPIResponse: API response.
     """
     # Get llm provider
     llm_provider, err = LLMProviderService(db_session=db_session).get_llm_provider(
@@ -77,39 +77,6 @@ def get_llm_provider(
         data = LLMProviderResponse.model_validate(llm_provider)
     else:
         data = None
-
-    return (
-        BackendAPIResponse()
-        .set_message(message=Constants.API_SUCCESS)
-        .set_data(data=data)
-        .respond()
-    )
-
-
-@router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
-def create_llm_provider(
-    llm_provider_request: LLMProviderRequest, db_session: Session = Depends(get_db_session)
-) -> BackendAPIResponse:
-    """
-    Create a new llm provider.
-
-    Args:
-        llm_provider_request (LLMProviderRequest): LLM provider request object.
-        db_session (Session): Database session. Defaults to relational database session.
-
-    Returns:
-        BackendAPIResponse: API response
-    """
-    # Create llm provider
-    err = LLMProviderService(db_session=db_session).create_llm_provider(
-        llm_provider_request=llm_provider_request
-    )
-    if err:
-        status_code, detail = err.kind
-        raise HTTPException(status_code=status_code, detail=detail)
-
-    # Parse response
-    data = llm_provider_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
@@ -134,7 +101,7 @@ def update_llm_provider(
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
-        BackendAPIResponse: API response
+        BackendAPIResponse: API response.
     """
     # Update llm provider
     err = LLMProviderService(db_session=db_session).update_llm_provider(
@@ -153,23 +120,3 @@ def update_llm_provider(
         .set_data(data=data)
         .respond()
     )
-
-
-@router.delete("/{llm_provider_id}", status_code=status.HTTP_200_OK)
-def delete_llm_provider(
-    llm_provider_id: str, db_session: Session = Depends(get_db_session)
-) -> None:
-    """
-    Delete llm provider by ID.
-
-    Args:
-        llm_provider_id (str): The provider ID.
-        db_session (Session): Database session. Defaults to relational database session.
-    """
-    # Delete llm provider
-    err = LLMProviderService(db_session=db_session).delete_llm_provider(
-        llm_provider_id=llm_provider_id
-    )
-    if err:
-        status_code, detail = err.kind
-        raise HTTPException(status_code=status_code, detail=detail)

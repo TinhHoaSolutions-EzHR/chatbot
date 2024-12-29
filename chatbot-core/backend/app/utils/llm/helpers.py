@@ -1,17 +1,19 @@
+from logging import Logger
 from typing import Optional
 
 import tiktoken
 from llama_index.core import Settings
 from llama_index.core.callbacks import CallbackManager
-from llama_index.embeddings.azure_openai import AzureOpenAIEmbedding
 from llama_index.embeddings.cohere import CohereEmbedding
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.openai import OpenAIEmbeddingMode
-from llama_index.embeddings.voyageai import VoyageEmbedding
+from llama_index.llms.cohere import Cohere
+from llama_index.llms.gemini import Gemini
 from llama_index.llms.openai import OpenAI
 
 from app.models.embedding import EmbeddingProviderType
+from app.models.llm import LLMProviderType
 from app.settings import Constants
 
 
@@ -47,14 +49,65 @@ def init_llm_configurations(
     Settings.callback_manager = callback_manager
 
 
+def handle_current_llm_model(
+    llm_model_name: str,
+    llm_provider_type: LLMProviderType,
+    temperature: float = 0.7,
+    api_key: Optional[str] = None,
+    callback_manager: Optional[CallbackManager] = None,
+    logger: Optional[Logger] = None,
+) -> None:
+    """
+    Handle the current LLM model.
+
+    Args:
+        llm_model_name (str): Name of the LLM model.
+        llm_provider_type (LLMProviderType): Type of the LLM provider.
+        temperature (float): Temperature for the LLM model. Defaults to 0.7.
+        api_key (Optional[str]): API key for the LLM model. Defaults to None.
+        callback_manager (Optional[CallbackManager]): Manager for handling callbacks. Defaults to None.
+        logger (Optional[Logger]): Logger for logging. Defaults to None.
+    """
+    if logger:
+        logger.info(f"Setting the current LLM model: {llm_model_name} for {llm_provider_type}")
+
+    try:
+        if llm_provider_type == LLMProviderType.OPENAI:
+            Settings.llm = OpenAI(
+                model=llm_model_name,
+                temperature=temperature,
+                api_key=api_key,
+                callback_manager=callback_manager,
+            )
+        elif llm_provider_type == LLMProviderType.GEMINI:
+            print("GEMINI")
+            Settings.llm = Gemini(
+                model=llm_model_name,
+                temperature=temperature,
+                api_key=api_key,
+                callback_manager=callback_manager,
+            )
+        elif llm_provider_type == LLMProviderType.COHERE:
+            Settings.llm = Cohere(
+                model=llm_model_name,
+                temperature=temperature,
+                api_key=api_key,
+                callback_manager=callback_manager,
+            )
+        else:
+            raise ValueError(f"Invalid LLM provider type: {llm_model_name}")
+    except Exception as e:
+        raise ValueError(f"Error setting the current LLM model: {e}")
+
+
 def handle_current_embedding_model(
     embedding_model_name: str,
     embedding_type: EmbeddingProviderType,
     batch_size: int,
     dimensions: int,
     api_key: Optional[str] = None,
-    api_base: Optional[str] = None,
     callback_manager: Optional[CallbackManager] = None,
+    logger: Optional[Logger] = None,
 ) -> None:
     """
     Handle the current embedding model based on the embedding type.
@@ -64,10 +117,15 @@ def handle_current_embedding_model(
         embedding_type (EmbeddingProviderType): Type of the embedding provider.
         batch_size (int): Batch size for embedding.
         dimensions (int): Dimensions for the embedding.
-        api_key (Optional[str], optional): API key for the embedding provider. Defaults to None.
-        api_base (Optional[str], optional): API base for the embedding provider. Defaults to None.
-        callback_manager (Optional[CallbackManager], optional): Manager for handling callbacks. Defaults to None.
+        api_key (Optional[str]): API key for the embedding provider. Defaults to None.
+        callback_manager (Optional[CallbackManager]): Manager for handling callbacks. Defaults to None.
+        logger (Optional[Logger]): Logger for logging. Defaults to None.
     """
+    if logger:
+        logger.info(
+            f"Setting the current embedding model: {embedding_model_name} for {embedding_type}"
+        )
+
     try:
         if embedding_type == EmbeddingProviderType.OPENAI:
             Settings.embed_model = OpenAIEmbedding(
@@ -76,7 +134,6 @@ def handle_current_embedding_model(
                 embed_batch_size=batch_size,
                 dimensions=dimensions,
                 api_key=api_key,
-                api_base=api_base,
                 callback_manager=callback_manager,
             )
         elif embedding_type == EmbeddingProviderType.GEMINI:
@@ -84,7 +141,6 @@ def handle_current_embedding_model(
                 model_name=embedding_model_name,
                 embed_batch_size=batch_size,
                 api_key=api_key,
-                api_base=api_base,
                 callback_manager=callback_manager,
             )
         elif embedding_type == EmbeddingProviderType.COHERE:
@@ -92,23 +148,6 @@ def handle_current_embedding_model(
                 model_name=embedding_model_name,
                 embed_batch_size=batch_size,
                 api_key=api_key,
-                base_url=api_base,
-                callback_manager=callback_manager,
-            )
-        elif embedding_type == EmbeddingProviderType.VOYAGE:
-            Settings.embed_model = VoyageEmbedding(
-                model_name=embedding_model_name,
-                embed_batch_size=batch_size,
-                output_dimension=dimensions,
-                voyage_api_key=api_key,
-                callback_manager=callback_manager,
-            )
-        elif embedding_type == EmbeddingProviderType.AZURE_OPENAI:
-            Settings.embed_model = AzureOpenAIEmbedding(
-                model_name=embedding_model_name,
-                embed_batch_size=batch_size,
-                api_key=api_key,
-                api_base=api_base,
                 callback_manager=callback_manager,
             )
         else:

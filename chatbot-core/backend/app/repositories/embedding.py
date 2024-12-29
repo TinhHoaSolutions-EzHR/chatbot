@@ -62,25 +62,6 @@ class EmbeddingProviderRepository(BaseRepository):
             logger.error(f"Error getting embedding provider: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def create_embedding_provider(
-        self, embedding_provider: EmbeddingProvider
-    ) -> Optional[APIError]:
-        """
-        Create an embedding provider.
-
-        Args:
-            embedding_provider (EmbeddingProvider): embedding provider object.
-
-        Returns:
-            Optional[APIError]: APIError object if any error.
-        """
-        try:
-            self._db_session.add(embedding_provider)
-            return None
-        except Exception as e:
-            logger.error(f"Error creating embedding provider: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
     def update_embedding_provider(
         self, embedding_provider_id: str, embedding_provider: Dict[str, Any]
     ) -> Optional[APIError]:
@@ -101,23 +82,4 @@ class EmbeddingProviderRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating embedding provider: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
-    def delete_embedding_provider(self, embedding_provider_id: str) -> Optional[APIError]:
-        """
-        Delete an embedding provider.
-
-        Args:
-            embedding_provider_id (str): embedding provider id.
-
-        Returns:
-            Optional[APIError]: APIError object if any error.
-        """
-        try:
-            self._db_session.query(EmbeddingProvider).filter(
-                EmbeddingProvider.id == embedding_provider_id
-            ).delete()
-            return None
-        except Exception as e:
-            logger.error(f"Error deleting embedding provider: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

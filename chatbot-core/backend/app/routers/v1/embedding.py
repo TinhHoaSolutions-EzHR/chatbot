@@ -56,17 +56,17 @@ def get_embedding_providers(db_session: Session = Depends(get_db_session)) -> Ba
 
 @router.get("/{embedding_provider_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_embedding_provider(
-    embedding_provider_id: int, db_session: Session = Depends(get_db_session)
+    embedding_provider_id: str, db_session: Session = Depends(get_db_session)
 ) -> BackendAPIResponse:
     """
     Get embedding provider by ID.
 
     Args:
-        embedding_provider_id (int): Embedding provider ID.
+        embedding_provider_id (str): Embedding provider ID.
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
-        BackendAPIResponse: API response
+        BackendAPIResponse: API response.
     """
     # Get embedding provider by ID
     embedding_provider, err = EmbeddingProviderService(
@@ -90,9 +90,11 @@ def get_embedding_provider(
     )
 
 
-@router.put("/{embedding_provider_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{embedding_provider_id}", response_model=APIResponse, status_code=status.HTTP_200_OK
+)
 def update_embedding_provider(
-    embedding_provider_id: int,
+    embedding_provider_id: str,
     embedding_provider_request: EmbeddingProviderRequest,
     db_session: Session = Depends(get_db_session),
 ) -> BackendAPIResponse:
@@ -100,8 +102,8 @@ def update_embedding_provider(
     Update embedding provider by ID.
 
     Args:
-        embedding_provider_id (int): Embedding provider ID
-        embedding_provider_request (EmbeddingProviderRequest): Embedding provider request object
+        embedding_provider_id (str): Embedding provider ID.
+        embedding_provider_request (EmbeddingProviderRequest): Embedding provider request object.
         db_session (Session): Database session. Defaults to relational database session.
 
     Returns:
@@ -125,23 +127,3 @@ def update_embedding_provider(
         .set_data(data=data)
         .respond()
     )
-
-
-@router.delete("/{embedding_provider_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_embedding_provider(
-    embedding_provider_id: int, db_session: Session = Depends(get_db_session)
-):
-    """
-    Delete embedding provider by ID.
-
-    Args:
-        embedding_provider_id (int): Embedding provider ID
-        db_session (Session): Database session. Defaults to relational database session.
-    """
-    # Delete embedding provider by ID
-    err = EmbeddingProviderService(db_session=db_session).delete_embedding_provider(
-        embedding_provider_id=embedding_provider_id
-    )
-    if err:
-        status_code, detail = err.kind
-        raise HTTPException(status_code=status_code, detail=detail)

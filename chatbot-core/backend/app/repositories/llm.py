@@ -47,7 +47,7 @@ class LLMProviderRepository(BaseRepository):
             llm_provider_id (str): The LLM provider ID.
 
         Returns:
-            Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error
+            Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error.
         """
         try:
             llm_provider = (
@@ -60,23 +60,6 @@ class LLMProviderRepository(BaseRepository):
             logger.error(f"Error getting LLM provider: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def create_llm_provider(self, llm_provider: LLMProvider) -> Optional[APIError]:
-        """
-        Create LLM provider.
-
-        Args:
-            llm_provider (LLMProvider): The LLM provider object.
-
-        Returns:
-            Optional[APIError]: APIError object if any error
-        """
-        try:
-            self._db_session.add(llm_provider)
-            return None
-        except Exception as e:
-            logger.error(f"Error creating LLM provider: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
     def update_llm_provider(
         self, llm_provider_id: str, llm_provider: Dict[str, Any]
     ) -> Optional[APIError]:
@@ -88,7 +71,7 @@ class LLMProviderRepository(BaseRepository):
             llm_provider (LLMProvider): The LLM provider object.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Optional[APIError]: APIError object if any error.
         """
         try:
             self._db_session.query(LLMProvider).filter(LLMProvider.id == llm_provider_id).update(
@@ -97,21 +80,4 @@ class LLMProviderRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating LLM provider: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
-    def delete_llm_provider(self, llm_provider_id: str) -> Optional[APIError]:
-        """
-        Delete LLM provider.
-
-        Args:
-            llm_provider_id (str): The LLM provider ID.
-
-        Returns:
-            Optional[APIError]: APIError object if any error
-        """
-        try:
-            self._db_session.query(LLMProvider).filter(LLMProvider.id == llm_provider_id).delete()
-            return None
-        except Exception as e:
-            logger.error(f"Error deleting LLM provider: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

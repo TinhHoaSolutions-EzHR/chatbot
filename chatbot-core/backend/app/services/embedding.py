@@ -53,35 +53,6 @@ class EmbeddingProviderService(BaseService):
             embedding_provider_id=embedding_provider_id
         )
 
-    def create_embedding_provider(
-        self, embedding_provider_request: EmbeddingProviderRequest
-    ) -> Optional[APIError]:
-        """
-        Create a new embedding provider.
-
-        Args:
-            embedding_provider_request (EmbeddingProviderRequest): Embedding provider request object
-        """
-        with self._transaction():
-            # Define embedding provider
-            embedding_provider = EmbeddingProvider(
-                name=embedding_provider_request.name,
-                api_key=embedding_provider_request.api_key,
-                api_base=embedding_provider_request.api_base,
-                dimensions=embedding_provider_request.dimensions,
-                embed_batch_size=embedding_provider_request.embed_batch_size,
-                current_model=embedding_provider_request.current_model,
-                is_active=embedding_provider_request.is_active,
-                is_default_provider=embedding_provider_request.is_default_provider,
-            )
-
-            # Create embedding provider
-            err = self._embedding_provider_repo.create_embedding_provider(
-                embedding_provider=embedding_provider
-            )
-
-        return err if err else None
-
     def update_embedding_provider(
         self, embedding_provider_id: str, embedding_provider_request: EmbeddingProviderRequest
     ) -> Optional[APIError]:
@@ -109,32 +80,17 @@ class EmbeddingProviderService(BaseService):
                 handle_current_embedding_model(
                     embedding_model_name=embedding_provider["current_model"],
                     embedding_type=embedding_provider["name"],
-                    batch_size=embedding_provider["embed_batch_size"]
+                    batch_size=embedding_provider.get("embed_batch_size")
                     or existing_embedding_provider.embed_batch_size,
-                    dimensions=embedding_provider["dimensions"]
+                    dimensions=embedding_provider.get("dimensions")
                     or existing_embedding_provider.dimensions,
-                    api_key=embedding_provider["api_key"] or existing_embedding_provider.api_key,
-                    api_base=embedding_provider["api_base"] or existing_embedding_provider.api_base,
+                    api_key=embedding_provider.get("api_key")
+                    or existing_embedding_provider.api_key,
                 )
 
             # Update embedding provider
             err = self._embedding_provider_repo.update_embedding_provider(
                 embedding_provider_id=embedding_provider_id, embedding_provider=embedding_provider
-            )
-
-        return err if err else None
-
-    def delete_embedding_provider(self, embedding_provider_id: str) -> Optional[APIError]:
-        """
-        Delete an embedding provider.
-
-        Args:
-            embedding_provider_id (str): Embedding provider id
-        """
-        with self._transaction():
-            # Delete embedding provider
-            err = self._embedding_provider_repo.delete_embedding_provider(
-                embedding_provider_id=embedding_provider_id
             )
 
         return err if err else None
