@@ -121,14 +121,14 @@ services:
       timeout: 10s
       retries: 3
 
-  # NOTE: Official port for api_server is 5000
-  api_server:
+  # NOTE: Official port for api-server is 5000
+  api-server:
     build:
       context: ../../chatbot-core/backend/
       dockerfile: Dockerfile
     platform: linux/amd64
-    container_name: api_server
-    hostname: api_server
+    container_name: api-server
+    hostname: api-server
     restart: on-failure
     depends_on:
       database:
@@ -165,16 +165,25 @@ services:
   web-server:
     build:
       context: ../../chatbot-core/frontend
-      dockerfile: Dockerfile
-    container_name: web_server
-    hostname: web_server
+      dockerfile: dev.Dockerfile
+    container_name: web-server
+    hostname: web-server
     restart: on-failure
     depends_on:
-      - api_server
+      - api-server
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Ensure the dev server is exposed on port 3000
     networks:
       - backend
+      - frontend
+    env_file:
+      - ./.env
+    volumes:
+      - ../../chatbot-core/frontend:/app  # Mount the source code into the container
+      - /app/node_modules  # Avoid node_modules conflicts
+    command: >
+      /bin/sh -c "npm install && npm run dev"
+
 
   nginx:
     image: nginx:1.23.4-alpine
@@ -186,11 +195,12 @@ services:
       - DOMAIN=localhost
     ports:
       - "8000:80"
-      - "3000:80"
+      - "3003:80"
     volumes:
       - ../data/nginx:/etc/nginx/conf.d
     networks:
       - frontend
+      - backend
     logging:
       driver: json-file
       options:
