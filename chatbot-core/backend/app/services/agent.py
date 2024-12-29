@@ -81,7 +81,7 @@ class AgentService(BaseService):
         agent_avatar: BytesIO,
         agent_name: str,
         user_id: str,
-        delete_existing_image: bool = True,
+        delete_existing_image: bool = False,
         existing_image_path: Optional[str] = None,
     ) -> Tuple[Optional[str], Optional[APIError]]:
         """
@@ -91,8 +91,8 @@ class AgentService(BaseService):
             agent_avatar (BytesIO): Agent avatar image.
             agent_name (str): Agent name.
             user_id (str): User id.
-            delete_existing_image (bool, optional): Delete existing image. Defaults to True.
-            existing_image_path (Optional[str], optional): Existing image path. Defaults to None.
+            delete_existing_image (bool): Delete existing image. Defaults to False.
+            existing_image_path (Optional[str]): Existing image path. Defaults to None.
 
         Returns:
             Tuple[Optional[str], Optional[APIError]]: File path in Minio and APIError object if any error
