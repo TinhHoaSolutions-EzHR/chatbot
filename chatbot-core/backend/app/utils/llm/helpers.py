@@ -72,6 +72,7 @@ def handle_current_llm_model(
         logger.info(f"Setting the current LLM model: {llm_model_name} for {llm_provider_type}")
 
     try:
+        # Set the LLM model based on the provider type
         if llm_provider_type == LLMProviderType.OPENAI:
             Settings.llm = OpenAI(
                 model=llm_model_name,
@@ -79,14 +80,19 @@ def handle_current_llm_model(
                 api_key=api_key,
                 callback_manager=callback_manager,
             )
+
+            # Set the tokenizer for the llm model
+            Settings.tokenizer = tiktoken.encoding_for_model(model_name=llm_model_name).encode
         elif llm_provider_type == LLMProviderType.GEMINI:
-            print("GEMINI")
             Settings.llm = Gemini(
                 model=llm_model_name,
                 temperature=temperature,
                 api_key=api_key,
                 callback_manager=callback_manager,
             )
+
+            # Set the tokenizer to None for Gemini
+            Settings.tokenizer = None
         elif llm_provider_type == LLMProviderType.COHERE:
             Settings.llm = Cohere(
                 model=llm_model_name,
@@ -94,6 +100,9 @@ def handle_current_llm_model(
                 api_key=api_key,
                 callback_manager=callback_manager,
             )
+
+            # Set the tokenizer to None for Cohere
+            Settings.tokenizer = None
         else:
             raise ValueError(f"Invalid LLM provider type: {llm_model_name}")
     except Exception as e:
@@ -127,6 +136,7 @@ def handle_current_embedding_model(
         )
 
     try:
+        # Set the embedding model based on the provider type
         if embedding_type == EmbeddingProviderType.OPENAI:
             Settings.embed_model = OpenAIEmbedding(
                 mode=OpenAIEmbeddingMode.TEXT_SEARCH_MODE,
