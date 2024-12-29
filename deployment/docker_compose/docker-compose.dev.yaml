@@ -167,10 +167,10 @@ services:
       context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
     container_name: web_server
-    hostname: web_server
+    hostname: web-server
     restart: on-failure
     depends_on:
-      - api_server
+      - api-server
     ports:
       - "3000:3000"
     networks:
