@@ -145,9 +145,6 @@ class ChatMessage(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
-    user_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), nullable=False
-    )
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
@@ -186,7 +183,6 @@ class ChatMessage(Base):
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    user: Mapped["User"] = relationship("User", back_populates="chat_messages")
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
     )
@@ -259,7 +255,6 @@ class ChatMessageResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="Chat message id")
-    user_id: UUID = Field(..., description="User id")
     chat_session_id: UUID = Field(..., description="Chat session id")
     message: str = Field(..., description="Message text")
     message_type: ChatMessageType = Field(..., description="Message type")
@@ -362,7 +357,7 @@ class ChatFeedbackRequest(BaseModel):
     """
 
     chat_message_id: UUID = Field(..., description="Chat message id")
-    is_positive: Boolean = Field(None, description="Feedback rating")
+    is_positive: bool = Field(..., description="Feedback rating")
     feedback_text: Optional[str] = Field(None, description="Feedback text")
 
     class Config:

@@ -75,16 +75,16 @@ These following ports are used by services:
 - `6379`: For communicating with Redis as `cache`
 - `6333`: For communicating with Qdrant as `index` via HTTP API, for the [Monitoring](https://qdrant.tech/documentation/guides/monitoring/) health and metrics endpoints
 - `6334`: For communicating with Qdrant via gRPC
-- `9000`: For access web interface of MinIO as `object_storage`
-- `9001`: For communicating with MinIO API as `object_storage`
-- `5000`: For communicating with Backend as `api_server`
+- `9000`: For access web interface of MinIO as `object-storage`
+- `9001`: For communicating with MinIO API as `object-storage`
+- `5000`: For communicating with Backend as `api-server`
 - `3000`: For frontend - web interface
 
 ## Details on Resource Consumsion
 
 | **Component**        | **CPU**  | **Memory** | **Notes**                                        |
 | -------------------- | -------- | ---------- | ------------------------------------------------ |
-| `api_server`         | 1 CPU    | 1 GB       | Handles query processing and LLM integration.    |
+| `api-server`         | 1 CPU    | 1 GB       | Handles query processing and LLM integration.    |
 | `background`         | 1 CPU    | 256 MB     | For document embedding and background tasks.     |
 | `database` (SQL)     | 500m CPU | 2 GB       | Can share existing SQL resources to save costs.  |
 | `qdrant`             | 1 CPU    | 256 MB     | Scales with document volume; higher recommended. |
@@ -106,7 +106,7 @@ For more fine-grained control and efficient scaling, you can deploy each compone
 
 | **Component**        | **CPU**  | **Memory** | **Notes**                                        |
 | -------------------- | -------- | ---------- | ------------------------------------------------ |
-| `api_server`         | 1 CPU    | 1 GB       | Handles query processing and LLM integration.    |
+| `api-server`         | 1 CPU    | 1 GB       | Handles query processing and LLM integration.    |
 | `background`         | 1 CPU    | 256 MB     | For document embedding and background tasks.     |
 | `database` (SQL)     | 500m CPU | 2 GB       | Can share existing SQL resources to save costs.  |
 | `qdrant`             | 1 CPU    | 256 MB     | Scales with document volume; higher recommended. |
@@ -114,7 +114,7 @@ For more fine-grained control and efficient scaling, you can deploy each compone
 
 ### General guides:
 
-1. **Component Separation**: Deploy each major component (`api_server`, `background`, `database`, `qdrant`, `nginx`, `frontend`) as individual Kubernetes **Deployments** or **StatefulSets** for easier scaling and management.
+1. **Component Separation**: Deploy each major component (`api-server`, `background`, `database`, `qdrant`, `nginx`, `frontend`) as individual Kubernetes **Deployments** or **StatefulSets** for easier scaling and management.
 
 2. **Resource Requests and Limits**: Use Kubernetes **resource requests and limits** to ensure fair CPU and memory allocation:
 
@@ -146,7 +146,7 @@ For more fine-grained control and efficient scaling, you can deploy each compone
            storage: 20Gi
      ```
 
-4. **Load Balancer**: Use an **Ingress Controller** (e.g., NGINX) to manage external traffic to the `frontend` and `api_server`.
+4. **Load Balancer**: Use an **Ingress Controller** (e.g., NGINX) to manage external traffic to the `frontend` and `api-server`.
 
    - Example:
      ```yaml

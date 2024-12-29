@@ -14,11 +14,8 @@ from fastapi import UploadFile
 from llama_index.core import Document
 
 from app.settings import Constants
+from app.settings import Secrets
 from app.utils.api.error_handler import PdfParsingError
-
-
-S1 = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ"
-S0 = "AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy"
 
 
 def remove_vietnamese_accents(input_str: str) -> str:
@@ -31,6 +28,9 @@ def remove_vietnamese_accents(input_str: str) -> str:
     Returns:
         str: Output string without accents.
     """
+    S1 = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ"
+    S0 = "AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy"
+
     return "".join([S0[S1.index(c)] if c in S1 else c for c in input_str])
 
 
@@ -55,6 +55,41 @@ def parse_pdf(
         raise PdfParsingError(message="Error parsing PDF", detail=str(e))
 
     return documents
+
+
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        "DEBUG": "\033[36m",  # Cyan
+        "INFO": "\033[32m",  # Green
+        "WARNING": "\033[33m",  # Yellow
+        "ERROR": "\033[31m",  # Red
+        "CRITICAL": "\033[1;31m",  # Bold Red
+        "NOTSET": "\033[91m",  # Reset
+        "NOTICE": "\033[94m",  # Blue
+    }
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record.
+
+        Args:
+            record (logging.LogRecord): Log record.
+
+        Returns:
+            str: Formatted log message.
+        """
+        # Get the log level name
+        levelname = record.levelname
+        if levelname in self.COLORS:
+            prefix = self.COLORS[levelname]
+            suffix = "\033[0m"
+
+            # Format the log message
+            formatted_message = super().format(record)
+            level_display = f"{prefix}{levelname}{suffix}:"
+            return f"{level_display.ljust(18)} {formatted_message}"
+
+        return super().format(record)
 
 
 def get_logger(
@@ -84,14 +119,24 @@ def get_logger(
     logger = logging.getLogger(name=name)
     logger.setLevel(log_level)
 
+    uvicorn_logger = logging.getLogger("uvicorn.access")
+    uvicorn_logger.handlers = []
+    uvicorn_logger.setLevel(log_level)
+
     if not logger.hasHandlers():
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        formatter = ColoredFormatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p",
+        )
 
         if log_to_console:
             console_handler = logging.StreamHandler(sys.stdout)
             console_handler.setLevel(log_level)
             console_handler.setFormatter(formatter)
             logger.addHandler(console_handler)
+
+            if uvicorn_logger:
+                uvicorn_logger.addHandler(console_handler)
 
         if log_to_file:
             file_handler = logging.handlers.RotatingFileHandler(
@@ -102,6 +147,9 @@ def get_logger(
             file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+            if uvicorn_logger:
+                uvicorn_logger.addHandler(console_handler)
 
     return logger
 
@@ -160,3 +208,28 @@ def generate_avatar_image(data: str) -> BytesIO:
     agent_avatar = BytesIO(image_data)
 
     return agent_avatar
+
+
+def get_database_url() -> str:
+    """
+    Get the database URL.
+
+    Returns:
+        str: Database URL.
+
+    Example:
+        >>> get_database_url()
+        'mssql+pyodbc://sa:password@localhost/db_name?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes
+    """
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        # Try create the database URL from the environment variables
+        database_url = Constants.MSSQL_CONNECTOR_URI.format(
+            user=Secrets.MSSQL_USER,
+            password=Secrets.MSSQL_SA_PASSWORD,
+            host=Secrets.MSSQL_HOST,
+            db_name=Secrets.MSSQL_DB,
+            driver=Constants.MSSQL_DRIVER,
+        )
+
+    return database_url

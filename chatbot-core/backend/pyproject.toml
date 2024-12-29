@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
 
 [project]
 authors = [
@@ -16,7 +16,7 @@ version = "1.0.0"
 description = "FastAPI based backend for the project EzHR Chatbot."
 readme = "README.md"
 requires-python = ">=3.11"
-keywords = ["sample", "setuptools", "development"]
+keywords = ["sample", "hatchling", "development"]
 
 dependencies = [
   "fastapi[standard]",
@@ -34,6 +34,7 @@ dependencies = [
   "sqlalchemy>=2.0.36",
   "pydenticon>=0.3.1",
   "python-multipart>=0.0.17",
+  "alembic>=1.14.0",
 ]
 
 [project.optional-dependencies]
@@ -42,6 +43,12 @@ test = ["pytest", "coverage"]
 
 [project.scripts]
 main = "app:main"
+
+[tool.hatch.build.targets.sdist]
+include = ["app"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
 
 [tool.semantic_release]
 version_variable = "app/__init__.py:__version__"

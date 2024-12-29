@@ -6,7 +6,7 @@ FROM python:3.11.10-slim-bookworm
 
 # Set label to push to GitHub Container Registry
 LABEL org.opencontainers.image.source "https://github.com/TinhHoaSolutions-EzHR/chatbot"
-LABEL org.opencontainers.image.descripiton "Docker image for backend api_server"
+LABEL org.opencontainers.image.descripiton "Docker image for backend api-server"
 
 # Set this to avoid buffering stdout and stderr
 ENV PYTHONUNBUFFERED=1
