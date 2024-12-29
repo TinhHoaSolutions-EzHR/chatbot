@@ -99,13 +99,16 @@ class AgentRequest(BaseModel):
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     display_priority: int = Field(0, description="Agent display priority")
-    uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
+    uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id", exclude=True)
 
     @model_validator(mode="before")
     @classmethod
     def validate_to_json(cls, value):
         if isinstance(value, str):
-            return cls(**json.loads(value))
+            try:
+                return cls(**json.loads(value))
+            except json.JSONDecodeError as e:
+                raise ValueError("Invalid JSON string provided") from e
         return value
 
     class Config:

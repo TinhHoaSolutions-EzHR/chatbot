@@ -74,7 +74,10 @@ class PromptRequest(BaseModel):
     @classmethod
     def validate_to_json(cls, value):
         if isinstance(value, str):
-            return cls(**json.loads(value))
+            try:
+                return cls(**json.loads(value))
+            except json.JSONDecodeError as e:
+                raise ValueError("Invalid JSON string provided") from e
         return value
 
     class Config:

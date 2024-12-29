@@ -144,12 +144,7 @@ class AgentService(BaseService):
         """
         with self._transaction():
             # Define prompt and create it
-            prompt = Prompt(
-                name=prompt_request.name,
-                description=prompt_request.description,
-                system_prompt=prompt_request.system_prompt,
-                task_prompt=prompt_request.task_prompt,
-            )
+            prompt = Prompt(**prompt_request.model_dump())
             err = self._prompt_repo.create_prompt(prompt=prompt)
             if err:
                 return err
@@ -161,11 +156,7 @@ class AgentService(BaseService):
             agent = Agent(
                 user_id=user_id,
                 prompt_id=prompt.id,
-                name=agent_request.name,
-                description=agent_request.description,
-                agent_type=agent_request.agent_type,
-                is_visible=agent_request.is_visible,
-                display_priority=agent_request.display_priority,
+                **agent_request.model_dump(),
             )
             err = self._agent_repo.create_agent(agent=agent)
             if err:
@@ -185,7 +176,9 @@ class AgentService(BaseService):
                 return err
 
             # Update agent with image path
-            to_update_agent = {"uploaded_image_path": file_path}
+            to_update_agent = AgentRequest(uploaded_image_path=file_path).model_dump(
+                exclude_unset=True, exclude_defaults=True
+            )
             err = self._agent_repo.update_agent(
                 agent_id=agent.id, agent=to_update_agent, user_id=user_id
             )
