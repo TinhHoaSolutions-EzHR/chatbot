@@ -207,7 +207,8 @@ services:
         max-size: "50m"
         max-file: "6"
     command: >
-      /bin/sh -c "dos2unix /etc/nginx/conf.d/run-nginx.sh
+      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh 
+      && dos2unix /etc/nginx/conf.d/run-nginx.sh
       && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
 
 volumes:
