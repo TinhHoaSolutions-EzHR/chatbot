@@ -14,6 +14,7 @@ class ErrorCodesMappingNumber(Enum):
     AGENT_NOT_FOUND = (404, "Agent not specified or found for chat session")
     CHAT_MESSAGES_NOT_FOUND = (404, "Chat message not found")
     UNABLE_TO_UPLOAD_FILE_TO_MINIO = (500, "Unable to upload file to Minio")
+    UNABLE_TO_DELETE_FILE_FROM_MINIO = (500, "Unable to delete file from Minio")
 
 
 class BaseException(Exception):

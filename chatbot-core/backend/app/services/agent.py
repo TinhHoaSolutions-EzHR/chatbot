@@ -81,9 +81,9 @@ class AgentService(BaseService):
         agent_avatar: BytesIO,
         agent_name: str,
         user_id: str,
-        delete_existing_image: bool = False,
-        existing_image_path: str = None,
-    ) -> Tuple[str, Optional[APIError]]:
+        delete_existing_image: bool = True,
+        existing_image_path: Optional[str] = None,
+    ) -> Tuple[Optional[str], Optional[APIError]]:
         """
         Upload agent avatar to Minio.
 
@@ -91,11 +91,11 @@ class AgentService(BaseService):
             agent_avatar (BytesIO): Agent avatar image.
             agent_name (str): Agent name.
             user_id (str): User id.
-            delete_existing_image (bool, optional): Whether to delete existing image. Defaults to False.
-            existing_image_path (str, optional): Existing image path. Defaults to None.
+            delete_existing_image (bool, optional): Delete existing image. Defaults to True.
+            existing_image_path (Optional[str], optional): Existing image path. Defaults to None.
 
         Returns:
-            Tuple[str, Optional[APIError]]: File path in Minio and APIError object if any error
+            Tuple[Optional[str], Optional[APIError]]: File path in Minio and APIError object if any error
         """
         # Construct file path in Minio
         file_path = construct_file_path(object_name=agent_name, user_id=user_id)
@@ -108,7 +108,7 @@ class AgentService(BaseService):
             bucket_name=Constants.MINIO_IMAGE_BUCKET,
         )
         if not is_file_uploaded:
-            return "", APIError(kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value)
+            return None, APIError(kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value)
 
         # Delete existing image if needed
         if delete_existing_image and existing_image_path:
@@ -117,8 +117,8 @@ class AgentService(BaseService):
                 object_name=existing_image_path, bucket_name=Constants.MINIO_IMAGE_BUCKET
             )
             if not is_file_deleted:
-                return "", APIError(
-                    kind=ErrorCodesMappingNumber.UNABLE_TO_DELETE_FILE_IN_MINIO.value
+                return None, APIError(
+                    kind=ErrorCodesMappingNumber.UNABLE_TO_DELETE_FILE_FROM_MINIO.value
                 )
 
         return file_path, None
@@ -236,6 +236,11 @@ class AgentService(BaseService):
             if agent_request:
                 agent = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
 
+                # Update agent
+                err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
+                if err:
+                    return err
+
             # Upload new image to Minio if file is provided.
             if file:
                 file_path, err = self._upload_agent_avatar(
@@ -248,13 +253,13 @@ class AgentService(BaseService):
                 if err:
                     return err
 
-                # Update agent with new image
-                agent["uploaded_image_path"] = file_path
-
-            # Update agent
-            err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
-            if err:
-                return err
+                # Define to-be-updated agent
+                agent = AgentRequest(uploaded_image_path=file_path).model_dump(
+                    exclude_unset=True, exclude_defaults=True
+                )
+                err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
+                if err:
+                    return err
 
         return None
 
