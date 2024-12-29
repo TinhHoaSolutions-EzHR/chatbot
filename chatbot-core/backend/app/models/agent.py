@@ -51,7 +51,7 @@ class Agent(Base):
     __tablename__ = "agent"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
     user_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"), nullable=True

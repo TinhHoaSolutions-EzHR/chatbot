@@ -183,16 +183,12 @@ def update_agent(
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
         raise HTTPException(status_code=status_code, detail=detail)
 
-    logger.info(f"Agent request: {agent_request}")
-    logger.info(f"Prompt request: {prompt_request}")
-    logger.info(f"File: {file}")
-
     # Update agent
     err = AgentService(db_session=db_session, minio_connector=minio_connector).update_agent(
         agent_id=agent_id,
         agent_request=agent_request,
         prompt_request=prompt_request,
-        user_id=str(user.id),
+        user_id=user.id,
         file=file,
     )
     if err:
