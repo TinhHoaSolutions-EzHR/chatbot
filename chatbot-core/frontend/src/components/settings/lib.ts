@@ -12,7 +12,7 @@ export enum SettingsError {
 }
 
 export async function fetchStandardSettingsSS() {
-  return fetchSS("/settings");
+  return fetchSS("/users/me/settings");
 }
 
 export async function fetchEnterpriseSettingsSS() {

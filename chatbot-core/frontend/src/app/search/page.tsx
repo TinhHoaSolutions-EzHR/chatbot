@@ -49,7 +49,7 @@ export default async function Home(props: {
     getAuthTypeMetadataSS(),
     getCurrentUserSS(),
     fetchSS("/manage/indexing-status"),
-    fetchSS("/manage/document-set"),
+    // fetchSS("/manage/document-set"),
     fetchAssistantsSS(),
     fetchSS("/query/valid-tags"),
     fetchSS("/query/user-searches"),

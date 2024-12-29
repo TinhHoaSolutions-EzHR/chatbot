@@ -4,7 +4,7 @@ import { fetchSS } from "../utilsSS";
 export type FetchAssistantsResponse = [Persona[], string | null];
 
 export async function fetchAssistantsSS(): Promise<FetchAssistantsResponse> {
-  const response = await fetchSS("/persona");
+  const response = await fetchSS("/agents");
   if (response.ok) {
     return [(await response.json()) as Persona[], null];
   }

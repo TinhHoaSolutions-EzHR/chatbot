@@ -70,7 +70,6 @@ async function handleRequest(request: NextRequest, path: string[]) {
       { status: 404 }
     );
   }
-
   try {
     const backendUrl = new URL(`${INTERNAL_URL}/${path.join("/")}`);
 
