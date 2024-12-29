@@ -174,7 +174,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - backend
+      - frontend
 
   nginx:
     image: nginx:1.23.4-alpine
@@ -190,6 +190,7 @@ services:
       - ../data/nginx:/etc/nginx/conf.d
     networks:
       - frontend
+      - backend
     logging:
       driver: json-file
       options:
