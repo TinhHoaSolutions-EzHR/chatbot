@@ -5,9 +5,9 @@ from typing import Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import and_
 
+from app.models import ChatFeedback
 from app.models import ChatMessage
 from app.models import ChatSession
-from app.models import ChatFeedback
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber

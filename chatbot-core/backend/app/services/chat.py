@@ -6,14 +6,14 @@ from typing import Union
 
 from sqlalchemy.orm import Session
 
+from app.models import ChatFeedback
 from app.models import ChatMessage
 from app.models import ChatSession
-from app.models import ChatFeedback
+from app.models.chat import ChatFeedbackRequest
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
-from app.models.chat import ChatFeedbackRequest
 from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
