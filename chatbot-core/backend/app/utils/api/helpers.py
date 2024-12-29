@@ -164,6 +164,10 @@ def construct_file_path(object_name: str, user_id: str = None) -> str:
 
     Returns:
         str: File path in Minio.
+
+    Example:
+        >>> construct_file_path("avatar", "user_id")
+        # my_avatar_f6f7b43c-c0ca-4003-8143-7c5e767cde12_20211013123456.png
     """
     file_name = (
         (remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower())
@@ -171,7 +175,8 @@ def construct_file_path(object_name: str, user_id: str = None) -> str:
         + user_id
         + "_"
         + datetime.now().strftime("%Y%m%d%H%M%S")
-        + ".png"
+        + "."
+        + Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT
     )
     file_path = os.path.join(Constants.MINIO_IMAGE_BUCKET, file_name)
 
