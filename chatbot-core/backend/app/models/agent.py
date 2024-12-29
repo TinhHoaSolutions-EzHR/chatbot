@@ -97,6 +97,7 @@ class AgentRequest(BaseModel):
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     display_priority: int = Field(0, description="Agent display priority")
+    uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
 
     @model_validator(mode="before")
     @classmethod
@@ -117,6 +118,7 @@ class AgentResponse(BaseModel):
 
     id: UUID = Field(..., description="Agent id")
     user_id: Optional[UUID] = Field(None, description="User id")
+    prompt_id: UUID = Field(..., description="Prompt id")
     name: str = Field(..., description="Agent name")
     description: Optional[str] = Field(None, description="Agent description")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")

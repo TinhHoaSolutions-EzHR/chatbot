@@ -121,12 +121,12 @@ def create_agent(
     Create a new agent.
 
     Args:
-        agent_request (AgentRequest): Agent request object.
-        prompt_request (PromptRequest): Prompt request object.
+        agent_request (AgentRequest): Agent request object (required).
+        prompt_request (PromptRequest): Prompt request object (required).
         file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
         minio_connector (MinioConnector): Minio connector object.
-        user (User): User object.
+        user (User): User object (required).
 
     Returns:
         BackendAPIResponse: API response with the created agent.
@@ -137,7 +137,7 @@ def create_agent(
 
     # Create agent
     err = AgentService(db_session=db_session, minio_connector=minio_connector).create_agent(
-        agent_request=agent_request, prompt_request=prompt_request, user_id=user.id, file=file
+        agent_request=agent_request, prompt_request=prompt_request, user_id=str(user.id), file=file
     )
     if err:
         status_code, detail = err.kind
@@ -157,8 +157,8 @@ def create_agent(
 @router.patch("/{agent_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_agent(
     agent_id: str,
-    agent_request: AgentRequest = Body(...),
-    prompt_request: PromptRequest = Body(...),
+    agent_request: Optional[AgentRequest] = Body(None),
+    prompt_request: Optional[PromptRequest] = Body(None),
     file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
@@ -183,12 +183,16 @@ def update_agent(
         status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
         raise HTTPException(status_code=status_code, detail=detail)
 
+    logger.info(f"Agent request: {agent_request}")
+    logger.info(f"Prompt request: {prompt_request}")
+    logger.info(f"File: {file}")
+
     # Update agent
     err = AgentService(db_session=db_session, minio_connector=minio_connector).update_agent(
         agent_id=agent_id,
         agent_request=agent_request,
         prompt_request=prompt_request,
-        user_id=user.id,
+        user_id=str(user.id),
         file=file,
     )
     if err:

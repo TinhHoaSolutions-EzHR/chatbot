@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from datetime import timezone
-from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -24,7 +23,6 @@ from sqlalchemy.sql import func
 from app.models.base import Base
 
 if TYPE_CHECKING:
-    from app.models import ChatMessage
     from app.models import Agent
 
 
@@ -39,7 +37,6 @@ class Prompt(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
-    # agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     system_prompt: Mapped[str] = mapped_column(Text, nullable=False)
@@ -59,9 +56,6 @@ class Prompt(Base):
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    chat_messages: Mapped[List["ChatMessage"]] = relationship(
-        "ChatMessage", back_populates="prompt"
-    )
     agent: Mapped["Agent"] = relationship("Agent", back_populates="prompt")
 
 
@@ -94,7 +88,6 @@ class PromptResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="Prompt ID")
-    agent_id: UUID = Field(..., description="Agent ID")
     name: str = Field(..., description="Prompt name")
     description: Optional[str] = Field(None, description="Prompt description")
     system_prompt: str = Field(..., description="System prompt")

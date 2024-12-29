@@ -34,7 +34,6 @@ from app.settings.constants import Constants
 if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
-    from app.models import Prompt
     from app.models import Folder
 
 
@@ -156,9 +155,6 @@ class ChatMessage(Base):
         ForeignKey(CHAT_MESSAGES_ID), nullable=True
     )
     message: Mapped[str] = mapped_column(Text)
-    prompt_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        ForeignKey("prompt.id"), nullable=True
-    )
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False), nullable=False
@@ -190,7 +186,6 @@ class ChatMessage(Base):
         "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
     )
     agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
-    prompt: Mapped[Optional["Prompt"]] = relationship("Prompt", back_populates="chat_messages")
 
     @validates("token_count")
     def validate_token_count(self, key: Any, token_count: int) -> Union[int, None]:
@@ -238,7 +233,6 @@ class ChatMessageRequest(BaseModel):
     parent_message_id: Optional[UUID] = Field(None, description="Parent message id")
     child_message_id: Optional[UUID] = Field(None, description="Child message id")
     message: Optional[str] = Field(None, description="Message text", min_length=1, max_length=10000)
-    prompt_id: Optional[UUID] = Field(None, description="Prompt id")
     request_type: ChatMessageRequestType = Field(
         description="Request type", default=ChatMessageRequestType.NEW
     )

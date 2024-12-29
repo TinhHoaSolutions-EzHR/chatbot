@@ -31,6 +31,7 @@ class AgentRepository(BaseRepository):
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
         """
         Get all agents of the user. Sort by display_priority.
+        All agents include system agents and user-created agents.
 
         Args:
             user_id(str): User id
@@ -51,7 +52,7 @@ class AgentRepository(BaseRepository):
 
     def get_agent(self, agent_id: str, user_id: str) -> Tuple[Optional[Agent], Optional[APIError]]:
         """
-        Get an agent by id.
+        Get an agent by id. Include all system agents and user-created agents.
 
         Args:
             agent_id(str): Agent id
@@ -63,7 +64,12 @@ class AgentRepository(BaseRepository):
         try:
             agent = (
                 self._db_session.query(Agent)
-                .filter(and_(Agent.id == agent_id, Agent.user_id == user_id))
+                .filter(
+                    and_(
+                        Agent.id == agent_id,
+                        or_(Agent.user_id == user_id, Agent.agent_type == AgentType.SYSTEM),
+                    )
+                )
                 .first()
             )
             return agent, None
@@ -93,6 +99,7 @@ class AgentRepository(BaseRepository):
     ) -> Optional[APIError]:
         """
         Update an agent.
+        Users can only update their own agents. For system agents, only owner, aka admin user, can update.
 
         Args:
             agent_id(str): Agent id
@@ -114,6 +121,7 @@ class AgentRepository(BaseRepository):
     def delete_agent(self, agent_id: str, user_id: str) -> Optional[APIError]:
         """
         Delete an agent.
+        Users can only delete their own agents. For system agents, only owner, aka admin user, can delete.
 
         Args:
             agent_id(str): Agent id
