@@ -103,7 +103,7 @@ services:
     image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
     container_name: object-storage
     hostname: object-storage
-    restart: always
+    # restart: always
     ports:
       - "9000:9000" # for web interface
       - "9001:9001" # for S3 API
@@ -162,6 +162,55 @@ services:
         max-size: "50m"
         max-file: "6"
 
+  web-server:
+    build:
+      context: ../../chatbot-core/frontend
+      dockerfile: dev.Dockerfile
+    container_name: web-server
+    hostname: web-server
+    restart: on-failure
+    depends_on:
+      - api-server
+    ports:
+      - "3000:3000"  # Ensure the dev server is exposed on port 3000
+    networks:
+      - backend
+      - frontend
+    env_file:
+      - ./.env
+    volumes:
+      - ../../chatbot-core/frontend:/app  # Mount the source code into the container
+      - /app/node_modules  # Avoid node_modules conflicts
+    command: >
+      /bin/sh -c "npm install && npm run dev"
+
+
+  nginx:
+    image: nginx:1.23.4-alpine
+    restart: on-failure
+    depends_on:
+      - api-server
+      - web-server
+    environment:
+      - DOMAIN=localhost
+    ports:
+      - "8000:80"
+      - "3003:80"
+    volumes:
+      - ../data/nginx:/etc/nginx/conf.d
+    networks:
+      - frontend
+      - backend
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+    command: >
+      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh 
+      && dos2unix /etc/nginx/conf.d/run-nginx.sh
+      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+
 volumes:
   mssql_data_volume:
   mssql_log_volume:
@@ -171,6 +220,8 @@ volumes:
 
 networks:
   backend:
+    driver: bridge
+  frontend:
     driver: bridge
 
 configs:
