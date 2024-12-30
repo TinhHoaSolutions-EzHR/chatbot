@@ -49,6 +49,7 @@ class AgentService(BaseService):
         Returns:
             Tuple[Optional[List[Agent]], Optional[APIError]]: List of agent objects and APIError object if any error
         """
+        # Get agents
         agents, err = self._agent_repo.get_agents(user_id=user_id)
         if err:
             return None, err
@@ -70,9 +71,18 @@ class AgentService(BaseService):
         Returns:
             Tuple[Optional[Agent], Optional[APIError]]: Agent object and APIError object if any error
         """
+        # Get agent by id
         agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
         if err:
             return None, err
+
+        # Get agent's prompt
+        prompt, err = self._prompt_repo.get_prompt(prompt_id=agent.prompt_id)
+        if err:
+            return None, err
+
+        # Set prompt to agent
+        agent.prompt = prompt
 
         return agent, None
 
@@ -97,19 +107,6 @@ class AgentService(BaseService):
         Returns:
             Tuple[Optional[str], Optional[APIError]]: File path in Minio and APIError object if any error
         """
-        # Construct file path in Minio
-        file_path = construct_file_path(object_name=agent_name, user_id=user_id)
-        logger.info(f"Uploading agent avatar to Minio: {file_path}")
-
-        # Upload image to Minio
-        is_file_uploaded = self._minio_connector.upload_file(
-            object_name=file_path,
-            data=agent_avatar,
-            bucket_name=Constants.MINIO_IMAGE_BUCKET,
-        )
-        if not is_file_uploaded:
-            return None, APIError(kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value)
-
         # Delete existing image if needed
         if delete_existing_image and existing_image_path:
             logger.info(f"Deleting existing agent avatar in Minio: {existing_image_path}")
@@ -120,6 +117,19 @@ class AgentService(BaseService):
                 return None, APIError(
                     kind=ErrorCodesMappingNumber.UNABLE_TO_DELETE_FILE_FROM_MINIO.value
                 )
+
+        # Construct file path in Minio
+        file_path = construct_file_path(object_name=agent_name, user_id=str(user_id))
+        logger.info(f"Uploading agent avatar to Minio: {file_path}")
+
+        # Upload image to Minio
+        is_file_uploaded = self._minio_connector.upload_file(
+            object_name=file_path,
+            data=agent_avatar,
+            bucket_name=Constants.MINIO_IMAGE_BUCKET,
+        )
+        if not is_file_uploaded:
+            return None, APIError(kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value)
 
         return file_path, None
 
@@ -247,9 +257,8 @@ class AgentService(BaseService):
                     return err
 
                 # Define to-be-updated agent
-                agent = AgentRequest(uploaded_image_path=file_path).model_dump(
-                    exclude_unset=True, exclude_defaults=True
-                )
+                agent_request = AgentRequest(uploaded_image_path=file_path)
+                agent = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
                 err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
                 if err:
                     return err

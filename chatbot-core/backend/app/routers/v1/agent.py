@@ -144,7 +144,11 @@ def create_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = agent_request.model_dump(exclude_unset=True)
+    data = {}
+    data["agent"] = agent_request.model_dump(exclude_unset=True)
+    data["prompt"] = prompt_request.model_dump(exclude_unset=True)
+    if file:
+        data["file"] = file.filename
 
     return (
         BackendAPIResponse()
@@ -196,7 +200,13 @@ def update_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = agent_request.model_dump(exclude_unset=True)
+    data = {}
+    if agent_request:
+        data["agent"] = agent_request.model_dump(exclude_unset=True)
+    if prompt_request:
+        data["prompt"] = prompt_request.model_dump(exclude_unset=True)
+    if file:
+        data["file"] = file.filename
 
     return (
         BackendAPIResponse()
