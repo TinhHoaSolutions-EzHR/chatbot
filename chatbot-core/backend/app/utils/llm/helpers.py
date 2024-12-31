@@ -12,8 +12,8 @@ from llama_index.llms.cohere import Cohere
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.openai import OpenAI
 
-from app.models.embedding import EmbeddingProviderType
 from app.models.llm import LLMProviderType
+from app.models.provider import EmbeddingProviderType
 from app.settings import Constants
 
 

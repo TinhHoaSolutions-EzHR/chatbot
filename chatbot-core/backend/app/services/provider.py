@@ -5,17 +5,20 @@ from typing import Tuple
 from sqlalchemy.orm import Session
 
 from app.models import EmbeddingProvider
-from app.models.embedding import EmbeddingProviderRequest
-from app.repositories.embedding import EmbeddingProviderRepository
+from app.models import LLMProvider
+from app.models.provider import EmbeddingProviderRequest
+from app.models.provider import LLMProviderRequest
+from app.repositories.provider import ProviderRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import handle_current_embedding_model
+from app.utils.llm.helpers import handle_current_llm_model
 
 logger = get_logger(__name__)
 
 
-class EmbeddingProviderService(BaseService):
+class ProviderService(BaseService):
     def __init__(self, db_session: Session):
         """
         Embedding provider service class for handling embedding provider-related operations.
@@ -26,7 +29,7 @@ class EmbeddingProviderService(BaseService):
         super().__init__(db_session=db_session)
 
         # Define repositories
-        self._embedding_provider_repo = EmbeddingProviderRepository(db_session=db_session)
+        self._embedding_provider_repo = ProviderRepository(db_session=db_session)
 
     def get_embedding_providers(self) -> Tuple[List[EmbeddingProvider], Optional[APIError]]:
         """
@@ -91,6 +94,70 @@ class EmbeddingProviderService(BaseService):
             # Update embedding provider
             err = self._embedding_provider_repo.update_embedding_provider(
                 embedding_provider_id=embedding_provider_id, embedding_provider=embedding_provider
+            )
+
+        return err if err else None
+
+    def get_llm_providers(self) -> Tuple[List[LLMProvider], Optional[APIError]]:
+        """
+        Get all LLM providers.
+
+        Returns:
+            Tuple[List[LLMProvider], Optional[APIError]]: List of LLM provider objects and APIError object if any error.
+        """
+        return self._llm_provider_repo.get_llm_providers()
+
+    def get_llm_provider(self, llm_provider_id: str) -> Tuple[LLMProvider, Optional[APIError]]:
+        """
+        Get LLM provider by ID.
+
+        Args:
+            llm_provider_id (str): The LLM provider ID.
+
+        Returns:
+            Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error.
+        """
+        # Get LLM provider
+        return self._llm_provider_repo.get_llm_provider(llm_provider_id=llm_provider_id)
+
+    def update_llm_provider(
+        self, llm_provider_id: str, llm_provider_request: LLMProviderRequest
+    ) -> Optional[APIError]:
+        """
+        Update LLM provider.
+
+        Args:
+            llm_provider_id (str): The LLM provider ID.
+            llm_provider_request (LLMProviderRequest): The LLM provider request.
+
+        Returns:
+            Optional[APIError]: APIError object if any error.
+        """
+        # Get existing LLM provider
+        existing_llm_provider, err = self._llm_provider_repo.get_llm_provider(
+            llm_provider_id=llm_provider_id
+        )
+        if err:
+            return err
+
+        with self._transaction():
+            # Define to-be-updated LLM provider
+            llm_provider = llm_provider_request.model_dump(exclude_unset=True, exclude_none=True)
+
+            # Set the current LLM model
+            if llm_provider.get("current_model") and llm_provider.get("name"):
+                handle_current_llm_model(
+                    llm_model_name=llm_provider["current_model"],
+                    llm_provider_type=llm_provider["name"],
+                    temperature=llm_provider.get("temperature")
+                    or existing_llm_provider.temperature,
+                    api_key=llm_provider.get("api_key") or existing_llm_provider.api_key,
+                    logger=logger,
+                )
+
+            # Update LLM provider
+            err = self._llm_provider_repo.update_llm_provider(
+                llm_provider_id=llm_provider_id, llm_provider=llm_provider
             )
 
         return err if err else None
