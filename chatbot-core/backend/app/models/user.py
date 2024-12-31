@@ -25,6 +25,7 @@ from app.models.base import Base
 if TYPE_CHECKING:
     from app.models import ChatSession
     from app.models import Folder
+    from app.models import Agent
 
 
 class User(Base):
@@ -56,6 +57,7 @@ class User(Base):
     # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="user")
     folders: Mapped[List["Folder"]] = relationship("Folder", back_populates="user")
+    agents: Mapped[List["Agent"]] = relationship("Agent", back_populates="user")
     user_setting: Mapped["UserSetting"] = relationship("UserSetting", back_populates="user")
 
 

@@ -75,3 +75,20 @@ class PromptRepository(BaseRepository):
         except Exception as e:
             logger.error(f"Error updating prompt: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def delete_prompt(self, prompt_id: str) -> Optional[APIError]:
+        """
+        Delete a prompt.
+
+        Args:
+            prompt_id(str): Prompt id
+
+        Returns:
+            Optional[APIError]: APIError object if any error
+        """
+        try:
+            self._db_session.query(Prompt).filter(Prompt.id == prompt_id).delete()
+            return None
+        except Exception as e:
+            logger.error(f"Error deleting prompt: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

@@ -105,7 +105,7 @@ class DocumentService(BaseService):
                         )
 
                     # Upload file to object storage
-                    self._minio_connector.upload_files(
+                    self._minio_connector.upload_file(
                         object_name=file_path,
                         data=document.file,
                         bucket_name=Constants.MINIO_DOCUMENT_BUCKET,

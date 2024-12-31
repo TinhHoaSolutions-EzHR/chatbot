@@ -217,7 +217,9 @@ dependencies = [
     { name = "llama-index-vector-stores-qdrant" },
     { name = "minio" },
     { name = "pdfplumber" },
+    { name = "pydenticon" },
     { name = "pyodbc" },
+    { name = "python-multipart" },
     { name = "qdrant-client" },
     { name = "redis" },
     { name = "sqlalchemy" },
@@ -258,9 +260,11 @@ requires-dist = [
     { name = "llama-index-vector-stores-qdrant", specifier = ">=0.4.0" },
     { name = "minio", specifier = ">=7.2.12" },
     { name = "pdfplumber", specifier = ">=0.11.4" },
+    { name = "pydenticon", specifier = ">=0.3.1" },
     { name = "pyodbc", specifier = ">=5.2.0" },
     { name = "pyright", marker = "extra == 'dev'" },
     { name = "pytest", marker = "extra == 'test'" },
+    { name = "python-multipart", specifier = ">=0.0.17" },
     { name = "qdrant-client", specifier = ">=1.12.1" },
     { name = "redis", specifier = ">=5.2.0" },
     { name = "ruff", marker = "extra == 'dev'" },
@@ -2392,6 +2396,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/58/5305e723d9fcdf1c5a655e6a4cc2a07128bf644ff4b1d98daf7a9dbf57da/pydantic_core-2.23.4-cp313-none-win32.whl", hash = "sha256:3d5639516376dce1940ea36edf408c554475369f5da2abd45d44621cb616f769", size = 1738360 },
     { url = "https://files.pythonhosted.org/packages/a5/ae/e14b0ff8b3f48e02394d8acd911376b7b66e164535687ef7dc24ea03072f/pydantic_core-2.23.4-cp313-none-win_amd64.whl", hash = "sha256:5a1504ad17ba4210df3a045132a7baeeba5a200e930f57512ee02909fc5c4cb5", size = 1919411 },
 ]
+
+[[package]]
+name = "pydenticon"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/76/fa/3085252e2cfd8353624142fb18ca007a2ce4fe199a1440ea3c85ec5b8620/pydenticon-0.3.1.tar.gz", hash = "sha256:2ef363cdd6f4f0193ce62257486027e36884570f6140bbde51de72df321b77f1", size = 26181 }
 
 [[package]]
 name = "pygments"
