@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        '3.5': '0.875rem',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

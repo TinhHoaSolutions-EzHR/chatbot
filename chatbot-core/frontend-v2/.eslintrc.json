@@ -37,7 +37,7 @@
         "groups": [
           ["^\\u0000"],
           ["^node:", "^@?\\w"],
-          ["^(lib)(/.*|$)", "^(common|modules|services|components|utils|hook|hooks|config)(/.*|$)"],
+          ["^(lib)(/.*|$)", "^(common|modules|services|components|utils|hook|hooks|config|@)(/.*|$)"],
           ["^"],
           ["^."],
           ["^.+\\.s?css$"]
