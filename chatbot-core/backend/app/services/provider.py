@@ -2,6 +2,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from cryptography.fernet import Fernet
 from sqlalchemy.orm import Session
 
 from app.models import EmbeddingProvider
@@ -10,8 +11,8 @@ from app.models.provider import EmbeddingProviderRequest
 from app.models.provider import LLMProviderRequest
 from app.repositories.provider import ProviderRepository
 from app.services.base import BaseService
+from app.settings import Secrets
 from app.utils.api.api_response import APIError
-from app.utils.api.encryption import SecretKeyManager
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import handle_current_embedding_model
 from app.utils.llm.helpers import handle_current_llm_model
@@ -80,16 +81,16 @@ class ProviderService(BaseService):
 
             # Handle current api key
             api_key = None
-            secret_key_manager = SecretKeyManager(db_session=self._db_session)
+            fernet = Fernet(Secrets.FERMENT_API_KEY)
             if embedding_provider.get("api_key"):
                 api_key = embedding_provider["api_key"]
 
                 # Encrypt the new api key
-                encryption_result = secret_key_manager.encrypt_key(embedding_provider["api_key"])
+                encryption_result = fernet.encrypt(embedding_provider["api_key"].encode())
                 embedding_provider["api_key"] = encryption_result
             else:
                 # Use the existing api key
-                api_key = secret_key_manager.decrypt_key(existing_embedding_provider.api_key)
+                api_key = fernet.decrypt(existing_embedding_provider.api_key).decode()
 
             # Set the current embedding model
             if embedding_provider.get("current_model"):
@@ -159,16 +160,16 @@ class ProviderService(BaseService):
 
             # Handle current api key
             api_key = None
-            secret_key_manager = SecretKeyManager(db_session=self._db_session)
+            fernet = Fernet(Secrets.FERMENT_API_KEY)
             if llm_provider.get("api_key"):
                 api_key = llm_provider["api_key"]
 
                 # Encrypt the new api key
-                encryption_result = secret_key_manager.encrypt_key(llm_provider["api_key"])
+                encryption_result = fernet.encrypt(llm_provider["api_key"].encode())
                 llm_provider["api_key"] = encryption_result
             else:
                 # Use the existing api key
-                api_key = secret_key_manager.decrypt_key(existing_llm_provider.api_key)
+                api_key = fernet.decrypt(existing_llm_provider.api_key).decode()
 
             # Set the current LLM model
             if llm_provider.get("current_model"):
