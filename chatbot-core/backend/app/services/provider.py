@@ -80,15 +80,16 @@ class ProviderService(BaseService):
 
             # Handle current api key
             api_key = None
+            secret_key_manager = SecretKeyManager(db_session=self._db_session)
             if embedding_provider.get("api_key"):
-                # Encrypt the new api key
                 api_key = embedding_provider["api_key"]
-                secret_key_manager = SecretKeyManager(db_session=self._db_session)
+
+                # Encrypt the new api key
                 encryption_result = secret_key_manager.encrypt_key(embedding_provider["api_key"])
                 embedding_provider["api_key"] = encryption_result
             else:
                 # Use the existing api key
-                api_key = existing_embedding_provider.api_key
+                api_key = secret_key_manager.decrypt_key(existing_embedding_provider.api_key)
 
             # Set the current embedding model
             if embedding_provider.get("current_model"):
@@ -158,15 +159,16 @@ class ProviderService(BaseService):
 
             # Handle current api key
             api_key = None
+            secret_key_manager = SecretKeyManager(db_session=self._db_session)
             if llm_provider.get("api_key"):
-                # Encrypt the new api key
                 api_key = llm_provider["api_key"]
-                secret_key_manager = SecretKeyManager(db_session=self._db_session)
+
+                # Encrypt the new api key
                 encryption_result = secret_key_manager.encrypt_key(llm_provider["api_key"])
                 llm_provider["api_key"] = encryption_result
             else:
                 # Use the existing api key
-                api_key = existing_llm_provider.api_key
+                api_key = secret_key_manager.decrypt_key(existing_llm_provider.api_key)
 
             # Set the current LLM model
             if llm_provider.get("current_model"):

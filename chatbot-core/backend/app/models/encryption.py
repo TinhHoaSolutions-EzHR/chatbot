@@ -1,9 +1,11 @@
 from datetime import datetime
 from datetime import timezone
 from typing import Optional
+from uuid import uuid4
 
 from sqlalchemy import DateTime
 from sqlalchemy import String
+from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.sql import func
@@ -18,6 +20,9 @@ class EncryptionKey(Base):
 
     __tablename__ = "encryption_key"
 
+    id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
+    )
     key: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
