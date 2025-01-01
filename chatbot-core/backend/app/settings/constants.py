@@ -47,6 +47,7 @@ class Constants:
     # Llama Index Configuration
     # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
     # should be small under development, to reduce costs
+    RETRY_TIMES = 3
     LLM_QDRANT_COLLECTION = "ezhr_chatbot"
     LLM_REDIS_CACHE_COLLECTION = "ezhr_chatbot_cache"
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")

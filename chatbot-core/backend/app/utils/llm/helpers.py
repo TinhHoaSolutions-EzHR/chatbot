@@ -1,11 +1,13 @@
+import os
+
 import tiktoken
+
+from app.settings import Constants
 from llama_index.core import Settings
 from llama_index.core.callbacks import CallbackManager
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.openai import OpenAIEmbeddingMode
 from llama_index.llms.openai import OpenAI
-
-from app.settings import Constants
 
 
 def init_llm_configurations(
@@ -38,3 +40,16 @@ def init_llm_configurations(
     Settings.num_output = Constants.LLM_MAX_OUTPUT_LENGTH
     Settings.context_window = Constants.LLM_MAX_CONTEXT_WINDOW
     Settings.callback_manager = callback_manager
+
+
+def get_openai_api_key() -> str:
+    """
+    Get the OpenAI API key
+
+    Returns:
+        str: OpenAI API key
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+    if api_key is None:
+        raise ValueError("OpenAI API key not found")
+    return os.getenv("OPENAI_API_KEY")
