@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import field_validator
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -116,8 +117,12 @@ class LLMProvider(BaseProvider):
         Returns:
             float: The validated temperature
         """
-        if value < 0.0 or value > 1.0:
-            raise ValueError("Temperature must be between 0.0 and 1.0.")
+        if value < 0.0:
+            raise ValueError("Temperature must be greater than or equal to 0.0.")
+        if (self.name == ProviderType.COHERE or self.name == ProviderType.OPENAI) and value > 1.0:
+            raise ValueError("Temperature must be less than or equal to 1.0.")
+        if self.name == ProviderType.GEMINI and value > 2.0:
+            raise ValueError("Temperature must be less than or equal to 2.0.")
 
         return value
 
@@ -194,6 +199,20 @@ class LLMProviderRequest(BaseProviderRequest):
     temperature: float = Field(
         0.7, description="The temperature of the LLM provider.", ge=0.0, le=1.0
     )
+
+    @field_validator("temperature")
+    def validate_temperature(cls, value: Optional[float]) -> Optional[float]:
+        """
+        Validate that the temperature is between 0.0 and 1.0.
+
+        Args:
+            value (Optional[float]): The temperature value to validate.
+
+        Returns:
+            Optional[float]: The validated temperature value.
+        """
+        if value and (value < 0.0 or value > 2.0):
+            raise ValueError("Temperature must be between 0.0 and 2.0.")
 
 
 class LLMProviderResponse(BaseProviderResponse):
