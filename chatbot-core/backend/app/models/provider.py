@@ -16,6 +16,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import Float
 from sqlalchemy import Integer
+from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -46,7 +47,7 @@ class BaseProvider(Base):
         SQLAlchemyEnum(ProviderType, native_enum=False),
         default=ProviderType.OPENAI,
     )
-    api_key: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    api_key: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
     current_model: Mapped[str] = mapped_column(String, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_default_provider: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -133,7 +134,7 @@ class BaseProviderRequest(BaseModel):
     Defines the structure of provider data received from the client.
     """
 
-    api_key: Optional[str] = Field(None, description="API key for the provider", exclude=True)
+    api_key: Optional[str] = Field(None, description="API key for the provider")
     current_model: Optional[str] = Field(None, description="The current model of the provider.")
     is_active: bool = Field(False, description="The active status of the provider.")
     is_default_provider: bool = Field(False, description="The default status of the provider.")

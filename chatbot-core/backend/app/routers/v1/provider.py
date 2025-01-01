@@ -125,7 +125,7 @@ def update_embedding_provider(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = embedding_provider_request.model_dump(exclude_unset=True)
+    data = embedding_provider_request.model_dump(exclude_unset=True, exclude={"api_key"})
 
     return (
         BackendAPIResponse()
@@ -230,7 +230,7 @@ def update_llm_provider(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = llm_provider_request.model_dump(exclude_unset=True)
+    data = llm_provider_request.model_dump(exclude_unset=True, exclude={"api_key"})
 
     return (
         BackendAPIResponse()

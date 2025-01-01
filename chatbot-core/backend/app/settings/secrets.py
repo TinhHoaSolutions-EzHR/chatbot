@@ -25,4 +25,4 @@ class Secrets:
     REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
     # Ferment API Key
-    FERMENT_API_KEY = os.getenv("FERMENT_API_KEY")
+    FERMENT_API_KEY = os.getenv("FERMENT_API_KEY", "S5U3ze4WtNZcKZKjoHngcPTGmp1XqLKwjTZ3iuvET28=")
