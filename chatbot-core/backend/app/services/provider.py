@@ -11,6 +11,7 @@ from app.models.provider import LLMProviderRequest
 from app.repositories.provider import ProviderRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
+from app.utils.api.encryption import SecretKeyManager
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import handle_current_embedding_model
 from app.utils.llm.helpers import handle_current_llm_model
@@ -29,7 +30,7 @@ class ProviderService(BaseService):
         super().__init__(db_session=db_session)
 
         # Define repositories
-        self._embedding_provider_repo = ProviderRepository(db_session=db_session)
+        self._provider_repo = ProviderRepository(db_session=db_session)
 
     def get_embedding_providers(self) -> Tuple[List[EmbeddingProvider], Optional[APIError]]:
         """
@@ -38,7 +39,7 @@ class ProviderService(BaseService):
         Returns:
             Tuple[List[EmbeddingProvider], Optional[APIError]]: List of embedding provider objects and APIError object if any error.
         """
-        return self._embedding_provider_repo.get_embedding_providers()
+        return self._provider_repo.get_embedding_providers()
 
     def get_embedding_provider(
         self, embedding_provider_id: str
@@ -52,7 +53,7 @@ class ProviderService(BaseService):
         Returns:
             Tuple[Optional[EmbeddingProvider], Optional[APIError]]: Embedding provider object and APIError object if any error.
         """
-        return self._embedding_provider_repo.get_embedding_provider(
+        return self._provider_repo.get_embedding_provider(
             embedding_provider_id=embedding_provider_id
         )
 
@@ -67,7 +68,7 @@ class ProviderService(BaseService):
             embedding_provider_request (EmbeddingProviderRequest): Embedding provider request object
         """
         # Get existing embedding provider
-        existing_embedding_provider, err = self._embedding_provider_repo.get_embedding_provider(
+        existing_embedding_provider, err = self._provider_repo.get_embedding_provider(
             embedding_provider_id=embedding_provider_id
         )
         if err:
@@ -77,22 +78,33 @@ class ProviderService(BaseService):
             # Define to-be-updated embedding provider
             embedding_provider = embedding_provider_request.model_dump(exclude_unset=True)
 
+            # Handle current api key
+            api_key = None
+            if embedding_provider.get("api_key"):
+                # Encrypt the new api key
+                api_key = embedding_provider["api_key"]
+                secret_key_manager = SecretKeyManager(db_session=self._db_session)
+                encryption_result = secret_key_manager.encrypt_key(embedding_provider["api_key"])
+                embedding_provider["api_key"] = encryption_result
+            else:
+                # Use the existing api key
+                api_key = existing_embedding_provider.api_key
+
             # Set the current embedding model
-            if embedding_provider.get("current_model") and embedding_provider.get("name"):
+            if embedding_provider.get("current_model"):
                 # Update settings
                 handle_current_embedding_model(
                     embedding_model_name=embedding_provider["current_model"],
-                    embedding_type=embedding_provider["name"],
+                    provider_type=existing_embedding_provider.name,
                     batch_size=embedding_provider.get("embed_batch_size")
                     or existing_embedding_provider.embed_batch_size,
                     dimensions=embedding_provider.get("dimensions")
                     or existing_embedding_provider.dimensions,
-                    api_key=embedding_provider.get("api_key")
-                    or existing_embedding_provider.api_key,
+                    api_key=api_key,
                 )
 
             # Update embedding provider
-            err = self._embedding_provider_repo.update_embedding_provider(
+            err = self._provider_repo.update_embedding_provider(
                 embedding_provider_id=embedding_provider_id, embedding_provider=embedding_provider
             )
 
@@ -105,7 +117,7 @@ class ProviderService(BaseService):
         Returns:
             Tuple[List[LLMProvider], Optional[APIError]]: List of LLM provider objects and APIError object if any error.
         """
-        return self._llm_provider_repo.get_llm_providers()
+        return self._provider_repo.get_llm_providers()
 
     def get_llm_provider(self, llm_provider_id: str) -> Tuple[LLMProvider, Optional[APIError]]:
         """
@@ -118,7 +130,7 @@ class ProviderService(BaseService):
             Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error.
         """
         # Get LLM provider
-        return self._llm_provider_repo.get_llm_provider(llm_provider_id=llm_provider_id)
+        return self._provider_repo.get_llm_provider(llm_provider_id=llm_provider_id)
 
     def update_llm_provider(
         self, llm_provider_id: str, llm_provider_request: LLMProviderRequest
@@ -134,7 +146,7 @@ class ProviderService(BaseService):
             Optional[APIError]: APIError object if any error.
         """
         # Get existing LLM provider
-        existing_llm_provider, err = self._llm_provider_repo.get_llm_provider(
+        existing_llm_provider, err = self._provider_repo.get_llm_provider(
             llm_provider_id=llm_provider_id
         )
         if err:
@@ -144,19 +156,31 @@ class ProviderService(BaseService):
             # Define to-be-updated LLM provider
             llm_provider = llm_provider_request.model_dump(exclude_unset=True, exclude_none=True)
 
+            # Handle current api key
+            api_key = None
+            if llm_provider.get("api_key"):
+                # Encrypt the new api key
+                api_key = llm_provider["api_key"]
+                secret_key_manager = SecretKeyManager(db_session=self._db_session)
+                encryption_result = secret_key_manager.encrypt_key(llm_provider["api_key"])
+                llm_provider["api_key"] = encryption_result
+            else:
+                # Use the existing api key
+                api_key = existing_llm_provider.api_key
+
             # Set the current LLM model
-            if llm_provider.get("current_model") and llm_provider.get("name"):
+            if llm_provider.get("current_model"):
                 handle_current_llm_model(
                     llm_model_name=llm_provider["current_model"],
-                    llm_provider_type=llm_provider["name"],
+                    provider_type=existing_llm_provider.name,
                     temperature=llm_provider.get("temperature")
                     or existing_llm_provider.temperature,
-                    api_key=llm_provider.get("api_key") or existing_llm_provider.api_key,
+                    api_key=api_key,
                     logger=logger,
                 )
 
             # Update LLM provider
-            err = self._llm_provider_repo.update_llm_provider(
+            err = self._provider_repo.update_llm_provider(
                 llm_provider_id=llm_provider_id, llm_provider=llm_provider
             )
 
