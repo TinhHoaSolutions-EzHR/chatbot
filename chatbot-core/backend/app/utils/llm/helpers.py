@@ -12,8 +12,7 @@ from llama_index.llms.cohere import Cohere
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.openai import OpenAI
 
-from app.models.llm import LLMProviderType
-from app.models.provider import EmbeddingProviderType
+from app.models.provider import ProviderType
 from app.settings import Constants
 
 
@@ -51,7 +50,7 @@ def init_llm_configurations(
 
 def handle_current_llm_model(
     llm_model_name: str,
-    llm_provider_type: LLMProviderType,
+    provider_type: ProviderType,
     temperature: float = 0.7,
     api_key: Optional[str] = None,
     callback_manager: Optional[CallbackManager] = None,
@@ -62,18 +61,18 @@ def handle_current_llm_model(
 
     Args:
         llm_model_name (str): Name of the LLM model.
-        llm_provider_type (LLMProviderType): Type of the LLM provider.
+        provider_type (ProviderType): Type of the LLM provider.
         temperature (float): Temperature for the LLM model. Defaults to 0.7.
         api_key (Optional[str]): API key for the LLM model. Defaults to None.
         callback_manager (Optional[CallbackManager]): Manager for handling callbacks. Defaults to None.
         logger (Optional[Logger]): Logger for logging. Defaults to None.
     """
     if logger:
-        logger.info(f"Setting the current LLM model: {llm_model_name} for {llm_provider_type}")
+        logger.info(f"Setting the current LLM model: {llm_model_name} for {provider_type}")
 
     try:
         # Set the LLM model based on the provider type
-        if llm_provider_type == LLMProviderType.OPENAI:
+        if provider_type == ProviderType.OPENAI:
             Settings.llm = OpenAI(
                 model=llm_model_name,
                 temperature=temperature,
@@ -83,7 +82,7 @@ def handle_current_llm_model(
 
             # Set the tokenizer for the llm model
             Settings.tokenizer = tiktoken.encoding_for_model(model_name=llm_model_name).encode
-        elif llm_provider_type == LLMProviderType.GEMINI:
+        elif provider_type == ProviderType.GEMINI:
             Settings.llm = Gemini(
                 model=llm_model_name,
                 temperature=temperature,
@@ -93,7 +92,7 @@ def handle_current_llm_model(
 
             # Set the tokenizer to None for Gemini
             Settings.tokenizer = None
-        elif llm_provider_type == LLMProviderType.COHERE:
+        elif provider_type == ProviderType.COHERE:
             Settings.llm = Cohere(
                 model=llm_model_name,
                 temperature=temperature,
@@ -111,7 +110,7 @@ def handle_current_llm_model(
 
 def handle_current_embedding_model(
     embedding_model_name: str,
-    embedding_type: EmbeddingProviderType,
+    provider_type: ProviderType,
     batch_size: int,
     dimensions: int,
     api_key: Optional[str] = None,
@@ -123,7 +122,7 @@ def handle_current_embedding_model(
 
     Args:
         embedding_model_name (str): Name of the embedding model.
-        embedding_type (EmbeddingProviderType): Type of the embedding provider.
+        provider_type (ProviderType): Type of the embedding provider.
         batch_size (int): Batch size for embedding.
         dimensions (int): Dimensions for the embedding.
         api_key (Optional[str]): API key for the embedding provider. Defaults to None.
@@ -132,12 +131,12 @@ def handle_current_embedding_model(
     """
     if logger:
         logger.info(
-            f"Setting the current embedding model: {embedding_model_name} for {embedding_type}"
+            f"Setting the current embedding model: {embedding_model_name} for {provider_type}"
         )
 
     try:
         # Set the embedding model based on the provider type
-        if embedding_type == EmbeddingProviderType.OPENAI:
+        if provider_type == ProviderType.OPENAI:
             Settings.embed_model = OpenAIEmbedding(
                 mode=OpenAIEmbeddingMode.TEXT_SEARCH_MODE,
                 model=embedding_model_name,
@@ -146,14 +145,14 @@ def handle_current_embedding_model(
                 api_key=api_key,
                 callback_manager=callback_manager,
             )
-        elif embedding_type == EmbeddingProviderType.GEMINI:
+        elif provider_type == ProviderType.GEMINI:
             Settings.embed_model = GeminiEmbedding(
                 model_name=embedding_model_name,
                 embed_batch_size=batch_size,
                 api_key=api_key,
                 callback_manager=callback_manager,
             )
-        elif embedding_type == EmbeddingProviderType.COHERE:
+        elif provider_type == ProviderType.COHERE:
             Settings.embed_model = CohereEmbedding(
                 model_name=embedding_model_name,
                 embed_batch_size=batch_size,
@@ -161,6 +160,6 @@ def handle_current_embedding_model(
                 callback_manager=callback_manager,
             )
         else:
-            raise ValueError(f"Invalid embedding provider type: {embedding_type}")
+            raise ValueError(f"Invalid embedding provider type: {provider_type}")
     except Exception as e:
         raise ValueError(f"Error setting the current embedding model: {e}")

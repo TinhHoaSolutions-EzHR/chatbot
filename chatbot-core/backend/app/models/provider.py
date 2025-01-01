@@ -36,6 +36,8 @@ class BaseProvider(Base):
     SQLAlchemy base class for all providers, including Embedding and LLM providers.
     """
 
+    __abstract__ = True
+
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
@@ -126,7 +128,6 @@ class BaseProviderRequest(BaseModel):
     Defines the structure of provider data received from the client.
     """
 
-    name: ProviderType = Field(ProviderType.OPENAI, description="The name of the provider")
     api_key: Optional[str] = Field(None, description="API key for the provider", exclude=True)
     current_model: Optional[str] = Field(None, description="The current model of the provider.")
     is_active: bool = Field(False, description="The active status of the provider.")
@@ -143,7 +144,7 @@ class BaseProviderResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="The unique identifier of the provider")
-    name: ProviderType = Field(ProviderType.OPENAI, description="The name of the provider")
+    name: ProviderType = Field(..., description="The name of the provider")
     api_key: Optional[str] = Field(None, description="API key for the provider", exclude=True)
     current_model: str = Field(..., description="The current model of the provider.")
     is_active: bool = Field(False, description="The active status of the provider.")
