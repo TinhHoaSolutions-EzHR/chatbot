@@ -636,7 +636,7 @@
 
 "@radix-ui/react-tooltip@^1.1.6":
   version "1.1.6"
-  resolved "https://registry.npmjs.org/@radix-ui/react-tooltip/-/react-tooltip-1.1.6.tgz"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-tooltip/-/react-tooltip-1.1.6.tgz#eab98e9a5c876ef0abfae3cfeee229870528ed06"
   integrity sha512-TLB5D8QLExS1uDn7+wH/bjEmRurNMTzNrtq7IjaS4kjion9NtzsTGkvR5+i7yc9q01Pi2KMM2cN3f8UG4IvvXA==
   dependencies:
     "@radix-ui/primitive" "1.1.1"
