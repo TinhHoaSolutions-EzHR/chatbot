@@ -30,7 +30,7 @@ class AgentRepository(BaseRepository):
 
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
         """
-        Get all agents of the user. Sort by display_priority.
+        Get all agents of the user.
         All agents include system agents and user-created agents.
 
         Args:

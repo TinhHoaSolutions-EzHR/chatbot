@@ -35,13 +35,16 @@ class AgentService(BaseService):
         """
         super().__init__(db_session)
 
+        # Define repositories
         self._agent_repo = AgentRepository(db_session=db_session)
         self._prompt_repo = PromptRepository(db_session=db_session)
+
+        # Define external storage's connectors
         self._minio_connector = minio_connector
 
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
         """
-        Get all agents of the user. Sort by display_priority.
+        Get all agents of the user.
 
         Args:
             user_id (str): User id
@@ -50,15 +53,7 @@ class AgentService(BaseService):
             Tuple[Optional[List[Agent]], Optional[APIError]]: List of agent objects and APIError object if any error
         """
         # Get agents
-        agents, err = self._agent_repo.get_agents(user_id=user_id)
-        if err:
-            return None, err
-
-        # Sort agents by display_priority
-        if agents:
-            agents.sort(key=lambda x: x.display_priority)
-
-        return agents, None
+        return self._agent_repo.get_agents(user_id=user_id)
 
     def get_agent(self, agent_id: str, user_id: str) -> Tuple[Optional[Agent], Optional[APIError]]:
         """
@@ -77,12 +72,12 @@ class AgentService(BaseService):
             return None, err
 
         # Get agent's prompt
-        prompt, err = self._prompt_repo.get_prompt(prompt_id=agent.prompt_id)
+        prompts, err = self._prompt_repo.get_prompts(agent_id=agent_id)
         if err:
             return None, err
 
         # Set prompt to agent
-        agent.prompt = prompt
+        agent.prompts = prompts
 
         return agent, None
 
@@ -136,7 +131,7 @@ class AgentService(BaseService):
     def create_agent(
         self,
         agent_request: AgentRequest,
-        prompt_request: PromptRequest,
+        prompt_requests: List[PromptRequest],
         user_id: str,
         file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
@@ -145,7 +140,7 @@ class AgentService(BaseService):
 
         Args:
             agent_request (AgentRequest): Agent request object.
-            prompt_request (PromptRequest): Prompt request object.
+            prompt_requests (List[PromptRequest]): List of prompt request objects.
             user_id (str): User id.
             file (Optional[UploadFile]): File object. Defaults to None.
 
@@ -153,24 +148,24 @@ class AgentService(BaseService):
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
-            # Define prompt and create it
-            prompt = Prompt(**prompt_request.model_dump())
-            err = self._prompt_repo.create_prompt(prompt=prompt)
+            # Define agent and create it
+            agent = Agent(
+                user_id=user_id,
+                **agent_request.model_dump(),
+            )
+            err = self._agent_repo.create_agent(agent=agent)
             if err:
                 return err
 
             # Flush to get the agent id
             self._db_session.flush()
 
-            # Define agent and create it
-            agent = Agent(
-                user_id=user_id,
-                prompt_id=prompt.id,
-                **agent_request.model_dump(),
-            )
-            err = self._agent_repo.create_agent(agent=agent)
-            if err:
-                return err
+            # Define prompt and create it
+            for prompt_request in prompt_requests:
+                prompt = Prompt(agent_id=agent.id, **prompt_request.model_dump())
+                err = self._prompt_repo.create_prompt(prompt=prompt)
+                if err:
+                    return err
 
             # Flush to get the agent id
             self._db_session.flush()
@@ -202,7 +197,7 @@ class AgentService(BaseService):
         agent_id: str,
         user_id: str,
         agent_request: Optional[AgentRequest] = None,
-        prompt_request: Optional[PromptRequest] = None,
+        prompt_requests: Optional[List[PromptRequest]] = None,
         file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
         """
@@ -210,9 +205,9 @@ class AgentService(BaseService):
 
         Args:
             agent_id (str): Agent id.
-            agent_request (AgentRequest): Agent request object.
-            prompt_request (PromptRequest): Prompt request object.
             user_id (str): User id.
+            agent_request (Optional[AgentRequest]): Agent request object.
+            prompt_requests (Optional[List[PromptRequest]]): Prompt request object.
             file (Optional[UploadFile]): File object. Defaults to None.
 
         Returns:
@@ -224,17 +219,6 @@ class AgentService(BaseService):
             if err:
                 return err
 
-            # Define to-be-updated prompt
-            if prompt_request:
-                prompt = prompt_request.model_dump(exclude_unset=True, exclude_defaults=True)
-
-                # Update prompt
-                err = self._prompt_repo.update_prompt(
-                    prompt_id=existing_agent.prompt_id, prompt=prompt
-                )
-                if err:
-                    return err
-
             # Define to-be-updated agent
             if agent_request:
                 agent = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
@@ -243,6 +227,19 @@ class AgentService(BaseService):
                 err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
                 if err:
                     return err
+
+            # Update prompt if provided
+            if prompt_requests:
+                for prompt_request in prompt_requests:
+                    # Define to-be-updated prompt
+                    prompt = prompt_request.model_dump(exclude_unset=True, exclude_defaults=True)
+
+                    # Update prompt
+                    err = self._prompt_repo.update_prompt(
+                        prompt_id=prompt_request.id, agent_id=agent_id, prompt=prompt
+                    )
+                    if err:
+                        return err
 
             # Upload new image to Minio if file is provided.
             if file:
@@ -282,11 +279,6 @@ class AgentService(BaseService):
         with self._transaction():
             # Get existing agent
             existing_agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
-            if err:
-                return err
-
-            # Delete the prompt assiciated with the existing agent
-            err = self._prompt_repo.delete_prompt(prompt_id=existing_agent.prompt_id)
             if err:
                 return err
 

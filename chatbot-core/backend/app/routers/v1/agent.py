@@ -1,3 +1,4 @@
+from typing import List
 from typing import Optional
 
 from fastapi import APIRouter
@@ -111,7 +112,7 @@ def get_agent(
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def create_agent(
     agent_request: AgentRequest = Body(...),
-    prompt_request: PromptRequest = Body(...),
+    prompt_requests: List[PromptRequest] = Body(...),
     file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
@@ -122,7 +123,7 @@ def create_agent(
 
     Args:
         agent_request (AgentRequest): Agent request object (required).
-        prompt_request (PromptRequest): Prompt request object (required).
+        prompt_requests (List[PromptRequest]): Prompt request object (required).
         file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
         minio_connector (MinioConnector): Minio connector object.
@@ -137,7 +138,10 @@ def create_agent(
 
     # Create agent
     err = AgentService(db_session=db_session, minio_connector=minio_connector).create_agent(
-        agent_request=agent_request, prompt_request=prompt_request, user_id=str(user.id), file=file
+        agent_request=agent_request,
+        prompt_requests=prompt_requests,
+        user_id=str(user.id),
+        file=file,
     )
     if err:
         status_code, detail = err.kind
@@ -146,7 +150,10 @@ def create_agent(
     # Parse agent
     data = {}
     data["agent"] = agent_request.model_dump(exclude_unset=True)
-    data["prompt"] = prompt_request.model_dump(exclude_unset=True)
+    data["prompt"] = []
+    for prompt_request in prompt_requests:
+        data["prompt"].append(prompt_request.model_dump(exclude_unset=True))
+
     if file:
         data["file"] = file.filename
 
@@ -162,7 +169,7 @@ def create_agent(
 def update_agent(
     agent_id: str,
     agent_request: Optional[AgentRequest] = Body(None),
-    prompt_request: Optional[PromptRequest] = Body(None),
+    prompt_requests: Optional[List[PromptRequest]] = Body(None),
     file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
@@ -174,7 +181,7 @@ def update_agent(
     Args:
         agent_id (str): Agent id
         agent_request (AgentRequest): Agent request object.
-        prompt_request (PromptRequest): Prompt request object.
+        prompt_requests (Optional[List[PromptRequest]]): Prompt request object.
         file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
         minio_connector (MinioConnector): Minio connector object.
@@ -191,7 +198,7 @@ def update_agent(
     err = AgentService(db_session=db_session, minio_connector=minio_connector).update_agent(
         agent_id=agent_id,
         agent_request=agent_request,
-        prompt_request=prompt_request,
+        prompt_requests=prompt_requests,
         user_id=user.id,
         file=file,
     )
@@ -202,9 +209,15 @@ def update_agent(
     # Parse agent
     data = {}
     if agent_request:
-        data["agent"] = agent_request.model_dump(exclude_unset=True)
-    if prompt_request:
-        data["prompt"] = prompt_request.model_dump(exclude_unset=True)
+        data["agent"] = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
+
+    if prompt_requests:
+        data["prompt"] = []
+        for prompt_request in prompt_requests:
+            data["prompt"].append(
+                prompt_request.model_dump(exclude_unset=True, exclude_defaults=True)
+            )
+
     if file:
         data["file"] = file.filename
 

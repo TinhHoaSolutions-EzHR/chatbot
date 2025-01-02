@@ -57,16 +57,12 @@ class Agent(Base):
     user_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"), nullable=True
     )
-    prompt_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("prompt.id", ondelete="CASCADE"), nullable=False
-    )
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     agent_type: Mapped[AgentType] = mapped_column(
         SQLAlchemyEnum(AgentType, native_enum=False), nullable=False, default=AgentType.USER
     )
     is_visible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    display_priority: Mapped[int] = mapped_column(String, nullable=False, default=0)
     uploaded_image_path: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -86,7 +82,7 @@ class Agent(Base):
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
     chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
     user: Mapped[Optional["User"]] = relationship("User", back_populates="agents")
-    prompt: Mapped["Prompt"] = relationship("Prompt", back_populates="agent")
+    prompts: Mapped[List["Prompt"]] = relationship("Prompt", back_populates="agent")
 
 
 class AgentRequest(BaseModel):
@@ -99,7 +95,6 @@ class AgentRequest(BaseModel):
     description: Optional[str] = Field(None, description="Agent description")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
-    display_priority: int = Field(0, description="Agent display priority")
     uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
 
     @model_validator(mode="before")
@@ -129,7 +124,6 @@ class AgentResponse(BaseModel):
     description: Optional[str] = Field(None, description="Agent description")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
-    display_priority: int = Field(0, description="Agent display priority")
     uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")

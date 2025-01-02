@@ -1,9 +1,11 @@
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Tuple
 
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import and_
 
 from app.models import Prompt
 from app.repositories.base import BaseRepository
@@ -24,32 +26,32 @@ class PromptRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_prompt(self, prompt_id: str) -> Tuple[Prompt, Optional[APIError]]:
+    def get_prompts(self, agent_id: str) -> Tuple[List[Prompt], Optional[APIError]]:
         """
-        Get a prompt by prompt id.
+        Get all prompts of the agent.
 
         Args:
-            prompt_id(str): Prompt id
+            agent_id (str): Agent ID.
 
         Returns:
-            Tuple[Prompt, Optional[APIError]]: Prompt object and APIError object if any error
+            Tuple[List[Prompt], Optional[APIError]]: List of prompts and APIError object if any error.
         """
         try:
-            prompt = self._db_session.query(Prompt).filter(Prompt.id == prompt_id).first()
-            return prompt, None
+            prompts = self._db_session.query(Prompt).filter(Prompt.agent_id == agent_id).all()
+            return prompts, None
         except Exception as e:
-            logger.error(f"Error getting prompt: {e}")
-            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+            logger.error(f"Error getting prompts: {e}")
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def create_prompt(self, prompt: Prompt) -> Optional[APIError]:
         """
         Create a prompt.
 
         Args:
-            prompt(Prompt): Prompt object
+            prompt(Prompt): Prompt object.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Optional[APIError]: APIError object if any error.
         """
         try:
             self._db_session.add(prompt)
@@ -58,37 +60,25 @@ class PromptRepository(BaseRepository):
             logger.error(f"Error creating prompt: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_prompt(self, prompt_id: str, prompt: Dict[str, Any]) -> Optional[APIError]:
+    def update_prompt(
+        self, prompt_id: str, agent_id: str, prompt: Dict[str, Any]
+    ) -> Optional[APIError]:
         """
         Update a prompt.
 
         Args:
-            prompt_id(str): Prompt id
+            prompt_id(str): Prompt ID.
+            agent_id(str): Agent ID.
             prompt(Dict[str, Any]): Prompt object
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Optional[APIError]: APIError object if any error.
         """
         try:
-            self._db_session.query(Prompt).filter(Prompt.id == prompt_id).update(prompt)
+            self._db_session.query(Prompt).filter(
+                and_(Prompt.id == prompt_id, Prompt.agent_id == agent_id)
+            ).update(prompt)
             return None
         except Exception as e:
             logger.error(f"Error updating prompt: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
-    def delete_prompt(self, prompt_id: str) -> Optional[APIError]:
-        """
-        Delete a prompt.
-
-        Args:
-            prompt_id(str): Prompt id
-
-        Returns:
-            Optional[APIError]: APIError object if any error
-        """
-        try:
-            self._db_session.query(Prompt).filter(Prompt.id == prompt_id).delete()
-            return None
-        except Exception as e:
-            logger.error(f"Error deleting prompt: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from pydantic import Field
 from pydantic import model_validator
 from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
@@ -37,6 +38,9 @@ class Prompt(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
+    agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
+        ForeignKey("agent.id", ondelete="CASCADE"), nullable=False
+    )
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     system_prompt: Mapped[str] = mapped_column(Text, nullable=False)
@@ -56,7 +60,7 @@ class Prompt(Base):
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
-    agent: Mapped["Agent"] = relationship("Agent", back_populates="prompt")
+    agent: Mapped[Agent] = relationship("Agent", back_populates="prompts")
 
 
 class PromptRequest(BaseModel):
@@ -65,6 +69,7 @@ class PromptRequest(BaseModel):
     Defines the structure of folder data received from the client.
     """
 
+    id: Optional[UUID] = Field(None, description="Prompt ID")
     name: Optional[str] = Field(None, description="Prompt name")
     description: Optional[str] = Field(None, description="Prompt description")
     system_prompt: Optional[str] = Field(None, description="System prompt")
