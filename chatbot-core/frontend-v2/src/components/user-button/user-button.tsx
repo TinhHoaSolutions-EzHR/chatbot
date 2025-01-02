@@ -1,3 +1,5 @@
+import { Bell, LogOut, Settings, User } from 'lucide-react';
+
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -17,17 +19,17 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <UserDropdownItem icon="Settings" onClick={() => {}}>
+        <UserDropdownItem Icon={Settings} onClick={() => {}}>
           Admin panel
         </UserDropdownItem>
-        <UserDropdownItem icon="User" onClick={() => {}}>
+        <UserDropdownItem Icon={User} onClick={() => {}}>
           User settings
         </UserDropdownItem>
-        <UserDropdownItem icon="Bell" onClick={() => {}}>
+        <UserDropdownItem Icon={Bell} onClick={() => {}}>
           Notifications
         </UserDropdownItem>
         <DropdownMenuSeparator />
-        <UserDropdownItem icon="LogOut" onClick={() => {}}>
+        <UserDropdownItem Icon={LogOut} onClick={() => {}}>
           Logout
         </UserDropdownItem>
       </DropdownMenuContent>
