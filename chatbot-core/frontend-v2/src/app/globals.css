@@ -78,9 +78,7 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
     @apply pointer-events-auto;
@@ -92,5 +90,11 @@
   html,
   body {
     @apply antialiased h-full;
+  }
+}
+
+@layer components {
+  .chat-width {
+    @apply lg:max-w-screen-md md:max-w-screen-sm w-full;
   }
 }

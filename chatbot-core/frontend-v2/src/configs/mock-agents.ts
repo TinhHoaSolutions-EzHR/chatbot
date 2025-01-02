@@ -1,4 +1,5 @@
 import { AgentType, IAgent } from '@/types/agent';
+import { IPrompt } from '@/types/prompt';
 
 export const MOCK_AGENTS_LIST: IAgent[] = [
   {
@@ -37,3 +38,108 @@ export const MOCK_AGENTS_LIST: IAgent[] = [
 ];
 
 export const MOCK_RECENT_AGENTS: IAgent[] = [MOCK_AGENTS_LIST[2], MOCK_AGENTS_LIST[0]];
+
+export const MOCK_AGENT_PROMPTS: Record<string, IPrompt[]> = {
+  '1': [
+    {
+      id: '1',
+      name: 'Prompt 1',
+      prompt: 'Prompt 1 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '2',
+      name: 'Prompt 2',
+      prompt: 'Prompt 2 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '3',
+      name: 'Prompt 3',
+      prompt: 'Prompt 3 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '4',
+      name: 'Prompt 4',
+      prompt: 'Prompt 4 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+  ],
+  '2': [
+    {
+      id: '1',
+      name: 'Prompt 1',
+      prompt: 'Prompt 1 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '2',
+      name: 'Prompt 2',
+      prompt: 'Prompt 2 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '3',
+      name: 'Prompt 3',
+      prompt: 'Prompt 3 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '4',
+      name: 'Prompt 4',
+      prompt: 'Prompt 4 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+  ],
+  '3': [
+    {
+      id: '1',
+      name: 'Prompt 1',
+      prompt: 'Prompt 1 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '2',
+      name: 'Prompt 2',
+      prompt: 'Prompt 2 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '3',
+      name: 'Prompt 3',
+      prompt: 'Prompt 3 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+    {
+      id: '4',
+      name: 'Prompt 4',
+      prompt: 'Prompt 4 full message with a lot of text',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+    },
+  ],
+};
