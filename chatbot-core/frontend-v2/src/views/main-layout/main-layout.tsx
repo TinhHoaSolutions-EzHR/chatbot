@@ -13,7 +13,7 @@ export default function MainLayoutView({ children }: Props) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full min-h-dvh relative">
+      <main className="w-full h-dvh relative flex flex-col">
         <Navbar />
         {children}
       </main>
