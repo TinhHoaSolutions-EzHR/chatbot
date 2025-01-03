@@ -4,6 +4,8 @@ from app.models.chat import ChatMessage
 from app.models.chat import ChatSession
 from app.models.folder import Folder
 from app.models.prompt import Prompt
+from app.models.provider import EmbeddingProvider
+from app.models.provider import LLMProvider
 from app.models.user import User
 from app.models.user import UserSetting
 
@@ -16,4 +18,6 @@ __all__ = [
     "User",
     "Folder",
     "UserSetting",
+    "EmbeddingProvider",
+    "LLMProvider",
 ]
