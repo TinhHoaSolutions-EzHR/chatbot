@@ -24,7 +24,7 @@ from app.utils.user.authentication import get_current_user
 
 
 logger = get_logger(__name__)
-router = APIRouter(prefix="/agents", tags=["agent", "assistant", "prompt"])
+router = APIRouter(prefix="/agents", tags=["agent", "assistant"])
 
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
