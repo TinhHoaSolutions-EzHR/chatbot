@@ -183,7 +183,7 @@ class AgentResponse(BaseModel):
     id: UUID = Field(..., description="Agent id")
     user_id: Optional[UUID] = Field(None, description="User id")
     name: str = Field(..., description="Agent name")
-    prompt: Optional[str] = Field(None, description="Agent prompt")
+    prompt: str = Field(..., description="Agent prompt")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
