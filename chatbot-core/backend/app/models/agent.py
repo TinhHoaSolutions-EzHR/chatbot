@@ -58,6 +58,7 @@ class Agent(Base):
         ForeignKey("user.id", ondelete="CASCADE"), nullable=True
     )
     name: Mapped[str] = mapped_column(String, nullable=False)
+    prompt: Mapped[str] = mapped_column(String, nullable=True)
     agent_type: Mapped[AgentType] = mapped_column(
         SQLAlchemyEnum(AgentType, native_enum=False), nullable=False, default=AgentType.USER
     )
@@ -127,6 +128,7 @@ class AgentRequest(BaseModel):
     """
 
     name: Optional[str] = Field(None, description="Agent name")
+    prompt: Optional[str] = Field(None, description="Agent prompt")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
@@ -180,13 +182,14 @@ class AgentResponse(BaseModel):
 
     id: UUID = Field(..., description="Agent id")
     user_id: Optional[UUID] = Field(None, description="User id")
-    starter_messages: Optional[List["StarterMessageResponse"]] = Field(
-        default_factory=list, description="List of starter messages"
-    )
     name: str = Field(..., description="Agent name")
+    prompt: Optional[str] = Field(None, description="Agent prompt")
     agent_type: AgentType = Field(AgentType.USER, description="Agent type")
     is_visible: bool = Field(True, description="Agent visibility")
     uploaded_image_path: Optional[str] = Field(None, description="Uploaded image id")
+    starter_messages: Optional[List["StarterMessageResponse"]] = Field(
+        default_factory=list, description="List of starter messages"
+    )
     created_at: datetime = Field(..., description="Created at timestamp")
     updated_at: datetime = Field(..., description="Updated at timestamp")
     deleted_at: Optional[datetime] = Field(None, description="Deleted at timestamp")
