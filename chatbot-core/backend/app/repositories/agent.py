@@ -4,11 +4,13 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from sqlalchemy.orm import noload
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import or_
 
 from app.models import Agent
+from app.models import StarterMessage
 from app.models.agent import AgentType
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
@@ -30,7 +32,7 @@ class AgentRepository(BaseRepository):
 
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
         """
-        Get all agents of the user. Sort by display_priority.
+        Get all agents of the user.
         All agents include system agents and user-created agents.
 
         Args:
@@ -42,6 +44,7 @@ class AgentRepository(BaseRepository):
         try:
             agents = (
                 self._db_session.query(Agent)
+                .options(noload(Agent.starter_messages))
                 .filter(or_(Agent.user_id == user_id, Agent.agent_type == AgentType.SYSTEM))
                 .all()
             )
@@ -49,6 +52,29 @@ class AgentRepository(BaseRepository):
         except Exception as e:
             logger.error(f"Error getting agents: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def get_starter_messages(
+        self, agent_id: str
+    ) -> Tuple[List[StarterMessage], Optional[APIError]]:
+        """
+        Get all starter messages of the agent.
+
+        Args:
+            agent_id (str): Agent ID.
+
+        Returns:
+            Tuple[List[StarterMessage], Optional[APIError]]: List of starter messages and APIError object if any error.
+        """
+        try:
+            starter_messages = (
+                self._db_session.query(StarterMessage)
+                .filter(StarterMessage.agent_id == agent_id)
+                .all()
+            )
+            return starter_messages, None
+        except Exception as e:
+            logger.error(f"Error getting starter_messages: {e}")
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def get_agent(self, agent_id: str, user_id: str) -> Tuple[Optional[Agent], Optional[APIError]]:
         """
@@ -94,6 +120,23 @@ class AgentRepository(BaseRepository):
             logger.error(f"Error creating agent: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
+    def create_starter_message(self, starter_message: StarterMessage) -> Optional[APIError]:
+        """
+        Create a starter_message.
+
+        Args:
+            starter_message(StarterMessage): StarterMessage object.
+
+        Returns:
+            Optional[APIError]: APIError object if any error.
+        """
+        try:
+            self._db_session.add(starter_message)
+            return None
+        except Exception as e:
+            logger.error(f"Error creating starter_message: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
     def update_agent(
         self, agent_id: str, agent: Dict[str, Any], user_id: str
     ) -> Optional[APIError]:
@@ -116,6 +159,29 @@ class AgentRepository(BaseRepository):
             return None
         except Exception as e:
             logger.error(f"Error updating agent: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def update_starter_message(
+        self, starter_message_id: str, agent_id: str, starter_message: Dict[str, Any]
+    ) -> Optional[APIError]:
+        """
+        Update a starter_message.
+
+        Args:
+            starter_message_id(str): StarterMessage ID.
+            agent_id(str): Agent ID.
+            starter_message(Dict[str, Any]): StarterMessage object
+
+        Returns:
+            Optional[APIError]: APIError object if any error.
+        """
+        try:
+            self._db_session.query(StarterMessage).filter(
+                and_(StarterMessage.id == starter_message_id, StarterMessage.agent_id == agent_id)
+            ).update(starter_message)
+            return None
+        except Exception as e:
+            logger.error(f"Error updating starter_message: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_agent(self, agent_id: str, user_id: str) -> Optional[APIError]:
