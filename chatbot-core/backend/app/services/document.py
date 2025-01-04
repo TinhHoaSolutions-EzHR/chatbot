@@ -51,13 +51,13 @@ class DocumentService(BaseService):
 
         super().__init__(db_session=db_session)
 
-        # Define storage connections
+        # Define repositories
+        self._document_repo = DocumentRepository(db_session=self._db_session)
+
+        # Define external storage's connectors
         self._minio_connector = minio_connector
         self._qdrant_connector = qdrant_connector
         self._redis_connector = redis_connector
-
-        # Define repositories
-        self._document_repo = DocumentRepository(db_session=self._db_session)
 
     def upload_documents(
         self,
