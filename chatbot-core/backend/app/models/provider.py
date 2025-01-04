@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timezone
 from enum import Enum
 from typing import Any
+from typing import List
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
@@ -48,6 +49,7 @@ class BaseProvider(Base):
         default=ProviderType.OPENAI,
     )
     api_key: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    models: Mapped[str] = mapped_column(String, nullable=True)
     current_model: Mapped[str] = mapped_column(String, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_default_provider: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -135,6 +137,9 @@ class BaseProviderRequest(BaseModel):
     """
 
     api_key: Optional[str] = Field(None, description="API key for the provider")
+    models: Optional[List[str]] = Field(
+        default_factory=list, description="The models of the provider."
+    )
     current_model: Optional[str] = Field(None, description="The current model of the provider.")
     is_active: bool = Field(False, description="The active status of the provider.")
     is_default_provider: bool = Field(False, description="The default status of the provider.")
@@ -152,6 +157,7 @@ class BaseProviderResponse(BaseModel):
     id: UUID = Field(..., description="The unique identifier of the provider")
     name: ProviderType = Field(..., description="The name of the provider")
     api_key: Optional[str] = Field(None, description="API key for the provider", exclude=True)
+    models: List[str] = Field(..., description="The models of the provider.")
     current_model: str = Field(..., description="The current model of the provider.")
     is_active: bool = Field(False, description="The active status of the provider.")
     is_default_provider: bool = Field(False, description="The default status of the provider.")
