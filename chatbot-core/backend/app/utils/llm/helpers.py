@@ -51,15 +51,18 @@ def init_llm_configurations(
 
 def get_openai_api_key() -> str:
     """
-    Get the OpenAI API key
+    Get the OpenAI API key specified in the environment variables.
 
     Returns:
         str: OpenAI API key
+
+    Raises:
+        ValueError: OpenAI API key not found.
     """
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key is None:
         raise ValueError("OpenAI API key not found")
-    return os.getenv("OPENAI_API_KEY")
+    return api_key
 
 
 def handle_current_llm_model(

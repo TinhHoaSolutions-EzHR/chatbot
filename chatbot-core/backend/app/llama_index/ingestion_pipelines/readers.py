@@ -21,8 +21,14 @@ class MarkitdownReader(BaseReader):
     """ """
 
     def __init__(self) -> None:
-        self.openai_client = OpenAI(api_key=get_openai_api_key())
-        self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
+        # Try to get the OpenAI API key, if it fails, do not setup the OpenAI client
+        try:
+            self.openai_client = OpenAI(api_key=get_openai_api_key())
+            self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
+        except Exception:
+            logger.info("OpenAI API key not found, use default MarkItDown.")
+            self.openai_client = None
+            self.md = MarkItDown()
 
     @retry(stop=stop_after_delay(Constants.RETRY_TIMES))
     def load_data(self, file: str | Path, extra_info: Optional[Dict] = None) -> List[Document]:
