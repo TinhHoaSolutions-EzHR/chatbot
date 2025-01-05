@@ -11,11 +11,11 @@ import pdfplumber
 import pydenticon
 from fastapi import File
 from fastapi import UploadFile
+from llama_index.core import Document
 
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.error_handler import PdfParsingError
-from llama_index.core import Document
 
 
 def remove_vietnamese_accents(input_str: str) -> str:

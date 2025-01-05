@@ -3,9 +3,6 @@ from logging import Logger
 from typing import Optional
 
 import tiktoken
-
-from app.models.provider import ProviderType
-from app.settings import Constants
 from llama_index.core import Settings
 from llama_index.core.callbacks import CallbackManager
 from llama_index.embeddings.cohere import CohereEmbedding
@@ -15,6 +12,9 @@ from llama_index.embeddings.openai import OpenAIEmbeddingMode
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.openai import OpenAI
+
+from app.models.provider import ProviderType
+from app.settings import Constants
 
 
 def init_llm_configurations(

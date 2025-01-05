@@ -5,12 +5,12 @@ from pathlib import Path
 import pytest
 from minio import Minio
 from minio.error import S3Error
-from tests.utils import clean_minio_bucket
-from tests.utils import validate_config
 
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.helpers import get_logger
+from tests.utils import clean_minio_bucket
+from tests.utils import validate_config
 
 logger = get_logger(__name__)
 

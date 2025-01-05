@@ -1,4 +1,5 @@
 from fastapi import Request
+from llama_index.storage.kvstore.redis import RedisKVStore as RedisCache
 from redis import ConnectionPool
 from redis import Redis
 
@@ -6,7 +7,6 @@ from app.databases.base import BaseConnector
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.helpers import get_logger
-from llama_index.storage.kvstore.redis import RedisKVStore as RedisCache
 
 logger = get_logger(__name__)
 

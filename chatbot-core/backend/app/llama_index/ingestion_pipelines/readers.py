@@ -3,6 +3,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from llama_index.core.readers.base import BaseReader
+from llama_index.core.schema import Document
 from markitdown import MarkItDown
 from openai import OpenAI
 from tenacity import retry
@@ -11,8 +13,6 @@ from tenacity import stop_after_delay
 from app.settings.constants import Constants
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import get_openai_api_key
-from llama_index.core.readers.base import BaseReader
-from llama_index.core.schema import Document
 
 logger = get_logger(__name__)
 
