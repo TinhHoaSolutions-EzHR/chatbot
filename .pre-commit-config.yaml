@@ -23,7 +23,7 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: [
-            "--application-directories=chatbot-core/backend/app:chatbot-core/backend/tests",
+            "--application-directories=chatbot-core/backend",
             "--unclassifiable-application-module=app", # app is the main module
             "--py311-plus",
           ]
