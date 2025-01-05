@@ -1,3 +1,4 @@
+import json
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -40,7 +41,34 @@ class ProviderService(BaseService):
         Returns:
             Tuple[List[EmbeddingProvider], Optional[APIError]]: List of embedding provider objects and APIError object if any error.
         """
-        return self._provider_repo.get_embedding_providers()
+        embedding_providers, err = self._provider_repo.get_embedding_providers()
+        if err:
+            return [], err
+
+        # Parse the models field
+        for embedding_provider in embedding_providers:
+            embedding_provider.models = (
+                json.loads(embedding_provider.models) if embedding_provider.models else []
+            )
+
+        return embedding_providers, None
+
+    def get_llm_providers(self) -> Tuple[List[LLMProvider], Optional[APIError]]:
+        """
+        Get all LLM providers.
+
+        Returns:
+            Tuple[List[LLMProvider], Optional[APIError]]: List of LLM provider objects and APIError object if any error.
+        """
+        llm_providers, err = self._provider_repo.get_llm_providers()
+        if err:
+            return [], err
+
+        # Parse the models field
+        for llm_provider in llm_providers:
+            llm_provider.models = json.loads(llm_provider.models) if llm_provider.models else []
+
+        return llm_providers, None
 
     def get_embedding_provider(
         self, embedding_provider_id: str
@@ -54,9 +82,38 @@ class ProviderService(BaseService):
         Returns:
             Tuple[Optional[EmbeddingProvider], Optional[APIError]]: Embedding provider object and APIError object if any error.
         """
-        return self._provider_repo.get_embedding_provider(
+        embedding_provider, err = self._provider_repo.get_embedding_provider(
             embedding_provider_id=embedding_provider_id
         )
+        if err:
+            return None, err
+
+        # Parse the models field
+        embedding_provider.models = (
+            json.loads(embedding_provider.models) if embedding_provider.models else []
+        )
+
+        return embedding_provider, None
+
+    def get_llm_provider(self, llm_provider_id: str) -> Tuple[LLMProvider, Optional[APIError]]:
+        """
+        Get LLM provider by ID.
+
+        Args:
+            llm_provider_id (str): The LLM provider ID.
+
+        Returns:
+            Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error.
+        """
+        # Get LLM provider
+        llm_provider, err = self._provider_repo.get_llm_provider(llm_provider_id=llm_provider_id)
+        if err:
+            return None, err
+
+        # Parse the models field
+        llm_provider.models = json.loads(llm_provider.models) if llm_provider.models else []
+
+        return llm_provider, None
 
     def update_embedding_provider(
         self, embedding_provider_id: str, embedding_provider_request: EmbeddingProviderRequest
@@ -78,6 +135,8 @@ class ProviderService(BaseService):
         with self._transaction():
             # Define to-be-updated embedding provider
             embedding_provider = embedding_provider_request.model_dump(exclude_unset=True)
+            if embedding_provider.get("models"):
+                embedding_provider["models"] = json.dumps(embedding_provider["models"])
 
             # Handle current api key
             api_key = None
@@ -112,28 +171,6 @@ class ProviderService(BaseService):
 
         return err if err else None
 
-    def get_llm_providers(self) -> Tuple[List[LLMProvider], Optional[APIError]]:
-        """
-        Get all LLM providers.
-
-        Returns:
-            Tuple[List[LLMProvider], Optional[APIError]]: List of LLM provider objects and APIError object if any error.
-        """
-        return self._provider_repo.get_llm_providers()
-
-    def get_llm_provider(self, llm_provider_id: str) -> Tuple[LLMProvider, Optional[APIError]]:
-        """
-        Get LLM provider by ID.
-
-        Args:
-            llm_provider_id (str): The LLM provider ID.
-
-        Returns:
-            Tuple[LLMProvider, Optional[APIError]]: LLM provider object and APIError object if any error.
-        """
-        # Get LLM provider
-        return self._provider_repo.get_llm_provider(llm_provider_id=llm_provider_id)
-
     def update_llm_provider(
         self, llm_provider_id: str, llm_provider_request: LLMProviderRequest
     ) -> Optional[APIError]:
@@ -157,6 +194,8 @@ class ProviderService(BaseService):
         with self._transaction():
             # Define to-be-updated LLM provider
             llm_provider = llm_provider_request.model_dump(exclude_unset=True, exclude_none=True)
+            if llm_provider.get("models"):
+                llm_provider["models"] = json.dumps(llm_provider["models"])
 
             # Handle current api key
             api_key = None
