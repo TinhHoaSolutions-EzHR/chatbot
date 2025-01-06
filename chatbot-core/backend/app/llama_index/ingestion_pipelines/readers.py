@@ -26,7 +26,7 @@ class MarkitdownReader(BaseReader):
             self.openai_client = OpenAI(api_key=get_openai_api_key())
             self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
         except Exception:
-            logger.info("OpenAI API key not found, use default MarkItDown.")
+            logger.warning("OpenAI API key not found, use default MarkItDown.")
             self.openai_client = None
             self.md = MarkItDown()
 
