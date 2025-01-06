@@ -11,6 +11,7 @@ function makeQueryClient() {
       queries: {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        retry: false,
         staleTime: DEFAULT_QUERY_STALE_TIME,
       },
     },

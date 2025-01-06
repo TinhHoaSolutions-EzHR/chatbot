@@ -9,7 +9,7 @@ import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
 import { AgentPrompts } from './agent-prompts';
 import { RecentAgents } from './recent-agents';
 
-export default function ChatPage() {
+export default function NewChatPage() {
   const selectedAgent = useGetSelectedAgent();
 
   if (!selectedAgent) {

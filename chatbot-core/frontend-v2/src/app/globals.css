@@ -97,4 +97,8 @@
   .chat-width {
     @apply lg:max-w-screen-md md:max-w-screen-sm w-full;
   }
+
+  .full-screen-center {
+    @apply w-dvw h-dvh grid place-items-center;
+  }
 }
