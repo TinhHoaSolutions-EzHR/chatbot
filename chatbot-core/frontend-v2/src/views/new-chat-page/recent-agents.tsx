@@ -34,6 +34,9 @@ export const RecentAgents = () => {
     return null;
   }
 
+  // First agent is the selected agent, so we remove it from the list.
+  recentAgents.shift();
+
   return (
     <div className="flex flex-col items-center gap-6">
       <h3 className="text-sm text-black font-medium">Recent agents</h3>

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import AuthProvider from '@/providers/auth-provider/auth-provider';
+import HealthCheckProvider from '@/providers/health-check-provider';
 import TanstackQueryProvider from '@/providers/query-provider';
 
 import './globals.css';
@@ -21,8 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
-      <body className={`antialiased`}>
-        <TanstackQueryProvider>{children}</TanstackQueryProvider>
+      <body className="antialiased">
+        <TanstackQueryProvider>
+          <HealthCheckProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </HealthCheckProvider>
+        </TanstackQueryProvider>
       </body>
     </html>
   );
