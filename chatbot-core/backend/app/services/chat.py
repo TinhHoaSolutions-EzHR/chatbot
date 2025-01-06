@@ -84,7 +84,7 @@ class ChatService(BaseService):
 
     def create_chat_session(
         self, chat_session_request: ChatSessionRequest, user_id: str
-    ) -> Optional[APIError]:
+    ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
         """
         Create chat session.
 
@@ -93,7 +93,7 @@ class ChatService(BaseService):
             user_id(str): User id
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error.
         """
         with self._transaction():
             # Define chat session
@@ -105,8 +105,10 @@ class ChatService(BaseService):
 
             # Create chat session
             err = self._chat_repository.create_chat_session(chat_session=chat_session)
+            if err:
+                return None, err
 
-        return err if err else None
+        return chat_session, None
 
     def update_chat_session(
         self, chat_session_id: str, chat_session_request: ChatSessionRequest, user_id: str
