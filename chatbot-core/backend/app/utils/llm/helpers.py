@@ -1,3 +1,4 @@
+import os
 from logging import Logger
 from typing import Optional
 
@@ -46,6 +47,22 @@ def init_llm_configurations(
     Settings.num_output = Constants.LLM_MAX_OUTPUT_LENGTH
     Settings.context_window = Constants.LLM_MAX_CONTEXT_WINDOW
     Settings.callback_manager = callback_manager
+
+
+def get_openai_api_key() -> str:
+    """
+    Get the OpenAI API key specified in the environment variables.
+
+    Returns:
+        str: OpenAI API key
+
+    Raises:
+        ValueError: OpenAI API key not found.
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+    if api_key is None:
+        raise ValueError("OpenAI API key not found")
+    return api_key
 
 
 def handle_current_llm_model(

@@ -2,10 +2,10 @@ from collections.abc import Iterator
 
 import pytest
 from qdrant_client import QdrantClient
-from tests.utils import validate_config
 
 from app.settings import Constants
 from app.settings import Secrets
+from tests.utils import validate_config
 
 
 @pytest.fixture

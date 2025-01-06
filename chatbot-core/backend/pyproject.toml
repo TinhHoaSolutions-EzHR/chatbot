@@ -41,6 +41,7 @@ dependencies = [
   "llama-index-llms-cohere>=0.4.0",
   "llama-index-llms-gemini>=0.4.2",
   "llama-index-llms-openai>=0.3.2",
+  "markitdown>=0.0.1a3",
 ]
 
 [project.optional-dependencies]
