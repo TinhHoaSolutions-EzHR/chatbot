@@ -1,16 +1,18 @@
 import json
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
-import requests
 
+import requests
 from sqlalchemy.orm import Session
 
 from app.models import UserSetting
 from app.models.user import User
 from app.models.user import UserRole
-from app.repositories.user import UserRepository
 from app.models.user import UserSettingsRequest
+from app.repositories.user import UserRepository
 from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
 from app.settings import Constants
