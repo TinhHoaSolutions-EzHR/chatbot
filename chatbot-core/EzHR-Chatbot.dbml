@@ -116,7 +116,7 @@ TABLE chatbot_core.user {
 }
 
 TABLE chatbot_core.user_setting {
-  id uuid [unique, not null, primary key, ref > chatbot_core.user.id]
+  id uuid [unique, not null, primary key, ref: > chatbot_core.user.id]
   recent_agent_id uuid [null, ref: > chatbot_core.agent.id, note: 'Recent agent id used by the user.']
   auto_scroll boolean [not null, default: true, note: 'Whether auto scroll is enabled or not.']
   default_model varchar(255) [null, note: 'Default model name to use for the user. Priority: user setting => agent.']
