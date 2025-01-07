@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import field_validator
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -135,6 +136,7 @@ class BaseProviderRequest(BaseModel):
     Defines the structure of provider data received from the client.
     """
 
+    name: ProviderType = Field(ProviderType.OPENAI, description="The name of the provider")
     api_key: Optional[str] = Field(None, description="API key for the provider")
     models: Optional[List[str]] = Field(
         default_factory=list, description="The models of the provider."
@@ -205,6 +207,26 @@ class LLMProviderRequest(BaseProviderRequest):
     temperature: float = Field(
         0.7, description="The temperature of the LLM provider.", ge=0.0, le=2.0
     )
+
+    @field_validator("temperature")
+    def validate_temperature(cls, value: float) -> float:
+        """
+        Validate that the temperature is between 0.0 and 1.0.
+
+        Args:
+            value (float): The value of the attribute.
+
+        Returns:
+            float: The validated temperature
+        """
+        if value < 0.0:
+            raise ValueError("Temperature must be greater than or equal to 0.0.")
+        if (cls.name == ProviderType.COHERE or cls.name == ProviderType.OPENAI) and value > 1.0:
+            raise ValueError("Temperature must be less than or equal to 1.0.")
+        if cls.name == ProviderType.GEMINI and value > 2.0:
+            raise ValueError("Temperature must be less than or equal to 2.0.")
+
+        return value
 
 
 class LLMProviderResponse(BaseProviderResponse):

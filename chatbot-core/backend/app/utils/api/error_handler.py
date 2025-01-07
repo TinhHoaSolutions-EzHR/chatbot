@@ -22,6 +22,7 @@ class ErrorCodesMappingNumber(Enum):
     LLM_PROVIDER_NOT_FOUND = (422, "LLM provider not found")
     USER_SETTING_NOT_FOUND = (422, "User setting not found")
     EMBEDDING_PROVIDER_NOT_FOUND = (422, "Embedding provider not found")
+    PROVIDER_TYPE_CHANGE_NOT_ALLOWED = (422, "Provider type change not allowed")
 
 
 class BaseException(Exception):
