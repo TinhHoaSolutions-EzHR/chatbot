@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from datetime import timezone
+from enum import Enum
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
@@ -14,6 +15,7 @@ from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -28,6 +30,15 @@ if TYPE_CHECKING:
     from app.models import Agent
 
 
+class UserRole(str, Enum):
+    """
+    Enum for user roles.
+    """
+
+    ADMIN = "admin"
+    BASIC = "basic"
+
+
 class User(Base):
     """
     Represents a user in the chatbot system.
@@ -40,6 +51,14 @@ class User(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    hashed_password: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    role: Mapped[UserRole] = mapped_column(
+        SQLAlchemyEnum(UserRole, native_enum=False), nullable=False
+    )
+    is_oauth: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -49,9 +68,6 @@ class User(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=lambda: datetime.now(timezone.utc),
-    )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(
-        DateTime(timezone=True), nullable=True, default=None
     )
 
     # Define relationships. We use the type hinting string to avoid circular imports.
@@ -68,9 +84,12 @@ class UserResponse(BaseModel):
     """
 
     id: UUID = Field(..., description="User ID")
+    email: str = Field(..., description="User email")
+    name: str = Field(None, description="User name")
+    avatar: Optional[str] = Field(None, description="User avatar")
+    role: UserRole = Field(..., description="User role")
     created_at: datetime = Field(..., description="Created at")
     updated_at: datetime = Field(..., description="Updated at")
-    deleted_at: Optional[datetime] = Field(None, description="Deleted at")
 
     class Config:
         from_attributes = True

@@ -4,19 +4,103 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+import requests
 
 from sqlalchemy.orm import Session
 
 from app.models import UserSetting
+from app.models.user import User
+from app.models.user import UserRole
 from app.models.user import UserSettingRequest
+from app.repositories.user import UserRepository
 from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
 from app.settings import Constants
+from app.settings import Secrets
 from app.utils.api.api_response import APIError
 from app.utils.api.helpers import get_logger
 
 
 logger = get_logger(__name__)
+
+
+class UserService(BaseService):
+    """
+    Service class for handling user-related operations such as retrieving user information
+    from Google OAuth, fetching users by email, and creating admin users.
+    """
+
+    def __init__(self, db_session: Session):
+        """
+        Initializes the UserService with a database session.
+
+        Args:
+            db_session (Session): The SQLAlchemy database session.
+        """
+        super().__init__(db_session=db_session)
+        self._user_repo = UserRepository(db_session=db_session)
+
+    def get_user_from_google_oauth(self, code: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieves user information from Google OAuth using the provided authorization code.
+
+        Args:
+            code (str): The authorization code from Google OAuth.
+
+        Returns:
+            Optional[Dict[str, Any]]: The user information as a dictionary if successful, otherwise None.
+        """
+        data = {
+            "code": code,
+            "client_id": Constants.GOOGLE_CLIENT_ID,
+            "client_secret": Secrets.GOOGLE_CLIENT_SECRET,
+            "redirect_uri": Constants.GOOGLE_REDIRECT_URI,
+            "grant_type": "authorization_code",
+        }
+
+        # Get the access token
+        token_response = requests.post(Constants.GOOGLE_TOKEN_URL, data=data)
+        access_token = token_response.json().get("access_token")
+
+        # Get the user info
+        user_info_response = requests.get(
+            Constants.GOOGLE_USER_INFO_URL, headers={"Authorization": f"Bearer {access_token}"}
+        )
+
+        return user_info_response.json()
+
+    def get_user_by_email(self, email: str) -> Tuple[Optional[User], Optional[APIError]]:
+        """
+        Retrieves a user by their email address.
+
+        Args:
+            email (str): The email address of the user to retrieve.
+
+        Returns:
+            Tuple[Optional[User], Optional[APIError]]: A tuple containing the user object (if found) and an API error (if any).
+        """
+        return self._user_repo.get_user_by_email(user_email=email)
+
+    def create_admin_user_from_oauth(self, oauth_user_data: Dict[str, Any]) -> Optional[APIError]:
+        """
+        Creates an admin user using data retrieved from Google OAuth.
+
+        Args:
+            oauth_user_data (Dict[str, Any]): A dictionary containing user information from Google OAuth.
+
+        Returns:
+            Optional[APIError]: An APIError object if an error occurs, otherwise None.
+        """
+        with self._transaction():
+            user = User(
+                email=oauth_user_data.get("email"),
+                name=oauth_user_data.get("name"),
+                avatar=oauth_user_data.get("picture"),
+                role=UserRole.ADMIN,
+                is_oauth=True,
+            )
+
+            return self._user_repo.create_user(user=user)
 
 
 class UserSettingService(BaseService):
