@@ -1,3 +1,5 @@
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -73,21 +75,26 @@ class ConnectorRepository(BaseRepository):
             logger.error(f"Error creating connector: {e}", exc_info=True)
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_connector(self, connector_id: str, connector: Connector) -> Optional[APIError]:
+    def update_connector(self, connector_id: str, connector: Dict[str, Any]) -> Optional[APIError]:
         """
         Update connector by connector_id
 
         Args:
             connector_id(str): Connector id
-            connector(Connector): Connector object
+            connector(Dict[str, Any]): Connector object
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         try:
-            connector = {
-                key: value for key, value in connector.__dict__.items() if not key.startswith("_")
-            }
+            # Check if connector exists
+            connector_exists = (
+                self._db_session.query(Connector).filter(Connector.id == connector_id).first()
+            )
+            if not connector_exists:
+                return APIError(kind=ErrorCodesMappingNumber.CONNECTOR_NOT_FOUND.value)
+
+            # Update connector
             self._db_session.query(Connector).filter(Connector.id == connector_id).update(connector)
             return None
         except Exception as e:

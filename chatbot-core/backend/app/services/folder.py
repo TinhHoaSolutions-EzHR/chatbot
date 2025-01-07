@@ -89,7 +89,7 @@ class FolderService(BaseService):
         """
         with self._transaction():
             # Define to-be-updated folder
-            folder = folder_request.model_dump(exclude_unset=True, exclude_defaults=True)
+            folder = folder_request.model_dump(exclude_unset=True)
 
             # Update folder
             err = self._folder_repo.update_folder(

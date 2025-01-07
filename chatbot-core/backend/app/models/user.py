@@ -127,7 +127,7 @@ class UserSetting(Base):
     user: Mapped["User"] = relationship("User", back_populates="user_setting")
 
 
-class UserSettingRequest(BaseModel):
+class UserSettingsRequest(BaseModel):
     """
     Pydantic model for user settings request.
     Defines the fields that can be updated in the user settings.
@@ -144,7 +144,7 @@ class UserSettingRequest(BaseModel):
         from_attributes = True
 
 
-class UserSettingResponse(BaseModel):
+class UserSettingsResponse(BaseModel):
     """
     Pydantic model for user settings response.
     Defines the fields that can be returned in the user settings.

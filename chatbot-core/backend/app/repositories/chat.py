@@ -190,6 +190,15 @@ class ChatRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Check if chat session exists
+            chat_session_exists = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+            if not chat_session_exists:
+                return APIError(kind=ErrorCodesMappingNumber.CHAT_SESSION_NOT_FOUND.value)
+
             self._db_session.query(ChatSession).filter(
                 and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id)
             ).update(chat_session)

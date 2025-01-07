@@ -150,7 +150,7 @@ class AgentRequest(BaseModel):
         """
         if isinstance(value, str):
             try:
-                return cls(**json.loads(value))
+                return cls.model_validate_json(value)
             except json.JSONDecodeError as e:
                 raise ValueError("Invalid JSON string provided") from e
 

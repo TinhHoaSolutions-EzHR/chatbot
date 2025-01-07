@@ -1,6 +1,4 @@
 import json
-from typing import Any
-from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -11,8 +9,8 @@ from sqlalchemy.orm import Session
 from app.models import UserSetting
 from app.models.user import User
 from app.models.user import UserRole
-from app.models.user import UserSettingRequest
 from app.repositories.user import UserRepository
+from app.models.user import UserSettingsRequest
 from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
 from app.settings import Constants
@@ -163,22 +161,21 @@ class UserSettingService(BaseService):
         return recent_agent_ids
 
     def update_user_settings(
-        self, user_id: str, user_setting_request: UserSettingRequest
+        self, user_id: str, user_settings_request: UserSettingsRequest
     ) -> Optional[APIError]:
         """
         Update user settings.
 
         Args:
             user_id (str): User ID.
-            user_setting_request (UserSettingRequest): User setting request object.
+            user_settings_request (UserSettingsRequest): User setting request object.
 
         Returns:
             Optional[APIError]: API error response.
         """
         with self._transaction():
-            user_settings: Dict[str, Any] = user_setting_request.model_dump(
-                exclude_unset=True, exclude_defaults=True
-            )
+            # Define to-be-updated user settings
+            user_settings = user_settings_request.model_dump(exclude_unset=True)
 
             # Fetch existing user setting
             existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
@@ -192,7 +189,6 @@ class UserSettingService(BaseService):
                     if existing_user_settings.recent_agent_ids
                     else []
                 )
-                logger.info(f"Current recent agent IDs: {recent_agent_ids}")
 
                 # Update recent agents
                 current_agent_id = str(user_settings["current_agent_id"])

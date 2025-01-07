@@ -3,7 +3,6 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from app.databases.minio import MinioConnector
@@ -16,7 +15,6 @@ from app.settings import Constants
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import construct_file_path
-from app.utils.api.helpers import generate_avatar_image
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
@@ -35,9 +33,6 @@ class AgentService(BaseService):
 
         # Define repositories
         self._agent_repo = AgentRepository(db_session=db_session)
-
-        # Define external storage's connectors
-        self._minio_connector = minio_connector
 
     def get_agents(self, user_id: str) -> Tuple[Optional[List[Agent]], Optional[APIError]]:
         """
@@ -117,7 +112,6 @@ class AgentService(BaseService):
         self,
         agent_request: AgentRequest,
         user_id: str,
-        file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
         """
         Create a new agent.
@@ -149,78 +143,47 @@ class AgentService(BaseService):
             # Define starter messages and create them
             for starter_messages_request in agent_request.starter_messages:
                 starter_message = StarterMessage(
-                    agent_id=agent.id, **starter_messages_request.model_dump()
+                    agent_id=agent_id, **starter_messages_request.model_dump()
                 )
                 err = self._agent_repo.create_starter_message(starter_message=starter_message)
                 if err:
                     return err
-
-            # Flush to get the agent id
-            self._db_session.flush()
-
-            # Upload image to Minio if file is provided. Otherwise, use the generated image.
-            agent_avatar = file.file if file else generate_avatar_image(data=agent_request.name)
-
-            # Upload image to Minio
-            file_path, err = self._upload_agent_avatar(
-                agent_avatar=agent_avatar, agent_name=agent_request.name, user_id=user_id
-            )
-            if err:
-                return err
-
-            # Update agent with image path
-            agent = AgentRequest(uploaded_image_path=file_path).model_dump(
-                exclude_unset=True, exclude_defaults=True
-            )
-            err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
-            if err:
-                return err
 
         return None
 
     def update_agent(
         self,
         agent_id: str,
+        agent_request: AgentRequest,
         user_id: str,
-        agent_request: Optional[AgentRequest] = None,
-        file: Optional[UploadFile] = None,
     ) -> Optional[APIError]:
         """
         Update an agent.
 
         Args:
             agent_id (str): Agent id.
+            agent_request (AgentRequest): Agent request object.
             user_id (str): User id.
-            agent_request (Optional[AgentRequest]): Agent request object.
             file (Optional[UploadFile]): File object. Defaults to None.
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
-            # Get existing agent
-            existing_agent, err = self._agent_repo.get_agent(agent_id=agent_id, user_id=user_id)
+            # Define to-be-updated agent
+            agent = agent_request.model_dump(exclude_unset=True, exclude={"starter_messages"})
+            logger.info(f"Updating agent: {agent}")
+
+            # Update agent
+            err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
             if err:
                 return err
 
-            # Define to-be-updated agent
-            if agent_request:
-                agent = agent_request.model_dump(
-                    exclude_unset=True, exclude_defaults=True, exclude={"starter_messages"}
-                )
-
-                # Update agent
-                err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
-                if err:
-                    return err
-
             # Update starter messages if provided
-            if agent_request and agent_request.starter_messages:
+            if agent_request.starter_messages:
                 for starter_message_request in agent_request.starter_messages:
                     # Define to-be-updated starter message
-                    starter_message = starter_message_request.model_dump(
-                        exclude_unset=True, exclude_defaults=True
-                    )
+                    starter_message = starter_message_request.model_dump(exclude_unset=True)
 
                     # Update starter message
                     err = self._agent_repo.update_starter_message(
@@ -230,26 +193,6 @@ class AgentService(BaseService):
                     )
                     if err:
                         return err
-
-            # Upload new image to Minio if file is provided.
-            if file:
-                file_path, err = self._upload_agent_avatar(
-                    agent_avatar=file.file,
-                    agent_name=existing_agent.name,
-                    user_id=user_id,
-                    delete_existing_image=True,
-                    existing_image_path=existing_agent.uploaded_image_path,
-                )
-                if err:
-                    return err
-
-                # Define to-be-updated agent
-                agent = AgentRequest(uploaded_image_path=file_path).model_dump(
-                    exclude_unset=True, exclude_defaults=True
-                )
-                err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
-                if err:
-                    return err
 
         return None
 

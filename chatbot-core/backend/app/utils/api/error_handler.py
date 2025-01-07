@@ -11,10 +11,17 @@ class ErrorCodesMappingNumber(Enum):
     INTERNAL_SERVER_ERROR = (500, Constants.INTERNAL_SERVER_ERROR_MESSAGE)
 
     # TODO: Think about adding more error codes here
-    AGENT_NOT_FOUND = (404, "Agent not specified or found for chat session")
-    CHAT_MESSAGES_NOT_FOUND = (404, "Chat message not found")
-    UNABLE_TO_UPLOAD_FILE_TO_MINIO = (500, "Unable to upload file to Minio")
-    UNABLE_TO_DELETE_FILE_FROM_MINIO = (500, "Unable to delete file from Minio")
+    AGENT_NOT_FOUND = (422, "Agent not specified or found for chat session")
+    STARTER_MESSAGE_NOT_FOUND = (422, "Starter message not found")
+    FOLDER_NOT_FOUND = (422, "Folder not found")
+    CONNECTOR_NOT_FOUND = (422, "Connector not found")
+    CHAT_SESSION_NOT_FOUND = (422, "Chat session not found")
+    CHAT_MESSAGES_NOT_FOUND = (422, "Chat message not found")
+    UNABLE_TO_UPLOAD_FILE_TO_MINIO = (422, "Unable to upload file to Minio")
+    UNABLE_TO_DELETE_FILE_FROM_MINIO = (422, "Unable to delete file from Minio")
+    LLM_PROVIDER_NOT_FOUND = (422, "LLM provider not found")
+    USER_SETTING_NOT_FOUND = (422, "User setting not found")
+    EMBEDDING_PROVIDER_NOT_FOUND = (422, "Embedding provider not found")
 
 
 class BaseException(Exception):

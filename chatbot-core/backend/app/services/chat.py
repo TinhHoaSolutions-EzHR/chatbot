@@ -18,6 +18,7 @@ from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ConversationError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
@@ -126,9 +127,7 @@ class ChatService(BaseService):
         """
         with self._transaction():
             # Define to-be-updated chat session
-            chat_session = chat_session_request.model_dump(
-                exclude_unset=True, exclude_defaults=True
-            )
+            chat_session = chat_session_request.model_dump(exclude_unset=True)
 
             # Update chat session
             err = self._chat_repository.update_chat_session(
@@ -186,7 +185,7 @@ class ChatService(BaseService):
         if parent_message_id:
             parent_updated_message = ChatMessageRequest(
                 child_message_id=child_message_id
-            ).model_dump(exclude_unset=True, exclude_defaults=True)
+            ).model_dump(exclude_unset=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=parent_message_id,
@@ -200,7 +199,7 @@ class ChatService(BaseService):
         if child_message_id:
             child_updated_message = ChatMessageRequest(
                 parent_message_id=parent_message_id
-            ).model_dump(exclude_unset=True, exclude_defaults=True)
+            ).model_dump(exclude_unset=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=child_message_id,
@@ -255,7 +254,7 @@ class ChatService(BaseService):
             logger.info("Updating the child_message_id of the latest chat response message")
             latest_updated_chat_response = ChatMessageRequest(
                 child_message_id=new_chat_request.id
-            ).model_dump(exclude_unset=True, exclude_defaults=True)
+            ).model_dump(exclude_unset=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=latest_chat_response.id,
@@ -404,7 +403,7 @@ class ChatService(BaseService):
             user_id(str): User id
 
         Returns:
-            Tuple[Optional[ChatMessage], Optional[APIError]]: Chat response message and APIError object if any error
+            Tuple[Optional[ChatMessage], Optional[APIError]]: New chat message object and APIError object if any error
         """
         # Get the current chat message and its parent / child message (based on the message message)
         current_chat_message, err = self._chat_repository.get_chat_message(
@@ -465,7 +464,7 @@ class ChatService(BaseService):
         # Flush the session to send the data to the database (but do not commit yet)
         self._db_session.flush()
 
-        return current_chat_message, None
+        return current_chat_request, None
 
     def _handle_new_chat_message(
         self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
@@ -520,7 +519,7 @@ class ChatService(BaseService):
 
         # Update the child_message_id of the current request message as the new response message
         updated_message = ChatMessageRequest(child_message_id=chat_response.id).model_dump(
-            exclude_unset=True, exclude_defaults=True
+            exclude_unset=True
         )
         err = self._chat_repository.update_chat_message(
             chat_session_id=chat_session_id,
@@ -556,15 +555,9 @@ class ChatService(BaseService):
                 return err
 
             # Create chat session if it does not exist
-            is_chat_session_exists = chat_session is not None
-            if not is_chat_session_exists:
-                logger.info(
-                    f"Chat session does not exist. Creating a new chat session with id: {chat_session_id}"
-                )
-                chat_session = ChatSession(id=chat_session_id, user_id=user_id)
-                err = self._chat_repository.create_chat_session(chat_session=chat_session)
-                if err:
-                    return err
+            if not chat_session:
+                logger.info(f"Chat session {chat_session_id} does not exist.")
+                return APIError(kind=ErrorCodesMappingNumber.CHAT_SESSION_NOT_FOUND.value)
 
             # Handle processing existing message (regenerate or edit the message)
             if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:

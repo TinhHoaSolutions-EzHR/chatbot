@@ -77,6 +77,16 @@ class ProviderRepository(BaseRepository):
             Optional[APIError]: APIError object if any error.
         """
         try:
+            # Check if the embedding provider exists
+            embedding_provider_exists = (
+                self._db_session.query(EmbeddingProvider)
+                .filter(EmbeddingProvider.id == embedding_provider_id)
+                .first()
+            )
+            if not embedding_provider_exists:
+                return APIError(kind=ErrorCodesMappingNumber.EMBEDDING_PROVIDER_NOT_FOUND.value)
+
+            # Update the embedding provider
             self._db_session.query(EmbeddingProvider).filter(
                 EmbeddingProvider.id == embedding_provider_id
             ).update(embedding_provider)
@@ -134,6 +144,16 @@ class ProviderRepository(BaseRepository):
             Optional[APIError]: APIError object if any error.
         """
         try:
+            # Check if the LLM provider exists
+            llm_provider_exists = (
+                self._db_session.query(LLMProvider)
+                .filter(LLMProvider.id == llm_provider_id)
+                .first()
+            )
+            if not llm_provider_exists:
+                return APIError(kind=ErrorCodesMappingNumber.LLM_PROVIDER_NOT_FOUND.value)
+
+            # Update the LLM provider
             self._db_session.query(LLMProvider).filter(LLMProvider.id == llm_provider_id).update(
                 llm_provider
             )

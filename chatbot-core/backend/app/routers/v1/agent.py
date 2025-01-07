@@ -1,11 +1,7 @@
-from typing import Optional
-
 from fastapi import APIRouter
-from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
-from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from app.databases.minio import get_minio_connector
@@ -109,10 +105,8 @@ def get_agent(
 
 @router.post("", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def create_agent(
-    agent_request: AgentRequest = Body(...),
-    file: Optional[UploadFile] = None,
+    agent_request: AgentRequest,
     db_session: Session = Depends(get_db_session),
-    minio_connector: MinioConnector = Depends(get_minio_connector),
     user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
@@ -120,9 +114,7 @@ def create_agent(
 
     Args:
         agent_request (AgentRequest): Agent request object (required).
-        file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
-        minio_connector (MinioConnector): Minio connector object.
         user (User): User object (required).
 
     Returns:
@@ -133,21 +125,16 @@ def create_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Create agent
-    err = AgentService(db_session=db_session, minio_connector=minio_connector).create_agent(
+    err = AgentService(db_session=db_session).create_agent(
         agent_request=agent_request,
         user_id=str(user.id),
-        file=file,
     )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = {}
-    data["agent"] = agent_request.model_dump(exclude_unset=True)
-
-    if file:
-        data["file"] = file.filename
+    data = agent_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
@@ -160,10 +147,8 @@ def create_agent(
 @router.patch("/{agent_id}", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def update_agent(
     agent_id: str,
-    agent_request: Optional[AgentRequest] = Body(None),
-    file: Optional[UploadFile] = None,
+    agent_request: AgentRequest,
     db_session: Session = Depends(get_db_session),
-    minio_connector: MinioConnector = Depends(get_minio_connector),
     user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
@@ -172,9 +157,7 @@ def update_agent(
     Args:
         agent_id (str): Agent id
         agent_request (AgentRequest): Agent request object.
-        file (Optional[UploadFile]): File object. Defaults to None.
         db_session (Session): Database session. Defaults to relational database session.
-        minio_connector (MinioConnector): Minio connector object.
         user (User): User object.
 
     Returns:
@@ -185,23 +168,17 @@ def update_agent(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Update agent
-    err = AgentService(db_session=db_session, minio_connector=minio_connector).update_agent(
+    err = AgentService(db_session=db_session).update_agent(
         agent_id=agent_id,
         agent_request=agent_request,
         user_id=user.id,
-        file=file,
     )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse agent
-    data = {}
-    if agent_request:
-        data["agent"] = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
-
-    if file:
-        data["file"] = file.filename
+    data = agent_request.model_dump(exclude_unset=True)
 
     return (
         BackendAPIResponse()
