@@ -125,13 +125,9 @@ class ChatService(BaseService):
             Optional[APIError]: APIError object if any error
         """
         with self._transaction():
-            # Define chat session
-            chat_session = ChatSession(
-                description=chat_session_request.description,
-                agent_id=chat_session_request.agent_id,
-                folder_id=chat_session_request.folder_id,
-                shared_status=chat_session_request.shared_status,
-                current_alternate_model=chat_session_request.current_alternate_model,
+            # Define to-be-updated chat session
+            chat_session = chat_session_request.model_dump(
+                exclude_unset=True, exclude_defaults=True
             )
 
             # Update chat session
@@ -188,7 +184,9 @@ class ChatService(BaseService):
         """
         # Update parent message's child reference
         if parent_message_id:
-            parent_updated_message = ChatMessage(child_message_id=child_message_id)
+            parent_updated_message = ChatMessageRequest(
+                child_message_id=child_message_id
+            ).model_dump(exclude_unset=True, exclude_defaults=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=parent_message_id,
@@ -200,7 +198,9 @@ class ChatService(BaseService):
 
         # Update child message's parent reference
         if child_message_id:
-            child_updated_message = ChatMessage(parent_message_id=parent_message_id)
+            child_updated_message = ChatMessageRequest(
+                parent_message_id=parent_message_id
+            ).model_dump(exclude_unset=True, exclude_defaults=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=child_message_id,
@@ -253,7 +253,9 @@ class ChatService(BaseService):
         # Update the child_message_id of the latest chat response (if any)
         if latest_chat_response:
             logger.info("Updating the child_message_id of the latest chat response message")
-            latest_updated_chat_response = ChatMessage(child_message_id=new_chat_request.id)
+            latest_updated_chat_response = ChatMessageRequest(
+                child_message_id=new_chat_request.id
+            ).model_dump(exclude_unset=True, exclude_defaults=True)
             err = self._chat_repository.update_chat_message(
                 chat_session_id=chat_session_id,
                 chat_message_id=latest_chat_response.id,
@@ -517,7 +519,9 @@ class ChatService(BaseService):
         self._db_session.flush()
 
         # Update the child_message_id of the current request message as the new response message
-        updated_message = ChatMessage(child_message_id=chat_response.id)
+        updated_message = ChatMessageRequest(child_message_id=chat_response.id).model_dump(
+            exclude_unset=True, exclude_defaults=True
+        )
         err = self._chat_repository.update_chat_message(
             chat_session_id=chat_session_id,
             chat_message_id=new_chat_request.id,

@@ -43,7 +43,7 @@ class Connector(Base):
 
 
 class ConnectorRequest(BaseModel):
-    name: str = Field(..., description="Connector name")
+    name: Optional[str] = Field(None, description="Connector name")
     file_paths: List[str] = Field(default_factory=list, description="List of uploaded file paths")
 
     class Config:

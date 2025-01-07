@@ -143,6 +143,9 @@ class AgentService(BaseService):
             # Flush to get the agent id
             self._db_session.flush()
 
+            # Get the created agent id
+            agent_id = agent.id
+
             # Define starter messages and create them
             for starter_messages_request in agent_request.starter_messages:
                 starter_message = StarterMessage(
@@ -166,12 +169,10 @@ class AgentService(BaseService):
                 return err
 
             # Update agent with image path
-            to_update_agent = AgentRequest(uploaded_image_path=file_path).model_dump(
+            agent = AgentRequest(uploaded_image_path=file_path).model_dump(
                 exclude_unset=True, exclude_defaults=True
             )
-            err = self._agent_repo.update_agent(
-                agent_id=agent.id, agent=to_update_agent, user_id=user_id
-            )
+            err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
             if err:
                 return err
 
@@ -243,8 +244,9 @@ class AgentService(BaseService):
                     return err
 
                 # Define to-be-updated agent
-                agent_request = AgentRequest(uploaded_image_path=file_path)
-                agent = agent_request.model_dump(exclude_unset=True, exclude_defaults=True)
+                agent = AgentRequest(uploaded_image_path=file_path).model_dump(
+                    exclude_unset=True, exclude_defaults=True
+                )
                 err = self._agent_repo.update_agent(agent_id=agent_id, agent=agent, user_id=user_id)
                 if err:
                     return err

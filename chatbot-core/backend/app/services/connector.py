@@ -99,7 +99,7 @@ class ConnectorService(BaseService):
         try:
             with self._transaction():
                 # Define connector
-                connector = Connector(name=connector_request.name)
+                connector = connector_request.model_dump(exclude_unset=True, exclude_defaults=True)
 
                 err = self._connector_repo.update_connector(
                     connector_id=connector_id, connector=connector

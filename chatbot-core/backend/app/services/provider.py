@@ -134,7 +134,9 @@ class ProviderService(BaseService):
 
         with self._transaction():
             # Define to-be-updated embedding provider
-            embedding_provider = embedding_provider_request.model_dump(exclude_unset=True)
+            embedding_provider = embedding_provider_request.model_dump(
+                exclude_unset=True, exclude_defaults=True
+            )
             if embedding_provider.get("models"):
                 embedding_provider["models"] = json.dumps(embedding_provider["models"])
 
@@ -193,7 +195,9 @@ class ProviderService(BaseService):
 
         with self._transaction():
             # Define to-be-updated LLM provider
-            llm_provider = llm_provider_request.model_dump(exclude_unset=True, exclude_none=True)
+            llm_provider = llm_provider_request.model_dump(
+                exclude_unset=True, exclude_defaults=True
+            )
             if llm_provider.get("models"):
                 llm_provider["models"] = json.dumps(llm_provider["models"])
 

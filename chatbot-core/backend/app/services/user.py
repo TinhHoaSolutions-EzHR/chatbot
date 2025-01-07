@@ -176,7 +176,9 @@ class UserSettingService(BaseService):
             Optional[APIError]: API error response.
         """
         with self._transaction():
-            user_settings: Dict[str, Any] = user_setting_request.model_dump(exclude_unset=True)
+            user_settings: Dict[str, Any] = user_setting_request.model_dump(
+                exclude_unset=True, exclude_defaults=True
+            )
 
             # Fetch existing user setting
             existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
