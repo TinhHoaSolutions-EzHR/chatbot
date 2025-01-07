@@ -24,7 +24,7 @@ export const OauthLogin = () => {
     }
 
     setOauthCode(code);
-    router.refresh();
+    router.replace('/');
   }, []);
 
   if (isLoading) {
