@@ -20,24 +20,22 @@ Project "EzHR-Chatbot" {
 4. chat_session: Conversation sessions between users and agents
 5. chat_message: Individual messages in chat sessions
 6. feedback: User feedback on messages/nodes
-7. prompt: System prompts (base table)
-8. tool: Available tools for agents
-9. connector: Document source connectors
-10. document_metadata: Document information and metadata
-11. document_metadata_tag: Tags for documents
-12. llm_provider: LLM service configurations
-13. embedding_provider: Embedding service configurations
-14. user_setting: User-specific settings
+7. tool: Available tools for agents
+8. connector: Document source connectors
+9. document_metadata: Document information and metadata
+10. document_metadata_tag: Tags for documents
+11. llm_provider: LLM service configurations
+12. embedding_provider: Embedding service configurations
+13. user_setting: User-specific settings
 
 ### Key Relationships:
-1. agent -> prompt: One-to-one (system prompt)
-2. chat_session -> user/agent: Many-to-one
-3. chat_message -> chat_session/user/agent: Many-to-one
-4. chat_message -> chat_message: Parent/child relationship
-5. feedback -> chat_message: Many-to-one
-6. document_metadata_tag -> document_metadata: Many-to-one
-7. agent_tool: Many-to-many between agents and tools
-8. user_setting -> user: One-to-one
+1. chat_session -> user/agent: Many-to-one
+2. chat_message -> chat_session/user/agent: Many-to-one
+3. chat_message -> chat_message: Parent/child relationship
+4. feedback -> chat_message: Many-to-one
+5. document_metadata_tag -> document_metadata: Many-to-one
+6. agent_tool: Many-to-many between agents and tools
+7. user_setting -> user: One-to-one
 '''
 }
 
@@ -118,9 +116,10 @@ TABLE chatbot_core.user {
 }
 
 TABLE chatbot_core.user_setting {
-  id uuid [unique, not null, primary key]
+  id uuid [unique, not null, primary key, ref > chatbot_core.user.id]
   recent_agent_id uuid [null, ref: > chatbot_core.agent.id, note: 'Recent agent id used by the user.']
   auto_scroll boolean [not null, default: true, note: 'Whether auto scroll is enabled or not.']
+  default_model varchar(255) [null, note: 'Default model name to use for the user. Priority: user setting => agent.']
   created_at timestamp
   updated_at timestamp
   deleted_at timestamp
@@ -130,12 +129,13 @@ TABLE chatbot_core.user_setting {
 
 TABLE chatbot_core.agent {
   id uuid [unique, not null, primary key]
+  user_id uuid [not null, ref: > chatbot_core.user.id, note: 'User id who created the agent.']
   name varchar(255) [not null]
+  prompt varchar(255) [not null, note: 'Prompt text for the agent.']
   description text
   is_public boolean [not null, note: 'Whether agent is public or not.']
   is_default boolean [not null, note: 'Whether agent is default or not.']
   display_priority int [not null, note: 'Order in which agent will be displayed. E.g 1, 2, 3.']
-  prompt_id uuid [not null, ref: > chatbot_core.prompt.id, note: 'System prompt id for the agent.']
   avatar_id varchar(255) [note: 'Path to avatar image uploded by user, saved in object storage.']
   icon_color varchar(255) [not null]
   icon_shape varchar(255) [not null]
@@ -146,10 +146,21 @@ TABLE chatbot_core.agent {
   Note: 'Agent is a customized combination of prompts and tools. An agent only has 1 system prompt and many tools.'
 }
 
+TABLE chatbot_core.folder {
+  id uuid [unique, not null, primary key]
+  name varchar(255) [not null, note: 'Name of the folder.']
+  display_priority int [not null, note: 'Order in which folder will be displayed. E.g 1, 2, 3.']
+  user_id uuid [not null, ref: > chatbot_core.user.id, note: 'User id who created the folder.']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
 TABLE chatbot_core.chat_session {
   id uuid [unique, not null, primary key]
-  user_id uuid [not null, ref: > chatbot_core.user.id]
-  agent_id uuid [not null, ref: > chatbot_core.agent.id]
+  user_id uuid [not null, ref: > chatbot_core.user.id, note: 'User id for the chat session.']
+  agent_id uuid [not null, ref: > chatbot_core.agent.id, note: 'Agent id for the chat session.']
+  folder_id uuid [null, ref: > chatbot_core.folder.id, note: 'Folder id for the chat session.']
   description varchar(255) [null, note: 'Name of the chat session, auto-generated after creation.']
   shared_status chat_session_shared_status [not null, default: 'private', note: 'Whether chat session is shared or not. E.g private, public.']
   current_alternate_model varchar [null, note: 'Current alternate model being used for this chat session. Priority: user setting => agent.']
@@ -167,7 +178,6 @@ TABLE chatbot_core.chat_message {
   agent_id uuid [not null, ref: > chatbot_core.agent.id]
   parent_message_id uuid [null, ref: > chatbot_core.chat_message.id, note: 'Parent message id for the current message.']
   child_message_id uuid [null, ref: > chatbot_core.chat_message.id, note: 'Child message id for the current message.']
-  prompt_id uuid [null, ref: > chatbot_core.prompt.id, note: 'Prompt id for the current message.']
   message text [not null, note: 'Chat message text.']
   message_type chat_message_type [not null, note: 'Type of message. E.g. system, user, assistant.']
   token_count int [not null, default: 0, note: 'Number of tokens in the message.']
@@ -192,12 +202,6 @@ TABLE chatbot_core.feedback {
   deleted_at timestamp
 
   Note: 'Table to store feedback for chat messages. For message feedbacks in chat session, also feedback for node that retrieved from vector database.'
-}
-
-TABLE chatbot_core.prompt {
-  id uuid [unique, not null, primary key]
-
-  Note: 'Table to store prompts.'
 }
 
 TABLE chatbot_core.tool {
