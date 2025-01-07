@@ -207,7 +207,7 @@ class ChatRepository(BaseRepository):
         Args:
             chat_session_id(str): Chat session id
             chat_message_id(str): Chat message id
-            chat_message( Dict[str, Any]): Chat message object
+            chat_message(Dict[str, Any]): Chat message object
             user_id(str): User id
 
         Returns:
