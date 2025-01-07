@@ -21,7 +21,7 @@ from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
-from app.utils.user.authentication import get_current_user
+from app.utils.user.authentication import get_current_user_from_token
 
 
 logger = get_logger(__name__)
@@ -30,7 +30,7 @@ router = APIRouter(prefix="/chat", tags=["chat", "session", "message"])
 
 @router.get("/chat-sessions", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_chat_sessions(
-    db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)
+    db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user_from_token)
 ) -> BackendAPIResponse:
     """
     Get all chat sessions of the user.
@@ -72,7 +72,7 @@ def get_chat_sessions(
 def get_chat_session(
     chat_session_id: str,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Get chat session by id.
@@ -125,7 +125,7 @@ def get_chat_session(
 def create_chat_session(
     chat_session_request: ChatSessionRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Create chat session.
@@ -171,7 +171,7 @@ def update_chat_session(
     chat_session_id: str,
     chat_session_request: ChatSessionRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Update chat session.
@@ -212,7 +212,7 @@ def update_chat_session(
 def delete_chat_session(
     chat_session_id: str,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> None:
     """
     Delete chat session.
@@ -243,7 +243,7 @@ def handle_new_chat_message(
     chat_session_id: str,
     chat_message_request: ChatMessageRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> StreamingResponse:
     """
     This endpoint is both used for all the following purposes:
@@ -286,7 +286,7 @@ def handle_new_chat_message(
 def create_chat_feedback(
     chat_feedback_request: ChatFeedbackRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Create chat feedback.

@@ -1,8 +1,10 @@
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Tuple
 
 from sqlalchemy.orm import Session
 
-from app.models import User, UserSetting
+from app.models import User
+from app.models import UserSetting
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
