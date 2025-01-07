@@ -30,7 +30,9 @@ class Connector(Base):
     )
     name: Mapped[str] = mapped_column(String, nullable=False)
     source: Mapped[DocumentSource] = mapped_column(
-        SQLAlchemyEnum(DocumentSource, native_enum=False), nullable=False
+        SQLAlchemyEnum(DocumentSource, native_enum=False),
+        nullable=False,
+        default=DocumentSource.FILE,
     )
     connector_specific_config: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)

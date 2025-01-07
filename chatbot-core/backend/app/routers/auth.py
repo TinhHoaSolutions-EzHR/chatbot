@@ -31,26 +31,24 @@ def get_oauth_access_token(code: str, db_session: Session = Depends(get_db_sessi
     Returns:
         APIResponse: The response containing the access token and token type.
     """
-    user_oauth_data = UserService(db_session=db_session).get_user_from_google_oauth(code=code)
+    user_oauth_data, err = UserService(db_session=db_session).get_user_from_google_oauth(code=code)
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
 
-    if not user_oauth_data:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=Constants.INTERNAL_SERVER_ERROR_MESSAGE,
-        )
-
-    user, error = UserService(db_session=db_session).get_user_by_email(
+    user, err = UserService(db_session=db_session).get_user_by_email(
         email=user_oauth_data.get("email")
     )
-
-    if not user and not error:
-        error = UserService(db_session=db_session).create_admin_user_from_oauth(
-            user_oauth_data=user_oauth_data
-        )
-
-    if error:
-        status_code, detail = error.kind
+    if err:
+        status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
+
+    if not user:
+        # Create a new user if not already present
+        err = UserService(db_session=db_session).create_user(user_oauth_data=user_oauth_data)
+        if err:
+            status_code, detail = err.kind
+            raise HTTPException(status_code=status_code, detail=detail)
 
     if not user.is_oauth:
         raise HTTPException(

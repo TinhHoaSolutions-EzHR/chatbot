@@ -13,9 +13,9 @@ from pydantic import BaseModel
 from pydantic import Field
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
-from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -56,9 +56,9 @@ class User(Base):
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     hashed_password: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     role: Mapped[UserRole] = mapped_column(
-        SQLAlchemyEnum(UserRole, native_enum=False), nullable=False
+        SQLAlchemyEnum(UserRole, native_enum=False), nullable=False, default=UserRole.BASIC
     )
-    is_oauth: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    is_oauth: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

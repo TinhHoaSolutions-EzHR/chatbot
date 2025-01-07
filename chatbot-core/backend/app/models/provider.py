@@ -46,6 +46,7 @@ class BaseProvider(Base):
     )
     name: Mapped[ProviderType] = mapped_column(
         SQLAlchemyEnum(ProviderType, native_enum=False),
+        nullable=False,
         default=ProviderType.OPENAI,
     )
     api_key: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
