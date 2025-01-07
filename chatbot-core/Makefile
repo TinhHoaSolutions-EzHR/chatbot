@@ -1,5 +1,4 @@
 # Makefile for Docker Compose commands
-include .env
 
 # Variables
 DEEPEVAL := ${PWD}/backend/.venv/bin/deepeval
