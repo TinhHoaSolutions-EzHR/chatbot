@@ -25,6 +25,8 @@ class Constants:
     UNAUTHORIZED_REQUEST_MESSAGE = "Unauthorized request"
     FORBIDDEN_REQUEST_MESSAGE = "Forbidden request"
     NOT_FOUND_MESSAGE = "Not found"
+    USER_NOT_FOUND_MESSAGE = "User not found"
+    USER_WRONG_LOGIN_METHOD = "Wrong login method"
     INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
     EMPTY_CHAT_MESSAGE_MESSAGE = "Empty chat message"
 
@@ -84,3 +86,14 @@ class Constants:
     AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT = "png"
     # User Settings
     MAX_RECENT_AGENTS = 5
+
+    # OAuth
+    GOOGLE_TOKEN_URL = "https://accounts.google.com/o/oauth2/token"
+    GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+    GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+    # JWT
+    JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+    JWT_EXPIRATION = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 3600))
+    EZHR_ACCESS_TOKEN = "ezhr_access_token"

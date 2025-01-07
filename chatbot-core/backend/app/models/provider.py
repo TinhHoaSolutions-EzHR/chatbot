@@ -74,7 +74,7 @@ class EmbeddingProvider(BaseProvider):
     Tracks and organizes embedding providers that are stored in the database.
     """
 
-    __tablename__ = "embedding_model"
+    __tablename__ = "embedding_provider"
 
     dimensions: Mapped[int] = mapped_column(Integer, nullable=False)
     embed_batch_size: Mapped[int] = mapped_column(Integer, nullable=False, default=10)

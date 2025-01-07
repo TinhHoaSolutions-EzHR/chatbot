@@ -10,35 +10,58 @@ from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 
+# Initialize logger
 logger = get_logger(__name__)
 
 
 class UserRepository(BaseRepository):
+    """
+    UserRepository handles database operations related to the User model.
+    """
+
     def __init__(self, db_session: Session):
         """
-        User repository class for handling user-related database operations.
+        Initializes the UserRepository with a database session.
 
         Args:
-            db_session (Session): Database session
+            db_session (Session): The SQLAlchemy database session.
         """
         super().__init__(db_session=db_session)
 
-    def get_user(self, user_id: str) -> Tuple[User, Optional[APIError]]:
+    def get_user_by_email(self, email: str) -> Tuple[Optional[User], Optional[APIError]]:
         """
-        Get user by id.
+        Retrieves a user from the database by email.
 
         Args:
-            user_id (str): User ID
+            email (str): The email of the user to retrieve.
 
         Returns:
-            Tuple[User, Optional[APIError]]: User object and API error response
+            Tuple[Optional[User], Optional[APIError]]: A tuple containing the User object
+            (if found) and an optional APIError object.
         """
         try:
-            user = self._db_session.query(User).filter(User.id == user_id).first()
+            user = self._db_session.query(User).filter(User.email == email).first()
             return user, None
-        except Exception as e:
-            logger.error(f"Error getting user: {e}")
+        except Exception as error:
+            logger.error(f"Error retrieving user by email: {error}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def create_user(self, user: User) -> Optional[APIError]:
+        """
+        Creates a new user in the database.
+
+        Args:
+            user (User): The User object to create.
+
+        Returns:
+            Optional[APIError]: An APIError object if an error occurs, otherwise None.
+        """
+        try:
+            self._db_session.add(user)
+            return None
+        except Exception as error:
+            logger.error(f"Error creating user: {error}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
 
 class UserSettingRepository(BaseRepository):

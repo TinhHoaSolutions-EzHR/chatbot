@@ -26,3 +26,9 @@ class Secrets:
 
     # Ferment API Key
     FERMENT_API_KEY = os.getenv("FERMENT_API_KEY", "S5U3ze4WtNZcKZKjoHngcPTGmp1XqLKwjTZ3iuvET28=")
+
+    # Google Oauth Credentials
+    GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+    # JWT
+    JWT_SECRET = os.getenv("JWT_SECRET_KEY")

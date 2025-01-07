@@ -15,7 +15,7 @@ from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
-from app.utils.user.authentication import get_current_user
+from app.utils.user.authentication import get_current_user_from_token
 
 logger = get_logger(__name__)
 router = APIRouter(prefix="/users/me", tags=["user", "setting"])
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/users/me", tags=["user", "setting"])
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_user(
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Get user.
@@ -56,7 +56,7 @@ def get_user(
 @router.get("/settings", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_user_settings(
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Get user settings.
@@ -101,7 +101,7 @@ def get_user_settings(
 def update_user_settings(
     user_setting_request: UserSettingRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Update user settings.

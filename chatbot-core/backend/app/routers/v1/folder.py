@@ -13,7 +13,7 @@ from app.settings import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.helpers import get_logger
-from app.utils.user.authentication import get_current_user
+from app.utils.user.authentication import get_current_user_from_token
 
 
 logger = get_logger(__name__)
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/folders", tags=["folders", "chat", "session", "messa
 
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_folders(
-    db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user)
+    db_session: Session = Depends(get_db_session), user: User = Depends(get_current_user_from_token)
 ) -> BackendAPIResponse:
     """
     Get all chat folders of the user.
@@ -60,7 +60,7 @@ def get_folders(
 def create_folder(
     folder_request: FolderRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Create a new chat folder.
@@ -99,7 +99,7 @@ def update_folder(
     folder_id: str,
     folder_request: FolderRequest,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Update chat folder by ID.
@@ -138,7 +138,7 @@ def update_folder(
 def delete_folder(
     folder_id: str,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> None:
     """
     Delete chat folder by ID.

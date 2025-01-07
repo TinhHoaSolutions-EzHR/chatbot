@@ -1,0 +1,29 @@
+name: Publish database catalog to dbdocs.io
+
+# Run on pushing to the main branch and changes in the file chatbot-core/EzHR-Chabot.dbml
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "chatbot-core/EzHR-Chatbot.dbml"
+
+jobs:
+  build:
+    name: Generate and publish database catalog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dbdocs CLI
+        run: npm install -g dbdocs
+
+      - name: Check dbdocs
+        run: dbdocs
+
+      - name: Publish database catalog
+        env:
+          DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
+        run: dbdocs build chatbot-core/EzHR-Chatbot.dbml --project EzHR-Chatbot

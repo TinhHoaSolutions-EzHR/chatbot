@@ -1,11 +1,13 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.routers import base
+from app.routers import auth
 from app.routers.v1 import agent
 from app.routers.v1 import chat
 from app.routers.v1 import connector
@@ -61,6 +63,18 @@ def create_app() -> FastAPI:
         description=Constants.FASTAPI_DESCRIPTION,
         lifespan=lifespan,
     )
+    origins = [
+        "http://localhost:3000",
+        "http://localhost:8080",
+    ]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     logger.info(
         f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"
@@ -68,6 +82,7 @@ def create_app() -> FastAPI:
 
     # Include application routers
     app.include_router(router=base.router)
+    app.include_router(router=auth.router)
     app.include_router(router=connector.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=chat.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=folder.router, prefix=Constants.FASTAPI_PREFIX)

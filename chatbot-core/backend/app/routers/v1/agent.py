@@ -20,7 +20,7 @@ from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
-from app.utils.user.authentication import get_current_user
+from app.utils.user.authentication import get_current_user_from_token
 
 
 logger = get_logger(__name__)
@@ -30,7 +30,7 @@ router = APIRouter(prefix="/agents", tags=["agent", "assistant"])
 @router.get("", response_model=APIResponse, status_code=status.HTTP_200_OK)
 def get_agents(
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Get all agents.
@@ -70,7 +70,7 @@ def get_agents(
 def get_agent(
     agent_id: str,
     db_session: Session = Depends(get_db_session),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Get an agent by id.
@@ -113,7 +113,7 @@ def create_agent(
     file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Create a new agent.
@@ -164,7 +164,7 @@ def update_agent(
     file: Optional[UploadFile] = None,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> BackendAPIResponse:
     """
     Update an agent.
@@ -216,7 +216,7 @@ def delete_agent(
     agent_id: str,
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user_from_token),
 ) -> None:
     """
     Delete an agent.

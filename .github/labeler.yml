@@ -40,6 +40,7 @@ frontend:
   - changed-files:
       - any-glob-to-any-file:
           - chatbot-core/frontend/**/*
+          - chatbot-core/frontend-v2/**/*
 
 POC:
   - changed-files:
