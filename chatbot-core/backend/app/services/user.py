@@ -79,7 +79,7 @@ class UserService(BaseService):
         Returns:
             Tuple[Optional[User], Optional[APIError]]: A tuple containing the user object (if found) and an API error (if any).
         """
-        return self._user_repo.get_user_by_email(user_email=email)
+        return self._user_repo.get_user_by_email(email=email)
 
     def create_admin_user_from_oauth(self, oauth_user_data: Dict[str, Any]) -> Optional[APIError]:
         """

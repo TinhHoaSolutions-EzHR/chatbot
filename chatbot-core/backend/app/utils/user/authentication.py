@@ -42,7 +42,7 @@ def get_current_user_from_token(
             detail=Constants.UNAUTHORIZED_REQUEST_MESSAGE,
         )
 
-    user, error = UserService(db_session=db_session).get_user_by_email(user_email=user_email)
+    user, error = UserService(db_session=db_session).get_user_by_email(email=user_email)
 
     if error:
         status_code, detail = error.kind

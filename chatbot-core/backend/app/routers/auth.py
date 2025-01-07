@@ -58,7 +58,7 @@ def get_oauth_access_token(code: str, db_session: Session = Depends(get_db_sessi
             detail=Constants.USER_WRONG_LOGIN_METHOD,
         )
 
-    access_token = create_access_token(email=user_oauth_data.get("email"))
+    access_token = create_access_token(data=user_oauth_data.get("email"))
 
     return (
         BackendAPIResponse()
