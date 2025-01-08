@@ -215,7 +215,7 @@ class LLMProviderRequest(BaseProviderRequest):
         Validate that the temperature is between 0.0 and 1.0.
 
         Args:
-            value (float): The value of the attribute.
+            value (float): The temperature value to validate.
 
         Returns:
             float: The validated temperature
