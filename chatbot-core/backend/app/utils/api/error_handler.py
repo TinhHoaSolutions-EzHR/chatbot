@@ -24,6 +24,8 @@ class ErrorCodesMappingNumber(Enum):
     EMBEDDING_PROVIDER_NOT_FOUND = (422, "Embedding provider not found")
     PROVIDER_TYPE_CHANGE_NOT_ALLOWED = (422, "Provider type change not allowed")
 
+    USER_WRONG_LOGIN_METHOD = (405, "User already exists with wrong login method")
+
 
 class BaseException(Exception):
     """

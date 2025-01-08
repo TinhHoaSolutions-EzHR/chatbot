@@ -9,6 +9,7 @@ from app.services.user import UserService
 from app.settings.constants import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
+from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 from app.utils.user.jwt import create_access_token
 
@@ -49,11 +50,12 @@ def get_oauth_access_token(code: str, db_session: Session = Depends(get_db_sessi
         if err:
             status_code, detail = err.kind
             raise HTTPException(status_code=status_code, detail=detail)
-
-    if not user.is_oauth:
+    elif not user.is_oauth:
+        # If the user already exists with a different login method, return an error
+        status_code, detail = ErrorCodesMappingNumber.USER_WRONG_LOGIN_METHOD.value
         raise HTTPException(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail=Constants.USER_WRONG_LOGIN_METHOD,
+            status_code=status_code,
+            detail=detail,
         )
 
     access_token = create_access_token(data=user_oauth_data.get("email"))
