@@ -233,6 +233,20 @@ class ChatRepository(BaseRepository):
             if not chat_session:
                 return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
 
+            # Check if chat message exists
+            chat_message_exists = (
+                self._db_session.query(ChatMessage)
+                .filter(
+                    and_(
+                        ChatMessage.id == chat_message_id,
+                        ChatMessage.chat_session_id == chat_session_id,
+                    )
+                )
+                .first()
+            )
+            if not chat_message_exists:
+                return APIError(kind=ErrorCodesMappingNumber.CHAT_MESSAGE_NOT_FOUND.value)
+
             # Update the chat message
             self._db_session.query(ChatMessage).filter(
                 and_(

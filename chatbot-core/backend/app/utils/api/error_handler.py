@@ -16,7 +16,7 @@ class ErrorCodesMappingNumber(Enum):
     FOLDER_NOT_FOUND = (422, "Folder not found")
     CONNECTOR_NOT_FOUND = (422, "Connector not found")
     CHAT_SESSION_NOT_FOUND = (422, "Chat session not found")
-    CHAT_MESSAGES_NOT_FOUND = (422, "Chat message not found")
+    CHAT_MESSAGE_NOT_FOUND = (422, "Chat message not found")
     UNABLE_TO_UPLOAD_FILE_TO_MINIO = (422, "Unable to upload file to Minio")
     UNABLE_TO_DELETE_FILE_FROM_MINIO = (422, "Unable to delete file from Minio")
     LLM_PROVIDER_NOT_FOUND = (422, "LLM provider not found")
