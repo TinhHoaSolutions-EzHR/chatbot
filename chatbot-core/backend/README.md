@@ -173,3 +173,57 @@ To downgrade the database to the previous migration, run the following command:
 cd chatbot-core
 make exec SERVICES=api-server COMMAND="uv run alembic downgrade -1"
 ```
+
+### Troubleshooting
+
+#### 1. Reset alembic
+
+1. Firstly change directory to `chatbot-core`
+
+```bash
+cd chatbot-core
+```
+
+2. Make down all services
+
+```bash
+make down
+```
+
+3. Spawn up the database
+
+```bash
+make up SERVICES=database
+```
+
+Wait the database service to be ready for 10 seconds.
+
+4. Exec the database using dbeaber or data grip, then run the following sql script
+
+```sql
+DROP DATABASE chatbot_core;
+```
+
+![image](https://github.com/user-attachments/assets/2d86a604-0f2b-4c2b-8155-0b1d14ad09be)
+
+This will drop all existing tables. Will then create later.
+
+5. Startup services
+
+```bash
+make up
+```
+
+6. Check log the service `api-server`, now you will see all the alembic migrations created
+
+```bash
+make logs SERVICES=api-server
+```
+
+Successful logs:
+
+![image](https://github.com/user-attachments/assets/b8536f78-5a99-4a5c-9535-0ff927be2116)
+
+Example after successfully reset alembic:
+
+![image](https://github.com/user-attachments/assets/b97ec69e-4366-43aa-a4b5-3fac5f43c21f)
