@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
+import { CHATBOT_CORE_BACKEND_URL, LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
 
-const api = axios.create({
-  headers: { 'Content-Type': 'application/json' },
+const httpClient = axios.create({
+  baseURL: CHATBOT_CORE_BACKEND_URL,
+  headers: {
+    'Access-Control-Allow-Origin': 'http://localhost:3000',
+    'Content-Type': 'application/json',
+  },
   withCredentials: true,
 });
 
-api.interceptors.request.use(config => {
+httpClient.interceptors.request.use(config => {
   const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
 
   if (accessToken) {
@@ -17,4 +21,4 @@ api.interceptors.request.use(config => {
   return config;
 });
 
-export default api;
+export default httpClient;
