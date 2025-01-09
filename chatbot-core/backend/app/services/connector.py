@@ -98,9 +98,14 @@ class ConnectorService(BaseService):
         err = None
         try:
             with self._transaction():
-                # Define connector
-                connector = Connector(name=connector_request.name)
+                # Define to-be-updated connector
+                connector = connector_request.model_dump(exclude_unset=True)
+                if connector.get("file_paths"):
+                    connector_specific_config = {"file_paths": connector.get("file_paths")}
+                    connector["connector_specific_config"] = json.dumps(connector_specific_config)
+                    connector.pop("file_paths")
 
+                # Update connector
                 err = self._connector_repo.update_connector(
                     connector_id=connector_id, connector=connector
                 )

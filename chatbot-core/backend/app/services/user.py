@@ -4,20 +4,21 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
-import requests
 
+import requests
 from sqlalchemy.orm import Session
 
 from app.models import UserSetting
 from app.models.user import User
 from app.models.user import UserRole
-from app.models.user import UserSettingRequest
+from app.models.user import UserSettingsRequest
 from app.repositories.user import UserRepository
 from app.repositories.user import UserSettingRepository
 from app.services.base import BaseService
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 
 
@@ -27,7 +28,7 @@ logger = get_logger(__name__)
 class UserService(BaseService):
     """
     Service class for handling user-related operations such as retrieving user information
-    from Google OAuth, fetching users by email, and creating admin users.
+    from Google OAuth, fetching users by email, and creating users.
     """
 
     def __init__(self, db_session: Session):
@@ -40,7 +41,9 @@ class UserService(BaseService):
         super().__init__(db_session=db_session)
         self._user_repo = UserRepository(db_session=db_session)
 
-    def get_user_from_google_oauth(self, code: str) -> Optional[Dict[str, Any]]:
+    def get_user_from_google_oauth(
+        self, code: str
+    ) -> Tuple[Optional[Dict[str, Any]], Optional[APIError]]:
         """
         Retrieves user information from Google OAuth using the provided authorization code.
 
@@ -48,7 +51,7 @@ class UserService(BaseService):
             code (str): The authorization code from Google OAuth.
 
         Returns:
-            Optional[Dict[str, Any]]: The user information as a dictionary if successful, otherwise None.
+            Tuple[Optional[Dict[str, Any]], Optional[APIError]]: User information and APIError object if any error.
         """
         data = {
             "code": code,
@@ -58,16 +61,20 @@ class UserService(BaseService):
             "grant_type": "authorization_code",
         }
 
-        # Get the access token
-        token_response = requests.post(Constants.GOOGLE_TOKEN_URL, data=data)
-        access_token = token_response.json().get("access_token")
+        try:
+            # Get the access token
+            token_response = requests.post(Constants.GOOGLE_TOKEN_URL, data=data)
+            access_token = token_response.json().get("access_token")
 
-        # Get the user info
-        user_info_response = requests.get(
-            Constants.GOOGLE_USER_INFO_URL, headers={"Authorization": f"Bearer {access_token}"}
-        )
+            # Get the user info
+            user_info_response = requests.get(
+                Constants.GOOGLE_USER_INFO_URL, headers={"Authorization": f"Bearer {access_token}"}
+            )
 
-        return user_info_response.json()
+            return user_info_response.json(), None
+        except Exception as e:
+            logger.error(f"Error retrieving user information from Google OAuth: {e}")
+            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def get_user_by_email(self, email: str) -> Tuple[Optional[User], Optional[APIError]]:
         """
@@ -81,25 +88,27 @@ class UserService(BaseService):
         """
         return self._user_repo.get_user_by_email(email=email)
 
-    def create_admin_user_from_oauth(self, oauth_user_data: Dict[str, Any]) -> Optional[APIError]:
+    def create_user(self, user_oauth_data: Dict[str, Any]) -> Optional[APIError]:
         """
-        Creates an admin user using data retrieved from Google OAuth.
+        Creates an user using data retrieved from Google OAuth.
 
         Args:
-            oauth_user_data (Dict[str, Any]): A dictionary containing user information from Google OAuth.
+            user_oauth_data (Dict[str, Any]): A dictionary containing user information from Google OAuth.
 
         Returns:
             Optional[APIError]: An APIError object if an error occurs, otherwise None.
         """
         with self._transaction():
+            # Define to-be-created user
             user = User(
-                email=oauth_user_data.get("email"),
-                name=oauth_user_data.get("name"),
-                avatar=oauth_user_data.get("picture"),
+                email=user_oauth_data.get("email"),
+                name=user_oauth_data.get("name"),
+                avatar=user_oauth_data.get("picture"),
                 role=UserRole.ADMIN,
                 is_oauth=True,
             )
 
+            # Create user
             return self._user_repo.create_user(user=user)
 
 
@@ -163,20 +172,21 @@ class UserSettingService(BaseService):
         return recent_agent_ids
 
     def update_user_settings(
-        self, user_id: str, user_setting_request: UserSettingRequest
+        self, user_id: str, user_settings_request: UserSettingsRequest
     ) -> Optional[APIError]:
         """
         Update user settings.
 
         Args:
             user_id (str): User ID.
-            user_setting_request (UserSettingRequest): User setting request object.
+            user_settings_request (UserSettingsRequest): User setting request object.
 
         Returns:
             Optional[APIError]: API error response.
         """
         with self._transaction():
-            user_settings: Dict[str, Any] = user_setting_request.model_dump(exclude_unset=True)
+            # Define to-be-updated user settings
+            user_settings = user_settings_request.model_dump(exclude_unset=True)
 
             # Fetch existing user setting
             existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
@@ -190,7 +200,6 @@ class UserSettingService(BaseService):
                     if existing_user_settings.recent_agent_ids
                     else []
                 )
-                logger.info(f"Current recent agent IDs: {recent_agent_ids}")
 
                 # Update recent agents
                 current_agent_id = str(user_settings["current_agent_id"])

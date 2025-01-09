@@ -1,3 +1,5 @@
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -174,25 +176,29 @@ class ChatRepository(BaseRepository):
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_session(
-        self, chat_session_id: str, chat_session: ChatSession, user_id: str
+        self, chat_session_id: str, chat_session: Dict[str, Any], user_id: str
     ) -> Optional[APIError]:
         """
         Update chat session.
 
         Args:
             chat_session_id(str): Chat session id
-            chat_session(ChatSession): Chat session object
+            chat_session(Dict[str, Any]): Chat session object
             user_id(str): User id
 
         Returns:
             Optional[APIError]: APIError object if any error
         """
         try:
-            chat_session = {
-                key: value
-                for key, value in chat_session.__dict__.items()
-                if not key.startswith("_")
-            }
+            # Check if chat session exists
+            chat_session_exists = (
+                self._db_session.query(ChatSession)
+                .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
+                .first()
+            )
+            if not chat_session_exists:
+                return APIError(kind=ErrorCodesMappingNumber.CHAT_SESSION_NOT_FOUND.value)
+
             self._db_session.query(ChatSession).filter(
                 and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id)
             ).update(chat_session)
@@ -202,7 +208,7 @@ class ChatRepository(BaseRepository):
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def update_chat_message(
-        self, chat_session_id: str, chat_message_id: str, chat_message: ChatMessage, user_id: str
+        self, chat_session_id: str, chat_message_id: str, chat_message: Dict[str, Any], user_id: str
     ) -> Optional[APIError]:
         """
         Update chat message.
@@ -210,7 +216,7 @@ class ChatRepository(BaseRepository):
         Args:
             chat_session_id(str): Chat session id
             chat_message_id(str): Chat message id
-            chat_message(ChatMessage): Chat message object
+            chat_message(Dict[str, Any]): Chat message object
             user_id(str): User id
 
         Returns:
@@ -227,12 +233,21 @@ class ChatRepository(BaseRepository):
             if not chat_session:
                 return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
 
+            # Check if chat message exists
+            chat_message_exists = (
+                self._db_session.query(ChatMessage)
+                .filter(
+                    and_(
+                        ChatMessage.id == chat_message_id,
+                        ChatMessage.chat_session_id == chat_session_id,
+                    )
+                )
+                .first()
+            )
+            if not chat_message_exists:
+                return APIError(kind=ErrorCodesMappingNumber.CHAT_MESSAGE_NOT_FOUND.value)
+
             # Update the chat message
-            chat_message = {
-                key: value
-                for key, value in chat_message.__dict__.items()
-                if not key.startswith("_")
-            }
             self._db_session.query(ChatMessage).filter(
                 and_(
                     ChatMessage.id == chat_message_id,

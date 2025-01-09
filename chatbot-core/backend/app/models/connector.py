@@ -30,7 +30,9 @@ class Connector(Base):
     )
     name: Mapped[str] = mapped_column(String, nullable=False)
     source: Mapped[DocumentSource] = mapped_column(
-        SQLAlchemyEnum(DocumentSource, native_enum=False), nullable=False
+        SQLAlchemyEnum(DocumentSource, native_enum=False),
+        nullable=False,
+        default=DocumentSource.FILE,
     )
     connector_specific_config: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
@@ -43,7 +45,7 @@ class Connector(Base):
 
 
 class ConnectorRequest(BaseModel):
-    name: str = Field(..., description="Connector name")
+    name: Optional[str] = Field(None, description="Connector name")
     file_paths: List[str] = Field(default_factory=list, description="List of uploaded file paths")
 
     class Config:

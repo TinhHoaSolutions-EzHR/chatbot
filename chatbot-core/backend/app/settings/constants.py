@@ -26,7 +26,6 @@ class Constants:
     FORBIDDEN_REQUEST_MESSAGE = "Forbidden request"
     NOT_FOUND_MESSAGE = "Not found"
     USER_NOT_FOUND_MESSAGE = "User not found"
-    USER_WRONG_LOGIN_METHOD = "Wrong login method"
     INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
     EMPTY_CHAT_MESSAGE_MESSAGE = "Empty chat message"
 

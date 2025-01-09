@@ -104,6 +104,15 @@ class FolderRepository(BaseRepository):
             Tuple[Optional[Folder], Optional[APIError]]: Folder object and APIError object if any error.
         """
         try:
+            # Check if folder exists
+            folder_exists = (
+                self._db_session.query(Folder)
+                .filter(and_(Folder.id == folder_id, Folder.user_id == user_id))
+                .first()
+            )
+            if not folder_exists:
+                return APIError(kind=ErrorCodesMappingNumber.FOLDER_NOT_FOUND.value)
+
             # Update folder
             self._db_session.query(Folder).filter(
                 and_(Folder.id == folder_id, Folder.user_id == user_id)
