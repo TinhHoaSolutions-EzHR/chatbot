@@ -88,7 +88,9 @@ class UserService(BaseService):
         """
         return self._user_repo.get_user_by_email(email=email)
 
-    def create_user(self, user_oauth_data: Dict[str, Any]) -> Optional[APIError]:
+    def create_user(
+        self, user_oauth_data: Dict[str, Any]
+    ) -> Tuple[Optional[User], Optional[APIError]]:
         """
         Creates an user using data retrieved from Google OAuth.
 
@@ -96,7 +98,7 @@ class UserService(BaseService):
             user_oauth_data (Dict[str, Any]): A dictionary containing user information from Google OAuth.
 
         Returns:
-            Optional[APIError]: An APIError object if an error occurs, otherwise None.
+            Tuple[Optional[User], Optional[APIError]]: A tuple containing the created user object and an API error (if any).
         """
         with self._transaction():
             # Define to-be-created user
@@ -109,7 +111,11 @@ class UserService(BaseService):
             )
 
             # Create user
-            return self._user_repo.create_user(user=user)
+            err = self._user_repo.create_user(user=user)
+            if err:
+                return None, err
+
+        return user, None
 
 
 class UserSettingService(BaseService):
@@ -170,6 +176,27 @@ class UserSettingService(BaseService):
         logger.info("Updated recent agent IDs", extra={"recent_agent_ids": recent_agent_ids})
 
         return recent_agent_ids
+
+    def create_user_settings(
+        self, user_id: str
+    ) -> Tuple[Optional[UserSetting], Optional[APIError]]:
+        """
+        Create user settings.
+
+        Args:
+            user_id (str): User ID.
+
+        Returns:
+            Tuple[Optional[UserSetting], Optional[APIError]]: User setting object and API error response.
+        """
+        with self._transaction():
+            # Define to-be-created user settings
+            user_settings = UserSetting()
+
+            # Create user settings
+            return self._user_setting_repo.create_user_settings(
+                user_id=user_id, user_settings=user_settings
+            )
 
     def update_user_settings(
         self, user_id: str, user_settings_request: UserSettingsRequest

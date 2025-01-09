@@ -93,6 +93,23 @@ class UserSettingRepository(BaseRepository):
             logger.error(f"Error getting user settings: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
+    def create_user_settings(self, user_settings: UserSetting) -> Optional[APIError]:
+        """
+        Create user settings.
+
+        Args:
+            user_setting (UserSetting): User setting object
+
+        Returns:
+            Optional[APIError]: API error response
+        """
+        try:
+            self._db_session.add(user_settings)
+            return None
+        except Exception as e:
+            logger.error(f"Error creating user settings: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
     def update_user_settings(self, user_id: str, user_settings: UserSetting) -> Optional[APIError]:
         """
         Update user settings.

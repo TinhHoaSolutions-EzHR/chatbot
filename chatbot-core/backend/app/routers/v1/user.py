@@ -35,13 +35,6 @@ def get_user(
     Returns:
         BackendAPIResponse: API response
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(
-            status_code=status_code,
-            detail=detail,
-        )
-
     # Parse user
     data = UserResponse.model_validate(user)
 
@@ -68,13 +61,6 @@ def get_user_settings(
     Returns:
         BackendAPIResponse: API response
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(
-            status_code=status_code,
-            detail=detail,
-        )
-
     # Get user settings
     user_settings, err = UserSettingService(db_session=db_session).get_user_settings(
         user_id=user.id

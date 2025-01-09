@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
 from app.services.user import UserService
+from app.services.user import UserSettingService
 from app.settings.constants import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
@@ -46,7 +47,13 @@ def get_oauth_access_token(code: str, db_session: Session = Depends(get_db_sessi
 
     if not user:
         # Create a new user if not already present
-        err = UserService(db_session=db_session).create_user(user_oauth_data=user_oauth_data)
+        user, err = UserService(db_session=db_session).create_user(user_oauth_data=user_oauth_data)
+        if err:
+            status_code, detail = err.kind
+            raise HTTPException(status_code=status_code, detail=detail)
+
+        # Create a new user setting
+        err = UserSettingService(db_session=db_session).create_user_settings(user_id=user.id)
         if err:
             status_code, detail = err.kind
             raise HTTPException(status_code=status_code, detail=detail)
