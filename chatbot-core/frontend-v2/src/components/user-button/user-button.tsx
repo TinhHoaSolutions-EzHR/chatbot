@@ -1,4 +1,5 @@
-import { Bell, LogOut, Settings, User } from 'lucide-react';
+import { Bell, LogOut, Settings } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -9,12 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useGetUserInfo } from '@/hooks/user/use-get-user-info';
 import { useUserLogout } from '@/hooks/user/use-user-logout';
+import { UserRole } from '@/types/user';
 
 import { UserDropdownItem } from './user-dropdown-item';
 
 export const UserButton = () => {
   const { data: userInfo } = useGetUserInfo();
   const logout = useUserLogout();
+
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -24,12 +28,11 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <UserDropdownItem Icon={Settings} onClick={() => {}}>
-          Admin panel
-        </UserDropdownItem>
-        <UserDropdownItem Icon={User} onClick={() => {}}>
-          User settings
-        </UserDropdownItem>
+        {userInfo?.role === UserRole.ADMIN && (
+          <UserDropdownItem Icon={Settings} onClick={() => router.push('/settings')}>
+            Admin panel
+          </UserDropdownItem>
+        )}
         <UserDropdownItem Icon={Bell} onClick={() => {}}>
           Notifications
         </UserDropdownItem>

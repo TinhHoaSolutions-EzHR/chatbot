@@ -1,7 +1,7 @@
 import { FolderClosed, FolderOpen } from 'lucide-react';
 import { FC } from 'react';
 
-import { SupportedKeys } from '@/constants/enums/misc';
+import { SupportedKeys } from '@/constants/misc';
 import { cn } from '@/lib/utils';
 import { IFolder } from '@/types/chat';
 

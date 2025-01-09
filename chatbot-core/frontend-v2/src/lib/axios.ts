@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { CHATBOT_CORE_BACKEND_URL, LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
+import { ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH, ApiStatusCode } from '@/constants/misc';
 
 const httpClient = axios.create({
   baseURL: CHATBOT_CORE_BACKEND_URL,
@@ -19,6 +20,15 @@ httpClient.interceptors.request.use(config => {
   }
 
   return config;
+});
+
+httpClient.interceptors.response.use(response => {
+  if (response.status === ApiStatusCode.UNAUTHORIZED_404) {
+    localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+    window.dispatchEvent(new Event(ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH));
+  }
+
+  return response;
 });
 
 export default httpClient;

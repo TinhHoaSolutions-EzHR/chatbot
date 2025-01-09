@@ -42,5 +42,4 @@ export interface IFolder {
   user_id: string;
   name?: string;
   display_priority?: number;
-  chat_sessions: IChatSession[];
 }
