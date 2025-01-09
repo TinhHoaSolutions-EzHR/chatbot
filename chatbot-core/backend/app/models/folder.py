@@ -12,7 +12,6 @@ from pydantic import BaseModel
 from pydantic import Field
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -43,7 +42,6 @@ class Folder(Base):
         ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
     name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    display_priority: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -63,16 +61,6 @@ class Folder(Base):
     chat_sessions: Mapped[List["ChatSession"]] = relationship(
         "ChatSession", back_populates="folder"
     )
-
-    def __lt__(self, other: Folder) -> bool:
-        if not isinstance(other, Folder):
-            return NotImplemented
-
-        if self.display_priority == other.display_priority:
-            # Bigger ID (created later) show earlier
-            return self.id > other.id
-
-        return self.display_priority < other.display_priority
 
 
 class FolderRequest(BaseModel):
@@ -96,7 +84,6 @@ class FolderResponse(BaseModel):
     id: UUID = Field(..., description="Folder ID")
     user_id: UUID = Field(..., description="User ID")
     name: Optional[str] = Field(None, description="Folder name")
-    display_priority: Optional[int] = Field(0, description="Folder display priority")
     chat_sessions: List[ChatSessionResponse] = Field([], description="Chat sessions in the folder")
 
     class Config:

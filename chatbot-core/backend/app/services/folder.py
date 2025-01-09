@@ -40,63 +40,58 @@ class FolderService(BaseService):
         if err:
             return [], err
 
-        if folders:
-            # Get chat sessions for each folder
-            for folder in folders:
-                chat_sessions, err = self._chat_repo.get_chat_sessions(
-                    user_id=user_id, folder_id=folder.id
-                )
-                if err:
-                    return [], err
-
-                folder.chat_sessions = chat_sessions
-
         return folders, None
 
-    def create_folder(self, folder_request: FolderRequest, user_id: str) -> Optional[APIError]:
+    def create_folder(
+        self, folder_request: FolderRequest, user_id: str
+    ) -> Tuple[Optional[Folder], Optional[APIError]]:
         """
         Create a new folder.
 
         Args:
-            folder_request (FolderRequest): Folder request object
-            user_id (str): User ID
+            folder_request (FolderRequest): Folder request object.
+            user_id (str): User ID.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Tuple[Optional[Folder], Optional[APIError]]: Folder object and APIError object if any error.
         """
         with self._transaction():
             # Define folder
-            folder = Folder(user_id=user_id, name=folder_request.name)
+            created_folder = Folder(user_id=user_id, name=folder_request.name)
 
             # Create folder
-            err = self._folder_repo.create_folder(folder=folder)
+            err = self._folder_repo.create_folder(folder=created_folder)
+            if err:
+                return None, err
 
-        return err if err else None
+        return created_folder, None
 
     def update_folder(
         self, folder_id: str, folder_request: FolderRequest, user_id: str
-    ) -> Optional[APIError]:
+    ) -> Tuple[Optional[Folder], Optional[APIError]]:
         """
         Update an existing folder.
 
         Args:
-            folder_id (str): Folder ID
-            folder_request (FolderRequest): Folder request object
-            user_id (str): User ID
+            folder_id (str): Folder ID.
+            folder_request (FolderRequest): Folder request object.
+            user_id (str): User ID.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Tuple[Optional[Folder], Optional[APIError]]: Folder object and APIError object if any error.
         """
         with self._transaction():
             # Define to-be-updated folder
             folder = folder_request.model_dump(exclude_unset=True)
 
             # Update folder
-            err = self._folder_repo.update_folder(
+            updated_folder, err = self._folder_repo.update_folder(
                 folder_id=folder_id, folder=folder, user_id=user_id
             )
+            if err:
+                return None, err
 
-        return err if err else None
+        return updated_folder, None
 
     def delete_folder(self, folder_id: str, user_id: str) -> Optional[APIError]:
         """
