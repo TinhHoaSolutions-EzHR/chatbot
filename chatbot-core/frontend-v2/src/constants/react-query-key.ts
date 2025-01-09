@@ -11,6 +11,7 @@ export enum ReactQueryKey {
 
   USER = 'user',
   USER_ACCESS_TOKEN = 'user-access-token',
+  USER_SETTINGS = 'user-settings',
 }
 
 export enum ReactMutationKey {

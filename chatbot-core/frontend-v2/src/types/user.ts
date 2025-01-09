@@ -11,3 +11,8 @@ export interface IUser {
   created_at: string;
   updated_at: string;
 }
+
+export interface IUserSettings {
+  recent_agent_ids?: string[];
+  auto_scroll: boolean;
+}
