@@ -4,6 +4,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from sqlalchemy.orm import noload
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import and_
 
@@ -39,6 +40,7 @@ class FolderRepository(BaseRepository):
         try:
             folders = (
                 self._db_session.query(Folder)
+                .options(noload(Folder.chat_sessions))
                 .filter(Folder.user_id == user_id)
                 .order_by(Folder.created_at.desc())
                 .all()
@@ -92,7 +94,7 @@ class FolderRepository(BaseRepository):
 
     def update_folder(
         self, folder_id: str, folder: Dict[str, Any], user_id: str
-    ) -> Tuple[Optional[Folder], Optional[APIError]]:
+    ) -> Optional[APIError]:
         """
         Update folder.
 
@@ -102,7 +104,7 @@ class FolderRepository(BaseRepository):
             user_id (str): User ID.
 
         Returns:
-            Tuple[Optional[Folder], Optional[APIError]]: Folder object and APIError object if any error.
+            Optional[APIError]: APIError object if any error.
         """
         try:
             # Check if folder exists
@@ -119,17 +121,10 @@ class FolderRepository(BaseRepository):
                 and_(Folder.id == folder_id, Folder.user_id == user_id)
             ).update(folder)
 
-            # Get the updated folder
-            updated_folder = (
-                self._db_session.query(Folder)
-                .filter(and_(Folder.id == folder_id, Folder.user_id == user_id))
-                .first()
-            )
-
-            return updated_folder, None
+            return None
         except Exception as e:
             logger.error(f"Error updating folder: {e}")
-            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_folder(self, folder_id: str, user_id: str) -> Optional[APIError]:
         """
