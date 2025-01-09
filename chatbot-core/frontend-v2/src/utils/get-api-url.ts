@@ -2,6 +2,8 @@ import { API_VERSION } from '@/configs/misc';
 
 export enum ApiEndpointPrefix {
   USER = '/users/me',
+  CHAT = '/chat',
+  FOLDER = '/folders',
 }
 
 export enum AuthEndpoint {

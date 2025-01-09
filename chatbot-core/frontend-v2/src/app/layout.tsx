@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import Toaster from '@/components/ui/sonner';
 import AuthProvider from '@/providers/auth-provider/auth-provider';
+import DialogProvider from '@/providers/dialog-provider';
 import HealthCheckProvider from '@/providers/health-check-provider';
 import TanstackQueryProvider from '@/providers/query-provider';
 
@@ -26,7 +28,11 @@ export default function RootLayout({
       <body className="antialiased">
         <TanstackQueryProvider>
           <HealthCheckProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              {children}
+              <Toaster closeButton />
+              <DialogProvider />
+            </AuthProvider>
           </HealthCheckProvider>
         </TanstackQueryProvider>
       </body>
