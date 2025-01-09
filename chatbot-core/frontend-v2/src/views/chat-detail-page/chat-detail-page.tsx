@@ -1,3 +1,7 @@
 export default function ChatDetailPage() {
-  return <div className="w-full h-full">Hello</div>;
+  return (
+    <div className="chat-width h-full">
+      <div>Hello world</div>
+    </div>
+  );
 }

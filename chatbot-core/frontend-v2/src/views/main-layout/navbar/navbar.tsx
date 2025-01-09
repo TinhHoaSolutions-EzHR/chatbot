@@ -11,7 +11,7 @@ export const Navbar = () => {
   const { open } = useSidebar();
 
   return (
-    <nav className="sticky top-0 grid grid-cols-3 items-center py-2 px-2 bg-white/70 backdrop-blur-md">
+    <nav className="sticky top-0 grid grid-cols-3 items-center py-2 px-2">
       <div className="flex items-center">
         {!open && (
           <>
