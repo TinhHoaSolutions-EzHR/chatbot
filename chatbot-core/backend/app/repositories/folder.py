@@ -64,6 +64,7 @@ class FolderRepository(BaseRepository):
         try:
             folder = (
                 self._db_session.query(Folder)
+                .options(noload(Folder.chat_sessions))
                 .filter(and_(Folder.id == folder_id, Folder.user_id == user_id))
                 .first()
             )
