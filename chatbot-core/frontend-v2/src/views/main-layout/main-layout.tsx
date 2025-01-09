@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { SidebarProvider } from '@/components/ui/sidebar';
 
-import { AppSidebar } from './app-sidebar';
+import { AppSidebar } from './app-sidebar/app-sidebar';
 import { ChatBox } from './chat-box/chat-box';
 import { Navbar } from './navbar/navbar';
 

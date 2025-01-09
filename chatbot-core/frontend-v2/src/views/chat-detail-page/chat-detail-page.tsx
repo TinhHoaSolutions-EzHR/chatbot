@@ -1,3 +1,36 @@
 export default function ChatDetailPage() {
-  return <div className="w-full h-full">Hello</div>;
+  return (
+    <div className="chat-width h-full">
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+      <div className="my-4">Hello world</div>
+    </div>
+  );
 }
