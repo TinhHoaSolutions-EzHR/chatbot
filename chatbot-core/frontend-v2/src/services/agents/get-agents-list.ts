@@ -1,8 +1,14 @@
-import { MOCK_AGENTS_LIST } from '@/configs/mock-agents';
+import httpClient from '@/lib/axios';
 import { IAgent } from '@/types/agent';
+import { IApiResponse } from '@/types/api-response';
+import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 
 export const getAgentsList: () => Promise<IAgent[]> = async () => {
-  return new Promise<IAgent[]>(resolve => {
-    resolve(MOCK_AGENTS_LIST);
-  });
+  try {
+    const res = await httpClient.get<IApiResponse<IAgent[]>>(getApiUrl(ApiEndpointPrefix.AGENTS));
+    return res.data.data;
+  } catch (error) {
+    console.error('[GetAgentsList]: ', error);
+    throw new Error('Error getting agents list');
+  }
 };

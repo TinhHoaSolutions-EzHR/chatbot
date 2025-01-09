@@ -7,7 +7,7 @@ interface IAgentStore {
   selectedAgent: IAgent | null;
 
   setSearchContent: (content: string) => void;
-  setSelectedAgent: (agent: IAgent) => void;
+  setSelectedAgent: (agent: IAgent | null) => void;
 }
 
 export const useAgentStore = create<IAgentStore>(set => ({

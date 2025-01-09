@@ -1,9 +1,10 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import { TempChatModelIcon } from '@/components/temp-chat-model-icon';
 import { Button } from '@/components/ui/button';
-import { useGetRecentAgents } from '@/hooks/agents/use-get-recent-agents';
+import { useGetAgentsList } from '@/hooks/agents/use-get-agents-list';
 import { useAgentStore } from '@/hooks/stores/use-agent-store';
+import { useGetUserSettings } from '@/hooks/user/use-get-user-settings';
 import { IAgent } from '@/types/agent';
 
 interface IAgentButtonProps {
@@ -26,7 +27,22 @@ const AgentButton: FC<IAgentButtonProps> = ({ agent }) => {
 };
 
 export const RecentAgents = () => {
-  const { data: recentAgents } = useGetRecentAgents();
+  const { data: userSettings } = useGetUserSettings();
+  const { mappedAgentsById } = useGetAgentsList().data ?? {};
+
+  const recentAgents = useMemo(() => {
+    if (!userSettings || !mappedAgentsById) {
+      return undefined;
+    }
+
+    return userSettings.recent_agent_ids?.reduce<IAgent[]>((acc, cur) => {
+      if (mappedAgentsById[cur]) {
+        acc.push(mappedAgentsById[cur]);
+      }
+
+      return acc;
+    }, []);
+  }, [userSettings, mappedAgentsById]);
 
   // No need to have loading state since we have enabled loading for getting
   // selected agent, which is from the same endpoint for recent agents.

@@ -1,8 +1,10 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
+import { toast } from 'sonner';
 
 import { TempChatModelIcon } from '@/components/temp-chat-model-icon';
 import { useGetAgentsList } from '@/hooks/agents/use-get-agents-list';
 import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
+import { useSelectAgent } from '@/hooks/agents/use-select-agent';
 import { useAgentStore } from '@/hooks/stores/use-agent-store';
 import { cn } from '@/lib/utils';
 import { IAgent } from '@/types/agent';
@@ -14,6 +16,7 @@ interface IOptionProps {
 }
 
 const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
+  const { mutate } = useSelectAgent();
   const { setSelectedAgent } = useAgentStore();
 
   return (
@@ -22,7 +25,17 @@ const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
         'px-3 py-4 rounded-xl cursor-pointer hover:bg-zinc-200/30 flex items-center gap-4',
         isSelected && 'bg-zinc-300/40 hover:bg-zinc-300/40',
       )}
-      onClick={() => setSelectedAgent(agent)}
+      onClick={() => {
+        setSelectedAgent(agent);
+        mutate(agent.id, {
+          onError() {
+            toast.error('Select agent error', {
+              description: "There's something wrong with your request, please try again later",
+            });
+            setSelectedAgent(null);
+          },
+        });
+      }}
     >
       {avatar}
       <div className="overflow-hidden text-ellipsis break-words flex-grow">
@@ -34,11 +47,17 @@ const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
 };
 
 export const AgentSelectorOptions = () => {
-  const { data: agentsList } = useGetAgentsList();
+  const { agentsList } = useGetAgentsList().data ?? {};
   const { searchContent } = useAgentStore();
   const selectedAgent = useGetSelectedAgent();
 
-  const filteredAgents = agentsList?.filter(agent => agent.name.toLowerCase().includes(searchContent.toLowerCase()));
+  const filteredAgents = useMemo(() => {
+    if (!searchContent || !agentsList) {
+      return agentsList;
+    }
+
+    return agentsList.filter(agent => agent.name.toLowerCase().includes(searchContent.toLowerCase()));
+  }, [agentsList]);
 
   return (
     <div className="space-y-2">
