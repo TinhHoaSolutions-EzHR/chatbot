@@ -91,17 +91,17 @@ class FolderRepository(BaseRepository):
 
     def update_folder(
         self, folder_id: str, folder: Dict[str, Any], user_id: str
-    ) -> Optional[APIError]:
+    ) -> Tuple[Optional[Folder], Optional[APIError]]:
         """
         Update folder.
 
         Args:
-            folder_id (str): Folder ID
-            folder (Dict[str, Any]): Folder object
-            user_id (str): User ID
+            folder_id (str): Folder ID.
+            folder (Dict[str, Any]): Folder object.
+            user_id (str): User ID.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Tuple[Optional[Folder], Optional[APIError]]: Folder object and APIError object if any error.
         """
         try:
             # Check if folder exists
@@ -117,10 +117,18 @@ class FolderRepository(BaseRepository):
             self._db_session.query(Folder).filter(
                 and_(Folder.id == folder_id, Folder.user_id == user_id)
             ).update(folder)
-            return None
+
+            # Get the updated folder
+            updated_folder = (
+                self._db_session.query(Folder)
+                .filter(and_(Folder.id == folder_id, Folder.user_id == user_id))
+                .first()
+            )
+
+            return updated_folder, None
         except Exception as e:
             logger.error(f"Error updating folder: {e}")
-            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+            return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def delete_folder(self, folder_id: str, user_id: str) -> Optional[APIError]:
         """

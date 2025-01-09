@@ -76,7 +76,7 @@ def create_folder(
     user_id = user.id if user else None
 
     # Create chat folder
-    err = FolderService(db_session=db_session).create_folder(
+    created_folder, err = FolderService(db_session=db_session).create_folder(
         folder_request=folder_request, user_id=user_id
     )
     if err:
@@ -84,7 +84,7 @@ def create_folder(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse chat folder
-    data = folder_request.model_dump(exclude_unset=True)
+    data = FolderResponse.model_validate(created_folder)
 
     return (
         BackendAPIResponse()
@@ -116,7 +116,7 @@ def update_folder(
     user_id = user.id if user else None
 
     # Update chat folder
-    err = FolderService(db_session=db_session).update_folder(
+    created_folder, err = FolderService(db_session=db_session).update_folder(
         folder_id=folder_id, folder_request=folder_request, user_id=user_id
     )
     if err:
@@ -124,7 +124,10 @@ def update_folder(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse chat folder
-    data = folder_request.model_dump(exclude_unset=True)
+    if created_folder:
+        data = FolderResponse.model_validate(created_folder)
+    else:
+        data = None
 
     return (
         BackendAPIResponse()
