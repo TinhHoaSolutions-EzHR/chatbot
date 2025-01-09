@@ -57,14 +57,14 @@ class FolderService(BaseService):
         """
         with self._transaction():
             # Define folder
-            created_folder = Folder(user_id=user_id, name=folder_request.name)
+            folder = Folder(user_id=user_id, name=folder_request.name)
 
             # Create folder
-            err = self._folder_repo.create_folder(folder=created_folder)
+            err = self._folder_repo.create_folder(folder=folder)
             if err:
                 return None, err
 
-        return created_folder, None
+        return folder, None
 
     def update_folder(
         self, folder_id: str, folder_request: FolderRequest, user_id: str
@@ -85,13 +85,14 @@ class FolderService(BaseService):
             folder = folder_request.model_dump(exclude_unset=True)
 
             # Update folder
-            updated_folder, err = self._folder_repo.update_folder(
+            err = self._folder_repo.update_folder(
                 folder_id=folder_id, folder=folder, user_id=user_id
             )
             if err:
                 return None, err
 
-        return updated_folder, None
+        # Get updated folder
+        return self._folder_repo.get_folder(folder_id=folder_id, user_id=user_id)
 
     def delete_folder(self, folder_id: str, user_id: str) -> Optional[APIError]:
         """
