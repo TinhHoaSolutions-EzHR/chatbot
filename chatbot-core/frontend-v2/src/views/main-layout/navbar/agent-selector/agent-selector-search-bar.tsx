@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { LODASH_DEBOUNCE_TIME_MILLISECONDS } from '@/configs/misc';
 import { useAgentStore } from '@/hooks/stores/use-agent-store';
-import useCustomLodashDebounce from '@/hooks/use-custom-lodash-debounce';
+import useCustomLodashDebounce from '@/hooks/utils/use-custom-lodash-debounce';
 import { cn } from '@/lib/utils';
 
 interface IAgentSelectorSearchBarProps {

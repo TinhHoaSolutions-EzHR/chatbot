@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import {
   SidebarGroup,
@@ -11,11 +11,34 @@ import {
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetAllChatFolders } from '@/hooks/chat/use-get-all-chat-folders';
+import { useGetAllChatSessions } from '@/hooks/chat/use-get-all-chat-sessions';
+import { IChatSession } from '@/types/chat';
 
 import { ChatFolderItem } from './chat-folder-item';
 
 export const ChatFolders: FC = () => {
   const { data: chatFolders, isLoading } = useGetAllChatFolders();
+  const { data: chatSessions } = useGetAllChatSessions();
+
+  const mappedFolderToChatSessions = useMemo(() => {
+    if (!chatSessions) {
+      return {};
+    }
+
+    return chatSessions.reduce<Record<string, IChatSession[]>>((acc, cur) => {
+      if (!cur.folder_id) {
+        return acc;
+      }
+
+      if (!acc[cur.folder_id]) {
+        acc[cur.folder_id] = [];
+      }
+
+      acc[cur.folder_id].push(cur);
+
+      return acc;
+    }, {});
+  }, [chatSessions]);
 
   return (
     <SidebarGroup>
@@ -28,7 +51,12 @@ export const ChatFolders: FC = () => {
             <SidebarMenuItem>No folder created yet.</SidebarMenuItem>
           ) : (
             chatFolders.map((folder, idx) => (
-              <ChatFolderItem key={folder.id} folder={folder} isDefaultOpen={idx === 0} />
+              <ChatFolderItem
+                key={folder.id}
+                folder={folder}
+                chatSessions={mappedFolderToChatSessions[folder.id]}
+                isDefaultOpen={idx === 0}
+              />
             ))
           )}
         </SidebarMenu>

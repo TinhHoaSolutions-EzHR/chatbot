@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { GOOGLE_OAUTH_URL } from '@/configs/google-oauth';
-import { QueryParams } from '@/constants/enums/query-params';
+import { QueryParams } from '@/constants/misc';
 import { useGetUserOauthAccessToken } from '@/hooks/user/use-get-user-oauth-access-token';
 
 export const OauthLogin = () => {

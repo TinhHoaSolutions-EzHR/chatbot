@@ -2,16 +2,17 @@ import { FC, useState } from 'react';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
-import { IFolder } from '@/types/chat';
+import { IChatSession, IFolder } from '@/types/chat';
 
 import { ChatFolderActions } from './chat-folder-actions/chat-folder-actions';
 
 interface IChatFolderItemProps {
   folder: IFolder;
+  chatSessions: IChatSession[] | undefined;
   isDefaultOpen?: boolean;
 }
 
-export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, isDefaultOpen }) => {
+export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions, isDefaultOpen }) => {
   const [isFolderOpen, setIsFolderOpen] = useState<boolean>(!!isDefaultOpen);
 
   return (
@@ -28,10 +29,10 @@ export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, isDefaultOpen
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          {folder.chat_sessions.length > 0 && (
+          {chatSessions && chatSessions.length > 0 && (
             <SidebarMenuSub>
               <SidebarMenuSubItem>
-                {folder.chat_sessions.map(session => (
+                {chatSessions.map(session => (
                   <SidebarMenuSubButton key={session.id} className="cursor-pointer">
                     {session.description ?? session.id}
                   </SidebarMenuSubButton>
