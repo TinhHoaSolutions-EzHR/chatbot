@@ -153,6 +153,16 @@ class AgentRepository(BaseRepository):
             Optional[APIError]: APIError object if any error
         """
         try:
+            # Check if the agent exists and belongs to the user
+            agent_exists = (
+                self._db_session.query(Agent)
+                .filter(and_(Agent.id == agent_id, Agent.user_id == user_id))
+                .first()
+            )
+            if not agent_exists:
+                return APIError(kind=ErrorCodesMappingNumber.AGENT_NOT_FOUND.value)
+
+            # Update the agent
             self._db_session.query(Agent).filter(
                 and_(Agent.id == agent_id, Agent.user_id == user_id)
             ).update(agent)
@@ -176,6 +186,20 @@ class AgentRepository(BaseRepository):
             Optional[APIError]: APIError object if any error.
         """
         try:
+            # Check if the starter_message exists and belongs to the agent
+            starter_message_exists = (
+                self._db_session.query(StarterMessage)
+                .filter(
+                    and_(
+                        StarterMessage.id == starter_message_id, StarterMessage.agent_id == agent_id
+                    )
+                )
+                .first()
+            )
+            if not starter_message_exists:
+                return APIError(kind=ErrorCodesMappingNumber.STARTER_MESSAGE_NOT_FOUND.value)
+
+            # Update the starter_message
             self._db_session.query(StarterMessage).filter(
                 and_(StarterMessage.id == starter_message_id, StarterMessage.agent_id == agent_id)
             ).update(starter_message)

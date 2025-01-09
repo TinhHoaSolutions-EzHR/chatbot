@@ -104,6 +104,14 @@ class UserSettingRepository(BaseRepository):
             Optional[APIError]: API error response
         """
         try:
+            # Check if user exists
+            user_settings_exists = (
+                self._db_session.query(UserSetting).filter(UserSetting.id == user_id).first()
+            )
+            if not user_settings_exists:
+                return APIError(kind=ErrorCodesMappingNumber.USER_SETTING_NOT_FOUND.value)
+
+            # Update user settings
             self._db_session.query(UserSetting).filter(UserSetting.id == user_id).update(
                 user_settings
             )

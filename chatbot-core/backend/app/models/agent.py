@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
-from typing import Any
-from typing import Dict
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
@@ -14,7 +11,6 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from pydantic import Field
-from pydantic import model_validator
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
@@ -135,26 +131,6 @@ class AgentRequest(BaseModel):
     starter_messages: Optional[List["StarterMessageRequest"]] = Field(
         default_factory=list, description="List of starter messages"
     )
-
-    @model_validator(mode="before")
-    @classmethod
-    def validate_to_json(cls, value: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Validates that the provided value is a dictionary.
-
-        Args:
-            value (Dict[str, Any]): Value to validate.
-
-        Returns:
-            Dict[str, Any]: The validated value.
-        """
-        if isinstance(value, str):
-            try:
-                return cls(**json.loads(value))
-            except json.JSONDecodeError as e:
-                raise ValueError("Invalid JSON string provided") from e
-
-        return value
 
     class Config:
         from_attributes = True

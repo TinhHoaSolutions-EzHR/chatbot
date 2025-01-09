@@ -14,6 +14,7 @@ from app.repositories.provider import ProviderRepository
 from app.services.base import BaseService
 from app.settings import Secrets
 from app.utils.api.api_response import APIError
+from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import handle_current_embedding_model
 from app.utils.llm.helpers import handle_current_llm_model
@@ -135,6 +136,12 @@ class ProviderService(BaseService):
         with self._transaction():
             # Define to-be-updated embedding provider
             embedding_provider = embedding_provider_request.model_dump(exclude_unset=True)
+
+            # Check whether the provider is changed (we do not allow changing the provider type)
+            if embedding_provider.get("name") != existing_embedding_provider.name:
+                return APIError(kind=ErrorCodesMappingNumber.PROVIDER_TYPE_CHANGE_NOT_ALLOWED.value)
+
+            # Parse the models field
             if embedding_provider.get("models"):
                 embedding_provider["models"] = json.dumps(embedding_provider["models"])
 
@@ -193,7 +200,13 @@ class ProviderService(BaseService):
 
         with self._transaction():
             # Define to-be-updated LLM provider
-            llm_provider = llm_provider_request.model_dump(exclude_unset=True, exclude_none=True)
+            llm_provider = llm_provider_request.model_dump(exclude_unset=True)
+
+            # Check whether the provider is changed (we do not allow changing the provider type)
+            if llm_provider.get("name") != existing_llm_provider.name:
+                return APIError(kind=ErrorCodesMappingNumber.PROVIDER_TYPE_CHANGE_NOT_ALLOWED.value)
+
+            # Parse the models field
             if llm_provider.get("models"):
                 llm_provider["models"] = json.dumps(llm_provider["models"])
 

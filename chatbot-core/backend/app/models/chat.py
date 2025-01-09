@@ -103,6 +103,7 @@ class ChatSession(Base):
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
+        nullable=False,
         default=ChatSessionSharedStatus.PRIVATE,
     )
     current_alternate_model: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -157,10 +158,12 @@ class ChatMessage(Base):
     message: Mapped[str] = mapped_column(Text)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
-        SQLAlchemyEnum(ChatMessageType, native_enum=False), nullable=False
+        SQLAlchemyEnum(ChatMessageType, native_enum=False),
+        nullable=False,
+        default=ChatMessageType.USER,
     )
     error_type: Mapped[Optional[ChatMessageErrorType]] = mapped_column(
-        SQLAlchemyEnum(ChatMessageErrorType), nullable=True
+        SQLAlchemyEnum(ChatMessageErrorType), nullable=True, default=None
     )
     error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_sensitive: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

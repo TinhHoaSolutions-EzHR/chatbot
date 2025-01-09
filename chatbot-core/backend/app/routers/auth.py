@@ -9,6 +9,7 @@ from app.services.user import UserService
 from app.settings.constants import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
+from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 from app.utils.user.jwt import create_access_token
 
@@ -31,31 +32,30 @@ def get_oauth_access_token(code: str, db_session: Session = Depends(get_db_sessi
     Returns:
         APIResponse: The response containing the access token and token type.
     """
-    user_oauth_data = UserService(db_session=db_session).get_user_from_google_oauth(code=code)
-
-    if not user_oauth_data:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=Constants.INTERNAL_SERVER_ERROR_MESSAGE,
-        )
-
-    user, error = UserService(db_session=db_session).get_user_by_email(
-        email=user_oauth_data.get("email")
-    )
-
-    if not user and not error:
-        error = UserService(db_session=db_session).create_admin_user_from_oauth(
-            user_oauth_data=user_oauth_data
-        )
-
-    if error:
-        status_code, detail = error.kind
+    user_oauth_data, err = UserService(db_session=db_session).get_user_from_google_oauth(code=code)
+    if err:
+        status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
-    if not user.is_oauth:
+    user, err = UserService(db_session=db_session).get_user_by_email(
+        email=user_oauth_data.get("email")
+    )
+    if err:
+        status_code, detail = err.kind
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    if not user:
+        # Create a new user if not already present
+        err = UserService(db_session=db_session).create_user(user_oauth_data=user_oauth_data)
+        if err:
+            status_code, detail = err.kind
+            raise HTTPException(status_code=status_code, detail=detail)
+    elif not user.is_oauth:
+        # If the user already exists with a different login method, return an error
+        status_code, detail = ErrorCodesMappingNumber.USER_WRONG_LOGIN_METHOD.value
         raise HTTPException(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail=Constants.USER_WRONG_LOGIN_METHOD,
+            status_code=status_code,
+            detail=detail,
         )
 
     access_token = create_access_token(data=user_oauth_data.get("email"))
