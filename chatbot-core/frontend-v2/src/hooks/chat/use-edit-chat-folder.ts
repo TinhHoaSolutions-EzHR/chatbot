@@ -10,7 +10,7 @@ export const useEditChatFolder = (folderId: string, folderName: string) => {
 
   return useMutation({
     mutationFn: () => editChatFolder(folderId, folderName),
-    mutationKey: [ReactMutationKey.EDIT_CHAT_FOLDER],
+    mutationKey: [ReactMutationKey.EDIT_CHAT_FOLDER, { id: folderId }],
     onSuccess(data) {
       queryClient.setQueryData([ReactQueryKey.CHAT_FOLDERS], (oldData?: IFolder[]) => {
         if (!oldData) {
