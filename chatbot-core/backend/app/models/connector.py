@@ -31,7 +31,7 @@ class DocumentSource(str, Enum):
 class Connector(Base):
     """
     Represents a connector that contains information about uploaded documents.
-    Tracks and organizes uploaded documents via the connector.
+    Tracks and organizes the connector for uploaded documents.
     """
 
     __tablename__ = "connector"
