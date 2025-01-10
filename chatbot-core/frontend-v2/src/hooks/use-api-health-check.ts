@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { ReactQueryKey } from '@/constants/react-query-key';
-import httpClient from '@/lib/axios';
+import { httpClient } from '@/lib/axios';
 
 export const useApiHealthCheck = () => {
   return useQuery({

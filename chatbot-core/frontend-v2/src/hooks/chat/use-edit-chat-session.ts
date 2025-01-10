@@ -1,24 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { ReactMutationKey, ReactQueryKey } from '@/constants/react-query-key';
-import { editChatFolder } from '@/services/chat/edit-chat-folder';
-import { IFolder } from '@/types/chat';
+import { editChatSession } from '@/services/chat/edit-chat-session';
+import { IChatSession, IChatSessionRequest } from '@/types/chat';
 
-export const useEditChatFolder = (folderId: string, folderName: string) => {
+export const useEditChatSession = (chatSessionId: string, data: Partial<IChatSessionRequest>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => editChatFolder(folderId, folderName),
-    mutationKey: [ReactMutationKey.EDIT_CHAT_FOLDER, { id: folderId }],
+    mutationKey: [ReactMutationKey.EDIT_CHAT_SESSION],
+    mutationFn: () => editChatSession(chatSessionId, data),
     onSuccess(data) {
-      queryClient.setQueryData([ReactQueryKey.CHAT_FOLDERS], (oldData?: IFolder[]) => {
+      queryClient.setQueryData([ReactQueryKey.CHAT_SESSIONS], (oldData?: IChatSession[]) => {
         if (!oldData) {
           return oldData;
         }
 
         const copyOldData = [...oldData];
 
-        const patchedFolderIndex = copyOldData.findIndex(value => value.id === folderId);
+        const patchedFolderIndex = copyOldData.findIndex(value => value.id === chatSessionId);
 
         // Found the folder with new name in the tanstack cached data, should assign a new one,
         // if cannot find (due to several reasons, but this should not happened), refetch the query
@@ -29,6 +29,7 @@ export const useEditChatFolder = (folderId: string, folderName: string) => {
             queryKey: [ReactQueryKey.CHAT_FOLDERS],
           });
         }
+
         return copyOldData;
       });
     },
