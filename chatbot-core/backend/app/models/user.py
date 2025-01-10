@@ -86,7 +86,7 @@ class UserSetting(Base):
     __tablename__ = "user_setting"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), primary_key=True, index=True, default=uuid4
+        ForeignKey("user.id", ondelete="CASCADE"), primary_key=True, default=uuid4
     )
     recent_agent_ids: Mapped[str] = mapped_column(String, default="")
     auto_scroll: Mapped[bool] = mapped_column(Boolean, default=True)
