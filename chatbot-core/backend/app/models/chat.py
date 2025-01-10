@@ -148,7 +148,6 @@ class ChatMessage(Base):
     chat_session_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
-    agent_id: Mapped[UNIQUEIDENTIFIER] = mapped_column(ForeignKey("agent.id"), nullable=False)
     parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey(CHAT_MESSAGES_ID), nullable=True
     )
@@ -188,7 +187,6 @@ class ChatMessage(Base):
     chat_feedbacks: Mapped[List["ChatFeedback"]] = relationship(
         "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
     )
-    agent: Mapped[Optional["Agent"]] = relationship("Agent", back_populates="chat_messages")
 
     @validates("token_count")
     def validate_token_count(self, key: Any, token_count: int) -> Union[int, None]:
@@ -232,7 +230,6 @@ class ChatMessageRequest(BaseModel):
     """
 
     id: Optional[UUID] = Field(None, description="Chat message id")
-    agent_id: Optional[UUID] = Field(None, description="Current agent id")
     parent_message_id: Optional[UUID] = Field(None, description="Parent message id")
     child_message_id: Optional[UUID] = Field(None, description="Child message id")
     message: Optional[str] = Field(None, description="Message text", min_length=1, max_length=10000)
