@@ -57,7 +57,7 @@ def get_connector(
     Get connector by id.
 
     Args:
-        connector_id (str): Connector id
+        connector_id (str): Connector id.
         db_session (Session, optional): Database session. Defaults to relational database engine.
 
     Returns:
@@ -93,7 +93,7 @@ def create_connector(
     Create connector.
 
     Args:
-        name (str): Connector name
+        connector_request (ConnectorRequest): Connector request object.
         db_session (Session, optional): Database session. Defaults to relational database engine.
 
     Returns:
@@ -128,8 +128,8 @@ def update_connector(
     Update connector by connector_id.
 
     Args:
-        connector_id (int): Connector id
-        name (str): Connector name
+        connector_id (int): Connector id.
+        connector_request (ConnectorRequest): Connector request object.
         db_session (Session, optional): Database session. Defaults to relational database engine.
 
     Returns:
@@ -160,7 +160,7 @@ def delete_connector(connector_id: str, db_session: Session = Depends(get_db_ses
     Delete connector by connector_id.
 
     Args:
-        connector_id (str): Connector id
+        connector_id (str): Connector id.
         db_session (Session, optional): Database session. Defaults to relational database engine.
     """
     # Delete connector by id

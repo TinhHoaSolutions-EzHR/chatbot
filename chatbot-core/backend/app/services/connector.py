@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from app.models.connector import Connector
 from app.models.connector import ConnectorRequest
-from app.models.connector import DocumentSource
 from app.repositories.connector import ConnectorRepository
 from app.services.base import BaseService
 from app.utils.api.api_response import APIError
@@ -61,15 +60,14 @@ class ConnectorService(BaseService):
             Optional[APIError]: APIError object if any error.
         """
         with self._transaction():
-            # Define connector
-            connector_specific_config = {
-                "file_paths": [file_path for file_path in connector_request.file_paths]
-            }
-            connector = Connector(
-                name=connector_request.name,
-                source=DocumentSource.FILE,
-                connector_specific_config=json.dumps(connector_specific_config),
-            )
+            # Define to-be-created connector
+            connector = connector_request.model_dump(exclude_unset=True)
+            if connector.get("file_paths"):
+                connector_specific_config = {"file_paths": connector.get("file_paths")}
+                connector["connector_specific_config"] = json.dumps(connector_specific_config)
+                connector.pop("file_paths")
+
+            connector = Connector(**connector)
 
             # Create connector
             err = self._connector_repo.create_connector(connector=connector)

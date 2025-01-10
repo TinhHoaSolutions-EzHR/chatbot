@@ -68,6 +68,7 @@ class ConnectorRequest(BaseModel):
     """
 
     name: Optional[str] = Field(None, description="Connector name")
+    source: DocumentSource = Field(DocumentSource.FILE, description="Document source")
     file_paths: List[str] = Field(default_factory=list, description="List of uploaded file paths")
 
     class Config:

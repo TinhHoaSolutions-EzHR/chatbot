@@ -1,16 +1,16 @@
-from typing import Annotated
+from datetime import datetime
 from typing import Any
 from typing import List
+from typing import Optional
 
-from fastapi import File
 from fastapi import UploadFile
 from llama_index.core import Settings
 from llama_index.core.extractors import KeywordExtractor
 from llama_index.core.extractors import QuestionsAnsweredExtractor
+from llama_index.core.extractors import SummaryExtractor
 from llama_index.core.ingestion import IngestionCache
 from llama_index.core.ingestion import IngestionPipeline
-from llama_index.core.node_parser import SemanticSplitterNodeParser
-from llama_index.core.schema import BaseNode
+from llama_index.core.node_parser import HierarchicalNodeParser
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 from app.databases.qdrant import QdrantConnector
@@ -21,46 +21,46 @@ from app.utils.api.helpers import parse_pdf
 
 def get_transformations() -> List[Any]:
     """
-    Get the transformation components for the ingestion pipeline
+    Get the transformation components for the ingestion pipeline.
 
     Returns:
         List[Any]: List of LlamaIndex transformation components
     """
-    # TODO: Add two fields `issue_date` (datetime) and `outdated` (bool) to the document metadata
-
     # Define node postprocessor methods
     extractors = [
+        SummaryExtractor(llm=Settings.llm, summaries=["prev", "self"]),
         QuestionsAnsweredExtractor(llm=Settings.llm, questions=2),
         KeywordExtractor(llm=Settings.llm, keywords=5),
     ]
 
     # Define chunking method
-    semantic_splitter = SemanticSplitterNodeParser(
-        buffer_size=1,
-        breakpoint_percentile_threshold=95,
-        embed_model=Settings.embed_model,
-    )
+    splitter = HierarchicalNodeParser.from_defaults(chunk_sizes=[512, 128])
 
-    transformations = [semantic_splitter] + extractors
+    # Define full transformation pipeline
+    transformations = [splitter, *extractors, Settings.embed_model]
 
     return transformations
 
 
 def index_document_to_vector_db(
-    document: Annotated[UploadFile, File(description="PDF file")],
-    qdrant_connector: QdrantConnector,
-    redis_connector: RedisConnector,
+    document: UploadFile,
+    issue_date: datetime = datetime.now(),
+    is_outdated: bool = False,
+    qdrant_connector: Optional[QdrantConnector] = None,
+    redis_connector: Optional[RedisConnector] = None,
 ) -> None:
     """
     Index a PDF document into the vector database.
 
     Args:
-        document (UploadFile): PDF file
-        qdrant_connector (QdrantConnector): Vector database connection
-        redis_connector (RedisConnector): Cache store connection
+        uploaded_document (UploadFile): Document to be indexed.
+        issue_date (datetime): Issue date of the document. Defaults to the current date.
+        is_outdated (bool): Flag to indicate if the document is outdated. Defaults to False.
+        qdrant_connector (Optional[QdrantConnector]): Qdrant connector. Defaults to None.
+        redis_connector (Optional[RedisConnector]): Redis connector. Defaults to None.
     """
     # Parse PDF file into LlamaIndex Document objects
-    documents = parse_pdf(document=document)
+    documents = parse_pdf(document=document, issue_date=issue_date, is_outdated=is_outdated)
 
     # Create a collection in the vector database
     qdrant_connector.create_collection(
@@ -89,19 +89,19 @@ def index_document_to_vector_db(
         name="EzHR Chatbot Indexing Pipeline",
         transformations=transformations,
         # TODO: Remove this parameter after finishing the development
-        # vector_store=vector_store,
+        vector_store=vector_store,
         cache=ingest_cache,
         # TODO: Remove this parameter after finishing the development
         disable_cache=True,
     )
-    nodes: List[BaseNode] = pipeline.run(documents=documents, show_progress=True)
+    pipeline.run(documents=documents, show_progress=True, batch_size=Constants.INGESTION_BATCH_SIZE)
 
     # TODO: Will be deleted after figuring out why vector embeddings
     # are not being stored in the Qdrant database when calling IngestionPipeline.run()
-    for node in nodes:
-        node_embedding = Settings.embed_model.get_text_embedding(
-            node.get_content(metadata_mode="all")
-        )
-        node.embedding = node_embedding
+    # for node in nodes:
+    #     node_embedding = Settings.embed_model.get_text_embedding(
+    #         node.get_content(metadata_mode="all")
+    #     )
+    #     node.embedding = node_embedding
 
-    vector_store.add(nodes=nodes)
+    # vector_store.add(nodes=nodes)

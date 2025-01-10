@@ -33,7 +33,7 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 def upload_documents(
     issue_date: datetime = Form(default_factory=datetime.now),
     is_outdated: bool = Form(False),
-    documents: List[UploadFile] = File(...),
+    uploaded_documents: List[UploadFile] = File(...),
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
     qdrant_connector: QdrantConnector = Depends(get_qdrant_connector),
@@ -45,7 +45,7 @@ def upload_documents(
     Args:
         issue_date (datetime): Issue date of the document. Defaults to the current date.
         is_outdated (bool): Flag to indicate if the document is outdated. Defaults to False.
-        documents (List[UploadFile]): List of documents to upload.
+        uploaded_documents (List[UploadFile]): List of documents to upload.
         db_session (Session): Database session. Defaults to relational database session.
         minio_connector (MinioConnector): MinIO connector.
         qdrant_connector (QdrantConnector): Qdrant connector.
@@ -60,14 +60,16 @@ def upload_documents(
         minio_connector=minio_connector,
         qdrant_connector=qdrant_connector,
         redis_connector=redis_connector,
-    ).upload_documents(documents=documents)
+    ).upload_documents(
+        issue_date=issue_date, is_outdated=is_outdated, uploaded_documents=uploaded_documents
+    )
     if err:
         status_code, detail = err.kind
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
     if document_urls:
-        data = [DocumentResponse(document_url=document_url) for document_url in document_urls]
+        data = [DocumentResponse(url=url) for url in document_urls]
     else:
         data = []
 

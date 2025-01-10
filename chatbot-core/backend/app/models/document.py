@@ -101,7 +101,7 @@ class DocumentResponse(BaseModel):
     Defines the structure of document upload returned to the client.
     """
 
-    document_url: str = Field(..., description="Object URL")
+    url: str = Field(..., description="Object URL")
 
     class Config:
         from_attributes = True
