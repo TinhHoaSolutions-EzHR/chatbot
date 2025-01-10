@@ -57,10 +57,10 @@ class DocumentService(BaseService):
         Validate uploaded documents.
 
         Args:
-            documents: List of uploaded files to validate
+            documents: List of uploaded files to validate.
 
         Returns:
-            Optional[APIError]: Error if validation fails, None otherwise
+            Optional[APIError]: Error if validation fails, None otherwise.
         """
         for document in documents:
             if not document.filename:
