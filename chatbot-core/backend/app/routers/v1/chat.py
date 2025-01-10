@@ -190,7 +190,7 @@ def update_chat_session(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Update chat session
-    err = ChatService(db_session=db_session).update_chat_session(
+    chat_session, err = ChatService(db_session=db_session).update_chat_session(
         chat_session_id=chat_session_id, chat_session_request=chat_session_request, user_id=user.id
     )
     if err:
@@ -198,7 +198,10 @@ def update_chat_session(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = chat_session_request.model_dump(exclude_unset=True)
+    if chat_session:
+        data = ChatSessionResponse.model_validate(chat_session)
+    else:
+        data = None
 
     return (
         BackendAPIResponse()
