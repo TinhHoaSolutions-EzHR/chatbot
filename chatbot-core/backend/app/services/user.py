@@ -88,7 +88,9 @@ class UserService(BaseService):
         """
         return self._user_repo.get_user_by_email(email=email)
 
-    def create_user(self, user_oauth_data: Dict[str, Any]) -> Optional[APIError]:
+    def create_user(
+        self, user_oauth_data: Dict[str, Any]
+    ) -> Tuple[Optional[User], Optional[APIError]]:
         """
         Creates an user using data retrieved from Google OAuth.
 
@@ -96,7 +98,7 @@ class UserService(BaseService):
             user_oauth_data (Dict[str, Any]): A dictionary containing user information from Google OAuth.
 
         Returns:
-            Optional[APIError]: An APIError object if an error occurs, otherwise None.
+            Tuple[Optional[User], Optional[APIError]]: A tuple containing the created user object and an API error (if any).
         """
         with self._transaction():
             # Define to-be-created user
@@ -109,7 +111,11 @@ class UserService(BaseService):
             )
 
             # Create user
-            return self._user_repo.create_user(user=user)
+            err = self._user_repo.create_user(user=user)
+            if err:
+                return None, err
+
+        return user, None
 
 
 class UserSettingService(BaseService):
@@ -124,23 +130,30 @@ class UserSettingService(BaseService):
 
         self._user_setting_repo = UserSettingRepository(db_session=db_session)
 
-    def get_user_settings(self, user_id: str) -> Tuple[Optional[UserSetting], Optional[APIError]]:
+    def get_user_settings(
+        self, user_settings_id: str
+    ) -> Tuple[Optional[UserSetting], Optional[APIError]]:
         """
         Get user settings.
 
         Args:
-            user_id (str): User ID
+            user_settings_id (str): User settings ID.
 
         Returns:
-            Tuple[Optional[UserSetting], Optional[APIError]]: User settings and API error response
+            Tuple[Optional[UserSetting], Optional[APIError]]: User settings and API error response.
         """
-        user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
+        user_settings, err = self._user_setting_repo.get_user_settings(
+            user_settings_id=user_settings_id
+        )
         if err:
             return None, err
 
         # Load recent agent IDs as a list
-        if user_settings and user_settings.recent_agent_ids:
-            user_settings.recent_agent_ids = json.loads(user_settings.recent_agent_ids)
+        if user_settings:
+            if user_settings.recent_agent_ids:
+                user_settings.recent_agent_ids = json.loads(user_settings.recent_agent_ids)
+            else:
+                user_settings.recent_agent_ids = []
 
         return user_settings, None
 
@@ -171,14 +184,33 @@ class UserSettingService(BaseService):
 
         return recent_agent_ids
 
+    def create_user_settings(
+        self, user_id: str
+    ) -> Tuple[Optional[UserSetting], Optional[APIError]]:
+        """
+        Create user settings.
+
+        Args:
+            user_id (str): User ID.
+
+        Returns:
+            Tuple[Optional[UserSetting], Optional[APIError]]: User setting object and API error response.
+        """
+        with self._transaction():
+            # Define to-be-created user settings
+            user_settings = UserSetting(id=user_id)
+
+            # Create user settings
+            return self._user_setting_repo.create_user_settings(user_settings=user_settings)
+
     def update_user_settings(
-        self, user_id: str, user_settings_request: UserSettingsRequest
+        self, user_settings_id: str, user_settings_request: UserSettingsRequest
     ) -> Optional[APIError]:
         """
         Update user settings.
 
         Args:
-            user_id (str): User ID.
+            user_settings_id (str): User settings ID.
             user_settings_request (UserSettingsRequest): User setting request object.
 
         Returns:
@@ -189,7 +221,9 @@ class UserSettingService(BaseService):
             user_settings = user_settings_request.model_dump(exclude_unset=True)
 
             # Fetch existing user setting
-            existing_user_settings, err = self._user_setting_repo.get_user_settings(user_id=user_id)
+            existing_user_settings, err = self._user_setting_repo.get_user_settings(
+                user_settings_id=user_settings_id
+            )
             if err:
                 return err
 
@@ -213,7 +247,7 @@ class UserSettingService(BaseService):
 
             # Update user settings
             err = self._user_setting_repo.update_user_settings(
-                user_id=user_id, user_settings=user_settings
+                user_settings_id=user_settings_id, user_settings=user_settings
             )
 
         return err if err else None

@@ -77,24 +77,6 @@ class User(Base):
     user_setting: Mapped["UserSetting"] = relationship("UserSetting", back_populates="user")
 
 
-class UserResponse(BaseModel):
-    """
-    Pydantic model for user response.
-    Defines the fields that can be returned in the user.
-    """
-
-    id: UUID = Field(..., description="User ID")
-    email: str = Field(..., description="User email")
-    name: str = Field(None, description="User name")
-    avatar: Optional[str] = Field(None, description="User avatar")
-    role: UserRole = Field(..., description="User role")
-    created_at: datetime = Field(..., description="Created at")
-    updated_at: datetime = Field(..., description="Updated at")
-
-    class Config:
-        from_attributes = True
-
-
 class UserSetting(Base):
     """
     Represents the user settings in the chatbot system.
@@ -104,7 +86,7 @@ class UserSetting(Base):
     __tablename__ = "user_setting"
 
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), primary_key=True
+        ForeignKey("user.id", ondelete="CASCADE"), primary_key=True, default=uuid4
     )
     recent_agent_ids: Mapped[str] = mapped_column(String, default="")
     auto_scroll: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -125,6 +107,24 @@ class UserSetting(Base):
 
     # Define relationships.
     user: Mapped["User"] = relationship("User", back_populates="user_setting")
+
+
+class UserResponse(BaseModel):
+    """
+    Pydantic model for user response.
+    Defines the fields that can be returned in the user.
+    """
+
+    id: UUID = Field(..., description="User ID")
+    email: str = Field(..., description="User email")
+    name: str = Field(None, description="User name")
+    avatar: Optional[str] = Field(None, description="User avatar")
+    role: UserRole = Field(..., description="User role")
+    created_at: datetime = Field(..., description="Created at")
+    updated_at: datetime = Field(..., description="Updated at")
+
+    class Config:
+        from_attributes = True
 
 
 class UserSettingsRequest(BaseModel):
@@ -150,7 +150,9 @@ class UserSettingsResponse(BaseModel):
     Defines the fields that can be returned in the user settings.
     """
 
-    recent_agent_ids: Optional[List[UUID]] = Field(None, description="List of recent agent IDs")
+    recent_agent_ids: Optional[List[UUID]] = Field(
+        default_factory=list, description="List of recent agent IDs"
+    )
     auto_scroll: bool = Field(..., description="Auto scroll chat messages")
     default_model: Optional[str] = Field(None, description="Default model for the user")
     maximum_chat_retention_days: Optional[int] = Field(

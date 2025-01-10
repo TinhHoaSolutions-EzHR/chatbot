@@ -74,28 +74,30 @@ class UserSettingRepository(BaseRepository):
         """
         super().__init__(db_session=db_session)
 
-    def get_user_settings(self, user_id: str) -> Tuple[UserSetting, Optional[APIError]]:
+    def get_user_settings(self, user_settings_id: str) -> Tuple[UserSetting, Optional[APIError]]:
         """
-        Get user settings by user ID.
+        Get user settings by user settings ID.
 
         Args:
-            user_id (str): User ID
+            user_settings_id (str): User settings ID.
 
         Returns:
             Tuple[UserSetting, Optional[APIError]]: User setting object and API error response
         """
         try:
             user_setting = (
-                self._db_session.query(UserSetting).filter(UserSetting.id == user_id).first()
+                self._db_session.query(UserSetting)
+                .filter(UserSetting.id == user_settings_id)
+                .first()
             )
             return user_setting, None
         except Exception as e:
             logger.error(f"Error getting user settings: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
-    def update_user_settings(self, user_id: str, user_settings: UserSetting) -> Optional[APIError]:
+    def create_user_settings(self, user_settings: UserSetting) -> Optional[APIError]:
         """
-        Update user settings.
+        Create user settings.
 
         Args:
             user_setting (UserSetting): User setting object
@@ -104,15 +106,37 @@ class UserSettingRepository(BaseRepository):
             Optional[APIError]: API error response
         """
         try:
+            self._db_session.add(user_settings)
+            return None
+        except Exception as e:
+            logger.error(f"Error creating user settings: {e}")
+            return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
+
+    def update_user_settings(
+        self, user_settings_id: str, user_settings: UserSetting
+    ) -> Optional[APIError]:
+        """
+        Update user settings.
+
+        Args:
+            user_settings_id (str): User settings ID.
+            user_settings (UserSetting): User settings object.
+
+        Returns:
+            Optional[APIError]: API error response.
+        """
+        try:
             # Check if user exists
             user_settings_exists = (
-                self._db_session.query(UserSetting).filter(UserSetting.id == user_id).first()
+                self._db_session.query(UserSetting)
+                .filter(UserSetting.id == user_settings_id)
+                .first()
             )
             if not user_settings_exists:
                 return APIError(kind=ErrorCodesMappingNumber.USER_SETTING_NOT_FOUND.value)
 
             # Update user settings
-            self._db_session.query(UserSetting).filter(UserSetting.id == user_id).update(
+            self._db_session.query(UserSetting).filter(UserSetting.id == user_settings_id).update(
                 user_settings
             )
             return None

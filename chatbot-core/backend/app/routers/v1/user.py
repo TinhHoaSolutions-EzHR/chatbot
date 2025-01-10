@@ -13,7 +13,6 @@ from app.services.user import UserSettingService
 from app.settings import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
-from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 from app.utils.user.authentication import get_current_user_from_token
 
@@ -35,13 +34,6 @@ def get_user(
     Returns:
         BackendAPIResponse: API response
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(
-            status_code=status_code,
-            detail=detail,
-        )
-
     # Parse user
     data = UserResponse.model_validate(user)
 
@@ -68,16 +60,9 @@ def get_user_settings(
     Returns:
         BackendAPIResponse: API response
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(
-            status_code=status_code,
-            detail=detail,
-        )
-
     # Get user settings
     user_settings, err = UserSettingService(db_session=db_session).get_user_settings(
-        user_id=user.id
+        user_settings_id=user.id
     )
     if err:
         status_code, detail = err.kind
@@ -114,16 +99,9 @@ def update_user_settings(
     Returns:
         BackendAPIResponse: API response
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(
-            status_code=status_code,
-            detail=detail,
-        )
-
     # Update user settings
     err = UserSettingService(db_session=db_session).update_user_settings(
-        user_id=user.id,
+        user_settings_id=user.id,
         user_settings_request=user_settings_request,
     )
     if err:
