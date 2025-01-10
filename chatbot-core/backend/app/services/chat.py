@@ -113,7 +113,7 @@ class ChatService(BaseService):
 
     def update_chat_session(
         self, chat_session_id: str, chat_session_request: ChatSessionRequest, user_id: str
-    ) -> Optional[APIError]:
+    ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
         """
         Update chat session.
 
@@ -123,7 +123,7 @@ class ChatService(BaseService):
             user_id(str): User id
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
         with self._transaction():
             # Define to-be-updated chat session
@@ -133,8 +133,13 @@ class ChatService(BaseService):
             err = self._chat_repository.update_chat_session(
                 chat_session_id=chat_session_id, chat_session=chat_session, user_id=user_id
             )
+            if err:
+                return err
 
-        return err if err else None
+        # Get the updated chat session
+        return self._chat_repository.get_chat_session(
+            chat_session_id=chat_session_id, user_id=user_id
+        )
 
     def delete_chat_session(self, chat_session_id: str, user_id: str) -> Optional[APIError]:
         """

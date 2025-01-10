@@ -26,7 +26,6 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models import ChatSession
-    from app.models import ChatMessage
     from app.models import User
 
 
@@ -76,7 +75,6 @@ class Agent(Base):
 
     # Define relationships. We use the type hinting string to avoid circular imports.
     chat_sessions: Mapped[List["ChatSession"]] = relationship("ChatSession", back_populates="agent")
-    chat_messages: Mapped[List["ChatMessage"]] = relationship("ChatMessage", back_populates="agent")
     user: Mapped[Optional["User"]] = relationship("User", back_populates="agents")
     starter_messages: Mapped[List["StarterMessage"]] = relationship(
         "StarterMessage", back_populates="agent"
