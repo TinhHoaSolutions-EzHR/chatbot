@@ -26,6 +26,10 @@ const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
         isSelected && 'bg-zinc-300/40 hover:bg-zinc-300/40',
       )}
       onClick={() => {
+        if (isSelected) {
+          return;
+        }
+
         setSelectedAgent(agent);
         mutate(agent.id, {
           onError() {

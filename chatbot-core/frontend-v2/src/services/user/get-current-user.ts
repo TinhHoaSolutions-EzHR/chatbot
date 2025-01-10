@@ -1,4 +1,4 @@
-import httpClient from '@/lib/axios';
+import { httpClient } from '@/lib/axios';
 import { IApiResponse } from '@/types/api-response';
 import { IUser } from '@/types/user';
 import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';

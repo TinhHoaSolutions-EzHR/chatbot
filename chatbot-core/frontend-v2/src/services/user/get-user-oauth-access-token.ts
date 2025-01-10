@@ -1,4 +1,4 @@
-import httpClient from '@/lib/axios';
+import { httpClient } from '@/lib/axios';
 import { IApiResponse } from '@/types/api-response';
 import { AuthEndpoint } from '@/utils/get-api-url';
 

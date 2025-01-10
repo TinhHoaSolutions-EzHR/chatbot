@@ -1,8 +1,10 @@
 import { FC, useMemo } from 'react';
+import { toast } from 'sonner';
 
 import { TempChatModelIcon } from '@/components/temp-chat-model-icon';
 import { Button } from '@/components/ui/button';
 import { useGetAgentsList } from '@/hooks/agents/use-get-agents-list';
+import { useSelectAgent } from '@/hooks/agents/use-select-agent';
 import { useAgentStore } from '@/hooks/stores/use-agent-store';
 import { useGetUserSettings } from '@/hooks/user/use-get-user-settings';
 import { IAgent } from '@/types/agent';
@@ -12,11 +14,26 @@ interface IAgentButtonProps {
 }
 
 const AgentButton: FC<IAgentButtonProps> = ({ agent }) => {
-  const { setSelectedAgent } = useAgentStore();
+  const { mutate } = useSelectAgent();
+  const { setSelectedAgent, selectedAgent } = useAgentStore();
 
   return (
     <Button
-      onClick={() => setSelectedAgent(agent)}
+      onClick={() => {
+        if (selectedAgent?.id === agent.id) {
+          return;
+        }
+
+        setSelectedAgent(agent);
+        mutate(agent.id, {
+          onError() {
+            toast.error('Select agent error', {
+              description: "There's something wrong with your request, please try again later",
+            });
+            setSelectedAgent(null);
+          },
+        });
+      }}
       variant="ghost"
       className="w-36 px-3 py-[2px] rounded-full border border-zinc-400/30 h-8"
     >
@@ -31,17 +48,20 @@ export const RecentAgents = () => {
   const { mappedAgentsById } = useGetAgentsList().data ?? {};
 
   const recentAgents = useMemo(() => {
-    if (!userSettings || !mappedAgentsById) {
+    if (!userSettings?.recent_agent_ids || !mappedAgentsById) {
       return undefined;
     }
 
-    return userSettings.recent_agent_ids?.reduce<IAgent[]>((acc, cur) => {
+    const agentsList = userSettings.recent_agent_ids.reduce<IAgent[]>((acc, cur) => {
       if (mappedAgentsById[cur]) {
         acc.push(mappedAgentsById[cur]);
       }
 
       return acc;
     }, []);
+
+    agentsList.shift();
+    return agentsList;
   }, [userSettings, mappedAgentsById]);
 
   // No need to have loading state since we have enabled loading for getting
@@ -49,9 +69,6 @@ export const RecentAgents = () => {
   if (!recentAgents) {
     return null;
   }
-
-  // First agent is the selected agent, so we remove it from the list.
-  recentAgents.shift();
 
   return (
     <div className="flex flex-col items-center gap-6">

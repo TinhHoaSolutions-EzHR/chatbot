@@ -1,7 +1,8 @@
 import { FC, useState } from 'react';
 
+import ChatSessionItem from '@/components/chat-session-item/chat-session-item';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
+import { SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar';
 import { IChatSession, IFolder } from '@/types/chat';
 
 import { ChatFolderActions } from './chat-folder-actions/chat-folder-actions';
@@ -31,13 +32,9 @@ export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions,
         <CollapsibleContent>
           {chatSessions && chatSessions.length > 0 && (
             <SidebarMenuSub>
-              <SidebarMenuSubItem>
-                {chatSessions.map(session => (
-                  <SidebarMenuSubButton key={session.id} className="cursor-pointer">
-                    {session.description ?? session.id}
-                  </SidebarMenuSubButton>
-                ))}
-              </SidebarMenuSubItem>
+              {chatSessions.map(session => (
+                <ChatSessionItem key={session.id} chatSession={session} subItem />
+              ))}
             </SidebarMenuSub>
           )}
         </CollapsibleContent>

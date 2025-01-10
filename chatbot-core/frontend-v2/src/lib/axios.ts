@@ -1,34 +1,41 @@
-import axios from 'axios';
+import axios, { ResponseType } from 'axios';
 
 import { CHATBOT_CORE_BACKEND_URL, LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
 import { ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH, ApiStatusCode } from '@/constants/misc';
 
-const httpClient = axios.create({
-  baseURL: CHATBOT_CORE_BACKEND_URL,
-  headers: {
-    'Access-Control-Allow-Origin': 'http://localhost:3000',
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-});
+const createClient = (responseType: ResponseType) => {
+  const client = axios.create({
+    baseURL: CHATBOT_CORE_BACKEND_URL,
+    headers: {
+      'Access-Control-Allow-Origin': 'http://localhost:3000',
+    },
+    responseType,
+    withCredentials: true,
+  });
 
-httpClient.interceptors.request.use(config => {
-  const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+  client.interceptors.request.use(config => {
+    const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
 
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
-  return config;
-});
+    return config;
+  });
 
-httpClient.interceptors.response.use(response => {
-  if (response.status === ApiStatusCode.UNAUTHORIZED_404) {
-    localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
-    window.dispatchEvent(new Event(ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH));
-  }
+  client.interceptors.response.use(response => {
+    if (response.status === ApiStatusCode.UNAUTHORIZED_404) {
+      localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+      window.dispatchEvent(new Event(ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH));
+    }
 
-  return response;
-});
+    return response;
+  });
 
-export default httpClient;
+  return client;
+};
+
+const httpClient = createClient('json');
+const streamClient = createClient('stream');
+
+export { httpClient, streamClient };

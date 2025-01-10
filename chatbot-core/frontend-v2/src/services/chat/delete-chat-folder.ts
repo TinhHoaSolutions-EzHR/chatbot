@@ -1,4 +1,4 @@
-import httpClient from '@/lib/axios';
+import { httpClient } from '@/lib/axios';
 import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 
 export const deleteChatFolder = async (folderId: string) => {

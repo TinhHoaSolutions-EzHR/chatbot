@@ -30,7 +30,7 @@ export default function RootLayout({
           <HealthCheckProvider>
             <AuthProvider>
               {children}
-              <Toaster closeButton />
+              <Toaster closeButton richColors />
               <DialogProvider />
             </AuthProvider>
           </HealthCheckProvider>

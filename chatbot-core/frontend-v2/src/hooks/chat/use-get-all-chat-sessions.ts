@@ -6,10 +6,6 @@ import { getAllChatSessions } from '@/services/chat/get-all-chat-sessions';
 export const useGetAllChatSessions = () => {
   return useQuery({
     queryKey: [ReactQueryKey.CHAT_SESSIONS],
-    queryFn: async () => {
-      const chatSessions = getAllChatSessions();
-
-      return chatSessions;
-    },
+    queryFn: getAllChatSessions,
   });
 };

@@ -21,6 +21,27 @@ export interface IChatSession {
   deleted_at?: string;
 }
 
+export interface IChatSessionRequest {
+  agent_id: string;
+  folder_id: string;
+  description: string;
+  shared_status: ChatSessionSharedStatus;
+}
+
+export enum ChatMessageRequestType {
+  NEW = 'new',
+  REGENERATE = 'regenerate',
+  EDIT = 'edit',
+}
+
+export interface IChatMessageRequest {
+  id: string;
+  message: string;
+  is_sensitive: boolean;
+  parent_message_id: string;
+  chat_message_request_type: ChatMessageRequestType;
+}
+
 interface IChatMessageResponse {
   id: string;
   chat_session_id: string;
