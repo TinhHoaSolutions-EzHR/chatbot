@@ -21,22 +21,6 @@ from app.utils.api.error_handler import PdfParsingError
 logger = logging.getLogger(__name__)
 
 
-def remove_vietnamese_accents(input_str: str) -> str:
-    """
-    Remove Vietnamese accents from a string.
-
-    Args:
-        input_str (str): Input string with accents.
-
-    Returns:
-        str: Output string without accents.
-    """
-    S1 = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ"
-    S0 = "AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy"
-
-    return "".join([S0[S1.index(c)] if c in S1 else c for c in input_str])
-
-
 def parse_pdf(
     document: Annotated[UploadFile, File(description="PDF file")],
 ) -> List[Document] | None:
@@ -155,36 +139,6 @@ def get_logger(
                 uvicorn_logger.addHandler(console_handler)
 
     return logger
-
-
-def construct_file_path(object_name: str, user_id: str = None) -> str:
-    """
-    Construct file path in Minio.
-
-    Args:
-        object_name (str): Name of the object.
-        user_id (str): User id. Defaults to None.
-
-    Returns:
-        str: File path in Minio.
-
-    Example:
-        >>> construct_file_path("avatar", "user_id")
-        # my_avatar_f6f7b43c-c0ca-4003-8143-7c5e767cde12_20211013123456.png
-    """
-    file_name = (
-        (remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower())
-        + "_"
-        + user_id
-        + "_"
-        + datetime.now().strftime("%Y%m%d%H%M%S")
-        + "."
-        + Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT
-    )
-    file_path = os.path.join(Constants.MINIO_IMAGE_BUCKET, file_name)
-
-    return file_path
-
 
 def get_database_url() -> str:
     """
