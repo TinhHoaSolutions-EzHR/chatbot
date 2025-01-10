@@ -1,5 +1,6 @@
 import contextlib
 import os
+from datetime import datetime
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -36,7 +37,7 @@ class DocumentService(BaseService):
         Document service class for handling document-related operations.
 
         Args:
-            db_session (Session): Database session
+            db_session (Session): Database session.
             minio_connector (Optional[MinioConnector]): Object storage connection. Defaults to None.
             qdrant_connector (Optional[QdrantConnector]): Vector database connection. Defaults to None.
             redis_connector (Optional[RedisConnector]): Cache store connection. Defaults to None.
@@ -51,70 +52,105 @@ class DocumentService(BaseService):
         self._qdrant_connector = qdrant_connector
         self._redis_connector = redis_connector
 
+    def _validate_documents(self, documents: List[UploadFile]) -> Optional[APIError]:
+        """
+        Validate uploaded documents.
+
+        Args:
+            documents: List of uploaded files to validate
+
+        Returns:
+            Optional[APIError]: Error if validation fails, None otherwise
+        """
+        for document in documents:
+            if not document.filename:
+                return APIError(kind=ErrorCodesMappingNumber.INVALID_DOCUMENT.value)
+        return None
+
+    def _store_document(
+        self, uploaded_document: UploadFile, issue_date: datetime, is_outdated: bool
+    ) -> Tuple[Optional[str], Optional[APIError]]:
+        """
+        Store a single document in storage and databases.
+
+        Args:
+            uploaded_document: File to be stored.
+            issue_date: Issue date of the document.
+            is_outdated: Flag indicating if the document is outdated.
+
+        Returns:
+            Tuple containing the document URL (if successful) and any error.
+        """
+        object_name, file_extension = os.path.splitext(uploaded_document.filename)
+        file_path = construct_file_path(
+            object_name=object_name,
+            bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
+            file_extension=file_extension.lstrip("."),
+        )
+        logger.info(f"Uploading document: {uploaded_document.filename}")
+
+        with self._transaction():
+            document = Document(
+                name=uploaded_document.filename,
+                url=file_path,
+            )
+            if err := self._document_repo.create_document(document=document):
+                return None, err
+
+        if not self._minio_connector.upload_file(
+            object_name=file_path,
+            data=uploaded_document.file,
+            bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
+        ):
+            return None, APIError(kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value)
+
+        logger.info(f"Document uploaded: {uploaded_document.filename}")
+
+        index_document_to_vector_db(
+            issue_date=issue_date,
+            is_outdated=is_outdated,
+            document=uploaded_document,
+            qdrant_connector=self._qdrant_connector,
+            redis_connector=self._redis_connector,
+        )
+
+        return file_path, None
+
     def upload_documents(
-        self, documents: List[UploadFile] = File(...)
+        self,
+        issue_date: datetime = datetime.now(),
+        is_outdated: bool = True,
+        uploaded_documents: List[UploadFile] = File(...),
     ) -> Tuple[List[str], Optional[APIError]]:
         """
         Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
 
         Args:
-            documents (List[UploadFile]): List of files to be uploaded.
+            issue_date (datetime): Issue date of the document.
+            is_outdated (bool): Flag to indicate if the document is outdated. Defaults to True.
+            uploaded_documents (List[UploadFile]): List of files to be uploaded.
 
         Returns:
             Tuple[List[str], Optional[APIError]]: List of document file paths and error if any.
         """
         # Check if files are valid. There are cases where the uploaded file is crashed or empty.
-        for document in documents:
-            if not document.filename:
-                return APIError(kind=ErrorCodesMappingNumber.INVALID_DOCUMENT.value)
+        if err := self._validate_documents(documents=uploaded_documents):
+            return [], err
 
-        document_urls = []
+        document_urls: List[str] = []
         try:
-            # Upload each file to the object storage
-            for document in documents:
-                # Automatically closing file after reading
-                with contextlib.closing(document.file):
-                    # Generate file path
-                    object_name, file_extension = os.path.splitext(document.filename)
-                    file_path = construct_file_path(
-                        object_name=object_name,
-                        bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
-                        file_extension=file_extension.lstrip("."),
+            for uploaded_document in uploaded_documents:
+                with contextlib.closing(uploaded_document.file):
+                    document_url, err = self._store_document(
+                        uploaded_document=uploaded_document,
+                        issue_date=issue_date,
+                        is_outdated=is_outdated,
                     )
-                    logger.info(f"Uploading document: {document.filename}")
+                    if err:
+                        return [], err
+                    document_urls.append(document_url)
 
-                    with self._transaction():
-                        # Write document metadata to database
-                        document = Document(
-                            name=document.filename,
-                            document_url=file_path,
-                        )
-                        err = self._document_repo.create_document(document=document)
-                        if err:
-                            return [], err
-
-                    # Upload file to object storage
-                    is_file_uploaded = self._minio_connector.upload_file(
-                        object_name=file_path,
-                        data=document.file,
-                        bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
-                    )
-                    if not is_file_uploaded:
-                        return None, APIError(
-                            kind=ErrorCodesMappingNumber.UNABLE_TO_UPLOAD_FILE_TO_MINIO.value
-                        )
-
-                    # Append document URL to the list
-                    document_urls.append(file_path)
-
-                    # # Index document to vector database
-                    # index_document_to_vector_db(
-                    #     document=document,
-                    #     qdrant_connector=self._qdrant_connector,
-                    #     redis_connector=self._redis_connector,
-                    # )
+            return document_urls, None
         except Exception as e:
             logger.error(f"Error uploading documents: {e}")
-            err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
-
-        return document_urls, err
+            return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

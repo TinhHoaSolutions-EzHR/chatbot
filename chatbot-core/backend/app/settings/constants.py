@@ -91,3 +91,6 @@ class Constants:
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
     JWT_EXPIRATION = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 3600))
     EZHR_ACCESS_TOKEN = "ezhr_access_token"
+
+    # Datetime Format
+    DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
