@@ -9,10 +9,10 @@ export const useDeleteChatSession = (chatSessionId: string) => {
 
   return useMutation({
     mutationKey: [ReactMutationKey.DELETE_CHAT_SESSION, { id: chatSessionId }],
-    mutationFn: () => deleteChatSession(chatSessionId),
-    onSuccess() {
+    mutationFn: deleteChatSession,
+    onSuccess(_, variables) {
       queryClient.setQueryData([ReactQueryKey.CHAT_SESSIONS], (oldData?: IChatSession[]) =>
-        oldData ? oldData.filter(chatSession => chatSession.id !== chatSessionId) : oldData,
+        oldData ? oldData.filter(chatSession => chatSession.id !== variables) : oldData,
       );
     },
   });

@@ -3,7 +3,12 @@ import { IApiResponse } from '@/types/api-response';
 import { IFolder } from '@/types/chat';
 import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 
-export const editChatFolder = async (folderId: string, folderName: string): Promise<IFolder> => {
+interface IEditChatFolderProps {
+  folderId: string;
+  folderName: string;
+}
+
+export const editChatFolder = async ({ folderId, folderName }: IEditChatFolderProps): Promise<IFolder> => {
   try {
     const res = await httpClient.patch<IApiResponse<IFolder>>(getApiUrl(ApiEndpointPrefix.FOLDER, `/${folderId}`), {
       name: folderName,

@@ -3,10 +3,12 @@ import { IApiResponse } from '@/types/api-response';
 import { IChatSession, IChatSessionRequest } from '@/types/chat';
 import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 
-export const editChatSession = async (
-  chatSessionId: string,
-  data: Partial<IChatSessionRequest>,
-): Promise<IChatSession> => {
+interface IEditChatSessionProps {
+  chatSessionId: string;
+  data: Partial<IChatSessionRequest>;
+}
+
+export const editChatSession = async ({ chatSessionId, data }: IEditChatSessionProps): Promise<IChatSession> => {
   try {
     const res = await httpClient.patch<IApiResponse<IChatSession>>(
       getApiUrl(ApiEndpointPrefix.CHAT, `/chat-sessions/${chatSessionId}`),

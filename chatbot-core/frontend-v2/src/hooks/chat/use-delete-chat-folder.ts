@@ -8,11 +8,11 @@ export const useDeleteChatFolder = (folderId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => deleteChatFolder(folderId),
+    mutationFn: deleteChatFolder,
     mutationKey: [ReactMutationKey.DELETE_CHAT_FOLDER, { id: folderId }],
-    onSuccess() {
+    onSuccess(_, variables) {
       queryClient.setQueryData([ReactQueryKey.CHAT_FOLDERS], (oldData?: IFolder[]) =>
-        oldData ? oldData.filter(value => value.id !== folderId) : oldData,
+        oldData ? oldData.filter(value => value.id !== variables) : oldData,
       );
     },
   });
