@@ -634,33 +634,6 @@ class ChatService(BaseService):
                 ).as_str()
                 return
 
-            # Handle request types
-            # if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:
-            #     logger.info("Regenerating the existing chat message")
-            #     existing_chat_request, err = self._handle_existing_chat_message(
-            #         chat_message_request=chat_message_request,
-            #         chat_session_id=chat_session_id,
-            #         user_id=user_id,
-            #     )
-            #     if err:
-            #         yield json.dumps(
-            #             {"c": f"Error during regeneration: {err}", "t": ChatStreamType.ERROR}
-            #         )
-            #         return
-            #     chat_message_request.message = existing_chat_request.message
-
-            # elif chat_message_request.request_type == ChatMessageRequestType.EDIT:
-            #     logger.info("Editing the existing chat message")
-            #     _, err = self._handle_existing_chat_message(
-            #         chat_message_request=chat_message_request,
-            #         chat_session_id=chat_session_id,
-            #         user_id=user_id,
-            #     )
-            #     if err:
-            #         yield json.dumps(
-            #             {"c": f"Error during editing: {err}", "t": ChatStreamType.ERROR}
-            #         )
-            #         return
             if chat_message_request.request_type in (
                 ChatMessageRequestType.REGENERATE,
                 ChatMessageRequestType.EDIT,
