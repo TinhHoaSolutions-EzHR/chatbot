@@ -18,7 +18,7 @@ export const ChatFolderActions: FC<IChatFolderActionsProps> = ({ folder, isFolde
 
   const [folderName, setFolderName] = useState('');
 
-  const { mutate, isPending } = useEditChatFolder(folder.id, folderName);
+  const { mutate, isPending } = useEditChatFolder(folder.id);
 
   useEffect(() => {
     if (isEditingFolder && folder.name) {
@@ -31,17 +31,20 @@ export const ChatFolderActions: FC<IChatFolderActionsProps> = ({ folder, isFolde
       toast.error('Folder name must not be left blanked');
     }
 
-    mutate(undefined, {
-      onSuccess() {
-        toast.success('Edit folder name successfully!');
-        setIsEditingFolder(false);
+    mutate(
+      { folderId: folder.id, folderName },
+      {
+        onSuccess() {
+          toast.success('Edit folder name successfully!');
+          setIsEditingFolder(false);
+        },
+        onError() {
+          toast.error('Edit folder name failed', {
+            description: "There's something wrong with your request. Please try again later!",
+          });
+        },
       },
-      onError() {
-        toast.error('Edit folder name failed', {
-          description: "There's something wrong with your request. Please try again later!",
-        });
-      },
-    });
+    );
   };
 
   return (

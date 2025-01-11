@@ -47,7 +47,7 @@ export const ChatSessionActions: FC<IChatSessionActionsProps> = ({
       return;
     }
 
-    mutate(undefined, {
+    mutate(chatSession.id, {
       onSuccess() {
         toast.success('Delete chat successfully.');
       },
@@ -74,7 +74,7 @@ export const ChatSessionActions: FC<IChatSessionActionsProps> = ({
       ) : (
         <div className={cn('group-hover/chat-action:opacity-100 opacity-0', isOpenDropdown && 'opacity-100')}>
           <DropdownMenu open={isOpenDropdown} onOpenChange={setIsOpenDropdown}>
-            <DropdownMenuTrigger asChild className={cn('bg-sidebar', subItem && 'right-4')}>
+            <DropdownMenuTrigger asChild className={cn('bg-sidebar z-0', subItem && 'right-4')}>
               <SidebarMenuAction
                 onMouseEnter={() => setIsDropdownHovered(true)}
                 onMouseLeave={() => setIsDropdownHovered(false)}

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { SidebarMenuItem, SidebarMenuSubItem } from '@/components/ui/sidebar';
 import { useEditChatSession } from '@/hooks/chat/use-edit-chat-session';
+import { cn } from '@/lib/utils';
 import { IChatSession } from '@/types/chat';
 
 import { ChatSessionActions } from './chat-session-actions';
@@ -21,25 +22,33 @@ const ChatSessionItemComponent: FC<IChatSessionItemProps> = ({ chatSession, subI
 
   const { chatSessionDescription } = useChatSessionContext();
 
-  const { mutate, isPending } = useEditChatSession(chatSession.id, { description: chatSessionDescription });
+  const { mutate, isPending } = useEditChatSession();
 
   const onEditChatSession = () => {
-    mutate(undefined, {
-      onSuccess() {
-        toast.success('Modify chat description successfully.');
+    mutate(
+      {
+        chatSessionId: chatSession.id,
+        data: {
+          description: chatSessionDescription,
+        },
       },
-      onError() {
-        toast.error('Failed to modify chat description.', {
-          description: "There's something wrong with your request. Please try again later!",
-        });
+      {
+        onSuccess() {
+          toast.success('Modify chat description successfully.');
+        },
+        onError() {
+          toast.error('Failed to modify chat description.', {
+            description: "There's something wrong with your request. Please try again later!",
+          });
+        },
       },
-    });
+    );
   };
 
   const SidebarItem = subItem ? SidebarMenuSubItem : SidebarMenuItem;
 
   return (
-    <SidebarItem className="group/chat-action cursor-pointer">
+    <SidebarItem className={cn('group/chat-action cursor-pointer relative')}>
       <ChatSessionButton subItem={subItem} isDropdownHovered={isDropdownHovered} isOpenDropdown={isOpenDropdown}>
         <ChatSessionInput chatSession={chatSession} onEditChatSession={onEditChatSession} isPending={isPending} />
       </ChatSessionButton>

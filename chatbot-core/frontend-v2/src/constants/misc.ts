@@ -12,3 +12,4 @@ export enum QueryParams {
 }
 
 export const ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH = 'access-token-local-storage';
+export const DND_CHAT_HISTORY_ID = 'dnd-chat-history-id';

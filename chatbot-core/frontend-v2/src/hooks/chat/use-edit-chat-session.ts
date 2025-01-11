@@ -1,37 +1,60 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { ReactMutationKey, ReactQueryKey } from '@/constants/react-query-key';
 import { editChatSession } from '@/services/chat/edit-chat-session';
-import { IChatSession, IChatSessionRequest } from '@/types/chat';
+import { IChatSession } from '@/types/chat';
 
-export const useEditChatSession = (chatSessionId: string, data: Partial<IChatSessionRequest>) => {
+type TEditChatSessionProps = Parameters<typeof editChatSession>[0];
+
+const modifyCachedData = (queryClient: QueryClient, modifiedData: TEditChatSessionProps) => {
+  let isModified = true;
+
+  queryClient.setQueryData([ReactQueryKey.CHAT_SESSIONS], (oldData?: IChatSession[]) => {
+    if (!oldData) {
+      return oldData;
+    }
+
+    const copyOldData = [...oldData];
+
+    const patchedFolderIndex = copyOldData.findIndex(value => value.id === modifiedData.chatSessionId);
+
+    // Found the folder with new name in the tanstack cached data, should assign a new one,
+    // if cannot find (due to several reasons, but this should not happened), refetch the query
+    if (~patchedFolderIndex) {
+      const previousValue = copyOldData[patchedFolderIndex];
+      copyOldData[patchedFolderIndex] = { ...modifiedData.data, ...previousValue };
+    } else {
+      isModified = false;
+    }
+
+    return copyOldData;
+  });
+
+  return isModified;
+};
+
+export const useEditChatSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: [ReactMutationKey.EDIT_CHAT_SESSION],
-    mutationFn: () => editChatSession(chatSessionId, data),
-    onSuccess(data) {
-      queryClient.setQueryData([ReactQueryKey.CHAT_SESSIONS], (oldData?: IChatSession[]) => {
-        if (!oldData) {
-          return oldData;
-        }
+    mutationFn: (props: TEditChatSessionProps) => {
+      modifyCachedData(queryClient, props);
 
-        const copyOldData = [...oldData];
-
-        const patchedFolderIndex = copyOldData.findIndex(value => value.id === chatSessionId);
-
-        // Found the folder with new name in the tanstack cached data, should assign a new one,
-        // if cannot find (due to several reasons, but this should not happened), refetch the query
-        if (~patchedFolderIndex) {
-          copyOldData[patchedFolderIndex] = data;
-        } else {
-          queryClient.invalidateQueries({
-            queryKey: [ReactQueryKey.CHAT_FOLDERS],
-          });
-        }
-
-        return copyOldData;
+      return editChatSession(props);
+    },
+    onSuccess(data, { chatSessionId }) {
+      const isModified = modifyCachedData(queryClient, {
+        chatSessionId,
+        data,
       });
+
+      if (!isModified) {
+        queryClient.invalidateQueries({
+          queryKey: [ReactQueryKey.CHAT_SESSIONS],
+          type: 'active',
+        });
+      }
     },
   });
 };

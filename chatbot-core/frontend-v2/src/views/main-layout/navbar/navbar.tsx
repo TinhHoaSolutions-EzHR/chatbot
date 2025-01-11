@@ -1,6 +1,8 @@
 'use client';
 
-import { AppLogo } from '@/components/app-logo';
+import Link from 'next/link';
+
+import AppLogo from '@/components/app-logo';
 import { NewChatButton } from '@/components/new-chat-button';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { UserButton } from '@/components/user-button/user-button';
@@ -19,7 +21,9 @@ export const Navbar = () => {
             <NewChatButton />
           </>
         )}
-        <AppLogo />
+        <Link href={'/'}>
+          <AppLogo className="w-28" />
+        </Link>
       </div>
       <div className="place-items-center">
         <AgentSelector />

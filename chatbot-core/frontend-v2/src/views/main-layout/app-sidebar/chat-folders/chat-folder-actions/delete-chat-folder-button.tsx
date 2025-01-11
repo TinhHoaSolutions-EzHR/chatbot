@@ -22,7 +22,7 @@ export const DeleteChatFolderButton: FC<IDeleteChatFolderButtonProps> = ({ folde
     const ok = await confirm();
 
     if (ok) {
-      mutate(undefined, {
+      mutate(folder.id, {
         onSuccess() {
           toast.success('Folder deleted successfully');
         },

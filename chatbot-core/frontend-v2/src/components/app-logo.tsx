@@ -1,13 +1,13 @@
-import { ChevronDown } from 'lucide-react';
+import React from 'react';
 
-import { Button } from './ui/button';
+type Props = React.PropsWithChildren<React.ComponentPropsWithRef<'button'>>;
 
-// TODO: Replace this with the actual logo
-export const AppLogo = () => {
+const AppLogo = (props: Props) => {
   return (
-    <Button variant="ghost" className="p-2 flex gap-1 items-center">
-      <p className="text-slate-600 text-lg font-semibold">EzHR</p>
-      <ChevronDown className="size-3" />
-    </Button>
+    <button {...props}>
+      <img src="/TinhHoaSolutionsImage.png" className="w-full h-full" />
+    </button>
   );
 };
+
+export default AppLogo;

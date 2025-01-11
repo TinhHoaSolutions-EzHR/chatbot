@@ -14,7 +14,7 @@ export interface IChatSession {
   description?: string;
   user_id: string;
   agent_id?: string;
-  folder_id?: string;
+  folder_id?: string | null;
   shared_status: ChatSessionSharedStatus;
   created_at: string;
   updated_at: string;
@@ -23,7 +23,7 @@ export interface IChatSession {
 
 export interface IChatSessionRequest {
   agent_id: string;
-  folder_id: string;
+  folder_id: string | null;
   description: string;
   shared_status: ChatSessionSharedStatus;
 }
@@ -42,7 +42,7 @@ export interface IChatMessageRequest {
   chat_message_request_type: ChatMessageRequestType;
 }
 
-interface IChatMessageResponse {
+export interface IChatMessageResponse {
   id: string;
   chat_session_id: string;
   message: string;
@@ -56,6 +56,12 @@ interface IChatMessageResponse {
 
 export interface IChatSessionDetail extends IChatSession {
   messages?: IChatMessageResponse[];
+}
+
+export enum ChatMessageStreamType {
+  REQUEST = 'r',
+  CHUNK = 'c',
+  DONE = 'd',
 }
 
 export interface IFolder {

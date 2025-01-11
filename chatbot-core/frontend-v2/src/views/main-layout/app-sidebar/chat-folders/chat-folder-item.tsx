@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import ChatSessionItem from '@/components/chat-session-item/chat-session-item';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { SidebarMenuItem, SidebarMenuSub } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import { IChatSession, IFolder } from '@/types/chat';
 
 import { ChatFolderActions } from './chat-folder-actions/chat-folder-actions';
@@ -19,7 +20,7 @@ export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions,
   return (
     <Collapsible
       defaultOpen={isDefaultOpen}
-      className="group/collapsible"
+      className={cn('group/collapsible')}
       open={isFolderOpen}
       onOpenChange={setIsFolderOpen}
     >

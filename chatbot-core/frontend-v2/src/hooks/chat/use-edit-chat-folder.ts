@@ -4,13 +4,13 @@ import { ReactMutationKey, ReactQueryKey } from '@/constants/react-query-key';
 import { editChatFolder } from '@/services/chat/edit-chat-folder';
 import { IFolder } from '@/types/chat';
 
-export const useEditChatFolder = (folderId: string, folderName: string) => {
+export const useEditChatFolder = (folderId?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => editChatFolder(folderId, folderName),
+    mutationFn: editChatFolder,
     mutationKey: [ReactMutationKey.EDIT_CHAT_FOLDER, { id: folderId }],
-    onSuccess(data) {
+    onSuccess(data, { folderId }) {
       queryClient.setQueryData([ReactQueryKey.CHAT_FOLDERS], (oldData?: IFolder[]) => {
         if (!oldData) {
           return oldData;
