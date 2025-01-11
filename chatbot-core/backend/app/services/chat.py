@@ -634,6 +634,7 @@ class ChatService(BaseService):
                 ).as_str()
                 return
 
+            # Handle request types
             if chat_message_request.request_type in (
                 ChatMessageRequestType.REGENERATE,
                 ChatMessageRequestType.EDIT,
