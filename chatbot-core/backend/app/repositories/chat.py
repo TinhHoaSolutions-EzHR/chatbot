@@ -99,6 +99,7 @@ class ChatRepository(BaseRepository):
             Tuple[Optional[ChatSession], Optional[APIError]]: Chat session object and APIError object if any error
         """
         try:
+            # Get chat session
             chat_session = (
                 self._db_session.query(ChatSession)
                 .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
@@ -229,7 +230,6 @@ class ChatRepository(BaseRepository):
                 .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
                 .first()
             )
-
             if not chat_session:
                 return APIError(kind=ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value)
 
@@ -330,5 +330,5 @@ class ChatRepository(BaseRepository):
             self._db_session.add(chat_feedback)
             return None
         except Exception as e:
-            logger.error(f"Error creating chat feedback: {e}", exc_info=True)
+            logger.error(f"Error creating chat feedback: {e}")
             return APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

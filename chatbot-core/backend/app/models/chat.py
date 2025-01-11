@@ -47,6 +47,17 @@ class ChatMessageType(str, Enum):
     ASSISTANT = "assistant"
 
 
+class ChatStreamType(str, Enum):
+    """
+    Enumeration of message types in a chat session.
+    """
+
+    REQUEST = "r"
+    CHUNK = "c"
+    DONE = "d"
+    ERROR = "e"
+
+
 class ChatMessageRequestType(str, Enum):
     """
     Enumeration of message types in a chat session.
@@ -304,7 +315,7 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
+    messages: List[ChatMessageResponse] = Field(default_factory=list, description="Chat messages")
     folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     shared_status: ChatSessionSharedStatus = Field(
         ChatSessionSharedStatus.PRIVATE, description="Shared status"
@@ -356,3 +367,25 @@ class ChatFeedbackRequest(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ChatStreamResponse(BaseModel):
+    """
+    Pydantic model for standardizing response format for chat stream.
+    """
+
+    content: Any = Field(..., description="Content of the chat stream", alias="c")
+    type: ChatStreamType = Field(..., description="Type of the chat stream", alias="t")
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+    def as_str(self) -> str:
+        """
+        Returns the JSON representation of the object and converts it to a string.
+
+        Returns:
+            str: JSON representation of the object.
+        """
+        return str(self.model_dump_json(by_alias=True))
