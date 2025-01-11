@@ -81,7 +81,6 @@
 
   * {
     @apply border-border;
-    @apply pointer-events-auto;
   }
   body {
     @apply bg-background text-foreground;
