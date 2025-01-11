@@ -2,7 +2,7 @@
   "python.formatting.provider": "black",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit",
-    "source.fixAll": "explicit"
+    "source.organizeImports": true,
+    "source.fixAll": true
   }
 }
