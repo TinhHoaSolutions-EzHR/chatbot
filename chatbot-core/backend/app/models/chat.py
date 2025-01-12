@@ -400,4 +400,6 @@ class ChatStreamResponse(BaseModel):
         except ValueError as e:
             raise ValueError(f"Failed to serialize object - invalid JSON data: {e}")
         except Exception as e:
-            raise PydanticParsingError(f"Unexpected error during JSON serialization: {e}")
+            raise PydanticParsingError(
+                message="Unexpected error during JSON serialization", detail=str(e)
+            )
