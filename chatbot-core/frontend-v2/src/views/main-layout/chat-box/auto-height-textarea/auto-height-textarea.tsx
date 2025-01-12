@@ -11,11 +11,11 @@ interface IAutoHeightTextareaProps extends React.ComponentProps<'textarea'> {
 }
 
 const AutoHeightTextarea = React.forwardRef<HTMLTextAreaElement, IAutoHeightTextareaProps>(
-  ({ className, wrapperClassName, ...props }, ref) => {
+  ({ className, wrapperClassName, onChange, ...props }, ref) => {
     const [value, setValue] = React.useState('');
 
-    const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      props.onChange?.(e);
+    const onTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange?.(e);
       setValue(e.target.value);
     };
 
@@ -23,7 +23,7 @@ const AutoHeightTextarea = React.forwardRef<HTMLTextAreaElement, IAutoHeightText
       <div className={cn(styles.GrowWrap, wrapperClassName)} data-replicated-value={value}>
         {/* Hard coded rows value, this is to ensure that the min height of the text area is
         only one row, the css will handle the auto resizing for us. */}
-        <textarea rows={1} className={className} ref={ref} onChange={onChange} {...props}></textarea>
+        <textarea rows={1} className={className} ref={ref} onChange={onTextareaChange} {...props}></textarea>
       </div>
     );
   },
