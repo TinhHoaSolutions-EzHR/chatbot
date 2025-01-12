@@ -4,7 +4,7 @@ import { ReactMutationKey, ReactQueryKey } from '@/constants/react-query-key';
 import { deleteChatSession } from '@/services/chat/delete-chat-session';
 import { IChatSession } from '@/types/chat';
 
-export const useDeleteChatSession = (chatSessionId: string) => {
+export const useDeleteChatSession = (chatSessionId?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({

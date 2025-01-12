@@ -22,7 +22,7 @@ const modifyCachedData = (queryClient: QueryClient, modifiedData: TEditChatSessi
     // if cannot find (due to several reasons, but this should not happened), refetch the query
     if (~patchedFolderIndex) {
       const previousValue = copyOldData[patchedFolderIndex];
-      copyOldData[patchedFolderIndex] = { ...modifiedData.data, ...previousValue };
+      copyOldData[patchedFolderIndex] = { ...previousValue, ...modifiedData.data };
     } else {
       isModified = false;
     }
@@ -33,13 +33,15 @@ const modifyCachedData = (queryClient: QueryClient, modifiedData: TEditChatSessi
   return isModified;
 };
 
-export const useEditChatSession = () => {
+export const useEditChatSession = (shouldUpdateCacheBeforeFetch?: boolean) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: [ReactMutationKey.EDIT_CHAT_SESSION],
     mutationFn: (props: TEditChatSessionProps) => {
-      modifyCachedData(queryClient, props);
+      if (shouldUpdateCacheBeforeFetch) {
+        modifyCachedData(queryClient, props);
+      }
 
       return editChatSession(props);
     },
@@ -50,6 +52,14 @@ export const useEditChatSession = () => {
       });
 
       if (!isModified) {
+        queryClient.invalidateQueries({
+          queryKey: [ReactQueryKey.CHAT_SESSIONS],
+          type: 'active',
+        });
+      }
+    },
+    onError() {
+      if (shouldUpdateCacheBeforeFetch) {
         queryClient.invalidateQueries({
           queryKey: [ReactQueryKey.CHAT_SESSIONS],
           type: 'active',

@@ -1,12 +1,9 @@
-import { useIsMutating } from '@tanstack/react-query';
-import { Check, Pencil, X } from 'lucide-react';
+import { Check, Pencil, Trash2, X } from 'lucide-react';
 import { FC } from 'react';
 
-import { ReactMutationKey } from '@/constants/react-query-key';
+import { DialogType, useDialogStore } from '@/hooks/stores/use-dialog-store';
 import { cn } from '@/lib/utils';
 import { IFolder } from '@/types/chat';
-
-import { DeleteChatFolderButton } from './delete-chat-folder-button';
 
 interface IFolderActionsButtonsProps {
   folder: IFolder;
@@ -23,15 +20,11 @@ export const FolderActionsButtons: FC<IFolderActionsButtonsProps> = ({
   onEditChatFolder,
   isPending,
 }) => {
-  const isDeletingChatFolder = useIsMutating({
-    mutationKey: [ReactMutationKey.DELETE_CHAT_FOLDER],
-  });
-
+  const { openDialog } = useDialogStore();
   return (
     <div
       className={cn(
         'absolute top-0 bottom-0 right-2 gap-2 items-center hidden group-hover/folder:flex',
-        !!isDeletingChatFolder && 'pointer-events-none opacity-40',
         isEditingFolder && 'flex',
       )}
     >
@@ -42,7 +35,11 @@ export const FolderActionsButtons: FC<IFolderActionsButtonsProps> = ({
             className="text-muted-foreground hover:text-zinc-800"
             onClick={() => setIsEditingFolder(true)}
           />
-          <DeleteChatFolderButton folder={folder} />
+          <Trash2
+            size={14}
+            className="text-muted-foreground hover:text-zinc-800"
+            onClick={() => openDialog(DialogType.DELETE_CHAT_FOLDER, { folder })}
+          />
         </>
       ) : (
         <>

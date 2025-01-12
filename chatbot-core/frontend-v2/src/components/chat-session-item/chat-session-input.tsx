@@ -8,12 +8,11 @@ import { useChatSessionContext } from './chat-session-context';
 
 interface IChatSessionInputProps {
   chatSession: IChatSession;
-  onEditChatSession(): void;
-  isPending: boolean;
 }
 
-export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession, onEditChatSession, isPending }) => {
-  const { isEditingChatSession, chatSessionDescription, setChatSessionDescription } = useChatSessionContext();
+export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) => {
+  const { isEditingChatSession, chatSessionDescription, setChatSessionDescription, onEditChatSession, isPending } =
+    useChatSessionContext();
 
   useEffect(() => {
     if (isEditingChatSession) {
@@ -30,7 +29,7 @@ export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession, onEd
         )}
         value={chatSessionDescription}
         onChange={e => setChatSessionDescription(e.target.value)}
-        onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatSession()}
+        onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatSession(chatSession.id)}
         autoFocus
       />
     );
