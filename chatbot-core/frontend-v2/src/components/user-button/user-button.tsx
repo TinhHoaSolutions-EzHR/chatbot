@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Route } from '@/constants/misc';
 import { useGetUserInfo } from '@/hooks/user/use-get-user-info';
 import { useUserLogout } from '@/hooks/user/use-user-logout';
 import { UserRole } from '@/types/user';
@@ -29,7 +30,7 @@ export const UserButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {userInfo?.role === UserRole.ADMIN && (
-          <UserDropdownItem Icon={Settings} onClick={() => router.push('/settings')}>
+          <UserDropdownItem Icon={Settings} onClick={() => router.push(Route.ADMIN)}>
             Admin panel
           </UserDropdownItem>
         )}

@@ -2,6 +2,7 @@ import { createContext, FC, ReactNode, useContext, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useEditChatSession } from '@/hooks/chat/use-edit-chat-session';
+import { IChatSession } from '@/types/chat';
 
 interface IChatSessionContextProps {
   isEditingChatSession: boolean;
@@ -9,7 +10,7 @@ interface IChatSessionContextProps {
   setIsEditingChatSession(isTrue: boolean): void;
   chatSessionDescription: string;
   setChatSessionDescription(description: string): void;
-  onEditChatSession(chatSessionId: string): void;
+  onEditChatSession(): void;
 }
 
 export const ChatSessionContext = createContext<IChatSessionContextProps>({
@@ -23,18 +24,23 @@ export const ChatSessionContext = createContext<IChatSessionContextProps>({
 
 type Props = {
   children: ReactNode;
+  chatSession: IChatSession;
 };
 
-export const ChatSessionProvider: FC<Props> = ({ children }) => {
+export const ChatSessionProvider: FC<Props> = ({ children, chatSession }) => {
   const [isEditingChatSession, setIsEditingChatSession] = useState<boolean>(false);
   const [chatSessionDescription, setChatSessionDescription] = useState<string>('');
 
   const { mutate, isPending } = useEditChatSession(true);
 
-  const onEditChatSession = (chatSessionId: string) => {
+  const onEditChatSession = () => {
+    if (chatSession.id === chatSessionDescription) {
+      setIsEditingChatSession(false);
+    }
+
     mutate(
       {
-        chatSessionId: chatSessionId,
+        chatSessionId: chatSession.id,
         data: {
           description: chatSessionDescription,
         },

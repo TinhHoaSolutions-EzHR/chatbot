@@ -21,7 +21,7 @@ export default function ChatSessionItemComponent({ chatSession, subItem }: IChat
   const SidebarItem = subItem ? SidebarMenuSubItem : SidebarMenuItem;
 
   return (
-    <ChatSessionProvider>
+    <ChatSessionProvider chatSession={chatSession}>
       <SidebarItem className={cn('group/chat-action cursor-pointer relative')}>
         <ChatSessionButton subItem={subItem} isDropdownHovered={isDropdownHovered} isOpenDropdown={isOpenDropdown}>
           <ChatSessionInput chatSession={chatSession} />

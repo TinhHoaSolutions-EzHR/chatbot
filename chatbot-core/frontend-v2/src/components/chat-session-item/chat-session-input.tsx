@@ -29,7 +29,7 @@ export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) =>
         )}
         value={chatSessionDescription}
         onChange={e => setChatSessionDescription(e.target.value)}
-        onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatSession(chatSession.id)}
+        onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatSession()}
         autoFocus
       />
     );

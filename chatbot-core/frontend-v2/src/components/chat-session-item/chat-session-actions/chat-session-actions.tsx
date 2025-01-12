@@ -30,7 +30,7 @@ export const ChatSessionActions: FC<IChatSessionActionsProps> = ({
   return (
     <>
       {isEditingChatSession ? (
-        <EditChatSessionButtons chatSession={chatSession} />
+        <EditChatSessionButtons />
       ) : (
         <div className={cn('group-hover/chat-action:opacity-100 opacity-0', isOpenDropdown && 'opacity-100')}>
           <DropdownMenu open={isOpenDropdown} onOpenChange={setIsOpenDropdown}>

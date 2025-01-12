@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { QueryParams, SupportedKeys } from '@/constants/misc';
+import { QueryParams, Route, SupportedKeys } from '@/constants/misc';
 import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
 import { useCreateChatSession } from '@/hooks/chat/use-create-chat-session';
 
@@ -31,7 +31,7 @@ export const ChatBox = () => {
           selectedAgent &&
           mutate(selectedAgent.id, {
             onSuccess(data) {
-              router.push(`/chat?${QueryParams.CHAT_SESSION_ID}=${data.id}`);
+              router.push(`/${Route.CHAT}?${QueryParams.CHAT_SESSION_ID}=${data.id}`);
             },
             onError() {
               toast.error('Something went wrong.', {
