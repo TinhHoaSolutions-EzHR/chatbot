@@ -51,13 +51,10 @@ def construct_file_path(
         >>> construct_file_path("
         # my_avatar_f6f7b43c-c0ca-4003-8143-7c5e767cde12_20211013123456.png
     """
-    file_name = (
-        (remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower())
-        + "_"
-        + (user_id + "_")
-        if user_id
-        else "" + datetime.now().strftime("%Y%m%d%H%M%S") + "." + file_extension
-    )
+    file_name = remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower()
+    if user_id:
+        file_name += f"_{user_id}"
+    file_name += f"_{datetime.now().strftime('%Y%m%d%H%M%S')}.{file_extension}"
     file_path = os.path.join(bucket_name, file_name)
 
     return file_path
