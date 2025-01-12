@@ -10,7 +10,7 @@ export const EditChatSessionButtons: FC = () => {
 
   return (
     <div className={cn('absolute top-0 bottom-0 right-2 gap-2 items-center group-hover/folder:flex flex')}>
-      <Check size={14} className="text-muted-foreground hover:text-zinc-800" onClick={() => onEditChatSession()} />
+      <Check size={14} className="text-muted-foreground hover:text-zinc-800" onClick={onEditChatSession} />
       <X
         size={14}
         className="text-muted-foreground hover:text-zinc-800"

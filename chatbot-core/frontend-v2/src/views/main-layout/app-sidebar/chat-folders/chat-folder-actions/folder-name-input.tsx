@@ -36,6 +36,7 @@ export const FolderNameInput: FC<IFolderNameInputProps> = ({
       onEditChatFolder();
     }
   };
+
   return (
     <>
       {isFolderOpen ? <FolderOpen /> : <FolderClosed />}
