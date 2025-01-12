@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
+from app.integrations.llama_index.ingestion_pipelines import IndexingPipeline
 from app.models import Document
 from app.repositories.document import DocumentRepository
 from app.services.base import BaseService
@@ -20,7 +21,6 @@ from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.file import construct_file_path
 from app.utils.api.helpers import get_logger
-from app.utils.llm.pipeline import index_document_to_vector_db
 
 logger = get_logger(__name__)
 
@@ -49,8 +49,12 @@ class DocumentService(BaseService):
 
         # Define external storage's connectors
         self._minio_connector = minio_connector
-        self._qdrant_connector = qdrant_connector
-        self._redis_connector = redis_connector
+
+        # Define indexing pipeline
+        self._indexing_pipeline = IndexingPipeline(
+            qdrant_connector=qdrant_connector,
+            redis_connector=redis_connector,
+        )
 
     def _validate_documents(self, documents: List[UploadFile]) -> Optional[APIError]:
         """
@@ -82,6 +86,7 @@ class DocumentService(BaseService):
             Tuple containing the document URL (if successful) and any error.
         """
         object_name, file_extension = os.path.splitext(uploaded_document.filename)
+        logger.info(object_name)
         file_path = construct_file_path(
             object_name=object_name,
             bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
@@ -106,13 +111,12 @@ class DocumentService(BaseService):
 
         logger.info(f"Document uploaded: {uploaded_document.filename}")
 
-        index_document_to_vector_db(
-            issue_date=issue_date,
-            is_outdated=is_outdated,
-            document=uploaded_document,
-            qdrant_connector=self._qdrant_connector,
-            redis_connector=self._redis_connector,
-        )
+        # Index the document into the vector database
+        metadata = {
+            "issue_date": issue_date.strftime(Constants.DATETIME_FORMAT),
+            "is_outdated": is_outdated,
+        }
+        self._indexing_pipeline.run(document=uploaded_document, metadata=metadata)
 
         return file_path, None
 

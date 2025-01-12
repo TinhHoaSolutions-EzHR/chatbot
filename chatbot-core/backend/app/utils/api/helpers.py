@@ -2,8 +2,8 @@ import asyncio
 import logging
 import os
 import sys
-from collections.abc import Callable
-from datetime import datetime
+from typing import Any
+from typing import Dict
 from typing import List
 
 import pdfplumber
@@ -22,16 +22,14 @@ logger = logging.getLogger(__name__)
 
 def parse_pdf(
     document: UploadFile,
-    issue_date: datetime = datetime.now(),
-    is_outdated: bool = False,
+    metadata: Dict[str, Any] = {},
 ) -> List[Document] | None:
     """
     Parse a PDF file into Llamaindex Document objects.
 
     Args:
         document (UploadFile): PDF file to parse.
-        issue_date (datetime): Issue date of the document. Defaults to the current date.
-        is_outdated (bool): Flag to indicate if the document is outdated. Defaults to False.
+        metadata (Dict[str, Any]): Additional metadata for the document. Defaults to {}.
 
     Returns:
         List[Document]: List of Llamaindex Document objects.
@@ -44,13 +42,6 @@ def parse_pdf(
                 page_text = page.extract_text()
                 if not page_text:
                     continue
-
-                # Define metadata for the document
-                metadata = {
-                    "issue_date": issue_date.strftime(Constants.DATETIME_FORMAT),
-                    "outdated": is_outdated,
-                    "page_number": page.page_number,
-                }
 
                 # Create a Llamaindex Document object
                 doc = Document(text=page_text, metadata=metadata)
