@@ -581,6 +581,73 @@ class ChatService(BaseService):
             logger.error(f"Error handling new chat message: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
+    def _handle_regenerate_or_edit_chat_message(
+        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
+    ) -> Optional[APIError]:
+        """
+        Handle the regenerate or edit chat message request.
+
+        Args:
+            chat_message_request (ChatMessageRequest): Chat message request object.
+            chat_session_id (str): Chat session ID.
+            user_id (str): User ID.
+
+        Returns:
+            Optional[APIError]: APIError object if any error.
+        """
+        if chat_message_request.request_type not in (
+            ChatMessageRequestType.REGENERATE,
+            ChatMessageRequestType.EDIT,
+        ):
+            return None
+
+        action = (
+            "Regenerating"
+            if chat_message_request.request_type == ChatMessageRequestType.REGENERATE
+            else "Editing"
+        )
+        logger.info(f"{action} the existing chat message")
+
+        existing_chat_request, err = self._handle_existing_chat_message(
+            chat_message_request=chat_message_request,
+            chat_session_id=chat_session_id,
+            user_id=user_id,
+        )
+        if err:
+            return err
+
+        if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:
+            chat_message_request.message = existing_chat_request.message
+
+        return None
+
+    def _collect_chunks(
+        self,
+        response_generator: Generator[str, None, None],
+    ) -> Generator[str, None, None] | Tuple[List[str], Optional[StopIteration]]:
+        """
+        Collect chunks of the response message.
+
+        Args:
+            response_generator (Generator[str, None, None]): Generator of response message chunks.
+
+        Returns:
+            Generator[str, None, None] | Tuple[List[str], Optional[StopIteration]]:
+            Finally, returns a tuple containing:
+                - A list of all chunks collected.
+                - The StopIteration exception if raised.
+        """
+        buffer = []
+        stop_iteration_result = None
+
+        try:
+            while True:
+                buffer.append(next(response_generator))
+        except StopIteration as e:
+            stop_iteration_result = e
+
+        return buffer, stop_iteration_result
+
     def generate_stream_chat_message(
         self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
     ) -> Generator[Tuple[str, str], None, None]:
@@ -605,32 +672,17 @@ class ChatService(BaseService):
                 ).as_str()
                 return
 
-            # Handle request types
-            if chat_message_request.request_type in (
-                ChatMessageRequestType.REGENERATE,
-                ChatMessageRequestType.EDIT,
-            ):
-                action = (
-                    "Regenerating"
-                    if chat_message_request.request_type == ChatMessageRequestType.REGENERATE
-                    else "Editing"
-                )
-                logger.info(f"{action} the existing chat message")
-
-                # Handle existing chat message
-                existing_chat_request, err = self._handle_existing_chat_message(
-                    chat_message_request=chat_message_request,
-                    chat_session_id=chat_session_id,
-                    user_id=user_id,
-                )
-                if err:
-                    yield ChatStreamResponse(
-                        content=f"Error during {action.lower()}: {err}", type=ChatStreamType.ERROR
-                    ).as_str()
-                    return
-
-                if chat_message_request.request_type == ChatMessageRequestType.REGENERATE:
-                    chat_message_request.message = existing_chat_request.message
+            # Handle regenerated or edited chat message
+            err = self._handle_regenerate_or_edit_chat_message(
+                chat_message_request=chat_message_request,
+                chat_session_id=chat_session_id,
+                user_id=user_id,
+            )
+            if err:
+                yield ChatStreamResponse(
+                    content=f"Error during request handling: {err}", type=ChatStreamType.ERROR
+                ).as_str()
+                return
 
             logger.info("Handling new chat message")
 
@@ -641,41 +693,37 @@ class ChatService(BaseService):
                 chat_session_id=chat_session_id,
                 user_id=user_id,
             )
+            buffer, stop_iteration_result = self._collect_chunks(response_generator)
 
-            chat_request: ChatMessage = None
-            chat_response: ChatMessage = None
-            buffer = []
-            try:
-                # Process the generator to get sequences of response's chunks
-                while True:
-                    buffer.append(next(response_generator))
-            except StopIteration as e:
-                if e.value is not None:
-                    logger.info(e.value)
-                    chat_response, chat_request, err = e.value
-                    if err:
-                        yield ChatStreamResponse(
-                            content=f"Error during request generation: {err}",
-                            type=ChatStreamType.ERROR,
-                        ).as_str()
-                        return
-                else:
+            if stop_iteration_result and stop_iteration_result.value is not None:
+                chat_response, chat_request, err = stop_iteration_result.value
+                if err:
+                    yield ChatStreamResponse(
+                        content=f"Error during request generation: {err}",
+                        type=ChatStreamType.ERROR,
+                    ).as_str()
+            else:
+                if not stop_iteration_result:
                     yield ChatStreamResponse(
                         content="Unexpected end of request generation", type=ChatStreamType.ERROR
                     ).as_str()
                     return
 
-            # Stream the request first
+                # If we have a StopIteration with empty .value, also handle as error
+                yield ChatStreamResponse(
+                    content="Unexpected end of request generation", type=ChatStreamType.ERROR
+                )
+                return
+
+            # 4. Stream request, response chunks, and final response
             yield ChatStreamResponse(
                 content=ChatMessageResponse.model_validate(chat_request).model_dump(),
                 type=ChatStreamType.REQUEST,
             ).as_str()
 
-            # Stream the response's content in chunks
             for chunk in buffer:
                 yield ChatStreamResponse(content=chunk, type=ChatStreamType.CHUNK).as_str()
 
-            # Stream the response finally
             yield ChatStreamResponse(
                 content=ChatMessageResponse.model_validate(chat_response).model_dump(),
                 type=ChatStreamType.DONE,
