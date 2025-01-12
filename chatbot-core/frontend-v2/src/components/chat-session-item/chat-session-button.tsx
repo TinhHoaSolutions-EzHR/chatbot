@@ -9,6 +9,7 @@ interface IChatSessionButtonProps {
   isOpenDropdown: boolean;
   isDropdownHovered: boolean;
   children: ReactNode;
+  onClick?(): void;
 }
 
 export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
@@ -16,11 +17,12 @@ export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
   isOpenDropdown,
   isDropdownHovered,
   children,
+  onClick,
 }) => {
   const SidebarButton = subItem ? SidebarMenuSubButton : SidebarMenuButton;
 
   return (
-    <SidebarButton asChild>
+    <SidebarButton asChild onClick={onClick}>
       <div
         className={cn(
           'relative whitespace-nowrap group/chat-item',

@@ -22,6 +22,7 @@ export const ChatFolderActions: FC<IChatFolderActionsProps> = ({ folder, isFolde
         isFolderOpen={isFolderOpen}
         folder={folder}
         isEditingFolder={isEditingFolder}
+        setIsEditingFolder={setIsEditingFolder}
         onEditChatFolder={onEditChatFolder}
         isPending={isPending}
         folderName={folderName}

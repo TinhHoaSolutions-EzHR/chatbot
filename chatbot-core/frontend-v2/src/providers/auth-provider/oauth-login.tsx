@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { GOOGLE_OAUTH_URL } from '@/configs/google-oauth';
-import { QueryParams } from '@/constants/misc';
+import { QueryParams, Route } from '@/constants/misc';
 import { useGetUserOauthAccessToken } from '@/hooks/user/use-get-user-oauth-access-token';
 
 export const OauthLogin = () => {
@@ -30,7 +30,7 @@ export const OauthLogin = () => {
     }
 
     setOauthCode(code);
-    router.replace('/');
+    router.replace(Route.HOME_PAGE);
   }, []);
 
   if (isLoading) {
@@ -63,7 +63,7 @@ export const OauthLogin = () => {
           <p className="text-sm text-muted-foreground text-center mt-2">
             Cannot sign in?{' '}
             <Link
-              href="/supports"
+              href={Route.SUPPORTS}
               className="underline underline-offset-3 text-zinc-600 font-medium hover:text-zinc-800"
             >
               Get supports.

@@ -33,6 +33,11 @@ export const useMoveChatSession = () => {
 
     const folderId = selectedFolder === MOVE_TO_CHAT_HISTORY_VALUE ? null : selectedFolder;
 
+    if (folderId === chatSession.folder_id) {
+      closeDialog();
+      return;
+    }
+
     mutate(
       { chatSessionId: chatSession.id, data: { folder_id: folderId } },
       {

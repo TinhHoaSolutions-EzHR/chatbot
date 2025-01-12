@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
+import { Route } from '@/constants/misc';
 
 export const useUserLogout = () => {
   const queryClient = useQueryClient();
@@ -12,6 +13,6 @@ export const useUserLogout = () => {
     queryClient.invalidateQueries({
       type: 'active',
     });
-    router.push('/');
+    router.push(Route.HOME_PAGE);
   };
 };

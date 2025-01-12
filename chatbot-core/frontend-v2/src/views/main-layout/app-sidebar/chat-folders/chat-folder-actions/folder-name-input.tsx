@@ -8,6 +8,7 @@ import { IFolder } from '@/types/chat';
 interface IFolderNameInputProps {
   isFolderOpen: boolean;
   isEditingFolder: boolean;
+  setIsEditingFolder(isEditing: boolean): void;
   folder: IFolder;
   folderName: string;
   setFolderName(folderName: string): void;
@@ -18,12 +19,24 @@ interface IFolderNameInputProps {
 export const FolderNameInput: FC<IFolderNameInputProps> = ({
   isFolderOpen,
   isEditingFolder,
+  setIsEditingFolder,
   folder,
   folderName,
   setFolderName,
   onEditChatFolder,
   isPending,
 }) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === SupportedKeys.ESCAPE) {
+      setIsEditingFolder(false);
+      return;
+    }
+
+    if (e.key === SupportedKeys.ENTER) {
+      onEditChatFolder();
+    }
+  };
+
   return (
     <>
       {isFolderOpen ? <FolderOpen /> : <FolderClosed />}
@@ -35,7 +48,7 @@ export const FolderNameInput: FC<IFolderNameInputProps> = ({
           )}
           value={folderName}
           onChange={e => setFolderName(e.target.value)}
-          onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatFolder()}
+          onKeyDown={handleKeyDown}
           autoFocus
         />
       ) : (

@@ -6,6 +6,7 @@ import { FC } from 'react';
 
 import { NewChatButton } from '@/components/new-chat-button';
 import { SidebarHeader, SidebarTrigger } from '@/components/ui/sidebar';
+import { Route } from '@/constants/misc';
 import { DialogType, useDialogStore } from '@/hooks/stores/use-dialog-store';
 
 interface IActionButtonProps {
@@ -44,7 +45,7 @@ export const AppSidebarHeader: FC = () => {
         <ActionButton icon={FolderPlus} onClick={() => openDialog(DialogType.CREATE_CHAT_FOLDER)}>
           New folder
         </ActionButton>
-        <ActionButton icon={Layers} onClick={() => router.push('/settings/assistants')}>
+        <ActionButton icon={Layers} onClick={() => router.push(Route.MANAGE_ASSISTANTS)}>
           Manage assistants
         </ActionButton>
       </div>
