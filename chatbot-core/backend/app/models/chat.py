@@ -30,6 +30,7 @@ from sqlalchemy.sql import func
 
 from app.models.base import Base
 from app.settings.constants import Constants
+from app.utils.api.error_handler import PydanticParsingError
 
 if TYPE_CHECKING:
     from app.models import Agent
@@ -390,4 +391,13 @@ class ChatStreamResponse(BaseModel):
         Returns:
             str: JSON representation of the object.
         """
-        return str(self.model_dump_json(by_alias=True))
+        try:
+            return str(self.model_dump_json(by_alias=True))
+        except TypeError as e:
+            raise TypeError(
+                f"Failed to serialize object - contains non-JSON-serializable types: {e}"
+            )
+        except ValueError as e:
+            raise ValueError(f"Failed to serialize object - invalid JSON data: {e}")
+        except Exception as e:
+            raise PydanticParsingError(f"Unexpected error during JSON serialization: {e}")
