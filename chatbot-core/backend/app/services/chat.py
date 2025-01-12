@@ -70,23 +70,6 @@ class ChatService(BaseService):
             chat_session_id=chat_session_id, user_id=user_id
         )
 
-    def get_chat_messages(
-        self, chat_session_id: str, user_id: str
-    ) -> Tuple[List[ChatMessage], Optional[APIError]]:
-        """
-        Get all chat messages of the chat session.
-
-        Args:
-            chat_session_id(str): Chat session id
-            user_id(str): User id
-
-        Returns:
-            Tuple[List[ChatMessage], Optional[APIError]]: List of chat message objects and APIError object if any error
-        """
-        return self._chat_repository.get_chat_messages(
-            chat_session_id=chat_session_id, user_id=user_id
-        )
-
     def create_chat_session(
         self, chat_session_request: ChatSessionRequest, user_id: str
     ) -> Tuple[Optional[ChatSession], Optional[APIError]]:
@@ -516,7 +499,11 @@ class ChatService(BaseService):
         return current_chat_request, None
 
     def _handle_new_chat_message(
-        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
+        self,
+        chat_message_request: ChatMessageRequest,
+        chat_session: ChatSession,
+        chat_session_id: str,
+        user_id: str,
     ) -> Generator[
         str, None, Tuple[Optional[ChatMessage], Optional[ChatMessage], Optional[APIError]]
     ]:
@@ -525,6 +512,7 @@ class ChatService(BaseService):
 
         Args:
             chat_message_request (ChatMessageRequest): Chat message request object.
+            chat_session (ChatSession): Chat session object.
             chat_session_id (str): Chat session ID.
             user_id (str): User ID.
 
@@ -540,11 +528,7 @@ class ChatService(BaseService):
         """
         try:
             # Get the current chat messages in the chat session
-            current_chat_messages, err = self._chat_repository.get_chat_messages(
-                chat_session_id=chat_session_id, user_id=user_id
-            )
-            if err:
-                return None, None, err
+            current_chat_messages = chat_session.chat_messages
 
             # If there are no chat messages, the request message is the first message in the chat session
             latest_chat_response = current_chat_messages[-1] if current_chat_messages else None
@@ -568,7 +552,7 @@ class ChatService(BaseService):
             )
 
             # Accumulate the response chunks
-            chat_response = None
+            chat_response: ChatMessage = None
             try:
                 while True:
                     # Stream each chunk of the response
@@ -579,35 +563,22 @@ class ChatService(BaseService):
                     if err:
                         return None, None, err
 
-            # Finalize the generator to retrieve the complete response
-            try:
-                # Update child_message_id of the request message
-                updated_message = ChatMessageRequest(child_message_id=chat_response.id).model_dump(
-                    exclude_unset=True
-                )
-                if err := self._chat_repository.update_chat_message(
-                    chat_session_id=chat_session_id,
-                    chat_message_id=chat_request.id,
-                    chat_message=updated_message,
-                    user_id=user_id,
-                ):
-                    return None, None, err
+            # Update child_message_id of the request message
+            updated_message = ChatMessageRequest(child_message_id=chat_response.id).model_dump(
+                exclude_unset=True
+            )
+            if err := self._chat_repository.update_chat_message(
+                chat_session_id=chat_session_id,
+                chat_message_id=chat_request.id,
+                chat_message=updated_message,
+                user_id=user_id,
+            ):
+                return None, None, err
 
-                return chat_response, chat_request, None
-
-            except StopIteration as e:
-                if e.value is not None:
-                    chat_response, err = e.value
-                    return chat_response, chat_request, err
-
-                return (
-                    None,
-                    None,
-                    APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value),
-                )
+            return chat_response, chat_request, None
 
         except Exception as e:
-            logger.error(f"Error handling new chat message: {str(e)}")
+            logger.error(f"Error handling new chat message: {e}")
             return None, APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
 
     def generate_stream_chat_message(
@@ -666,6 +637,7 @@ class ChatService(BaseService):
             # Handle new message streaming
             response_generator = self._handle_new_chat_message(
                 chat_message_request=chat_message_request,
+                chat_session=chat_session,
                 chat_session_id=chat_session_id,
                 user_id=user_id,
             )
@@ -679,6 +651,7 @@ class ChatService(BaseService):
                     buffer.append(next(response_generator))
             except StopIteration as e:
                 if e.value is not None:
+                    logger.info(e.value)
                     chat_response, chat_request, err = e.value
                     if err:
                         yield ChatStreamResponse(
