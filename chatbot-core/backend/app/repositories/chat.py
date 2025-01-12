@@ -105,6 +105,9 @@ class ChatRepository(BaseRepository):
                 .filter(and_(ChatSession.id == chat_session_id, ChatSession.user_id == user_id))
                 .first()
             )
+            if not chat_session:
+                return None, APIError(kind=ErrorCodesMappingNumber.CHAT_SESSION_NOT_FOUND.value)
+
             return chat_session, None
         except Exception as e:
             logger.error(f"Error getting chat session: {e}")
@@ -137,6 +140,9 @@ class ChatRepository(BaseRepository):
                 )
                 .first()
             )
+            if not chat_message:
+                return None, APIError(kind=ErrorCodesMappingNumber.CHAT_MESSAGE_NOT_FOUND.value)
+
             return chat_message, None
         except Exception as e:
             logger.error(f"Error getting chat message: {e}")

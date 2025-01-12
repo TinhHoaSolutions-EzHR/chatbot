@@ -141,7 +141,7 @@ class ChatSession(Base):
     )
     folder: Mapped["Folder"] = relationship("Folder", back_populates="chat_sessions")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
-        "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
+        "ChatMessage", back_populates="chat_session", order_by="ChatMessage.created_at"
     )
 
 
@@ -315,7 +315,9 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    messages: List[ChatMessageResponse] = Field(default_factory=list, description="Chat messages")
+    chat_messages: List[ChatMessageResponse] = Field(
+        default_factory=list, description="Chat messages of the chat session"
+    )
     folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     shared_status: ChatSessionSharedStatus = Field(
         ChatSessionSharedStatus.PRIVATE, description="Shared status"
