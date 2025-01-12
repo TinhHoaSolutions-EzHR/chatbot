@@ -1,29 +1,36 @@
 'use client';
 
-import { useIsMutating } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 import { FC } from 'react';
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ReactMutationKey } from '@/constants/react-query-key';
-import { DialogType, useDialogStore } from '@/hooks/stores/use-dialog-store';
+import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
 
+import { ConfirmationDialog } from '../confirmation-dialog';
 import { CreateChatFolderForm } from './create-chat-folder-form';
+import { useCreateFolderHelper } from './use-create-folder-helper';
 
 export const CreateChatFolderDialog: FC = () => {
-  const { dialogType, closeDialog } = useDialogStore();
-  const isCreatingChatFolder = useIsMutating({
-    mutationKey: [ReactMutationKey.CREATE_CHAT_FOLDER],
-  });
+  const { isOpenDialog, closeDialog, onCreateChatFolder, preventClose } = useCreateFolderHelper();
 
   return (
-    <Dialog open={dialogType === DialogType.CREATE_CHAT_FOLDER || !!isCreatingChatFolder} onOpenChange={closeDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create chat folder</DialogTitle>
-          <DialogDescription>Group your previous chats with EzHR using folders.</DialogDescription>
-        </DialogHeader>
-        <CreateChatFolderForm />
-      </DialogContent>
-    </Dialog>
+    <ConfirmationDialog
+      isOpen={isOpenDialog}
+      onClose={closeDialog}
+      title="Create chat folder"
+      description="Group your previous chats with EzHR using folders."
+      customFooter
+    >
+      <CreateChatFolderForm onCreateChatFolder={onCreateChatFolder}>
+        <DialogFooter className="mt-6">
+          <Button type="submit" disabled={preventClose}>
+            {preventClose ? <Loader2 className="animate-spin" size={14} /> : 'Submit'}
+          </Button>
+          <Button variant="secondary" onClick={closeDialog} disabled={preventClose}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </CreateChatFolderForm>
+    </ConfirmationDialog>
   );
 };

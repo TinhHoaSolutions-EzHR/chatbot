@@ -4,7 +4,7 @@ import { ReactMutationKey, ReactQueryKey } from '@/constants/react-query-key';
 import { deleteChatFolder } from '@/services/chat/delete-chat-folder';
 import { IFolder } from '@/types/chat';
 
-export const useDeleteChatFolder = (folderId: string) => {
+export const useDeleteChatFolder = (folderId?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({

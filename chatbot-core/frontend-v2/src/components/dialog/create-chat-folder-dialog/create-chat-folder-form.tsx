@@ -1,28 +1,23 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useCreateChatFolder } from '@/hooks/chat/use-create-chat-folder';
-import { useDialogStore } from '@/hooks/stores/use-dialog-store';
 
 const formSchema = z.object({
   folderName: z.string().min(1, 'Folder name must not be left blank'),
 });
 
-export const CreateChatFolderForm: FC = () => {
-  const { closeDialog } = useDialogStore();
+interface ICreateChatFolderFormProps {
+  onCreateChatFolder(folderName: string): void;
+  children: ReactNode;
+}
 
-  const { mutate, isPending } = useCreateChatFolder();
-
+export const CreateChatFolderForm: FC<ICreateChatFolderFormProps> = ({ onCreateChatFolder, children }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,17 +26,7 @@ export const CreateChatFolderForm: FC = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutate(values.folderName, {
-      onSuccess() {
-        toast.success('Folder created successfully!');
-        closeDialog();
-      },
-      onError() {
-        toast.error('Folder created unsuccessfully!', {
-          description: 'Please try again later.',
-        });
-      },
-    });
+    onCreateChatFolder(values.folderName);
   };
 
   return (
@@ -60,17 +45,7 @@ export const CreateChatFolderForm: FC = () => {
             </FormItem>
           )}
         />
-
-        <DialogFooter className="mt-8">
-          <div className="flex gap-2">
-            <Button type="submit" disabled={isPending}>
-              {isPending ? <Loader2 className="animate-spin" size={14} /> : 'Submit'}
-            </Button>
-            <Button variant="secondary" onClick={closeDialog} disabled={isPending}>
-              Cancel
-            </Button>
-          </div>
-        </DialogFooter>
+        {children}
       </form>
     </Form>
   );
