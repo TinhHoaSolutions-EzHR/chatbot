@@ -23,7 +23,8 @@ class ErrorCodesMappingNumber(Enum):
     USER_SETTING_NOT_FOUND = (404, "User setting not found")
     EMBEDDING_PROVIDER_NOT_FOUND = (404, "Embedding provider not found")
     PROVIDER_TYPE_CHANGE_NOT_ALLOWED = (422, "Provider type change not allowed")
-    NO_CONTENT = (404, "No content found")
+
+    NO_CONTENT = (204, "No content found")
 
     USER_WRONG_LOGIN_METHOD = (405, "User already exists with wrong login method")
 

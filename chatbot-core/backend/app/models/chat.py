@@ -166,7 +166,7 @@ class ChatMessage(Base):
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey(CHAT_MESSAGES_ID), nullable=True
     )
-    message: Mapped[str] = mapped_column(Text)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False),
