@@ -1,5 +1,3 @@
-from collections.abc import Generator
-
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -264,9 +262,6 @@ def handle_new_chat_message(
     content = ChatService(db_session=db_session).generate_stream_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user.id
     )
-    if not isinstance(content, Generator):
-        status_code, detail = content
-        raise HTTPException(status_code=status_code, detail=detail)
 
     return StreamingResponse(content=content, media_type="application/json")
 

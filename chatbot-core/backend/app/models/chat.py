@@ -392,7 +392,7 @@ class ChatStreamResponse(BaseModel):
             str: JSON representation of the object.
         """
         try:
-            return str(self.model_dump_json(by_alias=True))
+            return str(self.model_dump_json(by_alias=True)) + "\n"
         except TypeError as e:
             raise TypeError(
                 f"Failed to serialize object - contains non-JSON-serializable types: {e}"
