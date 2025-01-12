@@ -174,9 +174,18 @@ cd chatbot-core
 make exec SERVICES=api-server COMMAND="uv run alembic downgrade -1"
 ```
 
+### Alembic naming convention
+
+The naming convention for the migration file is as follows:
+
+Example:
+
+- `FK__agent__user`
+- `FK__chat_message__chat_session`
+
 ### Troubleshooting
 
-#### 1. Reset alembic
+#### 1. How to reset alembic
 
 1. Firstly change directory to `chatbot-core`
 
