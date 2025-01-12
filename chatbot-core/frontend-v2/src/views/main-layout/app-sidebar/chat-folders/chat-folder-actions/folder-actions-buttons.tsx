@@ -33,21 +33,40 @@ export const FolderActionsButtons: FC<IFolderActionsButtonsProps> = ({
           <Pencil
             size={14}
             className="text-muted-foreground hover:text-zinc-800"
-            onClick={() => setIsEditingFolder(true)}
+            onClick={e => {
+              e.stopPropagation();
+              setIsEditingFolder(true);
+            }}
           />
           <Trash2
             size={14}
             className="text-muted-foreground hover:text-zinc-800"
-            onClick={() => openDialog(DialogType.DELETE_CHAT_FOLDER, { folder })}
+            onClick={e => {
+              e.stopPropagation();
+              openDialog(DialogType.DELETE_CHAT_FOLDER, { folder });
+            }}
           />
         </>
       ) : (
         <>
-          <Check size={14} className="text-muted-foreground hover:text-zinc-800" onClick={onEditChatFolder} />
+          <Check
+            size={14}
+            className="text-muted-foreground hover:text-zinc-800"
+            onClick={e => {
+              e.stopPropagation();
+              onEditChatFolder();
+            }}
+          />
           <X
             size={14}
             className="text-muted-foreground hover:text-zinc-800"
-            onClick={() => !isPending && setIsEditingFolder(false)}
+            onClick={e => {
+              e.stopPropagation();
+
+              if (!isPending) {
+                setIsEditingFolder(false);
+              }
+            }}
           />
         </>
       )}

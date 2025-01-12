@@ -6,6 +6,7 @@ import AppLogo from '@/components/app-logo';
 import { NewChatButton } from '@/components/new-chat-button';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { UserButton } from '@/components/user-button/user-button';
+import { Route } from '@/constants/misc';
 
 import { AgentSelector } from './agent-selector/agent-selector';
 
@@ -21,7 +22,7 @@ export const Navbar = () => {
             <NewChatButton />
           </>
         )}
-        <Link href={'/'}>
+        <Link href={Route.HOME_PAGE}>
           <AppLogo className="w-28" />
         </Link>
       </div>

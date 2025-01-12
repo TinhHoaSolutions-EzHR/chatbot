@@ -11,14 +11,31 @@ interface IChatSessionInputProps {
 }
 
 export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) => {
-  const { isEditingChatSession, chatSessionDescription, setChatSessionDescription, onEditChatSession, isPending } =
-    useChatSessionContext();
+  const {
+    isEditingChatSession,
+    setIsEditingChatSession,
+    chatSessionDescription,
+    setChatSessionDescription,
+    onEditChatSession,
+    isPending,
+  } = useChatSessionContext();
 
   useEffect(() => {
     if (isEditingChatSession) {
       setChatSessionDescription(chatSession.description ?? chatSession.id);
     }
   }, [isEditingChatSession]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === SupportedKeys.ESCAPE) {
+      setIsEditingChatSession(false);
+      return;
+    }
+
+    if (e.key === SupportedKeys.ENTER) {
+      onEditChatSession();
+    }
+  };
 
   if (isEditingChatSession) {
     return (
@@ -29,7 +46,7 @@ export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) =>
         )}
         value={chatSessionDescription}
         onChange={e => setChatSessionDescription(e.target.value)}
-        onKeyDown={e => e.key === SupportedKeys.ENTER && onEditChatSession(chatSession.id)}
+        onKeyDown={handleKeyDown}
         autoFocus
       />
     );

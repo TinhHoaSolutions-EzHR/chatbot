@@ -22,6 +22,11 @@ export const useEditFolderNameHelper = (folder: IFolder) => {
       toast.error('Folder name must not be left blanked');
     }
 
+    if (folderName === folder.name) {
+      setIsEditingFolder(false);
+      return;
+    }
+
     mutate(
       { folderId: folder.id, folderName },
       {
