@@ -263,7 +263,7 @@ def handle_new_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user.id
     )
 
-    return StreamingResponse(content=content, media_type="application/json")
+    return StreamingResponse(content=content, media_type="text/event-stream")
 
 
 @router.post("/feedback", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
