@@ -10,12 +10,15 @@ export enum ApiStatusCode {
 export enum QueryParams {
   OAUTH_CODE = 'code',
   CHAT_SESSION_ID = 's',
+  SEARCH = 'q',
 }
 
 export const ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH = 'access-token-local-storage';
 
 export enum Route {
   HOME_PAGE = '/',
+  ERROR_PAGE = '/error',
+
   CHAT = '/chat',
   MANAGE_ASSISTANTS = '/manage-assistants',
 

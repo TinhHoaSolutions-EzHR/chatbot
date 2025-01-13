@@ -2,10 +2,13 @@
 
 import { FC } from 'react';
 
+import withDialogRender from '@/hoc/with-dialog-render';
+import { DialogType } from '@/hooks/stores/use-dialog-store';
+
 import { ConfirmationDialog } from '../confirmation-dialog';
 import { useDeleteChatFolderHelper } from './use-delete-chat-folder-helper';
 
-export const DeleteChatFolderDialog: FC = () => {
+const DeleteChatFolderDialog: FC = () => {
   const { isOpenDialog, closeDialog, onDeleteChatFolder, preventClose } = useDeleteChatFolderHelper();
 
   return (
@@ -19,3 +22,5 @@ export const DeleteChatFolderDialog: FC = () => {
     />
   );
 };
+
+export default withDialogRender(DeleteChatFolderDialog, DialogType.DELETE_CHAT_FOLDER);
