@@ -200,15 +200,72 @@ services:
     env_file:
       - ./.env
       - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+  
+  worker:
+    build:
+      context: ../../chatbot-core/backend/
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: worker
+    hostname: worker
+    restart: on-failure
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      index:
+        condition: service_healthy
+    command: >
+      /bin/sh -c "echo 'starting worker' &&
+      uv run celery -A app.background.celery_worker worker --loglevel=DEBUG"
+    env_file:
+      - ./.env
+      - ../../chatbot-core/.env.${ENV} # INFO: can be .env.development or .env.production
+    volumes: # INFO: Mount for auto-reload code changes
+      - ../../chatbot-core/backend/alembic/:/app/alembic
+      - ../../chatbot-core/backend/app/:/app/app
+      - ../../chatbot-core/backend/tests/:/app/tests
+    networks:
+      - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     logging:
       driver: json-file
       options:
         max-size: "50m"
         max-file: "6"
-    command: >
-      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
-      && dos2unix /etc/nginx/conf.d/run-nginx.sh
-      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+
+  # web-server:
+  #   build:
+  #     context: ../../chatbot-core/frontend-v2
+  #     dockerfile: Dockerfile
+  #   container_name: web-server
+  #   hostname: web-server
+  #   restart: on-failure
+  #   depends_on:
+  #     - api-server
+  #   environment:
+  #     - DOMAIN=localhost
+  #   ports:
+  #     - "3000:80"
+  #   volumes:
+  #     - ../data/nginx:/etc/nginx/conf.d
+  #     - /app/node_modules # Avoid node_modules conflicts
+  #   networks:
+  #     - frontend
+  #     - backend
+  #   env_file:
+  #     - ./.env
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: "50m"
+  #       max-file: "6"
+  #   command: >
+  #     /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
+  #     && dos2unix /etc/nginx/conf.d/run-nginx.sh
+  #     && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
 
 volumes:
   mssql_data_volume:
