@@ -30,6 +30,7 @@ from sqlalchemy.sql import func
 
 from app.models.base import Base
 from app.settings.constants import Constants
+from app.utils.api.error_handler import PydanticParsingError
 
 if TYPE_CHECKING:
     from app.models import Agent
@@ -45,6 +46,17 @@ class ChatMessageType(str, Enum):
     SYSTEM = "system"
     USER = "user"
     ASSISTANT = "assistant"
+
+
+class ChatStreamType(str, Enum):
+    """
+    Enumeration of message types in a chat session.
+    """
+
+    REQUEST = "r"
+    CHUNK = "c"
+    DONE = "d"
+    ERROR = "e"
 
 
 class ChatMessageRequestType(str, Enum):
@@ -130,7 +142,7 @@ class ChatSession(Base):
     )
     folder: Mapped["Folder"] = relationship("Folder", back_populates="chat_sessions")
     chat_messages: Mapped[List["ChatMessage"]] = relationship(
-        "ChatMessage", back_populates="chat_session", cascade="all, delete-orphan", lazy="dynamic"
+        "ChatMessage", back_populates="chat_session", order_by="ChatMessage.created_at"
     )
 
 
@@ -154,7 +166,7 @@ class ChatMessage(Base):
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey(CHAT_MESSAGES_ID), nullable=True
     )
-    message: Mapped[str] = mapped_column(Text)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False),
@@ -304,7 +316,9 @@ class ChatSessionResponse(BaseModel):
     description: Optional[str] = Field(None, description="Description (Name) of the chat session")
     user_id: UUID = Field(..., description="User id of the chat session")
     agent_id: Optional[UUID] = Field(None, description="Agent id of the chat session")
-    messages: Optional[List[ChatMessageResponse]] = Field(None, description="Chat messages")
+    chat_messages: List[ChatMessageResponse] = Field(
+        default_factory=list, description="Chat messages of the chat session"
+    )
     folder_id: Optional[UUID] = Field(None, description="Folder id of the chat session")
     shared_status: ChatSessionSharedStatus = Field(
         ChatSessionSharedStatus.PRIVATE, description="Shared status"
@@ -356,3 +370,36 @@ class ChatFeedbackRequest(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ChatStreamResponse(BaseModel):
+    """
+    Pydantic model for standardizing response format for chat stream.
+    """
+
+    content: Any = Field(..., description="Content of the chat stream", alias="c")
+    type: ChatStreamType = Field(..., description="Type of the chat stream", alias="t")
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+    def as_str(self) -> str:
+        """
+        Returns the JSON representation of the object and converts it to a string.
+
+        Returns:
+            str: JSON representation of the object.
+        """
+        try:
+            return str(self.model_dump_json(by_alias=True)) + "\n"
+        except TypeError as e:
+            raise TypeError(
+                f"Failed to serialize object - contains non-JSON-serializable types: {e}"
+            )
+        except ValueError as e:
+            raise ValueError(f"Failed to serialize object - invalid JSON data: {e}")
+        except Exception as e:
+            raise PydanticParsingError(
+                message="Unexpected error during JSON serialization", detail=str(e)
+            )

@@ -1,5 +1,3 @@
-from collections.abc import Generator
-
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -12,7 +10,6 @@ from app.models import User
 from app.models.chat import ChatFeedbackRequest
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
-from app.models.chat import ChatMessageResponse
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatSessionResponse
 from app.services.chat import ChatService
@@ -99,17 +96,7 @@ def get_chat_session(
 
     # Parse chat session
     if chat_session:
-        chat_messages, err = ChatService(db_session=db_session).get_chat_messages(
-            chat_session_id=chat_session_id, user_id=user.id
-        )
-        if err:
-            status_code, detail = err.kind
-            raise HTTPException(status_code=status_code, detail=detail)
-
         data = ChatSessionResponse.model_validate(chat_session)
-        data.messages = [
-            ChatMessageResponse.model_validate(chat_message) for chat_message in chat_messages
-        ]
     else:
         data = None
 
@@ -261,11 +248,8 @@ def handle_new_chat_message(
         user (User): User object.
 
     Returns:
-        StreamingResponse: Streams the response to the new chat message.
+        StreamingResponse: Streams the response with chat request and new chat response.
     """
-    if not user:
-        status_code, detail = ErrorCodesMappingNumber.UNAUTHORIZED_REQUEST.value
-        raise HTTPException(status_code=status_code, detail=detail)
 
     if (
         chat_message_request.request_type != ChatMessageRequestType.REGENERATE
@@ -278,9 +262,6 @@ def handle_new_chat_message(
     content = ChatService(db_session=db_session).generate_stream_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user.id
     )
-    if not isinstance(content, Generator):
-        status_code, detail = content
-        raise HTTPException(status_code=status_code, detail=detail)
 
     return StreamingResponse(content=content, media_type="text/event-stream")
 
