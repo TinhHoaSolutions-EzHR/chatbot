@@ -4,7 +4,8 @@ import { useCreateChatFolder } from '@/hooks/chat/use-create-chat-folder';
 import { DialogType, useDialogStore } from '@/hooks/stores/use-dialog-store';
 
 export const useCreateFolderHelper = () => {
-  const { dialogType, closeDialog } = useDialogStore();
+  const dialogType = useDialogStore(state => state.dialogType);
+  const closeDialog = useDialogStore(state => state.closeDialog);
 
   const { mutate, isPending } = useCreateChatFolder();
 

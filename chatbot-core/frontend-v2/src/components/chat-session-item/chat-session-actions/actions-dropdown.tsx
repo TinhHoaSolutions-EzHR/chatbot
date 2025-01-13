@@ -18,7 +18,7 @@ interface IActionsDropdownProps {
 export const ActionsDropdown: FC<IActionsDropdownProps> = ({ chatSession }) => {
   const { data: chatFolders } = useGetAllChatFolders();
   const { setIsEditingChatSession } = useChatSessionContext();
-  const { openDialog } = useDialogStore();
+  const openDialog = useDialogStore(state => state.openDialog);
 
   return (
     <DropdownMenuContent side="right" align="start">

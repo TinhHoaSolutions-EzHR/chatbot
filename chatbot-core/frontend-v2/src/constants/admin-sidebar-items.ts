@@ -25,7 +25,7 @@ import {
 
 import { Route } from './misc';
 
-interface IAdminItemDetail {
+export interface IAdminItemDetail {
   icon: LucideIcon;
   name: string;
   href: Route;

@@ -5,6 +5,7 @@ export enum ApiEndpointPrefix {
   CHAT = '/chat',
   FOLDER = '/folders',
   AGENTS = '/agents',
+  CONNECTORS = '/connectors',
 }
 
 export enum AuthEndpoint {

@@ -2,10 +2,13 @@
 
 import { FC } from 'react';
 
+import withDialogRender from '@/hoc/with-dialog-render';
+import { DialogType } from '@/hooks/stores/use-dialog-store';
+
 import { ConfirmationDialog } from '../confirmation-dialog';
 import { useDeleteChatSessionHelper } from './use-delete-chat-session-helper';
 
-export const DeleteChatSessionDialog: FC = () => {
+const DeleteChatSessionDialog: FC = () => {
   const { isOpenDialog, closeDialog, onDeleteChatSession, preventClose } = useDeleteChatSessionHelper();
 
   return (
@@ -19,3 +22,5 @@ export const DeleteChatSessionDialog: FC = () => {
     />
   );
 };
+
+export default withDialogRender(DeleteChatSessionDialog, DialogType.DELETE_CHAT_SESSION);

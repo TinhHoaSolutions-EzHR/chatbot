@@ -31,7 +31,7 @@ export const ChatBox = () => {
           selectedAgent &&
           mutate(selectedAgent.id, {
             onSuccess(data) {
-              router.push(`/${Route.CHAT}?${QueryParams.CHAT_SESSION_ID}=${data.id}`);
+              router.push(`${Route.CHAT}?${QueryParams.CHAT_SESSION_ID}=${data.id}`);
             },
             onError() {
               toast.error('Something went wrong.', {

@@ -5,12 +5,14 @@ import { FC } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
+import withDialogRender from '@/hoc/with-dialog-render';
+import { DialogType } from '@/hooks/stores/use-dialog-store';
 
 import { ConfirmationDialog } from '../confirmation-dialog';
 import { CreateChatFolderForm } from './create-chat-folder-form';
 import { useCreateFolderHelper } from './use-create-folder-helper';
 
-export const CreateChatFolderDialog: FC = () => {
+const CreateChatFolderDialog: FC = () => {
   const { isOpenDialog, closeDialog, onCreateChatFolder, preventClose } = useCreateFolderHelper();
 
   return (
@@ -19,6 +21,7 @@ export const CreateChatFolderDialog: FC = () => {
       onClose={closeDialog}
       title="Create chat folder"
       description="Group your previous chats with EzHR using folders."
+      preventClose={preventClose}
       customFooter
     >
       <CreateChatFolderForm onCreateChatFolder={onCreateChatFolder}>
@@ -34,3 +37,5 @@ export const CreateChatFolderDialog: FC = () => {
     </ConfirmationDialog>
   );
 };
+
+export default withDialogRender(CreateChatFolderDialog, DialogType.CREATE_CHAT_FOLDER);
