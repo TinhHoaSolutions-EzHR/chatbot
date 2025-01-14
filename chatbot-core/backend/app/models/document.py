@@ -66,7 +66,7 @@ class DocumentMetadataTag(Base):
 
 
 class DocumentUploadResponse(BaseModel):
-    document_url: str = Field(..., description="Object URL")
+    document_urls: List[str] = Field(..., title="List of uploaded document URLs")
 
     class Config:
         from_attributes = True
