@@ -61,7 +61,7 @@ def upload_documents(
 
     # Parse response
     if document_urls:
-        data = [DocumentUploadResponse(document_url=document_url) for document_url in document_urls]
+        data = DocumentUploadResponse(document_urls=document_urls)
     else:
         data = []
 
