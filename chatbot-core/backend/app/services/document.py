@@ -20,7 +20,6 @@ from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
 from app.utils.api.helpers import get_logger
 from app.utils.api.helpers import remove_vietnamese_accents
-from app.utils.llm.pipeline import index_document_to_vector_db
 
 logger = get_logger(__name__)
 
@@ -115,12 +114,12 @@ class DocumentService(BaseService):
                     if file_path not in deduped_document_urls:
                         deduped_document_urls.append(file_path)
 
-                    # Index document to vector database
-                    index_document_to_vector_db(
-                        document=document,
-                        qdrant_connector=self._qdrant_connector,
-                        redis_connector=self._redis_connector,
-                    )
+                    # # Index document to vector database
+                    # index_document_to_vector_db(
+                    #     document=document,
+                    #     qdrant_connector=self._qdrant_connector,
+                    #     redis_connector=self._redis_connector,
+                    # )
         except Exception as e:
             logger.error(f"Error uploading documents: {e}", exc_info=True)
             err = APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)
