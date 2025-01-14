@@ -33,7 +33,7 @@ const ActionButton: FC<IActionButtonProps> = ({ icon, children, onClick }) => {
 
 export const AppSidebarHeader: FC = () => {
   const router = useRouter();
-  const { openDialog } = useDialogStore();
+  const openDialog = useDialogStore(state => state.openDialog);
 
   return (
     <SidebarHeader>

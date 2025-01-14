@@ -6,21 +6,24 @@ import { FC } from 'react';
 import { Input } from '@/components/ui/input';
 import { LODASH_DEBOUNCE_TIME_MILLISECONDS } from '@/configs/misc';
 import useCustomLodashDebounce from '@/hooks/utils/use-custom-lodash-debounce';
+import { cn } from '@/lib/utils';
 
-interface ISearchConnectorProps {
+interface IDebouncedSearchInputProps {
   setSearchValue(search: string): void;
+  placeholder: string;
+  className?: string;
 }
 
-export const SearchConnector: FC<ISearchConnectorProps> = ({ setSearchValue }) => {
+export const DebouncedSearchInput: FC<IDebouncedSearchInputProps> = ({ setSearchValue, placeholder, className }) => {
   const debounceSetSearchValue = useCustomLodashDebounce((value: string) => {
     setSearchValue(value);
   }, LODASH_DEBOUNCE_TIME_MILLISECONDS);
 
   return (
-    <div className="relative w-80">
+    <div className={cn('relative w-80', className)}>
       <Input
         className="pl-8"
-        placeholder="Search existing connector..."
+        placeholder={placeholder}
         onChange={e => {
           debounceSetSearchValue(e.target.value);
         }}
