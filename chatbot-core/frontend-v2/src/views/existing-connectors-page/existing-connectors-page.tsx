@@ -1,22 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 
-import { AdminHeader } from '@/components/admin-header';
-import { ADMIN_ITEM_DETAIL } from '@/constants/admin-sidebar-items';
+import { DebouncedSearchInput } from '@/components/debounced-search-input';
 import { Route } from '@/constants/misc';
+import withRenderAdminHeader from '@/hoc/with-render-admin-header';
 
 import { ConnectorsList } from './connectors-list/connectors-list';
-import { SearchConnector } from './search-connector';
 
-export default function ExistingConnectorsPage() {
+const ExistingConnectorsPage: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
 
   return (
     <>
-      <AdminHeader adminItem={ADMIN_ITEM_DETAIL[Route.EXISTING_CONNECTORS]} />
-      <SearchConnector setSearchValue={setSearchValue} />
+      <DebouncedSearchInput setSearchValue={setSearchValue} placeholder="Search existing connectors..." />
       <ConnectorsList searchValue={searchValue} />
     </>
   );
-}
+};
+
+export default withRenderAdminHeader(ExistingConnectorsPage, Route.EXISTING_CONNECTORS);

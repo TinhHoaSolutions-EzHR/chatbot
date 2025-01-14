@@ -26,6 +26,10 @@ export enum Route {
   EXISTING_CONNECTORS = '/admin/existing-connectors',
   ADD_CONNECTOR = '/admin/add-connector',
 
+  ADD_FILE_CONNECTOR = '/admin/add-connector/file',
+  ADD_GOOGLE_DRIVE_CONNECTOR = '/admin/add-connector/google-drive',
+  ADD_WEB_CONNECTOR = '/admin/add-connector/web',
+
   NOT_SUPPORTED = '/not-supported',
   SUPPORTS = '/supports',
 }

@@ -20,7 +20,7 @@ export const FolderActionsButtons: FC<IFolderActionsButtonsProps> = ({
   onEditChatFolder,
   isPending,
 }) => {
-  const { openDialog } = useDialogStore();
+  const openDialog = useDialogStore(state => state.openDialog);
   return (
     <div
       className={cn(
