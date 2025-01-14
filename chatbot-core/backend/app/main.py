@@ -6,11 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
-from app.routers import base
 from app.routers import auth
+from app.routers import base
 from app.routers.v1 import agent
 from app.routers.v1 import chat
 from app.routers.v1 import connector
+from app.routers.v1 import documents
 from app.routers.v1 import folder
 from app.routers.v1 import provider
 from app.routers.v1 import user
@@ -89,6 +90,7 @@ def create_app() -> FastAPI:
     app.include_router(router=agent.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=provider.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(router=documents.router, prefix=Constants.FASTAPI_PREFIX)
 
     return app
 

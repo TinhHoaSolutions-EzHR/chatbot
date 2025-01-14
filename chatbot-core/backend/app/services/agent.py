@@ -14,7 +14,7 @@ from app.services.base import BaseService
 from app.settings import Constants
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
-from app.utils.api.helpers import construct_file_path
+from app.utils.api.file import construct_file_path
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)

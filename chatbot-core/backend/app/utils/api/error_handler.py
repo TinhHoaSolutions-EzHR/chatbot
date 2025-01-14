@@ -28,6 +28,8 @@ class ErrorCodesMappingNumber(Enum):
 
     USER_WRONG_LOGIN_METHOD = (405, "User already exists with wrong login method")
 
+    INVALID_DOCUMENT = (400, "Invalid document")
+
 
 class BaseException(Exception):
     """

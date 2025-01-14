@@ -51,7 +51,7 @@ class User(Base):
     id: Mapped[UNIQUEIDENTIFIER] = mapped_column(
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
-    email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     hashed_password: Mapped[Optional[str]] = mapped_column(String, nullable=True)
