@@ -17,6 +17,6 @@ export const editChatFolder = async ({ folderId, folderName }: IEditChatFolderPr
     return res.data.data;
   } catch (error) {
     console.error('[EditChatFolder]: ', error);
-    throw new Error('Error editing chat folder');
+    throw error;
   }
 };

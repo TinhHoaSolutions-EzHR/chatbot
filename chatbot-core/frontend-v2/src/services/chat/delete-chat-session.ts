@@ -6,6 +6,6 @@ export const deleteChatSession = async (chatSessionId: string): Promise<void> =>
     await httpClient.delete(getApiUrl(ApiEndpointPrefix.CHAT, `/chat-sessions/${chatSessionId}`));
   } catch (error) {
     console.error('[DeleteChatSession]: ', error);
-    throw new Error('Error deleting chat session');
+    throw error;
   }
 };

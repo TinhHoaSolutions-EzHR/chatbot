@@ -11,6 +11,6 @@ export const getAgentDetail: (agentId: string) => Promise<IAgentWithStarterMessa
     return res.data.data;
   } catch (error) {
     console.error('[GetAgentDetail]: ', error);
-    throw new Error('Error getting agent detail');
+    throw error;
   }
 };

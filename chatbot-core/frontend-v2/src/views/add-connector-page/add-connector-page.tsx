@@ -16,7 +16,11 @@ const AddConnectorPage: FC = () => {
 
   return (
     <>
-      <DebouncedSearchInput setSearchValue={setSearchValue} placeholder="Search connector provider..." />
+      <DebouncedSearchInput
+        setSearchValue={setSearchValue}
+        placeholder="Search connector provider..."
+        className="rounded-sm"
+      />
       <div className="mt-8 space-y-8">
         {filteredConnectorProviders.map(({ title, description, connectors }) => (
           <div key={title}>

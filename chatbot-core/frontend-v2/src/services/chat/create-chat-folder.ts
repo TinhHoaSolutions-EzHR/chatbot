@@ -11,6 +11,6 @@ export const createChatFolder = async (folderName: string): Promise<IFolder> => 
     return res.data.data;
   } catch (error) {
     console.error('[CreateChatFolder]: ', error);
-    throw new Error('Error creating chat folder');
+    throw error;
   }
 };

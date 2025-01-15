@@ -11,6 +11,6 @@ export const createChatSession = async (agentId: string): Promise<IChatSession> 
     return res.data.data;
   } catch (error) {
     console.error('[CreateChatSession]: ', error);
-    throw new Error('Error creating chat session');
+    throw error;
   }
 };

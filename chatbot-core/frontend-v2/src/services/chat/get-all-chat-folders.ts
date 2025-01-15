@@ -9,6 +9,6 @@ export const getAllChatFolders = async (): Promise<IFolder[]> => {
     return res.data.data;
   } catch (error) {
     console.error('[GetAllChatFolders]: ', error);
-    throw new Error('Error getting all chat folders');
+    throw error;
   }
 };

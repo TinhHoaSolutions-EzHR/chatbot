@@ -13,7 +13,11 @@ const ExistingConnectorsPage: FC = () => {
 
   return (
     <>
-      <DebouncedSearchInput setSearchValue={setSearchValue} placeholder="Search existing connectors..." />
+      <DebouncedSearchInput
+        setSearchValue={setSearchValue}
+        placeholder="Search existing connectors..."
+        className="rounded-sm"
+      />
       <ConnectorsList searchValue={searchValue} />
     </>
   );

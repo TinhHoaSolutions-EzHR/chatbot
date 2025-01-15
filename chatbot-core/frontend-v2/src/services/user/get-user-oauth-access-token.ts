@@ -16,9 +16,7 @@ export const getUserOauthAccessToken = async (code: string): Promise<IAccessToke
     });
     return res.data.data;
   } catch (error) {
-    // We want to show the Error here, however, we still throw the Error
-    // once again for the `useQuery` to catch it.
     console.error('[UserAccessToken]: ', error);
-    throw new Error('Error getting user access token');
+    throw error;
   }
 };

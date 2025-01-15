@@ -41,11 +41,11 @@ export const ConnectorsList: FC<IConnectorsListProps> = ({ searchValue }) => {
 
   if (filteredConnectors.length === 0) {
     return (
-      <div className="py-20 mt-6 gap-4 flex flex-col w-full items-center justify-center border rounded-lg bg-white">
+      <div className="py-20 mt-6 gap-4 flex flex-col w-full items-center justify-center border rounded-lg bg-[#f9f9f9] shadow">
         <ArchiveX size={64} />
         <p className="text-sm text-muted-foreground">
           No connectors found.{' '}
-          <Link href={Route.ADD_CONNECTOR} className="text-foreground font-semibold underline">
+          <Link href={Route.ADD_CONNECTOR} className="text-foreground font-semibold underline underline-offset-4">
             Create one
           </Link>
         </p>
