@@ -21,6 +21,6 @@ export const createChatMessage = async ({ chatSessionId, data }: ICreateChatMess
     }
   } catch (error) {
     console.error('[CreateChatMessage]: ', error);
-    throw new Error('Error creating chat message');
+    throw error;
   }
 };

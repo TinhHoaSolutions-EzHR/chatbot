@@ -9,6 +9,6 @@ export const getAllChatSessions = async (): Promise<IChatSession[]> => {
     return res.data.data;
   } catch (error) {
     console.error('[GetAllChatSessions]: ', error);
-    throw new Error("Error getting user's chat sessions");
+    throw error;
   }
 };

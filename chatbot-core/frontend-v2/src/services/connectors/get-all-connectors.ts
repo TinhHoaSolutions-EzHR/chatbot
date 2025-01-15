@@ -9,6 +9,6 @@ export const getAllConnectors = async (): Promise<IConnector[]> => {
     return res.data.data;
   } catch (error) {
     console.error('[GetAllConnectors]: ', error);
-    throw new Error('Error getting all connectors');
+    throw error;
   }
 };

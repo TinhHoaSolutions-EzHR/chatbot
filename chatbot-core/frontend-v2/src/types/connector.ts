@@ -12,3 +12,8 @@ export interface IConnector {
   updated_at: string;
   deleted_at?: string | null;
 }
+
+export interface IConnectorRequest {
+  name: string;
+  file_paths: string[];
+}

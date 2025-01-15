@@ -9,6 +9,6 @@ export const getAgentsList: () => Promise<IAgent[]> = async () => {
     return res.data.data;
   } catch (error) {
     console.error('[GetAgentsList]: ', error);
-    throw new Error('Error getting agents list');
+    throw error;
   }
 };

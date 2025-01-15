@@ -6,6 +6,6 @@ export const deleteChatFolder = async (folderId: string) => {
     await httpClient.delete(getApiUrl(ApiEndpointPrefix.FOLDER, `/${folderId}`));
   } catch (error) {
     console.error('[DeleteChatFolder]: ', error);
-    throw new Error('Error deleting chat folder');
+    throw error;
   }
 };

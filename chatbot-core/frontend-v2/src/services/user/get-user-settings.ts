@@ -9,6 +9,6 @@ export const getUserSettings = async (): Promise<IUserSettings> => {
     return res.data.data;
   } catch (error) {
     console.error('[GetUserSettings]: ', error);
-    throw new Error('Error getting user settings');
+    throw error;
   }
 };

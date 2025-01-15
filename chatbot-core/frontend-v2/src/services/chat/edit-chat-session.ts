@@ -17,6 +17,6 @@ export const editChatSession = async ({ chatSessionId, data }: IEditChatSessionP
     return res.data.data;
   } catch (error) {
     console.error('[EditChatSession]: ', error);
-    throw new Error('Error editing chat session');
+    throw error;
   }
 };

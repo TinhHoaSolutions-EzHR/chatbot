@@ -8,6 +8,6 @@ export const selectAgent = async (agentId: string): Promise<void> => {
     });
   } catch (error) {
     console.error('[SelectAgent]: ', error);
-    throw new Error('Error selecting agent');
+    throw error;
   }
 };

@@ -26,4 +26,7 @@ export enum ReactMutationKey {
   DELETE_CHAT_SESSION = 'delete-chat-session',
 
   CREATE_CHAT_MESSAGE = 'create-chat-message',
+
+  UPLOAD_CONNECTOR_DOCUMENTS = 'upload-connector-documents',
+  CREATE_CONNECTOR = 'create-connector',
 }
