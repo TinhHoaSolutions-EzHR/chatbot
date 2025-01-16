@@ -658,7 +658,6 @@ class ChatService(BaseService):
                     event=ChatMessageStreamEvent.ERROR,
                     content=f"Chat session not found: {err}",
                 ).as_json()
-                yield "\n"
                 return
 
             # Handle regenerated or edited chat message
@@ -672,7 +671,6 @@ class ChatService(BaseService):
                     event=ChatMessageStreamEvent.ERROR,
                     content=f"Error during request handling: {err}",
                 ).as_json()
-                yield "\n"
                 return
 
             logger.info("Handling new chat message")
@@ -685,7 +683,6 @@ class ChatService(BaseService):
                 user_id=user_id,
             ):
                 yield chunk
-                yield "\n"
 
     def create_chat_feedback(
         self, chat_feedback_request: ChatFeedbackRequest
