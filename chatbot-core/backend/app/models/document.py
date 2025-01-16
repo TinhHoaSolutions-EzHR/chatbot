@@ -24,9 +24,11 @@ class DocumentMetadata(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, index=True, default=uuid4
     )
     name: Mapped[str] = mapped_column(String)
-    link: Mapped[str] = mapped_column(String)
-    last_synced_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    primary_owners: Mapped[List[str]] = mapped_column(String)
+    last_synced_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    primary_owners: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    document_url: Mapped[str] = mapped_column(String)
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(
