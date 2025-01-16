@@ -1,3 +1,4 @@
+import requests
 from fastapi import Request
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams
@@ -58,6 +59,19 @@ class QdrantConnector(BaseConnector[QdrantClient]):
             collection_name=collection_name,
             vectors_config=VectorParams(size=vector_size, distance=distance),
         )
+
+    def health_check(self) -> bool:
+        """
+        Check the health status of the vector database
+
+        Returns:
+            bool: True if the vector database is healthy, False otherwise
+        """
+        response = requests.get(f"http://{Secrets.QDRANT_HOST}:{Secrets.QDRANT_PORT}/healthz")
+        if "healthz check passed" in response.text:
+            return True
+
+        return False
 
 
 def get_qdrant_connector(request: Request) -> QdrantConnector:

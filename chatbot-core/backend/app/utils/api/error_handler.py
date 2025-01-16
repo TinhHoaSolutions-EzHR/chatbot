@@ -73,3 +73,9 @@ class PydanticParsingError(BaseException):
     """
     Custom exception class for handling Pydantic parsing errors
     """
+
+
+class RedisProbeError(BaseException):
+    """
+    Custom exception class for handling Redis probe errors
+    """
