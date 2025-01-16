@@ -1,5 +1,8 @@
 import logging
 import os
+import socket
+from enum import auto
+from enum import Enum
 
 
 class Constants:
@@ -42,8 +45,20 @@ class Constants:
     MINIO_IMAGE_BUCKET = os.getenv("MINIO_IMAGE_BUCKET", "images")
 
     # Redis Configuration
+    REDIS_SCHEME = "redis"
     REDIS_DB_NUM = 0
     REDIS_MAX_CONNECTIONS = 10
+    REDIS_DB_NUMBER_CELERY = int(os.environ.get("REDIS_DB_NUMBER_CELERY", 15))
+    REDIS_DB_NUMBER_CELERY_RESULT_BACKEND = int(
+        os.environ.get("REDIS_DB_NUMBER_CELERY_RESULT_BACKEND", 14)
+    )
+    REDIS_HEALTH_CHECK_INTERVAL = int(os.environ.get("REDIS_HEALTH_CHECK_INTERVAL", 60))
+    REDIS_SOCKET_KEEPALIVE_OPTIONS = {
+        socket.TCP_KEEPINTVL: 15,
+        socket.TCP_KEEPCNT: 3,
+        socket.TCP_KEEPALIVE: 60,
+        socket.TCP_KEEPIDLE: 60,
+    }
 
     # Llama Index Configuration
     # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
@@ -99,3 +114,14 @@ class Constants:
 
     # Celery
     RUN_INDEXING = "run_indexing"
+    CELERY_BROKER_POOL_LIMIT = int(os.environ.get("CELERY_BROKER_POOL_LIMIT", 10))
+    CELERY_SEPARATOR = ":"
+    CELERY_RESULT_EXPIRES = int(os.environ.get("CELERY_RESULT_EXPIRES", 86400))
+
+
+class CeleryPriority(int, Enum):
+    HIGHEST = 0
+    HIGH = auto()
+    MEDIUM = auto()
+    LOW = auto()
+    LOWEST = auto()

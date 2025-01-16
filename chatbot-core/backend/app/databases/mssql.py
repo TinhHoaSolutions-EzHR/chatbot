@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Generator
 
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine import Engine
@@ -61,7 +61,7 @@ SessionLocal = sessionmaker(
 )
 
 
-def get_db_session() -> Iterator[Session]:
+def get_db_session() -> Generator[Session]:
     """
     Provides a transactional scope around a series of operations.
 
