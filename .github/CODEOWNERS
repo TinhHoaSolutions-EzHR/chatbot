@@ -10,3 +10,7 @@ docs/ @TinhHoaSolutions-EzHR/chat-bot @TinhHoaSolutions-EzHR/van-phong-so
 
 # lelouvincx is code owner of chatbot-core/backend/alembic
 chatbot-core/backend/alembic/ @lelouvincx
+
+# greyyT is the code owner of chatbot-core/frontend or frontend-v2
+chatbot-core/frontend/ @greyyT
+chatbot-core/frontend-v2/ @greyyT
