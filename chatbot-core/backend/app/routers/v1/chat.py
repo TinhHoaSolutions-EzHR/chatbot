@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from fastapi import status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from sse_starlette import EventSourceResponse
 
 from app.databases.mssql import get_db_session
 from app.models import User
@@ -263,7 +264,7 @@ def handle_new_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user.id
     )
 
-    return StreamingResponse(content=content, media_type="text/event-stream")
+    return EventSourceResponse(content=content)
 
 
 @router.post("/feedback", response_model=APIResponse, status_code=status.HTTP_201_CREATED)

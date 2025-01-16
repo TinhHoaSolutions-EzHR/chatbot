@@ -30,7 +30,6 @@ from sqlalchemy.sql import func
 
 from app.models.base import Base
 from app.settings.constants import Constants
-from app.utils.api.error_handler import PydanticParsingError
 
 if TYPE_CHECKING:
     from app.models import Agent
@@ -46,6 +45,16 @@ class ChatMessageType(str, Enum):
     SYSTEM = "system"
     USER = "user"
     ASSISTANT = "assistant"
+
+
+class EventType(str, Enum):
+    """
+    Enumeration of message types in a chat session.
+    """
+
+    USER_MESSAGE = "user_message"
+    BOT_MESSAGE = "bot_message"
+    SYSTEM_MESSAGE = "system_message"
 
 
 class ChatStreamType(str, Enum):
@@ -372,9 +381,9 @@ class ChatFeedbackRequest(BaseModel):
         from_attributes = True
 
 
-class ChatStreamResponse(BaseModel):
+class StreamDataResponse(BaseModel):
     """
-    Pydantic model for standardizing response format for chat stream.
+    Pydantic model for standardizing response data format from chat stream.
     """
 
     content: Any = Field(..., description="Content of the chat stream", alias="c")
@@ -384,22 +393,31 @@ class ChatStreamResponse(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-    def as_str(self) -> str:
-        """
-        Returns the JSON representation of the object and converts it to a string.
 
-        Returns:
-            str: JSON representation of the object.
+class StreamResponse(BaseModel):
+    """
+    Pydantic model for standardizing final response format for chat stream.
+    """
+
+    event: EventType = Field(..., description="Type of the event")
+    data: StreamDataResponse = Field(..., description="Data of the event")
+
+    def __init__(self, event: EventType, content: Any, type: ChatStreamType):
         """
-        try:
-            return str(self.model_dump_json(by_alias=True)) + "\n"
-        except TypeError as e:
-            raise TypeError(
-                f"Failed to serialize object - contains non-JSON-serializable types: {e}"
-            )
-        except ValueError as e:
-            raise ValueError(f"Failed to serialize object - invalid JSON data: {e}")
-        except Exception as e:
-            raise PydanticParsingError(
-                message="Unexpected error during JSON serialization", detail=str(e)
-            )
+        Initialize the final response format for chat stream.
+
+        Args:
+            event (EventType): Type of the event.
+            content (Any): Content of the chat stream.
+            type (ChatStreamType): Type of the chat stream.
+        """
+        super().__init__(event=event, data=StreamDataResponse(content=content, type=type))
+
+    def as_json(self):
+        """
+        Return the model as a JSON object.
+        """
+        return self.model_dump()
+
+    class Config:
+        from_attributes = True
