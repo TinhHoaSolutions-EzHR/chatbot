@@ -47,17 +47,7 @@ class ChatMessageType(str, Enum):
     ASSISTANT = "assistant"
 
 
-class EventType(str, Enum):
-    """
-    Enumeration of message types in a chat session.
-    """
-
-    USER_MESSAGE = "user_message"
-    BOT_MESSAGE = "bot_message"
-    SYSTEM_MESSAGE = "system_message"
-
-
-class ChatStreamType(str, Enum):
+class ChatEventType(str, Enum):
     """
     Enumeration of message types in a chat session.
     """
@@ -381,37 +371,13 @@ class ChatFeedbackRequest(BaseModel):
         from_attributes = True
 
 
-class StreamDataResponse(BaseModel):
-    """
-    Pydantic model for standardizing response data format from chat stream.
-    """
-
-    content: Any = Field(..., description="Content of the chat stream", alias="c")
-    type: ChatStreamType = Field(..., description="Type of the chat stream", alias="t")
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True
-
-
-class StreamResponse(BaseModel):
+class ChatStreamResponse(BaseModel):
     """
     Pydantic model for standardizing final response format for chat stream.
     """
 
-    event: EventType = Field(..., description="Type of the event")
-    data: StreamDataResponse = Field(..., description="Data of the event")
-
-    def __init__(self, event: EventType, content: Any, type: ChatStreamType):
-        """
-        Initialize the final response format for chat stream.
-
-        Args:
-            event (EventType): Type of the event.
-            content (Any): Content of the chat stream.
-            type (ChatStreamType): Type of the chat stream.
-        """
-        super().__init__(event=event, data=StreamDataResponse(content=content, type=type))
+    event: ChatEventType = Field(..., description="Type of the chat event")
+    data: Any = Field(..., description="Data returning from the event")
 
     def as_json(self):
         """
