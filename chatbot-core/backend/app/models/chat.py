@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timezone
 from enum import Enum
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
@@ -47,15 +48,15 @@ class ChatMessageType(str, Enum):
     ASSISTANT = "assistant"
 
 
-class ChatEventType(str, Enum):
+class ChatMessageStreamEvent(str, Enum):
     """
-    Enumeration of message types in a chat session.
+    Enumeration of stream message types in a chat session.
     """
 
-    REQUEST = "r"
-    CHUNK = "c"
-    DONE = "d"
-    ERROR = "e"
+    METADATA = "metadata"
+    DELTA = "delta"
+    STREAM_COMPLETE = "stream_complete"
+    ERROR = "error"
 
 
 class ChatMessageRequestType(str, Enum):
@@ -371,19 +372,41 @@ class ChatFeedbackRequest(BaseModel):
         from_attributes = True
 
 
+class ChatStreamContent(BaseModel):
+    """
+    Pydantic model for standardizing chat stream content.
+    """
+
+    content: Any = Field(..., description="Content of the chat stream", alias="c")
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+
 class ChatStreamResponse(BaseModel):
     """
     Pydantic model for standardizing final response format for chat stream.
     """
 
-    event: ChatEventType = Field(..., description="Type of the chat event")
-    data: Any = Field(..., description="Data returning from the event")
+    event: ChatMessageStreamEvent = Field(..., description="Type of the chat event")
+    data: ChatStreamContent = Field(..., description="Data returning from the event")
 
-    def as_json(self):
+    def __init__(self, event: ChatMessageStreamEvent, content: Any):
+        """
+        Initialize the response object.
+
+        Args:
+            event (ChatMessageStreamEvent): Type of the chat event.
+            content (Any): Content of the chat event.
+        """
+        super().__init__(event=event, data=ChatStreamContent(content=content))
+
+    def as_json(self) -> Dict[str, Any]:
         """
         Return the model as a JSON object.
         """
-        return self.model_dump()
+        return self.model_dump(by_alias=True)
 
     class Config:
         from_attributes = True

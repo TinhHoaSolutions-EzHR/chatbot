@@ -10,11 +10,11 @@ from sqlalchemy.orm import Session
 from app.models import ChatFeedback
 from app.models import ChatMessage
 from app.models import ChatSession
-from app.models.chat import ChatEventType
 from app.models.chat import ChatFeedbackRequest
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageResponse
+from app.models.chat import ChatMessageStreamEvent
 from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatStreamResponse
@@ -299,7 +299,9 @@ class ChatService(BaseService):
             for chunk in response:
                 if content := getattr(chunk.choices[0].delta, "content", None):
                     accumulated_response.append(content)
-                    yield ChatStreamResponse(event=ChatEventType.CHUNK, data=content).as_json()
+                    yield ChatStreamResponse(
+                        event=ChatMessageStreamEvent.DELTA, content=content
+                    ).as_json()
 
             # Create final response message with complete text
             if not accumulated_response:
@@ -307,8 +309,8 @@ class ChatService(BaseService):
                     f"No content received from LLM for session {chat_session_id} for request {current_request_id}"
                 )
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data="No content received from LLM",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content="No content received from LLM",
                 ).as_json()
 
             # Create final response message with complete text
@@ -321,8 +323,8 @@ class ChatService(BaseService):
                 chat_message=pre_register_chat_response
             ):
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data=f"Error during response creation: {err}",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error during response creation: {err}",
                 ).as_json()
 
             # Flush the session to send the data to the database (but do not commit yet)
@@ -332,8 +334,8 @@ class ChatService(BaseService):
                 f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
             )
             yield ChatStreamResponse(
-                event=ChatEventType.ERROR,
-                data=f"Error generating chat response: {e}",
+                event=ChatMessageStreamEvent.ERROR,
+                content=f"Error generating chat response: {e}",
             ).as_json()
 
     def _delete_messages_and_update_chain(
@@ -537,8 +539,8 @@ class ChatService(BaseService):
             )
             if err:
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data=f"Error during request creation: {err}",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error during request creation: {err}",
                 ).as_json()
 
             # Pre-register and create a new chat response message
@@ -549,8 +551,8 @@ class ChatService(BaseService):
             )
             if err := self._chat_repository.create_chat_message(chat_message=chat_response):
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data=f"Error during response creation: {err}",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error during response creation: {err}",
                 ).as_json()
 
             # Flush the session to send the data to the database (but do not commit yet)
@@ -565,8 +567,8 @@ class ChatService(BaseService):
 
             # Stream the chat request message object
             yield ChatStreamResponse(
-                event=ChatEventType.REQUEST,
-                data=ChatMessageResponse.model_validate(chat_request).model_dump(),
+                event=ChatMessageStreamEvent.METADATA,
+                content=ChatMessageResponse.model_validate(chat_request).model_dump(mode="json"),
             ).as_json()
 
             # Generate and stream chat response message in chunks
@@ -578,17 +580,19 @@ class ChatService(BaseService):
             ):
                 yield chunk
 
-            # Stream the chat response message object
+            # Stream the chat response message object. We don't include the message content in the response.
             yield ChatStreamResponse(
-                event=ChatEventType.DONE,
-                data=ChatMessageResponse.model_validate(chat_response).model_dump(),
+                event=ChatMessageStreamEvent.STREAM_COMPLETE,
+                content=ChatMessageResponse.model_validate(chat_response).model_dump(
+                    mode="json", exclude={"message"}
+                ),
             ).as_json()
 
         except Exception as e:
             logger.error(f"Error handling new chat message: {e}")
             yield ChatStreamResponse(
-                event=ChatEventType.ERROR,
-                data=f"Error handling new chat message: {e}",
+                event=ChatMessageStreamEvent.ERROR,
+                content=f"Error handling new chat message: {e}",
             ).as_json()
 
     def _handle_regenerate_or_edit_chat_message(
@@ -651,9 +655,10 @@ class ChatService(BaseService):
             )
             if err or not chat_session:
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data=f"Chat session not found: {err}",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Chat session not found: {err}",
                 ).as_json()
+                yield "\n"
                 return
 
             # Handle regenerated or edited chat message
@@ -664,9 +669,10 @@ class ChatService(BaseService):
             )
             if err:
                 yield ChatStreamResponse(
-                    event=ChatEventType.ERROR,
-                    data=f"Error during request handling: {err}",
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error during request handling: {err}",
                 ).as_json()
+                yield "\n"
                 return
 
             logger.info("Handling new chat message")
@@ -679,6 +685,7 @@ class ChatService(BaseService):
                 user_id=user_id,
             ):
                 yield chunk
+                yield "\n"
 
     def create_chat_feedback(
         self, chat_feedback_request: ChatFeedbackRequest
