@@ -58,11 +58,30 @@ export interface IChatSessionDetail extends IChatSession {
   messages?: IChatMessageResponse[];
 }
 
-export enum ChatMessageStreamType {
-  REQUEST = 'r',
-  CHUNK = 'c',
-  DONE = 'd',
+export enum ChatMessageStreamEvent {
+  METADATA = 'metadata',
+  DELTA = 'delta',
+  STREAM_COMPLETE = 'stream_complete',
+  ERROR = 'error',
 }
+
+export type ChatStreamChunk =
+  | {
+      event: ChatMessageStreamEvent.METADATA;
+      data: IChatMessageResponse;
+    }
+  | {
+      event: ChatMessageStreamEvent.DELTA;
+      data: string;
+    }
+  | {
+      event: ChatMessageStreamEvent.STREAM_COMPLETE;
+      data: Omit<IChatMessageResponse, 'message'>;
+    }
+  | {
+      event: ChatMessageStreamEvent.ERROR;
+      data: string;
+    };
 
 export interface IFolder {
   id: string;
