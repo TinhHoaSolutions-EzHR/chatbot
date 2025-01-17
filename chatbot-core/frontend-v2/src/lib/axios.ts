@@ -1,16 +1,17 @@
-import axios, { ResponseType } from 'axios';
+import axios, { CreateAxiosDefaults, ResponseType } from 'axios';
 
-import { CHATBOT_CORE_BACKEND_URL, LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
+import { CHATBOT_CORE_BACKEND_URL, CLIENT_DOMAIN, LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '@/configs/misc';
 import { ACCESS_TOKEN_LOCAL_STORAGE_EVENT_DISPATCH, ApiStatusCode } from '@/constants/misc';
 
-const createClient = (responseType: ResponseType) => {
+const createClient = (responseType: ResponseType, options?: CreateAxiosDefaults<any>) => {
   const client = axios.create({
     baseURL: CHATBOT_CORE_BACKEND_URL,
     headers: {
-      'Access-Control-Allow-Origin': 'http://localhost:3000',
+      'Access-Control-Allow-Origin': CLIENT_DOMAIN,
     },
     responseType,
     withCredentials: true,
+    ...options,
   });
 
   client.interceptors.request.use(config => {
@@ -36,6 +37,8 @@ const createClient = (responseType: ResponseType) => {
 };
 
 const httpClient = createClient('json');
-const streamClient = createClient('stream');
+const streamClient = createClient('stream', {
+  adapter: 'fetch',
+});
 
 export { httpClient, streamClient };
