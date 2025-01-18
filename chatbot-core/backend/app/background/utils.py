@@ -12,7 +12,7 @@ from app.background.helpers import timeout_context
 from app.databases.mssql import MSSQLConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
-from app.utils.api.error_handler import RedisProbeError
+from app.utils.api.error_handler import ResourceProbeError
 from app.utils.api.helpers import CeleryTaskColoredFormatter
 from app.utils.api.helpers import CeleryTaskPlainFormatter
 from app.utils.api.helpers import ColoredFormatter
@@ -65,7 +65,7 @@ def wait_for_redis(sender: Any, **kwargs) -> None:  # NOSONAR
     except Exception as e:
         if not isinstance(e, WorkerShutdown):
             logger.error(f"Redis: Unexpected error during readiness probe: {e}")
-            raise RedisProbeError(f"Probe failed with error: {e}") from e
+            raise ResourceProbeError(f"Probe failed with error: {e}") from e
         raise
 
 
@@ -112,7 +112,7 @@ def wait_for_db(sender: Any, **kwargs: Any) -> None:  # NOSONAR
     except Exception as e:
         if not isinstance(e, WorkerShutdown):
             logger.error(f"Database: Unexpected error during readiness probe: {e}")
-            raise RedisProbeError(f"Probe failed with error: {e}") from e
+            raise ResourceProbeError(f"Probe failed with error: {e}") from e
         raise
 
 
@@ -155,7 +155,7 @@ def wait_for_qdrant(sender: Any, **kwargs: Any) -> None:  # NOSONAR
     except Exception as e:
         if not isinstance(e, WorkerShutdown):
             logger.error(f"Qdrant: Unexpected error during readiness probe: {e}")
-            raise RedisProbeError(f"Probe failed with error: {e}") from e
+            raise ResourceProbeError(f"Probe failed with error: {e}") from e
         raise
 
 
