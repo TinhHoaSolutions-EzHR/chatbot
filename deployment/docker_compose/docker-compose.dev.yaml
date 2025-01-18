@@ -218,7 +218,7 @@ services:
         condition: service_healthy
     command: >
       /bin/sh -c "echo 'starting worker' &&
-      uv run celery -A app.background.celery_worker worker --loglevel=DEBUG"
+      uv run celery -A app.background.celery_worker worker --loglevel=INFO"
     env_file:
       - ./.env
       - ../../chatbot-core/.env.${ENV} # INFO: can be .env.development or .env.production
