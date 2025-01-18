@@ -167,7 +167,7 @@ services:
 
   web-server:
     build:
-      context: ../../chatbot-core/frontend-v2
+      context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
     container_name: web-server
     hostname: web-server
