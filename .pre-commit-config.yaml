@@ -1,7 +1,26 @@
-default_language_version:
-  python: python3.11
-
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Check for trailing whitespace
+      - id: check-json
+        name: Check JSON
+      - id: check-yaml
+        name: Check YAML
+        args: [--unsafe]
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+      - id: detect-private-key
+        name: Detect Private Key
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: ["--skip", "node_modules,dist"] # Exclude folders if needed
+        files: "\\.(py|js|ts)$" # Regex to match Python, JavaScript, and TypeScript files
+
   # This checks any wrong json schema
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.29.4
