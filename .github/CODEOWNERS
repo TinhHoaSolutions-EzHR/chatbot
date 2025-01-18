@@ -13,4 +13,3 @@ chatbot-core/backend/alembic/ @lelouvincx
 
 # greyyT is the code owner of chatbot-core/frontend or frontend-v2
 chatbot-core/frontend/ @greyyT
-chatbot-core/frontend-v2/ @greyyT
