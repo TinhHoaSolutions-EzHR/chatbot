@@ -73,3 +73,9 @@ class PydanticParsingError(BaseException):
     """
     Custom exception class for handling Pydantic parsing errors
     """
+
+
+class ResourceProbeError(BaseException):
+    """
+    Custom exception class for handling resource probe errors.
+    """

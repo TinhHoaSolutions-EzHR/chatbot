@@ -43,6 +43,7 @@ dependencies = [
   "llama-index-llms-openai>=0.3.2",
   "markitdown>=0.0.1a3",
   "pyjwt>=2.10.1",
+  "celery>=5.4.0",
 ]
 
 [project.optional-dependencies]
