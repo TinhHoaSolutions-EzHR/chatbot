@@ -1,6 +1,5 @@
 import logging
 import os
-import socket
 from enum import auto
 from enum import Enum
 
@@ -34,10 +33,10 @@ class Constants:
 
     # Logger Configuration
     LOGGER_LOG_LEVEL = os.getenv("LOGGER_LOG_LEVEL", logging.INFO)
-    LOGGER_LOG_TO_CONSOLE = True
-    LOGGER_LOG_TO_FILE = False
-    LOGGER_LOG_FILE_PATH = "api.log"
-    LOGGER_MAX_BYTES = 10485760
+    LOGGER_LOG_TO_CONSOLE = os.getenv("LOGGER_LOG_TO_CONSOLE", True)
+    LOGGER_LOG_TO_FILE = os.getenv("LOGGER_LOG_TO_FILE", False)
+    LOGGER_LOG_FILE_PATH = os.getenv("LOGGER_LOG_FILE_PATH", f"/var/log/{PROJECT_NAME}.log")
+    LOGGER_MAX_BYTES = 10 * 1024 * 1024
     LOGGER_BACKUP_COUNT = 5
 
     # Minio Configuration
@@ -53,12 +52,6 @@ class Constants:
         os.environ.get("REDIS_DB_NUMBER_CELERY_RESULT_BACKEND", 14)
     )
     REDIS_HEALTH_CHECK_INTERVAL = int(os.environ.get("REDIS_HEALTH_CHECK_INTERVAL", 60))
-    REDIS_SOCKET_KEEPALIVE_OPTIONS = {
-        socket.TCP_KEEPINTVL: 15,
-        socket.TCP_KEEPCNT: 3,
-        socket.TCP_KEEPALIVE: 60,
-        socket.TCP_KEEPIDLE: 60,
-    }
 
     # Llama Index Configuration
     # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
@@ -117,6 +110,9 @@ class Constants:
     CELERY_BROKER_POOL_LIMIT = int(os.environ.get("CELERY_BROKER_POOL_LIMIT", 10))
     CELERY_SEPARATOR = ":"
     CELERY_RESULT_EXPIRES = int(os.environ.get("CELERY_RESULT_EXPIRES", 86400))
+    CELERY_WORKER_CONCURRENCY = 4
+    CELERY_WORKER_POOL = "threads"
+    CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
 
 class CeleryPriority(int, Enum):
