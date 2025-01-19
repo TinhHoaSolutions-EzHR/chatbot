@@ -55,6 +55,12 @@ class ChatMessageType(str, Enum):
 class ChatMessageStreamEvent(str, Enum):
     """
     Enumeration of stream message types in a chat session.
+
+    We use this to differentiate between different types of components in the chat stream.
+        - METADATA: This is the chat request object.
+        - DELTA: This is the chat message part object that is sent under chunks.
+        - STREAM_COMPLETE: This is the final chat message object that is sent to the client to indicate the end of the stream.
+        - ERROR: This is the error message object indicating an error in the chat stream.
     """
 
     METADATA = "metadata"
