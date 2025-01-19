@@ -200,6 +200,7 @@ class ChatMessage(Base):
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
     )
+    # TODO: Modify the relationship of chat_feedbacks to be a one-to-one relationship.
     chat_feedbacks: Mapped[List["ChatFeedback"]] = relationship(
         "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
     )
