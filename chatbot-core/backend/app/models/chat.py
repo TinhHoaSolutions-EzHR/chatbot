@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
@@ -31,11 +32,15 @@ from sqlalchemy.sql import func
 
 from app.models.base import Base
 from app.settings.constants import Constants
+from app.utils.api.helpers import get_logger
 
 if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
     from app.models import Folder
+
+
+logger = get_logger(__name__)
 
 
 class ChatMessageType(str, Enum):
@@ -405,8 +410,15 @@ class ChatStreamResponse(BaseModel):
     def as_json(self) -> Dict[str, Any]:
         """
         Return the model as a JSON object.
+
+        Returns:
+            Dict[str, Any]: JSON object.
         """
-        return self.model_dump(by_alias=True)
+        try:
+            return json.dumps(self.model_dump(by_alias=True))
+        except Exception as e:
+            logger.error(f"Error converting model to JSON: {e}")
+            raise
 
     class Config:
         from_attributes = True
