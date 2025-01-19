@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
@@ -415,7 +414,10 @@ class ChatStreamResponse(BaseModel):
             Dict[str, Any]: JSON object.
         """
         try:
-            return json.dumps(self.model_dump(by_alias=True))
+            return {
+                "event": self.event,
+                "data": self.data.model_dump_json(by_alias=True),
+            }
         except Exception as e:
             logger.error(f"Error converting model to JSON: {e}")
             raise
