@@ -174,7 +174,7 @@ services:
   # NOTE: Official port for web-server is 3000
   web-server:
     build:
-      context: ../../chatbot-core/frontend-v2
+      context: ../../chatbot-core/frontend
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: web-server

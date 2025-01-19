@@ -21,8 +21,8 @@ const ActionButton: FC<IActionButtonProps> = ({ icon, children, onClick }) => {
     <div
       onClick={onClick}
       className="
-        w-full p-2 bg-white border-zinc-300/70 border 
-        rounded items-center hover:bg-zinc-200/90 cursor-pointer 
+        w-full p-2 bg-white border-zinc-300/70 border
+        rounded items-center hover:bg-zinc-200/90 cursor-pointer
         transition-all duration-150 flex gap-x-2 text-black"
     >
       <ButtonIcon size={18} />
