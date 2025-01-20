@@ -4,6 +4,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from sqlalchemy.orm import noload
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import and_
 
@@ -42,7 +43,11 @@ class ChatRepository(BaseRepository):
             Tuple[List[ChatSession], Optional[APIError]]: List of chat session objects and APIError object if any error
         """
         try:
-            query = self._db_session.query(ChatSession).filter(ChatSession.user_id == user_id)
+            query = (
+                self._db_session.query(ChatSession)
+                .options(noload(ChatSession.chat_messages))
+                .filter(ChatSession.user_id == user_id)
+            )
 
             # Apply additional filters
             for field, value in filter.items():

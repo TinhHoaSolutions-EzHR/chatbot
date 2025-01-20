@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timezone
 from enum import Enum
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING
@@ -30,12 +31,15 @@ from sqlalchemy.sql import func
 
 from app.models.base import Base
 from app.settings.constants import Constants
-from app.utils.api.error_handler import PydanticParsingError
+from app.utils.api.helpers import get_logger
 
 if TYPE_CHECKING:
     from app.models import Agent
     from app.models import User
     from app.models import Folder
+
+
+logger = get_logger(__name__)
 
 
 class ChatMessageType(str, Enum):
@@ -48,15 +52,21 @@ class ChatMessageType(str, Enum):
     ASSISTANT = "assistant"
 
 
-class ChatStreamType(str, Enum):
+class ChatMessageStreamEvent(str, Enum):
     """
-    Enumeration of message types in a chat session.
+    Enumeration of stream message types in a chat session.
+
+    We use this to differentiate between different types of components in the chat stream.
+        - METADATA: This is the chat request object.
+        - DELTA: This is the chat message part object that is sent under chunks.
+        - STREAM_COMPLETE: This is the final chat message object that is sent to the client to indicate the end of the stream.
+        - ERROR: This is the error message object indicating an error in the chat stream.
     """
 
-    REQUEST = "r"
-    CHUNK = "c"
-    DONE = "d"
-    ERROR = "e"
+    METADATA = "metadata"
+    DELTA = "delta"
+    STREAM_COMPLETE = "stream_complete"
+    ERROR = "error"
 
 
 class ChatMessageRequestType(str, Enum):
@@ -196,6 +206,7 @@ class ChatMessage(Base):
     chat_session: Mapped["ChatSession"] = relationship(
         "ChatSession", back_populates="chat_messages"
     )
+    # TODO: Modify the relationship of chat_feedbacks to be a one-to-one relationship.
     chat_feedbacks: Mapped[List["ChatFeedback"]] = relationship(
         "ChatFeedback", back_populates="chat_message", cascade="all, delete-orphan"
     )
@@ -372,34 +383,51 @@ class ChatFeedbackRequest(BaseModel):
         from_attributes = True
 
 
-class ChatStreamResponse(BaseModel):
+class ChatStreamContent(BaseModel):
     """
-    Pydantic model for standardizing response format for chat stream.
+    Pydantic model for standardizing chat stream content.
     """
 
     content: Any = Field(..., description="Content of the chat stream", alias="c")
-    type: ChatStreamType = Field(..., description="Type of the chat stream", alias="t")
 
     class Config:
         from_attributes = True
         populate_by_name = True
 
-    def as_str(self) -> str:
+
+class ChatStreamResponse(BaseModel):
+    """
+    Pydantic model for standardizing final response format for chat stream.
+    """
+
+    event: ChatMessageStreamEvent = Field(..., description="Type of the chat event")
+    data: ChatStreamContent = Field(..., description="Data returning from the event")
+
+    def __init__(self, event: ChatMessageStreamEvent, content: Any):
         """
-        Returns the JSON representation of the object and converts it to a string.
+        Initialize the response object.
+
+        Args:
+            event (ChatMessageStreamEvent): Type of the chat event.
+            content (Any): Content of the chat event.
+        """
+        super().__init__(event=event, data=ChatStreamContent(content=content))
+
+    def as_json(self) -> Dict[str, Any]:
+        """
+        Return the model as a JSON object.
 
         Returns:
-            str: JSON representation of the object.
+            Dict[str, Any]: JSON object.
         """
         try:
-            return str(self.model_dump_json(by_alias=True)) + "\n"
-        except TypeError as e:
-            raise TypeError(
-                f"Failed to serialize object - contains non-JSON-serializable types: {e}"
-            )
-        except ValueError as e:
-            raise ValueError(f"Failed to serialize object - invalid JSON data: {e}")
+            return {
+                "event": self.event,
+                "data": self.data.model_dump_json(by_alias=True),
+            }
         except Exception as e:
-            raise PydanticParsingError(
-                message="Unexpected error during JSON serialization", detail=str(e)
-            )
+            logger.error(f"Error converting model to JSON: {e}")
+            raise
+
+    class Config:
+        from_attributes = True

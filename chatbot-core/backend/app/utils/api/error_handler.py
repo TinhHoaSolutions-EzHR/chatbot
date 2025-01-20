@@ -67,9 +67,3 @@ class PdfParsingError(BaseException):
     """
     Custom exception class for handling PDF parsing errors
     """
-
-
-class PydanticParsingError(BaseException):
-    """
-    Custom exception class for handling Pydantic parsing errors
-    """
