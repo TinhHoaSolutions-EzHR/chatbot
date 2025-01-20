@@ -8,7 +8,7 @@ from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
 from llama_index.llms.openai import OpenAI
 from sqlalchemy.orm import Session
 
-from app.integrations.llama_index.utils import convert_to_llama_index_chat_messages
+from app.integrations.llama_index.utils import llamaify_messages
 from app.models import ChatFeedback
 from app.models import ChatMessage
 from app.models import ChatSession
@@ -284,7 +284,7 @@ class ChatService(BaseService):
         """
         try:
             # Convert chat history to LlamaIndex chat messages
-            chat_history = convert_to_llama_index_chat_messages(chat_messages=chat_history)
+            chat_history = llamaify_messages(chat_messages=chat_history)
 
             # TODO: Replace by own LLM retrieval process
             chat_engine = SimpleChatEngine.from_defaults(

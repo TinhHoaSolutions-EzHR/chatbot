@@ -7,7 +7,7 @@ from app.models import ChatMessage
 from app.models.chat import ChatMessageType
 
 
-def convert_to_llama_index_chat_messages(
+def llamaify_messages(
     chat_messages: List[ChatMessage],
 ) -> List[LlamaIndexChatMessage]:
     """
