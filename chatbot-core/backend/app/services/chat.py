@@ -310,11 +310,11 @@ class ChatService(BaseService):
             # Create final response message with complete text
             if not accumulated_response:
                 logger.warning(
-                    f"No content received from LLM for session {chat_session_id} for request {current_request_id}"
+                    f"No content received from agent for session {chat_session_id} for request {current_request_id}"
                 )
                 yield ChatStreamResponse(
                     event=ChatMessageStreamEvent.ERROR,
-                    content="No content received from LLM",
+                    content="No content received from agent",
                 ).as_json()
 
             # Create final response message with complete text
