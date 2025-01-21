@@ -30,7 +30,7 @@ def get_data_model(base: Type, table_name: str) -> Type:
         id = Column(Integer, primary_key=True, autoincrement=True)
         key = Column(NVARCHAR(255), nullable=False)
         namespace = Column(NVARCHAR(255), nullable=False)
-        value = Column(NVARCHAR(max), nullable=True)
+        value = Column(NVARCHAR(), nullable=True)
 
     return type(
         class_name,
@@ -55,13 +55,14 @@ def extract_params_from_uri(uri: str) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: A dictionary of parameters.
     """
-    result = urlparse(uri=uri)
+    # Extract parameters from URI
+    result = urlparse(url=uri)
     database = result.path[1:]
     port = result.port if result.port else 1433
     return {
         "host": result.hostname,
         "port": port,
-        "username": result.username,
+        "user": result.username,
         "password": result.password,
         "database": database,
     }
