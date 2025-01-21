@@ -70,7 +70,7 @@ class MSSQLKVStore(BaseKVStore):
     def from_params(
         cls,
         host: Optional[str] = None,
-        port: Optional[int] = None,
+        port: int = 1433,
         database: Optional[str] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
@@ -102,6 +102,7 @@ class MSSQLKVStore(BaseKVStore):
             user=user,
             password=password,
             host=host,
+            port=port,
             db_name=database,
             driver=Constants.MSSQL_DRIVER,
         )
@@ -109,6 +110,7 @@ class MSSQLKVStore(BaseKVStore):
             user=user,
             password=password,
             host=host,
+            port=port,
             db_name=database,
             driver=Constants.MSSQL_DRIVER,
         )
@@ -169,7 +171,7 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             MSSQLKVStore: The key-value store instance.
         """
-        params = extract_params_from_uri(uri=session.bind.url)
+        params = extract_params_from_uri(uri=session.bind.url.render_as_string(hide_password=False))
         return cls.from_params(
             **params,
             table_name=table_name,
@@ -190,7 +192,7 @@ class MSSQLKVStore(BaseKVStore):
         self._session = sessionmaker(bind=self._engine)
 
         # Create the async database engine and session
-        self._async_engine = create_async_engine(url=self.connection_string)
+        self._async_engine = create_async_engine(url=self.async_connection_string)
         self._async_session = sessionmaker(bind=self._async_engine, class_=AsyncSession)
 
     def _create_tables_if_not_exists(self) -> None:
@@ -272,13 +274,13 @@ class MSSQLKVStore(BaseKVStore):
                 stmt = text(
                     f"""
                     MERGE INTO {self._table_class.__tablename__} AS target
-                    USING (VALUES {values_clause}) AS source (key, namespace, value)
-                    ON target.key = source.key AND target.namespace = source.namespace
+                    USING (VALUES {values_clause}) AS source ([key], [namespace], [value])
+                    ON target.[key] = source.[key] AND target.[namespace] = source.[namespace]
                     WHEN MATCHED THEN
-                        UPDATE SET target.value = source.value
+                        UPDATE SET target.[value] = source.[value]
                     WHEN NOT MATCHED THEN
-                        INSERT (key, namespace, value)
-                        VALUES (source.key, source.namespace, source.value);
+                        INSERT ([key], [namespace], [value])
+                        VALUES (source.[key], source.[namespace], source.[value]);
                     """
                 )
 
@@ -323,13 +325,13 @@ class MSSQLKVStore(BaseKVStore):
                 stmt = text(
                     f"""
                     MERGE INTO {self._table_class.__tablename__} AS target
-                    USING (VALUES {values_clause}) AS source (key, namespace, value)
-                    ON target.key = source.key AND target.namespace = source.namespace
+                    USING (VALUES {values_clause}) AS source ([key], [namespace], [value])
+                    ON target.[key] = source.[key] AND target.[namespace] = source.[namespace]
                     WHEN MATCHED THEN
-                        UPDATE SET target.value = source.value
+                        UPDATE SET target.[value] = source.[value]
                     WHEN NOT MATCHED THEN
-                        INSERT (key, namespace, value)
-                        VALUES (source.key, source.namespace, source.value);
+                        INSERT ([key], [namespace], [value])
+                        VALUES (source.[key], source.[namespace], source.[value]);
                     """
                 )
 
@@ -363,7 +365,7 @@ class MSSQLKVStore(BaseKVStore):
                 select(self._table_class).filter_by(key=key, namespace=collection)
             ).scalar()
             if result:
-                return result.value
+                return json.loads(result.value)
 
         return None
 
@@ -386,9 +388,10 @@ class MSSQLKVStore(BaseKVStore):
         async with self._async_session() as session:
             result = await session.execute(
                 select(self._table_class).filter_by(key=key, namespace=collection)
-            ).scalar()
+            )
+            result = result.scalars().first()
 
-        return result.value if result else None
+        return json.loads(result.value) if result else None
 
     def get_all(self, collection: str = DEFAULT_COLLECTION) -> Dict[str, Dict[str, Any]]:
         """
@@ -404,11 +407,10 @@ class MSSQLKVStore(BaseKVStore):
 
         self._initialize()
         with self._session() as session:
-            results = session.execute(
-                select(self._table_class).filter_by(namespace=collection)
-            ).all()
+            results = session.execute(select(self._table_class).filter_by(namespace=collection))
+            results = results.scalars().all()
 
-            return {result.key: result.value for result in results} if results else {}
+            return {result.key: json.loads(result.value) for result in results} if results else {}
 
     async def aget_all(self, collection: str = DEFAULT_COLLECTION) -> Dict[str, Dict[str, Any]]:
         """
@@ -426,7 +428,8 @@ class MSSQLKVStore(BaseKVStore):
         async with self._async_session() as session:
             results = await session.execute(
                 select(self._table_class).filter_by(namespace=collection)
-            ).all()
+            )
+            results = results.scalars().all()
 
         return {result.key: result.value for result in results} if results else {}
 
