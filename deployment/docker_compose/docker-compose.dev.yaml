@@ -156,7 +156,7 @@ services:
     # WARN: cannot start this service without both files
     env_file:
       - ./.env
-      - ../../chatbot-core/.env.${ENV_FILE:-.env} # default to .env
+      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
