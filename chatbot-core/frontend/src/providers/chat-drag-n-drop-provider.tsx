@@ -34,7 +34,7 @@ type Props = {
   children: ReactNode;
 };
 
-const DndContextProvider: FC<Props> = ({ children }) => {
+const ChatSidebarDndProvider: FC<Props> = ({ children }) => {
   const handleDragEnd = useHandleDragEnd();
 
   return (
@@ -44,4 +44,4 @@ const DndContextProvider: FC<Props> = ({ children }) => {
   );
 };
 
-export default DndContextProvider;
+export default ChatSidebarDndProvider;
