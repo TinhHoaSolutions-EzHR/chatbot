@@ -696,10 +696,7 @@ class ChatService(BaseService):
         return None
 
     def generate_stream_chat_message(
-        self,
-        chat_message_request: ChatMessageRequest,
-        chat_session_id: str,
-        user_id: str,
+        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
     ) -> Generator[str, None, None]:
         """
         Generate a streaming chat message for the new message request.
