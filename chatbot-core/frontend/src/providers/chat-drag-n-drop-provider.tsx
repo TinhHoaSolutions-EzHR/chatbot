@@ -1,20 +1,21 @@
 'use client';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { useEditChatSession } from '@/hooks/chat/use-edit-chat-session';
 
 const useHandleDragEnd = () => {
-  const [, setIsDropped] = useState(false);
   const { mutate } = useEditChatSession();
 
   return (event: DragEndEvent) => {
     if (event.over) {
-      setIsDropped(true);
       mutate(
-        { chatSessionId: `${event.active.id}`, data: { folder_id: `${event.over.id}` } },
+        {
+          chatSessionId: `${event.active.id}`,
+          data: { folder_id: `${event.over.id}` === 'chat-history' ? null : `${event.over.id}` },
+        },
         {
           onSuccess() {
             toast.success('Move chat successfully!');
