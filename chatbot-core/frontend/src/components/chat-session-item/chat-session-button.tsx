@@ -30,7 +30,6 @@ export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        zIndex: 9999, // Make the button float on top
       }
     : undefined;
   return (

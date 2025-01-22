@@ -22,7 +22,6 @@ export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions,
   });
   const style = {
     backgroundColor: isOver ? 'rgba(170, 255, 170, 0.2)' : undefined,
-    zIndex: isOver ? 997 : undefined, // Make the folder float on top, but below the dragged item
   };
 
   return (
