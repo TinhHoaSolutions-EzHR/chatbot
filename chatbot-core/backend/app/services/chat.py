@@ -5,6 +5,7 @@ from typing import Tuple
 
 from llama_index.core import Settings
 from llama_index.core.chat_engine import CondensePlusContextChatEngine
+from llama_index.core.postprocessor import LLMRerank
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
 from sqlalchemy.orm import Session
 
@@ -344,7 +345,7 @@ class ChatService(BaseService):
                 system_prompt=SYSTEM_PROMPT,
                 context_prompt=CONTEXT_PROMPT,
                 context_refine_prompt=CONTEXT_REFINE_PROMPT,
-                node_postprocessors=[],
+                node_postprocessors=[LLMRerank(top_n=5)],
                 llm=Settings.llm,
             )
 
