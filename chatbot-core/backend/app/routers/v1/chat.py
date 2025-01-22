@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from sse_starlette import EventSourceResponse
 
 from app.databases.mssql import get_db_session
+from app.databases.qdrant import get_qdrant_connector
 from app.models import User
 from app.models.chat import ChatFeedbackRequest
 from app.models.chat import ChatMessageRequest
@@ -235,6 +236,7 @@ def handle_new_chat_message(
     chat_message_request: ChatMessageRequest,
     db_session: Session = Depends(get_db_session),
     user: User = Depends(get_current_user_from_token),
+    qdrant_connector=Depends(get_qdrant_connector),
 ) -> StreamingResponse:
     """
     This endpoint is both used for all the following purposes:
@@ -260,7 +262,9 @@ def handle_new_chat_message(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Generate the content
-    content = ChatService(db_session=db_session).generate_stream_chat_message(
+    content = ChatService(
+        db_session=db_session, qdrant_connector=qdrant_connector
+    ).generate_stream_chat_message(
         chat_message_request=chat_message_request, chat_session_id=chat_session_id, user_id=user.id
     )
 

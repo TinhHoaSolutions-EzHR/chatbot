@@ -3,11 +3,12 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from llama_index.core.chat_engine import SimpleChatEngine
+from llama_index.core import Settings
+from llama_index.core.chat_engine import CondensePlusContextChatEngine
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
-from llama_index.llms.openai import OpenAI
 from sqlalchemy.orm import Session
 
+from app.databases.qdrant import QdrantConnector
 from app.integrations.llama_index.utils import llamaify_messages
 from app.models import ChatFeedback
 from app.models import ChatMessage
@@ -28,19 +29,57 @@ from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
 
+SYSTEM_PROMPT = """
+You are a customer service assistant for company policy questions.
+
+Guidelines:
+- Provide information explicitly stated in policy documents
+- For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
+- If question requires information beyond provided context, respond: "I can only answer based on the policy information provided. For this question, please contact our support team."
+- No assumptions or interpretations about policy details
+"""
+
+CONTEXT_PROMPT = """
+Policy context:
+{context_str}
+
+Answer based on:
+- Direct policy content only
+- Visible contextual information
+- No assumptions about policy details
+
+Question: {query_str}
+"""
+
+CONTEXT_REFINE_PROMPT = """
+Previous: {existing_answer}
+New context: {context_msg}
+
+Refine by:
+- Only adding explicitly stated information
+- No interpretation or assumptions
+- Preserving factual content
+
+Answer:
+"""
+
 
 class ChatService(BaseService):
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session: Session, qdrant_connector: QdrantConnector | None = None):
         """
         Chat service class for handling chat-related operations.
 
         Args:
             db_session(Session): Database session
+            qdrant_connector(QdrantConnector): Vector database connection. Defaults to None.
         """
         super().__init__(db_session=db_session)
 
         # Define repositories
         self._chat_repository = ChatRepository(db_session=self._db_session)
+
+        # Define external storage's connectors
+        self._qdrant_connector = qdrant_connector
 
     def get_chat_sessions(self, user_id: str) -> Tuple[List[ChatSession], Optional[APIError]]:
         """
@@ -286,11 +325,27 @@ class ChatService(BaseService):
             # Convert chat history to LlamaIndex chat messages
             chat_history = llamaify_messages(chat_messages=chat_history)
 
-            # TODO: Replace by own LLM retrieval process
-            chat_engine = SimpleChatEngine.from_defaults(
+            # TODO: Remove it as this is just a workaround solution
+            from app.main import index
+
+            # Define retriever
+            # index: VectorStoreIndex = VectorStoreIndex.from_vector_store(
+            #     vector_store=QdrantVectorStore(
+            #         client=self._qdrant_connector.client,
+            #         collection_name=Constants.LLM_QDRANT_COLLECTION,
+            #     )
+            # )
+            retriever = index.as_retriever()
+
+            # Define chat engine
+            chat_engine = CondensePlusContextChatEngine.from_defaults(
+                retriever=retriever,
                 chat_history=chat_history,
-                system_prompt="You are a helpful assistant that can provide information about the company and its privacy policy.",
-                llm=OpenAI(model="gpt-4o-mini", temperature=0.2, max_tokens=250),
+                system_prompt=SYSTEM_PROMPT,
+                context_prompt=CONTEXT_PROMPT,
+                context_refine_prompt=CONTEXT_REFINE_PROMPT,
+                node_postprocessors=[],
+                llm=Settings.llm,
             )
 
             response_streaming = chat_engine.stream_chat(
@@ -641,7 +696,10 @@ class ChatService(BaseService):
         return None
 
     def generate_stream_chat_message(
-        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
+        self,
+        chat_message_request: ChatMessageRequest,
+        chat_session_id: str,
+        user_id: str,
     ) -> Generator[str, None, None]:
         """
         Generate a streaming chat message for the new message request.
