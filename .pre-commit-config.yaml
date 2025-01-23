@@ -1,4 +1,12 @@
 repos:
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        name: Check commit message naming convention
+        stages: [commit-msg]
+        args: [] # Optional: specify allowed commit types, e.g., [feat, fix, ci, chore, test]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
