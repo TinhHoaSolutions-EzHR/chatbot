@@ -4,6 +4,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import React, { FC, ReactNode } from 'react';
 import { toast } from 'sonner';
 
+import { SIDEBAR_CHAT_HISTORY } from '@/constants/sidebar-items';
 import { useEditChatSession } from '@/hooks/chat/use-edit-chat-session';
 
 const useHandleDragEnd = () => {
@@ -14,7 +15,7 @@ const useHandleDragEnd = () => {
       mutate(
         {
           chatSessionId: `${event.active.id}`,
-          data: { folder_id: `${event.over.id}` === 'chat-history' ? null : `${event.over.id}` },
+          data: { folder_id: `${event.over.id}` === SIDEBAR_CHAT_HISTORY ? null : `${event.over.id}` },
         },
         {
           onSuccess() {
