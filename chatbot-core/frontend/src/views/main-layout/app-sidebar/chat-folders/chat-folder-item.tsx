@@ -1,3 +1,4 @@
+import { useDroppable } from '@dnd-kit/core';
 import { FC, useState } from 'react';
 
 import ChatSessionItem from '@/components/chat-session-item/chat-session-item';
@@ -16,9 +17,17 @@ interface IChatFolderItemProps {
 
 export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions, isDefaultOpen }) => {
   const [isFolderOpen, setIsFolderOpen] = useState<boolean>(!!isDefaultOpen);
+  const { isOver, setNodeRef } = useDroppable({
+    id: folder.id,
+  });
+  const style = {
+    backgroundColor: isOver ? 'rgba(170, 255, 170, 0.2)' : undefined,
+  };
 
   return (
     <Collapsible
+      ref={setNodeRef}
+      style={style}
       defaultOpen={isDefaultOpen}
       className={cn('group/collapsible')}
       open={isFolderOpen}
