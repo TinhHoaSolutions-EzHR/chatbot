@@ -7,6 +7,7 @@ from sqlalchemy import Column
 from sqlalchemy import Index
 from sqlalchemy import Integer
 from sqlalchemy import NVARCHAR
+from sqlalchemy import Text
 from sqlalchemy import UniqueConstraint
 
 
@@ -34,7 +35,7 @@ def get_data_model(base: Type, table_name: str) -> Type:
         id = Column(Integer, primary_key=True, autoincrement=True)
         key = Column(NVARCHAR(255), nullable=False)
         namespace = Column(NVARCHAR(255), nullable=False)
-        value = Column(NVARCHAR(), nullable=True)
+        value = Column(Text, nullable=True)
 
     return type(
         class_name,
