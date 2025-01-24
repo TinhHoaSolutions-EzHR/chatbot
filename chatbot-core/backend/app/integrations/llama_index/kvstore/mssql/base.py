@@ -8,9 +8,15 @@ from typing import Tuple
 from llama_index.core.storage.kvstore.types import BaseKVStore
 from llama_index.core.storage.kvstore.types import DEFAULT_BATCH_SIZE
 from llama_index.core.storage.kvstore.types import DEFAULT_COLLECTION
+from sqlalchemy import create_engine
+from sqlalchemy import delete
+from sqlalchemy import select
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 from app.integrations.llama_index.kvstore.mssql.utils import extract_params_from_uri
 from app.integrations.llama_index.kvstore.mssql.utils import get_data_model
@@ -182,9 +188,6 @@ class MSSQLKVStore(BaseKVStore):
         """
         Make a connection to the database.
         """
-        from sqlalchemy import create_engine
-        from sqlalchemy.ext.asyncio import create_async_engine
-        from sqlalchemy.orm import sessionmaker
 
         # Create the database engine and session
         self._engine = create_engine(url=self.connection_string, echo=self.debug)
@@ -257,8 +260,6 @@ class MSSQLKVStore(BaseKVStore):
             collection(str): The collection to store the values under. Defaults to "data".
             batch_size(int): The number of key-value pairs to store in a single batch. Defaults to 1.
         """
-        from sqlalchemy import text
-
         self._initialize()
         with self._session() as session:
             for i in range(0, len(kv_pairs), batch_size):
@@ -308,8 +309,6 @@ class MSSQLKVStore(BaseKVStore):
             collection(str): The collection to store the values under. Defaults to "data".
             batch_size(int): The number of key-value pairs to store in a single batch. Defaults to 1.
         """
-        from sqlalchemy import text
-
         self._initialize()
         async with self._async_session() as session:
             for i in range(0, len(kv_pairs), batch_size):
@@ -356,8 +355,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             Optional[Dict[str, Any]]: The value for the given key, if it exists.
         """
-        from sqlalchemy import select
-
         self._initialize()
         with self._session() as session:
             result = session.execute(
@@ -381,8 +378,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             Optional[Dict[str, Any]]: The value for the given key, if it exists.
         """
-        from sqlalchemy import select
-
         self._initialize()
         async with self._async_session() as session:
             result = await session.execute(
@@ -402,8 +397,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             Dict[str, Dict[str, Any]]: A dictionary of key-value pairs.
         """
-        from sqlalchemy import select
-
         self._initialize()
         with self._session() as session:
             results = session.execute(select(self._table_class).filter_by(namespace=collection))
@@ -421,8 +414,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             Dict[str, Dict[str, Any]]: A dictionary of key-value pairs.
         """
-        from sqlalchemy import select
-
         self._initialize()
         async with self._async_session() as session:
             results = await session.execute(
@@ -443,7 +434,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             bool: True if the key was deleted, False otherwise
         """
-        from sqlalchemy import delete
 
         self._initialize()
         with self._session() as session:
@@ -465,8 +455,6 @@ class MSSQLKVStore(BaseKVStore):
         Returns:
             bool: True if the key was deleted, False otherwise
         """
-        from sqlalchemy import delete
-
         self._initialize()
         async with self._async_session() as session:
             result = await session.execute(

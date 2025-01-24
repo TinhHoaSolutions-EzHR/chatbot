@@ -3,6 +3,12 @@ from typing import Dict
 from typing import Type
 from urllib.parse import urlparse
 
+from sqlalchemy import Column
+from sqlalchemy import Index
+from sqlalchemy import Integer
+from sqlalchemy import NVARCHAR
+from sqlalchemy import UniqueConstraint
+
 
 def get_data_model(base: Type, table_name: str) -> Type:
     """
@@ -15,8 +21,6 @@ def get_data_model(base: Type, table_name: str) -> Type:
     Returns:
         Type: A new SQLAlchemy model class.
     """
-    from sqlalchemy import Column, Integer, Index, UniqueConstraint, NVARCHAR
-
     tablename = f"data_{table_name}"
     class_name = f"Data{table_name.capitalize()}"
 

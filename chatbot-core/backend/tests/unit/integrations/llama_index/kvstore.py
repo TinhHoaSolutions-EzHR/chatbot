@@ -3,6 +3,10 @@ from typing import Union
 
 import pytest
 from docker.models.containers import Container
+from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 from app.integrations.llama_index.kvstore.mssql import MSSQLKVStore
 
@@ -230,8 +234,6 @@ def test_from_session(
     Args:
         mssql_container (Dict[str, Union[str, Container]]): A dictionary containing the container name and the container object.
     """
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
 
     engine = create_engine(mssql_container["connection_string"])
     session = sessionmaker(bind=engine)
@@ -255,10 +257,6 @@ async def test_from_async_session(
     Args:
         mssql_container (Dict[str, Union[str, Container]]): A dictionary containing the container name and the container object.
     """
-    from sqlalchemy.ext.asyncio import create_async_engine
-    from sqlalchemy.ext.asyncio import AsyncSession
-    from sqlalchemy.orm import sessionmaker
-
     async_engine = create_async_engine(mssql_container["async_connection_string"])
     async_session = sessionmaker(bind=async_engine, class_=AsyncSession)
 
