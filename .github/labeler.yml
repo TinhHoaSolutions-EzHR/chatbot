@@ -8,6 +8,7 @@ automerge:
           - docs/**/*
           - Makefile
           - README.md
+          - .pre-commit-config.yaml
 
 chatbot:
   - changed-files:
@@ -30,6 +31,7 @@ devops-maintain:
           - .github/**/*
           - .devcontainer/**/*
           - deployment/**/*
+          - .pre-commit-config.yaml
 
 backend:
   - changed-files:
@@ -46,3 +48,15 @@ POC:
   - changed-files:
       - any-glob-to-any-file:
           - chatbot-core/notebooks/**/*
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/backend/uv.lock
+          - chatbot-core/frontend/yarn.lock
+
+env:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .env.example
+          - .envrc.sample
