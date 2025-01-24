@@ -84,7 +84,7 @@ class MSSQLKVStore(BaseKVStore):
 
         Args:
             host (Optional[str]): The host of the database. Defaults to None.
-            port (Optional[int]): The port of the database. Defaults to None.
+            port (int): The port of the database. Defaults to 1433.
             database (Optional[str]): The name of the database. Defaults to None.
             user (Optional[str]): The username for the database. Defaults to None.
             password (Optional[str]): The password for the database. Defaults to None.
