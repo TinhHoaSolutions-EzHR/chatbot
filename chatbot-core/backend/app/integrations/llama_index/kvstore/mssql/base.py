@@ -9,6 +9,7 @@ from llama_index.core.storage.kvstore.types import BaseKVStore
 from llama_index.core.storage.kvstore.types import DEFAULT_BATCH_SIZE
 from llama_index.core.storage.kvstore.types import DEFAULT_COLLECTION
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import Session
 
 from app.integrations.llama_index.kvstore.mssql.utils import extract_params_from_uri
@@ -56,8 +57,6 @@ class MSSQLKVStore(BaseKVStore):
         self.perform_setup = perform_setup
         self.debug = debug
         self._is_initialized = False
-
-        from sqlalchemy.orm import declarative_base
 
         # SQLAlchemy model
         self._base = declarative_base()
