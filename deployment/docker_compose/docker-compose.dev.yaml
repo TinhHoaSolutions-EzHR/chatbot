@@ -201,7 +201,7 @@ services:
       - ./.env
       - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
 
-  worker:
+  background:
     build:
       context: ../../chatbot-core/backend/
       dockerfile: Dockerfile
