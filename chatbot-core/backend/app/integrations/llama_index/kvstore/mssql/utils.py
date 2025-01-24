@@ -3,12 +3,13 @@ from typing import Dict
 from typing import Type
 from urllib.parse import urlparse
 
-from sqlalchemy import Column
 from sqlalchemy import Index
 from sqlalchemy import Integer
 from sqlalchemy import NVARCHAR
 from sqlalchemy import Text
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 
 
 def get_data_model(base: Type, table_name: str) -> Type:
@@ -32,10 +33,10 @@ def get_data_model(base: Type, table_name: str) -> Type:
 
         __abstract__ = True
 
-        id = Column(Integer, primary_key=True, autoincrement=True)
-        key = Column(NVARCHAR(255), nullable=False)
-        namespace = Column(NVARCHAR(255), nullable=False)
-        value = Column(Text, nullable=True)
+        id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+        key: Mapped[str] = mapped_column(NVARCHAR(255), nullable=False)
+        namespace: Mapped[str] = mapped_column(NVARCHAR(255), nullable=False)
+        value: Mapped[str] = mapped_column(Text, nullable=True)
 
     return type(
         class_name,
