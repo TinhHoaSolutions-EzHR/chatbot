@@ -67,3 +67,9 @@ class PdfParsingError(BaseException):
     """
     Custom exception class for handling PDF parsing errors
     """
+
+
+class ResourceProbeError(BaseException):
+    """
+    Custom exception class for handling resource probe errors.
+    """
