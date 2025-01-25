@@ -31,38 +31,65 @@ from app.utils.api.helpers import get_logger
 logger = get_logger(__name__)
 
 SYSTEM_PROMPT = """
-You are a customer service assistant for company policy questions.
+You are a human resources professional at a company that needs to quickly find information in its policy documents.
 
 Guidelines:
 - Provide information explicitly stated in policy documents
 - For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
-- If question requires information beyond provided context, respond: "I can only answer based on the policy information provided. For this question, please contact our support team."
+- If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0123456789 hoặc email contact.hr@company.com."
 - No assumptions or interpretations about policy details
-"""
+- Do not explain
+- Your primary language is Vietnamese
+
+Let's work this out in a step by step way to be sure we have the right answer."""
 
 CONTEXT_PROMPT = """
-Policy context:
+The following is a friendly conversation between an employee and a human resources professional.
+The professional is talkative and provides lots of specific details from her context.
+If the professional does not know the answer to a question, she truthfully says she does not know.
+
+Here are the relevant documents for the context:
+
 {context_str}
 
-Answer based on:
-- Direct policy content only
-- Visible contextual information
-- No assumptions about policy details
-
-Question: {query_str}
-"""
+## Instruction
+Based on the above documents, provide a detailed answer for the employee question below.
+Answer "don't know" if not present in the document."""
 
 CONTEXT_REFINE_PROMPT = """
-Previous: {existing_answer}
-New context: {context_msg}
+The following is a friendly conversation between an employee and a human resources professional.
+The professional is talkative and provides lots of specific details from her context.
+If the professional does not know the answer to a question, she truthfully says she does not know.
 
-Refine by:
-- Only adding explicitly stated information
-- No interpretation or assumptions
-- Preserving factual content
+Here are the relevant documents for the context:
 
-Answer:
-"""
+{context_msg}
+
+Existing Answer:
+
+{existing_answer}
+
+## Instruction
+Refine the existing answer using the provided context to assist the user.
+If the context isn't helpful, just repeat the existing answer and nothing more."""
+
+CONDENSE_PROMPT = """
+Given the following conversation between an employee and a human resources professional and a follow up question from the employee.
+Your task is to firstly summarize the chat history and secondly condense the follow up question into a standalone question.
+
+Chat History:
+'''
+{chat_history}
+'''
+
+Follow Up Input:
+'''
+{question}
+'''
+
+Output format: a standalone question.
+
+Your response:"""
 
 
 class ChatService(BaseService):
@@ -345,6 +372,7 @@ class ChatService(BaseService):
                 system_prompt=SYSTEM_PROMPT,
                 context_prompt=CONTEXT_PROMPT,
                 context_refine_prompt=CONTEXT_REFINE_PROMPT,
+                condense_prompt=CONDENSE_PROMPT,
                 node_postprocessors=[LLMRerank(top_n=5)],
                 llm=Settings.llm,
             )
