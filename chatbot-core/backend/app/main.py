@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from llama_index.core import SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex
 
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
@@ -44,9 +46,6 @@ async def lifespan(app: FastAPI):
 
     # TODO: Remove it as this is just a work around
     global index
-
-    from llama_index.core import SimpleDirectoryReader
-    from llama_index.core import VectorStoreIndex
 
     documents = SimpleDirectoryReader("examples/").load_data()
     index = VectorStoreIndex.from_documents(documents=documents)
