@@ -39,7 +39,7 @@ export const AppSidebarHeader: FC = () => {
     <SidebarHeader>
       <div className="w-full flex justify-between">
         <SidebarTrigger />
-        <NewChatButton />
+        <NewChatButton onClick={() => router.push(Route.HOME_PAGE)} />
       </div>
       <div className="space-y-1 w-full">
         <ActionButton icon={FolderPlus} onClick={() => openDialog(DialogType.CREATE_CHAT_FOLDER)}>
