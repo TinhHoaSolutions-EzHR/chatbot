@@ -1,0 +1,32 @@
+name: Prune Stale Remote Branches
+# Used to prune all stale remote branches
+# This action will remove all remote branches that have been deleted on the remote repository
+# Schedule to run monthly on the 1st at midnight UTC
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+
+  workflow_dispatch:
+
+jobs:
+  prune-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Git
+      - name: Configure Git
+        run: |
+          # Use the ubunchuu bot to appreciate the ubunchuu team
+          git config user.name "ubunchuu[bot]"
+          git config --global user.email '159746302+ubunchuu-admin@users.noreply.github.com'
+
+      # Step 3: Fetch and prune remote branches
+      - name: Prune Remote Branches
+        run: |
+          git fetch --prune
+          echo "Pruned stale branches from remote."
