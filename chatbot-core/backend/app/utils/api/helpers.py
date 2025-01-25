@@ -1,14 +1,11 @@
-import hashlib
 import logging
 import os
 import sys
 from datetime import datetime
-from io import BytesIO
 from typing import Annotated
 from typing import List
 
 import pdfplumber
-import pydenticon
 from fastapi import File
 from fastapi import UploadFile
 from llama_index.core import Document
@@ -181,38 +178,6 @@ def construct_file_path(object_name: str, user_id: str = None) -> str:
     file_path = os.path.join(Constants.MINIO_IMAGE_BUCKET, file_name)
 
     return file_path
-
-
-def generate_avatar_image(data: str) -> BytesIO:
-    """
-    Generate an avatar image.
-
-    Args:
-        data (str): Data to generate the avatar.
-
-    Returns:
-        BytesIO: Avatar image.
-    """
-    generator = pydenticon.Generator(
-        rows=5,
-        columns=5,
-        digest=hashlib.sha1,
-        foreground=Constants.AGENT_AVATAR_IDENTICON_FOREGROUND_COLOR,
-        background=Constants.AGENT_AVATAR_IDENTICON_BACKGROUND_COLOR,
-    )
-
-    # Generate the image
-    image_data = generator.generate(
-        data=data,
-        width=Constants.AGENT_AVATAR_IDENTICON_WIDTH,
-        height=Constants.AGENT_AVATAR_IDENTICON_HEIGHT,
-        output_format=Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT,
-    )
-
-    # Convert to BinaryIO
-    agent_avatar = BytesIO(image_data)
-
-    return agent_avatar
 
 
 def get_database_url() -> str:
