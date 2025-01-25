@@ -7,10 +7,7 @@ interface ICreateChatMessageProps {
   data: Partial<IChatMessageRequest>;
 }
 
-export const createChatMessage = async ({
-  chatSessionId,
-  data,
-}: ICreateChatMessageProps): Promise<ReadableStream<any>> => {
+export const createChatMessage = async ({ chatSessionId, data }: ICreateChatMessageProps): Promise<ReadableStream> => {
   try {
     const res = await streamClient.post<ReadableStream>(
       getApiUrl(ApiEndpointPrefix.CHAT, `/chat-sessions/${chatSessionId}/messages`),

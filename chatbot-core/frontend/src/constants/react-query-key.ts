@@ -2,6 +2,7 @@ export enum ReactQueryKey {
   HEALTH_CHECK = 'health-check',
 
   CHAT = 'chat',
+  CHAT_SESSION = 'chat-session',
   CHAT_SESSIONS = 'chat-sessions',
   CHAT_FOLDERS = 'chat-folders',
 

@@ -1,18 +1,44 @@
 'use client';
 
-import { ArrowUpIcon, PlusCircle, Search } from 'lucide-react';
+import { useIsMutating } from '@tanstack/react-query';
+import { ArrowUpIcon, PlusCircle, Search, Square } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { SupportedKeys } from '@/constants/misc';
+import { QueryParams, SupportedKeys } from '@/constants/misc';
+import { ReactMutationKey } from '@/constants/react-query-key';
 
 import { AutoHeightTextarea } from './auto-height-textarea/auto-height-textarea';
 import { useNewChatHelper } from './use-new-chat-helper';
 
 export const ChatBox = () => {
   const [userInput, setUserInput] = useState<string>('');
+  const searchParams = useSearchParams();
+  const chatSessionId = searchParams.get(QueryParams.CHAT_SESSION_ID);
 
-  const { onNewChat } = useNewChatHelper(() => setUserInput(''));
+  const isCreatingMessage = useIsMutating({
+    mutationKey: [ReactMutationKey.CREATE_CHAT_MESSAGE, chatSessionId],
+  });
+
+  const { onNewChat } = useNewChatHelper({
+    chatSessionId,
+    onSuccess() {
+      setUserInput('');
+    },
+    disabled: !!isCreatingMessage,
+  });
+
+  const onButtonClick = () => {
+    if (!isCreatingMessage) {
+      onNewChat(userInput);
+      return;
+    }
+
+    // Implement aborting chat here
+    toast.info('This feature will be supported in the future.');
+  };
 
   return (
     <div className="chat-width mb-8 relative border border-[#e5e7eb] rounded-lg bg-[#f5f5f5] overflow-hidden">
@@ -34,11 +60,11 @@ export const ChatBox = () => {
         </Button>
       </div>
       <Button
-        className="absolute right-4 bottom-4 rounded-full w-fit h-fit p-1 m-0"
-        disabled={!userInput}
-        onClick={() => onNewChat(userInput)}
+        className="absolute right-4 bottom-4 rounded-full m-0 p-0 h-8 w-8"
+        disabled={!userInput && !isCreatingMessage}
+        onClick={onButtonClick}
       >
-        <ArrowUpIcon size={20} />
+        {!!isCreatingMessage ? <Square size={16} fill="#fff" /> : <ArrowUpIcon size={20} />}
       </Button>
     </div>
   );

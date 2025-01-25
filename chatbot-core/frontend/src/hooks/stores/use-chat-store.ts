@@ -1,34 +1,28 @@
 import { create } from 'zustand';
 
 interface IChatStore {
-  message: string;
-  isNewMessage: boolean;
-  chatSessionId: string;
+  userMessage: string;
+  isNewChat: boolean;
 
-  setMessage(message: string): void;
-  setIsNewMessage(isNewMessage: boolean): void;
-  setChatSessionId(chatSessionId: string): void;
+  setUserMessage(message: string): void;
+  setIsNewChat(isNewChat: boolean): void;
 
   clearChatStore(): void;
 }
 
 const DEFAULT_CHAT_STORE_VALUES = {
-  message: '',
-  isNewMessage: false,
-  chatSessionId: '',
+  userMessage: '',
+  isNewChat: false,
 };
 
 export const useChatStore = create<IChatStore>(set => ({
   ...DEFAULT_CHAT_STORE_VALUES,
 
-  setMessage(message) {
-    set({ message });
+  setUserMessage(message) {
+    set({ userMessage: message });
   },
-  setIsNewMessage(isNewMessage) {
-    set({ isNewMessage });
-  },
-  setChatSessionId(chatSessionId) {
-    set({ chatSessionId });
+  setIsNewChat(isNewChat) {
+    set({ isNewChat });
   },
 
   clearChatStore() {
