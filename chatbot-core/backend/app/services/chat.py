@@ -66,7 +66,7 @@ Answer:
 
 
 class ChatService(BaseService):
-    def __init__(self, db_session: Session, qdrant_connector: QdrantConnector | None = None):
+    def __init__(self, db_session: Session, qdrant_connector: Optional[QdrantConnector] = None):
         """
         Chat service class for handling chat-related operations.
 
