@@ -55,9 +55,17 @@ export interface IChatMessageResponse {
 }
 
 export interface IChatSessionDetail extends IChatSession {
-  messages?: IChatMessageResponse[];
+  chat_messages: IChatMessageResponse[];
 }
 
+/*
+ * The event received from server through SSE after user create chat message.
+ * These events can be:
+ * - metadata: the user's request message.
+ * - delta: the server's encoding chat response.
+ * - stream_complete: the signal indicating the SSE close, and return the chat response object but exclude the message field.
+ * - error: error occurred on the server side.
+ */
 export enum ChatMessageStreamEvent {
   METADATA = 'metadata',
   DELTA = 'delta',
@@ -82,6 +90,12 @@ export type ChatStreamChunk =
       event: ChatMessageStreamEvent.ERROR;
       data: string;
     };
+
+export enum StreamingMessageState {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  STREAMING = 'streaming',
+}
 
 export interface IFolder {
   id: string;
