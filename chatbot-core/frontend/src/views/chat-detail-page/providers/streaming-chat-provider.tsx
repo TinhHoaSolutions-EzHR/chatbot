@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { QueryParams } from '@/constants/misc';
 import { useCreateChatMessage } from '@/hooks/chat/use-create-chat-message';
@@ -41,29 +41,18 @@ export default function StreamingChatProvider({ children }: Props) {
 
   const { userMessage, clearChatStore } = useChatStore();
 
-  const shouldTriggerRef = useRef<boolean>(true);
-
   useEffect(() => {
-    if (!userMessage || !chatSessionId || !shouldTriggerRef.current) {
+    if (!userMessage || !chatSessionId) {
       return;
     }
 
-    shouldTriggerRef.current = false;
-
-    mutate(
-      {
-        chatSessionId,
-        data: {
-          chat_message_request_type: ChatMessageRequestType.NEW,
-          message: userMessage,
-        },
+    mutate({
+      chatSessionId,
+      data: {
+        chat_message_request_type: ChatMessageRequestType.NEW,
+        message: userMessage,
       },
-      {
-        onSettled() {
-          shouldTriggerRef.current = true;
-        },
-      },
-    );
+    });
 
     clearChatStore();
   }, [userMessage, chatSessionId]);

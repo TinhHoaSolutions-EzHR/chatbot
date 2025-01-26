@@ -9,10 +9,11 @@ import { useChatStore } from '@/hooks/stores/use-chat-store';
 interface INewChatHelperProps {
   chatSessionId: string | null;
   disabled?: boolean;
-  onSuccess(): void;
+  onSuccess?(): void;
 }
 
-export const useNewChatHelper = ({ disabled, onSuccess, chatSessionId }: INewChatHelperProps) => {
+export const useNewChatHelper = (props?: INewChatHelperProps) => {
+  const { disabled, onSuccess, chatSessionId } = props || {};
   const router = useRouter();
 
   const setUserMessage = useChatStore(state => state.setUserMessage);
@@ -47,7 +48,7 @@ export const useNewChatHelper = ({ disabled, onSuccess, chatSessionId }: INewCha
         onSuccess(newChatSession) {
           // User creating a new chat
           updateNewChat(userInput, true);
-          onSuccess();
+          onSuccess?.();
           router.push(`${Route.CHAT}/?${QueryParams.CHAT_SESSION_ID}=${newChatSession.id}`);
         },
         onError() {
@@ -62,7 +63,7 @@ export const useNewChatHelper = ({ disabled, onSuccess, chatSessionId }: INewCha
 
     // Case when user is in a chat session
     updateNewChat(userInput, false);
-    onSuccess();
+    onSuccess?.();
   };
 
   return {

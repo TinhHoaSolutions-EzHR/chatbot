@@ -1,9 +1,11 @@
+import { ITimestampResponse } from './common';
+
 export enum AgentType {
   SYSTEM = 'system',
   USER = 'user',
 }
 
-export interface IAgent {
+export interface IAgent extends ITimestampResponse {
   id: string;
   user_id: string;
   name: string;
@@ -12,11 +14,15 @@ export interface IAgent {
   agent_type: AgentType;
   is_visible: boolean;
   uploaded_image_path: string | null;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+}
+
+export interface IStarterMessage extends ITimestampResponse {
+  id: string;
+  agent_id: string;
+  name: string;
+  message: string;
 }
 
 export interface IAgentWithStarterMessages extends IAgent {
-  starter_messages: string[];
+  starter_messages: IStarterMessage[];
 }
