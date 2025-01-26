@@ -3,7 +3,6 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-from llama_index.core import Settings
 from llama_index.core.chat_engine import CondensePlusContextChatEngine
 from llama_index.core.postprocessor import LLMRerank
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
@@ -36,12 +35,14 @@ You are a human resources professional at a company that needs to quickly find i
 Guidelines:
 - Provide information explicitly stated in policy documents
 - For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
-- If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0123456789 hoặc email contact.hr@company.com."
 - No assumptions or interpretations about policy details
 - Do not explain
 - Your primary language is Vietnamese
+- If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0123456789 hoặc email contact.hr@company.com."
+- If the response is empty, please answer with the knowledge you have
 
-Let's work this out in a step by step way to be sure we have the right answer."""
+Let's work this out in a step by step way to be sure we have the right answer.
+Answer as the tone of a human resources professional, be polite and helpful."""
 
 CONTEXT_PROMPT = """
 The following is a friendly conversation between an employee and a human resources professional.
@@ -49,8 +50,9 @@ The professional is talkative and provides lots of specific details from her con
 If the professional does not know the answer to a question, she truthfully says she does not know.
 
 Here are the relevant documents for the context:
-
+'''
 {context_str}
+'''
 
 ## Instruction
 Based on the above documents, provide a detailed answer for the employee question below.
@@ -62,12 +64,14 @@ The professional is talkative and provides lots of specific details from her con
 If the professional does not know the answer to a question, she truthfully says she does not know.
 
 Here are the relevant documents for the context:
-
+'''
 {context_msg}
+'''
 
 Existing Answer:
-
+'''
 {existing_answer}
+'''
 
 ## Instruction
 Refine the existing answer using the provided context to assist the user.
@@ -374,7 +378,7 @@ class ChatService(BaseService):
                 context_refine_prompt=CONTEXT_REFINE_PROMPT,
                 condense_prompt=CONDENSE_PROMPT,
                 node_postprocessors=[LLMRerank(top_n=5)],
-                llm=Settings.llm,
+                verbose=True,
             )
 
             response_streaming = chat_engine.stream_chat(
