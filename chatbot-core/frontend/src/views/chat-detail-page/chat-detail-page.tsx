@@ -6,11 +6,11 @@ import { useSearchParams } from 'next/navigation';
 import { QueryParams } from '@/constants/misc';
 import { useGetChatSessionDetail } from '@/hooks/chat/use-get-chat-session-detail';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
-import NewChatsProvider from '@/providers/new-chats-provider';
-import StreamingChatProvider from '@/providers/streaming-chat-provider';
 
 import { NewMessages } from './new-messages';
 import { PreviousMessages } from './previous-messages';
+import NewChatsProvider from './providers/new-chats-provider';
+import StreamingChatProvider from './providers/streaming-chat-provider';
 import { StreamingMessage } from './streaming-message';
 
 export default function ChatDetailPage() {

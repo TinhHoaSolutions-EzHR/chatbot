@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 
 import { ChatMessage } from '@/components/chat-message/chat-message';
-import { useNewChatsContext } from '@/providers/new-chats-provider';
+
+import { useNewChatsContext } from './providers/new-chats-provider';
 
 export const NewMessages: FC = () => {
   const { messages } = useNewChatsContext();

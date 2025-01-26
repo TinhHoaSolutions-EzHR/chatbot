@@ -9,9 +9,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { QueryParams, SupportedKeys } from '@/constants/misc';
 import { ReactMutationKey } from '@/constants/react-query-key';
+import { useNewChatHelper } from '@/hooks/chat/use-new-chat-helper';
 
 import { AutoHeightTextarea } from './auto-height-textarea/auto-height-textarea';
-import { useNewChatHelper } from './use-new-chat-helper';
 
 export const ChatBox = () => {
   const [userInput, setUserInput] = useState<string>('');

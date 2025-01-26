@@ -1,3 +1,5 @@
+import { ITimestampResponse } from './common';
+
 export enum ChatSessionSharedStatus {
   PUBLIC = 'public',
   PRIVATE = 'private',
@@ -9,16 +11,13 @@ export enum ChatMessageType {
   ASSISTANT = 'assistant',
 }
 
-export interface IChatSession {
+export interface IChatSession extends ITimestampResponse {
   id: string;
   description?: string;
   user_id: string;
   agent_id?: string;
   folder_id?: string | null;
   shared_status: ChatSessionSharedStatus;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: string;
 }
 
 export interface IChatSessionRequest {
@@ -42,7 +41,7 @@ export interface IChatMessageRequest {
   chat_message_request_type: ChatMessageRequestType;
 }
 
-export interface IChatMessageResponse {
+export interface IChatMessageResponse extends ITimestampResponse {
   id: string;
   chat_session_id: string;
   message: string;
@@ -50,8 +49,6 @@ export interface IChatMessageResponse {
   parent_message_id?: string;
   child_message_id?: string;
   is_sensitive: boolean;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface IChatSessionDetail extends IChatSession {
