@@ -47,7 +47,7 @@ frontend:
 POC:
   - changed-files:
       - any-glob-to-any-file:
-          - chatbot-core/notebooks/**/*
+          - chatbot-core/backend/notebooks/**/*
 
 dependencies:
   - changed-files:
