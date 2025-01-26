@@ -1,7 +1,7 @@
 """modify column description of table chat session for handling storing vietnamese text
 
 Revision ID: c48653da954b
-Revises: 75df014606e4
+Revises: 4dd998601576
 Create Date: 2025-01-25 15:19:15.061292
 
 """
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "c48653da954b"
-down_revision: Union[str, None] = "75df014606e4"
+down_revision: Union[str, None] = "4dd998601576"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
