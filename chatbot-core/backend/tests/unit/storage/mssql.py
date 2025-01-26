@@ -17,7 +17,9 @@ def mssql_engine() -> Iterator[Engine]:
     Create MSSQL engine
     """
     # Validate the MSSQL connection configuration
-    validate_config(o=Secrets, required=["MSSQL_USER", "MSSQL_SA_PASSWORD", "MSSQL_HOST"])
+    validate_config(
+        o=Secrets, required=["MSSQL_USER", "MSSQL_SA_PASSWORD", "MSSQL_HOST", "MSSQL_PORT"]
+    )
     validate_config(
         o=Constants,
         required=[
@@ -36,6 +38,7 @@ def mssql_engine() -> Iterator[Engine]:
         user=Secrets.MSSQL_USER,
         password=Secrets.MSSQL_SA_PASSWORD,
         host=Secrets.MSSQL_HOST,
+        port=Secrets.MSSQL_PORT,
         db_name=Constants.MSSQL_TEST_DB_NAME,
         driver=Constants.MSSQL_DRIVER,
     )
