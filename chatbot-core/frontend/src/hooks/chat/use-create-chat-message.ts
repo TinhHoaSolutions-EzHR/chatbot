@@ -1,32 +1,30 @@
 import { useMutation } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
 
 import { ReactMutationKey } from '@/constants/react-query-key';
 import { createChatMessage } from '@/services/chat/create-chat-message';
-import { ChatMessageStreamEvent, IChatMessageResponse, StreamingMessageState } from '@/types/chat';
+import { ChatMessageStreamEvent, StreamingMessageState } from '@/types/chat';
 import { decodeChatStreamChunk } from '@/utils/decode-chat-stream-chunk';
+
+import { useChatStore } from '../stores/use-chat-store';
 
 type ChatMessageRequest = Parameters<typeof createChatMessage>[0];
 
 interface IUseCreateChatMessageProps {
   chatSessionId: ChatMessageRequest['chatSessionId'] | undefined | null;
-  changeStreamState?: (state: StreamingMessageState) => void;
-  addChatMessage?: (message: IChatMessageResponse) => void;
 }
 
-export const useCreateChatMessage = ({
-  chatSessionId,
-  changeStreamState,
-  addChatMessage,
-}: IUseCreateChatMessageProps) => {
-  const [chunk, setChunk] = useState<string>('');
-  const fullResponseRef = useRef<string>('');
+export const useCreateChatMessage = ({ chatSessionId }: IUseCreateChatMessageProps) => {
+  const addChatMessage = useChatStore(state => state.addMessage);
+  const setStreamState = useChatStore(state => state.setStreamState);
+  const setStreamingMessage = useChatStore(state => state.setStreamingMessage);
 
-  const mutation = useMutation({
+  return useMutation({
     mutationKey: [ReactMutationKey.CREATE_CHAT_MESSAGE, chatSessionId],
     mutationFn: async (props: ChatMessageRequest) => {
       const stream = await createChatMessage(props);
       const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
+
+      let fullResponse = '';
 
       while (true) {
         const { value, done } = await reader.read();
@@ -36,38 +34,31 @@ export const useCreateChatMessage = ({
 
         switch (event) {
           case ChatMessageStreamEvent.METADATA:
-            addChatMessage?.(data);
-            changeStreamState?.(StreamingMessageState.PENDING);
+            addChatMessage(props.chatSessionId, data);
+            setStreamState(props.chatSessionId, StreamingMessageState.PENDING);
             break;
           case ChatMessageStreamEvent.DELTA:
-            if (fullResponseRef.current.length === 0) {
-              changeStreamState?.(StreamingMessageState.STREAMING);
+            if (!fullResponse) {
+              setStreamState(props.chatSessionId, StreamingMessageState.STREAMING);
             }
 
             const newChunk = data;
-            fullResponseRef.current += newChunk;
-            setChunk(fullResponseRef.current);
+            fullResponse += newChunk;
+            setStreamingMessage(props.chatSessionId, fullResponse);
             break;
           case ChatMessageStreamEvent.STREAM_COMPLETE:
             const serverChatResponse = {
               ...data,
-              message: fullResponseRef.current,
+              message: fullResponse,
             };
-            addChatMessage?.(serverChatResponse);
-            changeStreamState?.(StreamingMessageState.IDLE);
-            fullResponseRef.current = '';
-            setChunk('');
+            addChatMessage(props.chatSessionId, serverChatResponse);
+            setStreamState(props.chatSessionId, StreamingMessageState.IDLE);
             break;
         }
       }
     },
-    onSettled() {
-      changeStreamState?.(StreamingMessageState.IDLE);
+    onSettled(_, __, variables) {
+      setStreamState(variables.chatSessionId, StreamingMessageState.IDLE);
     },
   });
-
-  return {
-    chunk,
-    mutation,
-  };
 };

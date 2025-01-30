@@ -29,7 +29,7 @@ const CreateChatFolderDialog: FC = () => {
           <Button type="submit" disabled={preventClose}>
             {preventClose ? <Loader2 className="animate-spin" size={14} /> : 'Submit'}
           </Button>
-          <Button variant="secondary" onClick={closeDialog} disabled={preventClose}>
+          <Button type="button" variant="secondary" onClick={closeDialog} disabled={preventClose}>
             Cancel
           </Button>
         </DialogFooter>

@@ -7,10 +7,9 @@ import { QueryParams } from '@/constants/misc';
 import { useGetChatSessionDetail } from '@/hooks/chat/use-get-chat-session-detail';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
 
+import { NewChatHandler } from './new-chat-handler';
 import { NewMessages } from './new-messages';
 import { PreviousMessages } from './previous-messages';
-import NewChatsProvider from './providers/new-chats-provider';
-import StreamingChatProvider from './providers/streaming-chat-provider';
 import { StreamingMessage } from './streaming-message';
 
 export default function ChatDetailPage() {
@@ -30,14 +29,11 @@ export default function ChatDetailPage() {
   }
 
   return (
-    <NewChatsProvider>
-      <StreamingChatProvider>
-        <div className="chat-width h-full space-y-4 pb-8">
-          <PreviousMessages chatSessionDetail={chatSessionDetail} />
-          <NewMessages />
-          <StreamingMessage />
-        </div>
-      </StreamingChatProvider>
-    </NewChatsProvider>
+    <div className="chat-width h-full space-y-4 pb-8">
+      <NewChatHandler />
+      <PreviousMessages chatSessionDetail={chatSessionDetail} />
+      <NewMessages chatSessionId={chatSessionId} />
+      <StreamingMessage chatSessionId={chatSessionId} />
+    </div>
   );
 }
