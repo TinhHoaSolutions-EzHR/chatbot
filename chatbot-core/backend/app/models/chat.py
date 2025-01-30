@@ -123,7 +123,7 @@ class ChatSession(Base):
     folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("folder.id"), nullable=True
     )
-    description: Mapped[Optional[str]] = mapped_column(NVARCHAR(None), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(NVARCHAR(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
         nullable=False,
@@ -177,7 +177,7 @@ class ChatMessage(Base):
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey(CHAT_MESSAGES_ID), nullable=True
     )
-    message: Mapped[str] = mapped_column(NVARCHAR(None), nullable=False)
+    message: Mapped[str] = mapped_column(NVARCHAR(), nullable=False)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False),
