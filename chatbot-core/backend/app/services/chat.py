@@ -1,10 +1,10 @@
-from collections.abc import Generator
+import asyncio
+from collections.abc import AsyncGenerator
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from llama_index.core.chat_engine import CondensePlusContextChatEngine
-from llama_index.core.postprocessor import LLMRerank
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
 from sqlalchemy.orm import Session
 
@@ -331,14 +331,14 @@ class ChatService(BaseService):
 
         return new_chat_request, None
 
-    def _generate_chat_response(
+    async def _generate_chat_response(
         self,
         chat_message_request: ChatMessageRequest,
         chat_session_id: str,
         current_request_id: str,
         pre_register_chat_response: ChatMessage,
         chat_history: List[LlamaIndexChatMessage],
-    ) -> Generator[str, None, None]:
+    ) -> AsyncGenerator[str, None, None]:
         """
         Generate a streaming chat response message.
         Uses the input message to query the LLM model and generate a streaming response message.
@@ -377,11 +377,10 @@ class ChatService(BaseService):
                 context_prompt=CONTEXT_PROMPT,
                 context_refine_prompt=CONTEXT_REFINE_PROMPT,
                 condense_prompt=CONDENSE_PROMPT,
-                node_postprocessors=[LLMRerank(top_n=5)],
                 verbose=True,
             )
 
-            response_streaming = chat_engine.stream_chat(
+            response_streaming = await chat_engine.astream_chat(
                 message=chat_message_request.message,
             )
 
@@ -389,10 +388,23 @@ class ChatService(BaseService):
             accumulated_response = []
 
             # Stream each chunk as it arrives
-            for chunk in response_streaming.response_gen:
-                accumulated_response.append(chunk)
+            try:
+                async for chunk in response_streaming.async_response_gen():
+                    accumulated_response.append(chunk)
+                    yield ChatStreamResponse(
+                        event=ChatMessageStreamEvent.DELTA, content=chunk
+                    ).as_json()
+            except asyncio.CancelledError:
+                logger.warning(
+                    f"Client disconnected - Chat session: {chat_session_id}, Chat request: {current_request_id}"
+                )
+            except Exception as e:
+                logger.error(
+                    f"Error streaming chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
+                )
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.DELTA, content=chunk
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error streaming chat response: {e}",
                 ).as_json()
 
             # Create final response message with complete text
@@ -595,13 +607,13 @@ class ChatService(BaseService):
 
         return current_chat_request, None
 
-    def _handle_new_chat_message(
+    async def _handle_new_chat_message(
         self,
         chat_message_request: ChatMessageRequest,
         chat_session: ChatSession,
         chat_session_id: str,
         user_id: str,
-    ) -> Generator[str, None, None]:
+    ) -> AsyncGenerator[str, None, None]:
         """
         Handle a new chat message in the chat session with streaming support.
 
@@ -664,7 +676,7 @@ class ChatService(BaseService):
             ).as_json()
 
             # Generate and stream chat response message in chunks
-            for chunk in self._generate_chat_response(
+            async for chunk in self._generate_chat_response(
                 chat_message_request=chat_message_request,
                 chat_session_id=chat_session_id,
                 current_request_id=chat_request.id,
@@ -728,9 +740,9 @@ class ChatService(BaseService):
 
         return None
 
-    def generate_stream_chat_message(
+    async def generate_stream_chat_message(
         self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
-    ) -> Generator[str, None, None]:
+    ) -> AsyncGenerator[str, None, None]:
         """
         Generate a streaming chat message for the new message request.
 
@@ -769,7 +781,7 @@ class ChatService(BaseService):
             logger.info("Handling new chat message")
 
             # Handle new streaming response message
-            for chunk in self._handle_new_chat_message(
+            async for chunk in self._handle_new_chat_message(
                 chat_message_request=chat_message_request,
                 chat_session=chat_session,
                 chat_session_id=chat_session_id,
