@@ -4,12 +4,12 @@ import { useIsMutating } from '@tanstack/react-query';
 import { ArrowUpIcon, PlusCircle, Search, Square } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { QueryParams, SupportedKeys } from '@/constants/misc';
 import { ReactMutationKey } from '@/constants/react-query-key';
 import { useNewChatHelper } from '@/hooks/chat/use-new-chat-helper';
+import { useChatStore } from '@/hooks/stores/use-chat-store';
 
 import { AutoHeightTextarea } from './auto-height-textarea/auto-height-textarea';
 
@@ -29,6 +29,7 @@ export const ChatBox = () => {
     },
     disabled: !!isCreatingMessage,
   });
+  const cancelStream = useChatStore(state => state.cancelStream);
 
   const onButtonClick = () => {
     if (!isCreatingMessage) {
@@ -36,8 +37,9 @@ export const ChatBox = () => {
       return;
     }
 
-    // Implement aborting chat here
-    toast.info('This feature will be supported in the future.');
+    if (chatSessionId) {
+      cancelStream(chatSessionId);
+    }
   };
 
   return (

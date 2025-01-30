@@ -6,19 +6,20 @@ interface IChatStore {
   userMessage: string;
   isNewChat: boolean;
   chatSession: {
-    [id: string]:
-      | {
-          messages: IChatMessageResponse[];
-          streamState: StreamingMessageState;
-          streamingMessage: string;
-        }
-      | undefined;
+    [id: string]: {
+      messages: IChatMessageResponse[];
+      streamState: StreamingMessageState;
+      streamingMessage: string;
+      streamReader: ReadableStreamDefaultReader<string> | null;
+    };
   };
 
   initChatSessionIfNotExist(chatSessionId: string): void;
   addMessage(chatSessionId: string, message: IChatMessageResponse): void;
   setStreamState(chatSessionId: string, streamState: StreamingMessageState): void;
   setStreamingMessage(chatSessionId: string, messageChunk: string): void;
+  setStreamReader(chatSessionId: string, streamReader: ReadableStreamDefaultReader<string> | null): void;
+  cancelStream(chatSessionId: string): void;
 
   setUserMessage(message: string): void;
   setIsNewChat(isNewChat: boolean): void;
@@ -46,6 +47,7 @@ export const useChatStore = create<IChatStore>((set, get) => ({
       messages: [],
       streamState: StreamingMessageState.IDLE,
       streamingMessage: '',
+      streamReader: null,
     };
 
     set({ chatSession });
@@ -82,6 +84,30 @@ export const useChatStore = create<IChatStore>((set, get) => ({
     }
 
     chatSession[chatSessionId].streamingMessage = messageChunk;
+
+    set({ chatSession });
+  },
+  setStreamReader(chatSessionId, streamReader) {
+    const { chatSession } = get();
+
+    if (!chatSession[chatSessionId]) {
+      throw new Error();
+    }
+
+    chatSession[chatSessionId].streamReader = streamReader;
+
+    set({ chatSession });
+  },
+  cancelStream(chatSessionId) {
+    const { chatSession } = get();
+    const streamReader = chatSession[chatSessionId].streamReader;
+
+    if (!chatSession[chatSessionId] || !streamReader) {
+      throw new Error();
+    }
+
+    streamReader.cancel();
+    chatSession[chatSessionId].streamReader = null;
 
     set({ chatSession });
   },
