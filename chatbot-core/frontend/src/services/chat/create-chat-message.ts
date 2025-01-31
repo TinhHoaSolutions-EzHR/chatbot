@@ -5,13 +5,21 @@ import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 interface ICreateChatMessageProps {
   chatSessionId: string;
   data: Partial<IChatMessageRequest>;
+  abortController: AbortController;
 }
 
-export const createChatMessage = async ({ chatSessionId, data }: ICreateChatMessageProps): Promise<ReadableStream> => {
+export const createChatMessage = async ({
+  chatSessionId,
+  data,
+  abortController,
+}: ICreateChatMessageProps): Promise<ReadableStream> => {
   try {
     const res = await streamClient.post<ReadableStream>(
       getApiUrl(ApiEndpointPrefix.CHAT, `/chat-sessions/${chatSessionId}/messages`),
       data,
+      {
+        signal: abortController.signal,
+      },
     );
 
     return res.data;
