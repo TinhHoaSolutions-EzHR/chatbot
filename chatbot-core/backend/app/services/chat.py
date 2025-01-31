@@ -424,7 +424,7 @@ class ChatService(BaseService):
                 ).as_json()
 
             # Create final response message with complete text
-            complete_response = "".join(accumulated_response)
+            complete_response = "".join(accumulated_response) if accumulated_response else ""
             pre_register_chat_response.message = complete_response
 
             # Store the complete message in the database

@@ -28,7 +28,7 @@ def llamaify_messages(
     return [
         LlamaIndexChatMessage(
             role=message_type_mapping[chat_message.message_type],
-            content=chat_message.message or "",
+            content=chat_message.message,
         )
         for chat_message in chat_messages
     ]
