@@ -10,7 +10,7 @@ interface IChatStore {
       messages: IChatMessageResponse[];
       streamState: StreamingMessageState;
       streamingMessage: string;
-      streamReader: ReadableStreamDefaultReader<string> | null;
+      abortController: AbortController | null;
     };
   };
 
@@ -18,7 +18,7 @@ interface IChatStore {
   addMessage(chatSessionId: string, message: IChatMessageResponse): void;
   setStreamState(chatSessionId: string, streamState: StreamingMessageState): void;
   setStreamingMessage(chatSessionId: string, messageChunk: string): void;
-  setStreamReader(chatSessionId: string, streamReader: ReadableStreamDefaultReader<string> | null): void;
+  setStreamAbortController(chatSessionId: string, abortController: AbortController | null): void;
   cancelStream(chatSessionId: string): void;
 
   setUserMessage(message: string): void;
@@ -47,7 +47,7 @@ export const useChatStore = create<IChatStore>((set, get) => ({
       messages: [],
       streamState: StreamingMessageState.IDLE,
       streamingMessage: '',
-      streamReader: null,
+      abortController: null,
     };
 
     set({ chatSession });
@@ -87,27 +87,27 @@ export const useChatStore = create<IChatStore>((set, get) => ({
 
     set({ chatSession });
   },
-  setStreamReader(chatSessionId, streamReader) {
+  setStreamAbortController(chatSessionId, abortController) {
     const { chatSession } = get();
 
     if (!chatSession[chatSessionId]) {
       throw new Error();
     }
 
-    chatSession[chatSessionId].streamReader = streamReader;
+    chatSession[chatSessionId].abortController = abortController;
 
     set({ chatSession });
   },
   cancelStream(chatSessionId) {
     const { chatSession } = get();
-    const streamReader = chatSession[chatSessionId].streamReader;
+    const abortController = chatSession[chatSessionId].abortController;
 
-    if (!chatSession[chatSessionId] || !streamReader) {
+    if (!chatSession[chatSessionId] || !abortController) {
       throw new Error();
     }
 
-    streamReader.cancel();
-    chatSession[chatSessionId].streamReader = null;
+    abortController.abort();
+    chatSession[chatSessionId].abortController = null;
 
     set({ chatSession });
   },

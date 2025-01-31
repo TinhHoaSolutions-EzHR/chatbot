@@ -17,14 +17,15 @@ export const useCreateChatMessage = ({ chatSessionId }: IUseCreateChatMessagePro
   const addChatMessage = useChatStore(state => state.addMessage);
   const setStreamState = useChatStore(state => state.setStreamState);
   const setStreamingMessage = useChatStore(state => state.setStreamingMessage);
-  const setStreamReader = useChatStore(state => state.setStreamReader);
+  const setStreamAbortController = useChatStore(state => state.setStreamAbortController);
 
   return useMutation({
     mutationKey: [ReactMutationKey.CREATE_CHAT_MESSAGE, chatSessionId],
-    mutationFn: async (props: ChatMessageRequest) => {
-      const stream = await createChatMessage(props);
+    mutationFn: async (props: Omit<ChatMessageRequest, 'abortController'>) => {
+      const abortController = new AbortController();
+      const stream = await createChatMessage({ ...props, abortController });
       const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
-      setStreamReader(props.chatSessionId, reader);
+      setStreamAbortController(props.chatSessionId, abortController);
 
       let fullResponse = '';
       let isCompleteMessage = false;
@@ -76,9 +77,9 @@ export const useCreateChatMessage = ({ chatSessionId }: IUseCreateChatMessagePro
         }
       }
     },
-    onSettled(_, error, variables) {
+    onSettled(_, __, variables) {
       setStreamState(variables.chatSessionId, StreamingMessageState.IDLE);
-      setStreamReader(variables.chatSessionId, null);
+      setStreamAbortController(variables.chatSessionId, null);
     },
   });
 };
