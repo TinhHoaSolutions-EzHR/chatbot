@@ -1,4 +1,4 @@
-"""modify column description of table chat session for handling storing vietnamese text
+"""modify column type for handling storing vietnamese text
 
 Revision ID: c48653da954b
 Revises: 4dd998601576
@@ -26,6 +26,23 @@ def upgrade() -> None:
         "description",
         existing_type=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
         type_=sa.NVARCHAR(),
+        nullable=True,
+        existing_nullable=True,
+    )
+    op.alter_column(
+        "chat_message",
+        "message",
+        existing_type=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
+        type_=sa.NVARCHAR(),
+        nullable=False,
+        existing_nullable=False,
+    )
+    op.alter_column(
+        "user",
+        "name",
+        existing_type=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
+        type_=sa.NVARCHAR(),
+        nullable=True,
         existing_nullable=True,
     )
     # ### end Alembic commands ###
@@ -38,6 +55,23 @@ def downgrade() -> None:
         "description",
         existing_type=sa.NVARCHAR(),
         type_=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
+        nullable=True,
+        existing_nullable=True,
+    )
+    op.alter_column(
+        "chat_message",
+        "message",
+        existing_type=sa.NVARCHAR(),
+        type_=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
+        nullable=False,
+        existing_nullable=False,
+    )
+    op.alter_column(
+        "user",
+        "name",
+        existing_type=sa.NVARCHAR(),
+        type_=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
+        nullable=True,
         existing_nullable=True,
     )
     # ### end Alembic commands ###
