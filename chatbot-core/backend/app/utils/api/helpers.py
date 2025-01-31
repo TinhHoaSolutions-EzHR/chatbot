@@ -1,18 +1,24 @@
+import asyncio
 import logging
 import os
 import sys
+from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated
 from typing import List
 
 import pdfplumber
 from fastapi import File
+from fastapi import Request
 from fastapi import UploadFile
 from llama_index.core import Document
 
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.error_handler import PdfParsingError
+
+# TODO: Replace this logger by own logger after moving logger logic to separate module
+logger = logging.getLogger(__name__)
 
 
 def remove_vietnamese_accents(input_str: str) -> str:
@@ -204,3 +210,29 @@ def get_database_url() -> str:
         )
 
     return database_url
+
+
+def check_client_disconnected(request: Request) -> Callable[[], bool]:
+    """
+    Check if the client is disconnected when streaming response.
+
+    Args:
+        request (Request): Request object.
+
+    Returns:
+        Callable[[], bool]: Function to check if the client is disconnected.
+    """
+
+    async def is_client_disconnected() -> bool:
+        try:
+            return await request.is_disconnected()
+        except asyncio.TimeoutError:
+            logger.warning("Timeout error while checking if the client is disconnected")
+            return True
+        except Exception as e:
+            logger.error(
+                f"An unexpected error occurred while checking if the client is disconnected: {str(e)}"
+            )
+            return True
+
+    return is_client_disconnected
