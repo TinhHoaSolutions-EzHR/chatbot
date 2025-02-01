@@ -24,9 +24,8 @@ def upgrade() -> None:
     op.alter_column(
         "chat_session",
         "description",
-        existing_type=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
-        type_=sa.NVARCHAR(),
-        nullable=True,
+        existing_type=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
+        type_=sa.NVARCHAR(length=255),
         existing_nullable=True,
     )
     op.alter_column(
@@ -40,9 +39,8 @@ def upgrade() -> None:
     op.alter_column(
         "user",
         "name",
-        existing_type=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
-        type_=sa.NVARCHAR(),
-        nullable=True,
+        existing_type=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
+        type_=sa.NVARCHAR(length=255),
         existing_nullable=True,
     )
     # ### end Alembic commands ###
@@ -53,9 +51,8 @@ def downgrade() -> None:
     op.alter_column(
         "chat_session",
         "description",
-        existing_type=sa.NVARCHAR(),
-        type_=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
-        nullable=True,
+        existing_type=sa.NVARCHAR(length=255),
+        type_=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
         existing_nullable=True,
     )
     op.alter_column(
@@ -69,9 +66,8 @@ def downgrade() -> None:
     op.alter_column(
         "user",
         "name",
-        existing_type=sa.NVARCHAR(),
-        type_=sa.VARCHAR(length=255, collation="SQL_Latin1_General_CP1_CI_AS"),
-        nullable=True,
+        existing_type=sa.NVARCHAR(length=255),
+        type_=sa.NVARCHAR(collation="SQL_Latin1_General_CP1_CI_AS"),
         existing_nullable=True,
     )
     # ### end Alembic commands ###
