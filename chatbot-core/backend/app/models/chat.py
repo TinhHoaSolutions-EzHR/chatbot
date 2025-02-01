@@ -72,7 +72,6 @@ class ChatMessageStreamEvent(str, Enum):
     STREAM_COMPLETE = "stream_complete"
     NAMING = "naming"
     ERROR = "error"
-    END = "end"
 
 
 class ChatMessageRequestType(str, Enum):
