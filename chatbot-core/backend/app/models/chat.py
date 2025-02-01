@@ -24,8 +24,11 @@ from sqlalchemy import NVARCHAR
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.engine import Connection
+from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapper
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
@@ -432,3 +435,21 @@ class ChatStreamResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+@listens_for(ChatMessage, "after_insert")
+def chat_message_after_insert(mapper: Mapper, connection: Connection, target: ChatMessage) -> None:
+    """
+    After insert event listener for chat message.
+
+    Args:
+        mapper (Mapper): Mapper instance to map a class to a database table.
+        connection (Connection): Connection to the database.
+        target (ChatMessage): Chat message table.
+    """
+    # Update the updated_at timestamp of the corresponding chat session
+    connection.execute(
+        ChatSession.__table__.update()
+        .where(ChatSession.id == target.chat_session_id)
+        .values(updated_at=datetime.now(timezone.utc))
+    )
