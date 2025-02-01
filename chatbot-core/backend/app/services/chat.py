@@ -335,7 +335,7 @@ class ChatService(BaseService):
         self,
         chat_message_request: ChatMessageRequest,
         chat_session_id: str,
-        current_request_id: str,
+        current_chat_request: ChatMessage,
         pre_register_chat_response: ChatMessage,
         chat_history: List[LlamaIndexChatMessage],
     ) -> AsyncGenerator[str, None, None]:
@@ -346,7 +346,7 @@ class ChatService(BaseService):
         Args:
             chat_message_request (ChatMessageRequest): Chat message request object.
             chat_session_id (str): Chat session ID.
-            current_request_id (str): Current request message ID.
+            current_chat_request (ChatMessage): Current chat request message.
             pre_register_chat_response (ChatMessage): Pre-registered chat response message.
             chat_history (List[LlamaIndexChatMessage]): The LlamaIndex chat history of the chat session.
 
@@ -410,7 +410,7 @@ class ChatService(BaseService):
             # Create final response message with complete text
             if not accumulated_response:
                 logger.warning(
-                    f"No content received from agent for session {chat_session_id} for request {current_request_id}"
+                    f"No content received from agent for session {chat_session_id} for request {current_chat_request.id}"
                 )
                 yield ChatStreamResponse(
                     event=ChatMessageStreamEvent.ERROR,
@@ -420,6 +420,28 @@ class ChatService(BaseService):
             # Create final response message with complete text
             complete_response = "".join(accumulated_response) if accumulated_response else ""
             pre_register_chat_response.message = complete_response
+
+            # Name if the chat session is newly created
+            if (
+                current_chat_request.parent_message_id is None
+                and chat_message_request.request_type == ChatMessageRequestType.NEW
+            ):
+                logger.info("Chat session is newly created. Naming the chat session...")
+
+                PROMPT = f"""
+                Generate a short title (5-10 words) for the chat session based on the following conversation:
+
+                User: {current_chat_request.message}
+                Agent: {complete_response}
+                """
+
+                from llama_index.core import Settings
+
+                response_streaming = Settings.llm.stream_complete(prompt=PROMPT)
+                for response in response_streaming:
+                    yield ChatStreamResponse(
+                        event=ChatMessageStreamEvent.NAMING, content=response.text
+                    ).as_json()
 
             # Store the complete message in the database
             logger.info("Creating a new chat response message")
@@ -435,7 +457,7 @@ class ChatService(BaseService):
             self._db_session.flush()
         except Exception as e:
             logger.error(
-                f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
+                f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_chat_request.id}, Error: {e}"
             )
             yield ChatStreamResponse(
                 event=ChatMessageStreamEvent.ERROR,
@@ -679,7 +701,7 @@ class ChatService(BaseService):
             async for chunk in self._generate_chat_response(
                 chat_message_request=chat_message_request,
                 chat_session_id=chat_session_id,
-                current_request_id=chat_request.id,
+                current_chat_request=chat_request,
                 pre_register_chat_response=chat_response,
                 chat_history=chat_history,
             ):
