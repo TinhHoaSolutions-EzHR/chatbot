@@ -674,14 +674,6 @@ class ChatService(BaseService):
             ):
                 yield chunk
 
-            # Stream the chat response message object. We don't include the message content in the response.
-            yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.STREAM_COMPLETE,
-                content=ChatMessageResponse.model_validate(chat_response).model_dump(
-                    mode="json", exclude={"message"}
-                ),
-            ).as_json()
-
             # Name chat session if it is newly created
             if (
                 chat_request.parent_message_id is None
@@ -695,6 +687,14 @@ class ChatService(BaseService):
                     chat_response_message=chat_response.message,
                 ):
                     yield chunk
+
+            # Stream the chat response message object. We don't include the message content in the response.
+            yield ChatStreamResponse(
+                event=ChatMessageStreamEvent.STREAM_COMPLETE,
+                content=ChatMessageResponse.model_validate(chat_response).model_dump(
+                    mode="json", exclude={"message"}
+                ),
+            ).as_json()
 
         except Exception as e:
             logger.error(f"Error handling new chat message: {e}")
@@ -794,9 +794,6 @@ class ChatService(BaseService):
                 user_id=user_id,
             ):
                 yield chunk
-
-            # End stream
-            yield ChatStreamResponse(event=ChatMessageStreamEvent.END, content="").as_json()
 
     def create_chat_feedback(
         self, chat_feedback_request: ChatFeedbackRequest
