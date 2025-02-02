@@ -20,7 +20,7 @@ jobs:
   release:
     name: Release
     needs: stylua
-    if: ${{ !failure() && inputs.release && github.ref == 'refs/heads/main' }}
+    if: ${{ inputs.release && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
