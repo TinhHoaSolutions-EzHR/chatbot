@@ -7,7 +7,7 @@ This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RA
 ### Prerequisites
 
 - Python >= 3.11.10 (specified at `.tool-versions` and `pyproject.toml`)
-- uv >= 0.5.4. [Installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+- uv >= 0.5.26. [Installation guide](https://docs.astral.sh/uv/getting-started/installation/)
 - Docker and Docker Compose. [Installation guide](https://docs.docker.com/get-docker/)
 - NodeJS >= 16.13.0 (specified at `.tool-versions`) and yarn (optional)
 
