@@ -23,5 +23,5 @@ jobs:
 
       - name: Update dbdocs project
         env:
-          DBDOCS_TOKEN: ${{ secrets.dbdocs_token.DBDOCS_TOKEN }}
+          DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
         run: dbdocs build chatbot-core/EzHR-Chatbot.dbml
