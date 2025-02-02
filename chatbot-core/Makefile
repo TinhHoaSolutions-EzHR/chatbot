@@ -112,3 +112,6 @@ help:  ## Show this help
 	@echo "Environment variables:"
 	@echo "  SERVICES     List of services to start (default: all)"
 	@echo "  COMMAND      Command to execute within a service (default: sh)"
+
+%: ## Prevents make from throwing an error when a target is not found
+	@:
