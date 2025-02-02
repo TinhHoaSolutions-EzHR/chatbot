@@ -1,0 +1,226 @@
+# NOTE: pwd must be chatbot-core
+
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
+    container_name: database
+    hostname: database
+    user: root
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - mssql_data_volume:/var/opt/mssql/data
+      - mssql_log_volume:/var/opt/mssql/log
+      - mssql_backup_volume:/var/opt/mssql/backup
+    networks:
+      - chatbot-core
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          '/opt/mssql-tools18/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P $$MSSQL_SA_PASSWORD -d master -C -Q "SELECT 1;" || exit 1',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
+
+  # INFO: This service is used to configure the database
+  # After the database is up and running, this service will auto exit
+  # Ignore it
+  database.configurator:
+    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
+    platform: linux/amd64
+    user: root
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_USER: ${MSSQL_USER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ../data/mssql/:/docker-entrypoint-initdb.d
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - chatbot-core
+    command: >
+      /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
+      echo 'Database configured!'"
+
+  cache:
+    image: redis:7.4-alpine
+    container_name: cache
+    hostname: cache
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - chatbot-core
+    # docker silently mounts /data even without an explicit volume mount, which enables
+    # persistence. explicitly setting save and appendonly forces ephemeral behavior.
+    command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 3s
+
+  index:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM qdrant/qdrant:v1.12.4
+        RUN apt-get update -yq && apt-get install -yqq curl && rm -rf /var/lib/apt/lists/* && apt-get clean
+    container_name: index
+    hostname: index
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    expose:
+      - "6333" # for HTTP
+      - "6334" # for gRPC
+    configs:
+      - source: qdrant_config
+        target: ../data/qdrant/config/local.yaml
+    volumes:
+      - qdrant_data_volume:/qdrant/storage
+    networks:
+      - chatbot-core
+    healthcheck:
+      test: curl -s http://localhost:6333/healthz | grep -q 'healthz check passed' || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 3s
+
+  object-storage:
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z-cpuv1
+    container_name: object-storage
+    hostname: object-storage
+    restart: always
+    ports:
+      - "9000:9000" # for web interface
+      - "9001:9001" # for S3 API
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - chatbot-core
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # NOTE: Official port for api-server is 5000
+  api-server:
+    build:
+      context: ../../chatbot-core/backend/
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: api-server
+    hostname: api-server
+    restart: on-failure
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      index:
+        condition: service_healthy
+      # INFO: for production
+      # ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+    command: >
+      /bin/sh -c "uv run alembic upgrade head &&
+      echo 'starting api server' &&
+      uv run fastapi dev --host 0.0.0.0 --port 5000"
+    ports:
+      - "5000:5000"
+    #INFO: require 2 env files
+    # 1) .env file located in deployment/docker_compose
+    # 2) .env/.env.development/.env.production file located in chatbot-core
+    # The first file store general variables for both projects, the second file store project-specific variables for chatbot-core
+    # WARN: cannot start this service without both files
+    env_file:
+      - ./.env
+      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+    # volumes: # INFO: Mount for auto-reload code changes
+    # - ../../chatbot-core/backend/alembic/:/app/alembic
+    # - ../../chatbot-core/backend/app/:/app/app
+    # - ../../chatbot-core/backend/tests/:/app/tests
+    networks:
+      - chatbot-core
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+
+  # NOTE: Official port for web-server is 3000
+  web-server:
+    build:
+      context: ../../chatbot-core/frontend
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: web-server
+    hostname: web-server
+    restart: on-failure
+    depends_on:
+      - api-server
+    environment:
+      - DOMAIN=localhost
+    ports:
+      - "3000:80"
+    volumes:
+      - ../data/nginx:/etc/nginx/conf.d
+      - /app/node_modules # Avoid node_modules conflicts
+    networks:
+      - chatbot-core
+    #INFO: require 2 env files
+    # 1) .env file located in deployment/docker_compose
+    # 2) .env/.env.development/.env.production file located in chatbot-core
+    # The first file store general variables for both projects, the second file store project-specific variables for chatbot-core
+    # WARN: cannot start this service without both files
+    env_file:
+      - ./.env
+      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+    command: >
+      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
+      && dos2unix /etc/nginx/conf.d/run-nginx.sh
+      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+
+volumes:
+  mssql_data_volume:
+  mssql_log_volume:
+  mssql_backup_volume:
+  qdrant_data_volume:
+  minio_data:
+
+networks:
+  chatbot-core:
+    driver: bridge
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO

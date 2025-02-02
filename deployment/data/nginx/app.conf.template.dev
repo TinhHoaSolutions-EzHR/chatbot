@@ -20,7 +20,7 @@ server {
     listen 80;
     server_name ${DOMAIN};
 
-    client_max_body_size 5G;    # Maximum upload size    
+    client_max_body_size 5G;    # Maximum upload size
 
     access_log /var/log/nginx/access.log custom_main;
 
@@ -28,14 +28,13 @@ server {
 
     # Match both /api/* and /openapi.json in a single rule
     location ~ ^/(api|openapi.json)(/.*)?$ {
-        # Rewrite /api prefixed matched paths
-        rewrite ^/api(/.*)$ $1 break;
+        rewrite ^/api(.*)$ $1 break;
 
         # misc headers
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Host $host; 
+        proxy_set_header X-Forwarded-Host $host;
         proxy_set_header Host $host;
 
         # need to use 1.1 to support chunked transfers
@@ -48,12 +47,55 @@ server {
         proxy_pass http://backend;
     }
 
+    # Routes that can be forwarded as-is to backend
+    location /health {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_redirect off;
+
+        proxy_pass http://backend;
+    }
+
+    location /version {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_redirect off;
+
+        proxy_pass http://backend;
+    }
+
+    location /auth/google {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_redirect off;
+
+        proxy_pass http://backend;
+    }
+
     location / {
         # misc headers
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Host $host; 
+        proxy_set_header X-Forwarded-Host $host;
         proxy_set_header Host $host;
 
         proxy_http_version 1.1;
