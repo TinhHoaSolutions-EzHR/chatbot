@@ -60,3 +60,8 @@ env:
       - any-glob-to-any-file:
           - .env.example
           - .envrc.sample
+
+migration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - chatbot-core/backend/alembic/versions/*

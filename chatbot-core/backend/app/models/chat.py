@@ -175,10 +175,10 @@ class ChatMessage(Base):
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
     parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
     )
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
     )
     message: Mapped[str] = mapped_column(NVARCHAR(), nullable=False)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

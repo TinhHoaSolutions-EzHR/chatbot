@@ -219,8 +219,16 @@ This will drop all existing tables. Will then create later.
 
 5. Startup services
 
+Make sure the `api-server` has the command to run `alembic upgrade head`.
+
 ```bash
 make up
+```
+
+Otherwise, you can run the following command:
+
+```bash
+make alembic-upgrade-head
 ```
 
 6. Check log the service `api-server`, now you will see all the alembic migrations created
