@@ -1,0 +1,7 @@
+agents:
+  - name: "HR Assistant"
+    prompt: "This is a helpful HR assistant"
+    agent_type: "system"
+    is_visible: true
+    uploaded_image_path: ""
+    starter_messages: []
