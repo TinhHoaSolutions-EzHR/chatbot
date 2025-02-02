@@ -19,7 +19,6 @@ permissions:
 jobs:
   release:
     name: Release
-    needs: stylua
     if: ${{ inputs.release && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     steps:
