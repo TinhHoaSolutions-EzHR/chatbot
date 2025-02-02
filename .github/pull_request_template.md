@@ -18,8 +18,8 @@
 
 - [ ] Author has done a final read through of the PR right before merge
 - [ ] All tests passed
-- [ ] Code review
 - [ ] (Optional) If there are migrations, they have been rebased to latest main
 - [ ] (Optional) If there are new dependencies, they are added to the requirements
 - [ ] (Optional) If there are new environment variables, they are added to all of the deployment methods
 - [ ] (Optional) Docker images build and basic functionalities work
+- [ ] (Optional) If there are changes in any models, the seed data is updated

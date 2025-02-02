@@ -8,6 +8,7 @@ from typing import Annotated
 from typing import List
 
 import pdfplumber
+import yaml
 from fastapi import File
 from fastapi import Request
 from fastapi import UploadFile
@@ -236,3 +237,17 @@ def check_client_disconnected(request: Request) -> Callable[[], bool]:
             return True
 
     return is_client_disconnected
+
+
+def load_yaml(file_path: str) -> dict:
+    """
+    Load a YAML file.
+
+    Args:
+        file_path (str): Path to the YAML file.
+
+    Returns:
+        dict: Loaded YAML file.
+    """
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)
