@@ -2,12 +2,12 @@ import asyncio
 import logging
 import os
 import sys
+from collections.abc import Callable
 from typing import Any
 from typing import Dict
 from typing import List
 
 import pdfplumber
-from fastapi import File
 from fastapi import Request
 from fastapi import UploadFile
 from llama_index.core import Document
@@ -147,6 +147,7 @@ def get_logger(
                 uvicorn_logger.addHandler(console_handler)
 
     return logger
+
 
 def get_database_url() -> str:
     """
