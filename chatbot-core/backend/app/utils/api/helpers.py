@@ -3,12 +3,11 @@ import logging
 import os
 import sys
 from collections.abc import Callable
-from datetime import datetime
-from typing import Annotated
+from typing import Any
+from typing import Dict
 from typing import List
 
 import pdfplumber
-from fastapi import File
 from fastapi import Request
 from fastapi import UploadFile
 from llama_index.core import Document
@@ -21,30 +20,16 @@ from app.utils.api.error_handler import PdfParsingError
 logger = logging.getLogger(__name__)
 
 
-def remove_vietnamese_accents(input_str: str) -> str:
-    """
-    Remove Vietnamese accents from a string.
-
-    Args:
-        input_str (str): Input string with accents.
-
-    Returns:
-        str: Output string without accents.
-    """
-    S1 = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ"
-    S0 = "AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy"
-
-    return "".join([S0[S1.index(c)] if c in S1 else c for c in input_str])
-
-
 def parse_pdf(
-    document: Annotated[UploadFile, File(description="PDF file")],
+    document: UploadFile,
+    metadata: Dict[str, Any] = {},
 ) -> List[Document] | None:
     """
     Parse a PDF file into Llamaindex Document objects.
 
     Args:
         document (UploadFile): PDF file to parse.
+        metadata (Dict[str, Any]): Additional metadata for the document. Defaults to {}.
 
     Returns:
         List[Document]: List of Llamaindex Document objects.
@@ -53,7 +38,14 @@ def parse_pdf(
         documents = []
         with pdfplumber.open(document.file) as pdf:
             for page in pdf.pages:
-                documents.append(Document(text=page.extract_text()))
+                # Extract text from the page
+                page_text = page.extract_text()
+                if not page_text:
+                    continue
+
+                # Create a Llamaindex Document object
+                doc = Document(text=page_text, metadata=metadata)
+                documents.append(doc)
     except Exception as e:
         raise PdfParsingError(message="Error parsing PDF", detail=str(e))
 
@@ -155,35 +147,6 @@ def get_logger(
                 uvicorn_logger.addHandler(console_handler)
 
     return logger
-
-
-def construct_file_path(object_name: str, user_id: str = None) -> str:
-    """
-    Construct file path in Minio.
-
-    Args:
-        object_name (str): Name of the object.
-        user_id (str): User id. Defaults to None.
-
-    Returns:
-        str: File path in Minio.
-
-    Example:
-        >>> construct_file_path("avatar", "user_id")
-        # my_avatar_f6f7b43c-c0ca-4003-8143-7c5e767cde12_20211013123456.png
-    """
-    file_name = (
-        (remove_vietnamese_accents(input_str=object_name).replace(" ", "_").lower())
-        + "_"
-        + user_id
-        + "_"
-        + datetime.now().strftime("%Y%m%d%H%M%S")
-        + "."
-        + Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT
-    )
-    file_path = os.path.join(Constants.MINIO_IMAGE_BUCKET, file_name)
-
-    return file_path
 
 
 def get_database_url() -> str:

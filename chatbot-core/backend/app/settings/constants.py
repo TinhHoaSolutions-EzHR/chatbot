@@ -78,12 +78,6 @@ class Constants:
     # Chat Message
     MAX_USER_MESSAGE_LENGTH = 2000
 
-    # Identicon Configuration
-    AGENT_AVATAR_IDENTICON_FOREGROUND_COLOR = ["#d73027", "#f46d43", "#fdae61", "#fee08b"]
-    AGENT_AVATAR_IDENTICON_BACKGROUND_COLOR = "rgb(224,224,224)"
-    AGENT_AVATAR_IDENTICON_WIDTH = 200
-    AGENT_AVATAR_IDENTICON_HEIGHT = 200
-    AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT = "png"
     # User Settings
     MAX_RECENT_AGENTS = 5
 
@@ -97,3 +91,6 @@ class Constants:
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
     JWT_EXPIRATION = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 3600))
     EZHR_ACCESS_TOKEN = "ezhr_access_token"
+
+    # Datetime Format
+    DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
