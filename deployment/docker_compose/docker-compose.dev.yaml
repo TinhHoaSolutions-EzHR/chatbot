@@ -161,6 +161,7 @@ services:
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
       - ../../chatbot-core/backend/tests/:/app/tests
+      - ../data/api_server/seeds/:/app/data/seeds # INFO: default to /app/data/seeds, if change this path, remember to change SEED_CONFIG_DIR
     networks:
       - chatbot-core
     extra_hosts:
