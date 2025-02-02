@@ -59,14 +59,6 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["child_message_id"],
-            ["chat_message.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["parent_message_id"],
-            ["chat_message.id"],
-        ),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###
