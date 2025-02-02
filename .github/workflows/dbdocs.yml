@@ -6,6 +6,8 @@ on:
       - "chatbot-core/EzHR-Chatbot.dbml"
     branches: [main]
 
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,12 +16,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install dbdocs
-        run: sudo npm install -g dbdocs
+        run: npm install -g dbdocs
 
       - name: Check dbdocs
         run: dbdocs
 
       - name: Update dbdocs project
         env:
-          DBDOCS_TOKEN: ${{ secrets.dbdocs_token.DBDOCS_TOKEN }}
+          DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
         run: dbdocs build chatbot-core/EzHR-Chatbot.dbml
