@@ -83,15 +83,15 @@ This backend uses FastAPI, Uvicorn, and LlamaIndex.
 
 1. Clone the repository.
 
-2. Install [uv](https://docs.astral.sh/uv/) >= 0.5.4 and then use it to install all packages.
+2. Install [uv](https://docs.astral.sh/uv/) >= 0.5.26 and then use it to install all packages.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Or if you use asdf
 asdf plugin add uv
-asdf install uv 0.5.4
-asdf local uv 0.5.4
+asdf install uv 0.5.26
+asdf local uv 0.5.26
 ```
 
 NOTE: All packages information is stored in `pyproject.toml`
