@@ -1,0 +1,24 @@
+name: LLM-based PR Agent for Code Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+
+jobs:
+  pr_agent_job:
+    name: Run pr agent on every pull request, respond to user comments
+    if: ${{ github.event.sender.type != 'Bot' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: qodo-ai/pr-agent@main
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
