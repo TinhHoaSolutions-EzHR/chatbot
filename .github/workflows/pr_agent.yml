@@ -1,4 +1,4 @@
-name: LLM-based PR Agent for Code Review
+name: PR Agent
 
 on:
   pull_request:
@@ -8,8 +8,8 @@ on:
 
 jobs:
   pr_agent_job:
-    name: Run pr agent on every pull request, respond to user comments
-    if: ${{ github.event.sender.type != 'Bot' }}
+    name: Run PR Agent
+    if: ${{ github.event.sender.type != 'Bot' }} && ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-24.04
     permissions:
       issues: write
