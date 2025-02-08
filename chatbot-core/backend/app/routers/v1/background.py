@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import status
 
-from app.background.celery_worker import app
+from app.background.celery_worker import background_app
 from app.background.tasks.indexing import run_indexing
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
@@ -24,7 +24,7 @@ def get_task_status(task_id: str) -> BackendAPIResponse:
         BackendAPIResponse: Backend API response with the task status.
     """
     # Get task result
-    task_result = app.AsyncResult(id=task_id)
+    task_result = background_app.AsyncResult(id=task_id)
 
     # Construct the response
     data = {

@@ -14,8 +14,8 @@ logger = get_logger(__name__)
 
 
 # Initialize Celery
-app = Celery(__name__)
-app.config_from_object("app.background.configs.base")
+background_app = Celery(__name__)
+background_app.config_from_object("app.background.configs.base")
 
 
 @worker_init.connect
@@ -82,4 +82,4 @@ def on_setup_logging(loglevel: Any, logfile: Any, format: Any, colorize: Any, **
 
 
 # Auto-discover tasks
-app.autodiscover_tasks(["app.background.tasks.indexing"])
+background_app.autodiscover_tasks(["app.background.tasks.indexing"])
