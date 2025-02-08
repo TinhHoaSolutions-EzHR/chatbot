@@ -1,3 +1,4 @@
+import random
 import time
 
 from app.background.celery_worker import background_app
@@ -16,10 +17,14 @@ def run_indexing() -> None:
     # Log the task start
     logger.info("Indexing task started.")
 
-    # Simulate indexing process
     # TODO: change to real indexing process
+    # Simulate indexing process
     for i in range(11):
         logger.info(f"Indexing progress: {i * 10}%")
+        # Random a 50% chance of failure
+        if random.random() < 0.05:
+            logger.exception("Indexing failed.")
+            return
         time.sleep(2)
 
     # Log the task end
