@@ -62,7 +62,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Expose the port on which the application will run
 ENV PYTHONPATH=/app
-EXPOSE 5000
 
 # Default command which does nothing
 # This container is used by api server and background which specify their own CMD
