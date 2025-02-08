@@ -141,12 +141,6 @@ services:
         condition: service_healthy
       index:
         condition: service_healthy
-      # INFO: for production
-      # ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
-    command: >
-      /bin/sh -c "uv run alembic upgrade head &&
-      echo 'starting api server' &&
-      uv run fastapi dev --host 0.0.0.0 --port 5000"
     ports:
       - "5000:5000"
     #INFO: require 2 env files
@@ -170,6 +164,12 @@ services:
       options:
         max-size: "50m"
         max-file: "6"
+    # INFO: for production
+    # ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+    command: >
+      /bin/sh -c "uv run alembic upgrade head &&
+      echo 'starting api server' &&
+      uv run fastapi dev --host 0.0.0.0 --port 5000"
 
   # NOTE: Official port for web-server is 3000
   web-server:
@@ -199,6 +199,15 @@ services:
     env_file:
       - ./.env
       - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "6"
+    command: >
+      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
+      && dos2unix /etc/nginx/conf.d/run-nginx.sh
+      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
 
   background:
     build:
@@ -215,9 +224,6 @@ services:
         condition: service_healthy
       index:
         condition: service_healthy
-    command: >
-      /bin/sh -c "echo 'starting worker' &&
-      uv run celery -A app.background.celery_worker worker --loglevel=INFO"
     env_file:
       - ./.env
       - ../../chatbot-core/.env.${ENV} # INFO: can be .env.development or .env.production
@@ -226,14 +232,15 @@ services:
       - ../../chatbot-core/backend/app/:/app/app
       - ../../chatbot-core/backend/tests/:/app/tests
     networks:
-      - backend
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - chatbot-core
     logging:
       driver: json-file
       options:
         max-size: "50m"
         max-file: "6"
+    command: >
+      /bin/sh -c "echo 'starting worker' &&
+      uv run celery -A app.background.celery_worker worker --loglevel=INFO"
 
 volumes:
   mssql_data_volume:
