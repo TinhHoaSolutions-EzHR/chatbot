@@ -1,0 +1,10 @@
+users:
+  - name: "Admin User"
+    email: admin+user@gmail.com
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXRwVSCdneCNqDT3HdxzGI6DbJqdz82XhXRw&s"
+    role: "admin"
+
+  - name: "Default User"
+    email: default+user@gmail.com
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXRwVSCdneCNqDT3HdxzGI6DbJqdz82XhXRw&s"
+    role: "basic"
