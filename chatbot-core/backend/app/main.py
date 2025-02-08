@@ -16,6 +16,7 @@ from app.routers.v1 import connector
 from app.routers.v1 import folder
 from app.routers.v1 import provider
 from app.routers.v1 import user
+from app.seeds import get_seeder_config
 from app.seeds import seed_db
 from app.settings import Constants
 from app.utils.api.helpers import get_logger
@@ -34,6 +35,11 @@ async def lifespan(app: FastAPI):
     Args:
         app (FastAPI): FastAPI application instance
     """
+    # Seed the database on startup if the configuration is set
+    config = get_seeder_config()
+    if config.SEED_ON_STARTUP:
+        seed_db()
+
     # Initialize the Minio, Qdrant, and Redis connectors
     app.state.minio_conn = MinioConnector()
     app.state.qdrant_conn = QdrantConnector()
@@ -97,10 +103,6 @@ def create_app() -> FastAPI:
     app.include_router(router=agent.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=provider.router, prefix=Constants.FASTAPI_PREFIX)
-
-    # Seed the database
-    logger.info("Seeding the database")
-    seed_db()
 
     logger.info(
         f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"

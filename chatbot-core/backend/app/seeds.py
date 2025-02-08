@@ -1,9 +1,11 @@
 import os
+from functools import lru_cache
 from typing import Dict
 from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
@@ -14,6 +16,10 @@ from app.utils.api.helpers import load_yaml
 from app.utils.user.uuid import generate_uuid
 
 logger = get_logger(__name__)
+
+
+class SeederConfig(BaseSettings):
+    SEED_ON_STARTUP: bool = os.getenv("SEED_ON_STARTUP", False)
 
 
 class DatabaseSeeder:
@@ -88,6 +94,7 @@ def seed_db():
     2. Initialize the SeedConfiguration object
     3. Call the seed_factory function with the SeedConfiguration object
     """
+    logger.info("Seeding the database with initial data")
     db_session = next(get_db_session())
     try:
         seeder = DatabaseSeeder(db_session)
@@ -97,3 +104,8 @@ def seed_db():
         db_session.rollback()
     finally:
         db_session.close()
+
+
+@lru_cache()
+def get_seeder_config() -> SeederConfig:
+    return SeederConfig()
