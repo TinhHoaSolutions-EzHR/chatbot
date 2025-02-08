@@ -1,54 +1,83 @@
 import os
 from typing import Dict
-from typing import List
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 from app.databases.mssql import get_db_session
-from app.models.agent import AgentRequest
-from app.services.agent import AgentService
+from app.models.agent import Agent
+from app.models.user import User
 from app.utils.api.helpers import get_logger
 from app.utils.api.helpers import load_yaml
+from app.utils.user.uuid import generate_uuid
 
 logger = get_logger(__name__)
 
 
-class SeedConfiguration(BaseModel):
-    """
-    Base class for seed configuration
-    """
+class DatabaseSeeder:
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
+        # Store reference ids for relationships
+        self._reference_ids: Dict[str, UUID] = {}
+        self.seed_config_dir = os.getenv("SEED_CONFIG_DIR", "/app/data/seeds")
 
-    agents: Optional[List[AgentRequest]] = None
-    # users: Optional[List[User]] = None
+    def _get_reference_id(self, model_name: str, identifier: str) -> Optional[UUID]:
+        """
+        Get a UUID for a specific model name and identifier.
 
+        Args:
+            model_name (str): Model name (e.g. User, Agent)
+            identifier (str): Unique identifier within that model
 
-def seed_factory(seed_config: SeedConfiguration, functions: Dict[str, callable]):
-    """
-    Seed the database with the initial data.
-    Loop through the seed configuration and call the create functions.
+        Returns:
+            Optional[UUID]: UUID of the model
+        """
+        seed_key = f"{model_name}:{identifier}"
+        return generate_uuid(seed_key)
 
-    Args:
-        seed_config (SeedConfiguration): Seed configuration
-    """
-    logger.info("Seeding the database with initial data")
+    def _get_or_create(self, model_class: BaseModel, identifier: str, **kwargs):
+        """
+        Get an existing record or create it if it doesn't exist.
+        Returns a tuple of (instance, created) where created is a boolean indicating
+        if a new instance was created.
+        """
+        record_id = self._get_reference_id(model_class.__name__, identifier)
+        instance = self.db_session.query(model_class).filter(model_class.id == record_id).first()
 
-    for field_name, _ in seed_config.model_fields.items():
-        values = getattr(seed_config, field_name)
+        if instance:
+            logger.info(f"{model_class.__name__} already exists: {instance}")
+        else:
+            instance = model_class(id=record_id, **kwargs)
+            self.db_session.add(instance)
+            logger.info(f"Created {model_class.__name__}: {instance}")
 
-        if not values:
-            continue
+    def seed_factory(self, model_class: BaseModel, filename: str, identifier: str):
+        """
+        Seed data into the database for a specific model.
+        Read from the filename and create a record in the database.
+        """
+        data = load_yaml(os.path.join(self.seed_config_dir, filename))
+        data = data.get(filename.split(".")[0], [])
+        logger.debug(f"Seeding {model_class.__name__} with {data}")
 
-        if len(values) == 0:
-            continue
+        for record_data in data:
+            record_identifier = record_data.get(identifier)
+            self._get_or_create(model_class, record_identifier, **record_data)
 
-        for value in values:
-            # Call to the create function in the service layer
-            # The create function should insert new records into the database
-            # And return the error if any
-            err = functions[field_name](value)  # BUG: missing user_id
-            if err:
-                logger.warning(f"Cannot seed {field_name} with value {value}")
+    def run(self):
+        # If the file users.yaml exists, seed with that file
+        if "users.yaml" in os.listdir(self.seed_config_dir):
+            self.seed_factory(User, "users.yaml", "email")
+        self.db_session.flush()
+
+        # If the file agents.yaml exist, seed with that file
+        if "agents.yaml" in os.listdir(self.seed_config_dir):
+            self.seed_factory(Agent, "agents.yaml", "name")
+        self.db_session.flush()
+
+        self.db_session.commit()
 
 
 def seed_db():
@@ -59,26 +88,12 @@ def seed_db():
     2. Initialize the SeedConfiguration object
     3. Call the seed_factory function with the SeedConfiguration object
     """
-    # The seedings dictionary is used to map the entity name to the seeding function
-    # Usually is the create function in the repository layer
     db_session = next(get_db_session())
-    functions = {
-        "agents": AgentService(db_session=db_session).create_agent,
-        # "users": UserRepository.create_user,
-    }
-
-    seed_config_dir = os.getenv("SEED_CONFIG_DIR")
-    if not seed_config_dir:
-        logger.warning("Environment SEED_CONFIG_DIR is not set, ignore seeding process")
-        return
-
-    # Read all files in the seed config directory, and load the seed config
-    logger.info(f"Reading seed config from {seed_config_dir}")
-    for file_name in os.listdir(seed_config_dir):
-        if file_name.endswith(".yaml"):
-            logger.info(f"Loading seed data from {file_name}")
-            objects = load_yaml(os.path.join(seed_config_dir, file_name))
-            config_partial = SeedConfiguration.model_validate(objects)
-            seed_factory(config_partial, functions)
-
-    db_session.close()
+    try:
+        seeder = DatabaseSeeder(db_session)
+        seeder.run()
+    except Exception as e:
+        logger.warning(f"Error seeding the database: {e}", exc_info=True)
+        db_session.rollback()
+    finally:
+        db_session.close()
