@@ -141,6 +141,8 @@ services:
         condition: service_healthy
       index:
         condition: service_healthy
+    expose:
+      - "5000"
     ports:
       - "5000:5000"
     #INFO: require 2 env files
