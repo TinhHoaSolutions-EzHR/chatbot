@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from llama_index.core import SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex
 
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
@@ -20,6 +22,8 @@ from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import init_llm_configurations
 
 logger = get_logger(__name__)
+
+index = None
 
 
 @asynccontextmanager
@@ -40,6 +44,12 @@ async def lifespan(app: FastAPI):
         llm_model=Constants.LLM_MODEL,
         embedding_model=Constants.EMBEDDING_MODEL,
     )
+
+    # TODO: Remove it as this is just a work around
+    global index
+
+    documents = SimpleDirectoryReader("examples/").load_data()
+    index = VectorStoreIndex.from_documents(documents=documents)
 
     try:
         yield
@@ -64,10 +74,7 @@ def create_app() -> FastAPI:
         description=Constants.FASTAPI_DESCRIPTION,
         lifespan=lifespan,
     )
-    origins = [
-        "http://localhost:3000",
-        "http://localhost:8080",
-    ]
+    origins = ["http://localhost:3000"]  # WARN: Update this to the actual frontend URL
 
     app.add_middleware(
         CORSMiddleware,

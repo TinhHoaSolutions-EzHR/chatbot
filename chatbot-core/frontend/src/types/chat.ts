@@ -1,3 +1,5 @@
+import { ITimestampResponse } from './common';
+
 export enum ChatSessionSharedStatus {
   PUBLIC = 'public',
   PRIVATE = 'private',
@@ -9,16 +11,13 @@ export enum ChatMessageType {
   ASSISTANT = 'assistant',
 }
 
-export interface IChatSession {
+export interface IChatSession extends ITimestampResponse {
   id: string;
   description?: string;
   user_id: string;
   agent_id?: string;
   folder_id?: string | null;
   shared_status: ChatSessionSharedStatus;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: string;
 }
 
 export interface IChatSessionRequest {
@@ -42,7 +41,7 @@ export interface IChatMessageRequest {
   chat_message_request_type: ChatMessageRequestType;
 }
 
-export interface IChatMessageResponse {
+export interface IChatMessageResponse extends ITimestampResponse {
   id: string;
   chat_session_id: string;
   message: string;
@@ -50,14 +49,20 @@ export interface IChatMessageResponse {
   parent_message_id?: string;
   child_message_id?: string;
   is_sensitive: boolean;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface IChatSessionDetail extends IChatSession {
-  messages?: IChatMessageResponse[];
+  chat_messages: IChatMessageResponse[];
 }
 
+/*
+ * The event received from server through SSE after user create chat message.
+ * These events can be:
+ * - metadata: the user's request message.
+ * - delta: the server's encoding chat response.
+ * - stream_complete: the signal indicating the SSE close, and return the chat response object but exclude the message field.
+ * - error: error occurred on the server side.
+ */
 export enum ChatMessageStreamEvent {
   METADATA = 'metadata',
   DELTA = 'delta',
@@ -82,6 +87,12 @@ export type ChatStreamChunk =
       event: ChatMessageStreamEvent.ERROR;
       data: string;
     };
+
+export enum StreamingMessageState {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  STREAMING = 'streaming',
+}
 
 export interface IFolder {
   id: string;

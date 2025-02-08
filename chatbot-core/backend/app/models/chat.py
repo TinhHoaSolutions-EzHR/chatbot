@@ -20,11 +20,15 @@ from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import NVARCHAR
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.engine import Connection
+from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapper
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
@@ -122,7 +126,7 @@ class ChatSession(Base):
     folder_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
         ForeignKey("folder.id"), nullable=True
     )
-    description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(NVARCHAR(255), nullable=True)
     shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
         SQLAlchemyEnum(ChatSessionSharedStatus, native_enum=False),
         nullable=False,
@@ -171,12 +175,12 @@ class ChatMessage(Base):
         ForeignKey("chat_session.id", ondelete="CASCADE"), nullable=False
     )
     parent_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
     )
     child_message_id: Mapped[Optional[UNIQUEIDENTIFIER]] = mapped_column(
-        ForeignKey(CHAT_MESSAGES_ID), nullable=True
+        UNIQUEIDENTIFIER(as_uuid=True), nullable=True
     )
-    message: Mapped[str] = mapped_column(Text, nullable=False)
+    message: Mapped[str] = mapped_column(NVARCHAR(), nullable=False)
     token_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     message_type: Mapped[ChatMessageType] = mapped_column(
         SQLAlchemyEnum(ChatMessageType, native_enum=False),
@@ -431,3 +435,21 @@ class ChatStreamResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+@listens_for(ChatMessage, "after_insert")
+def chat_message_after_insert(mapper: Mapper, connection: Connection, target: ChatMessage) -> None:
+    """
+    After insert event listener for chat message.
+
+    Args:
+        mapper (Mapper): Mapper instance to map a class to a database table.
+        connection (Connection): Connection to the database.
+        target (ChatMessage): Chat message table.
+    """
+    # Update the updated_at timestamp of the corresponding chat session
+    connection.execute(
+        ChatSession.__table__.update()
+        .where(ChatSession.id == target.chat_session_id)
+        .values(updated_at=datetime.now(timezone.utc))
+    )

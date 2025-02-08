@@ -1,37 +1,125 @@
 import { create } from 'zustand';
 
+import { IChatMessageResponse, StreamingMessageState } from '@/types/chat';
+
 interface IChatStore {
-  message: string;
-  isNewMessage: boolean;
-  chatSessionId: string;
+  userMessage: string;
+  isNewChat: boolean;
+  chatSession: {
+    [id: string]: {
+      messages: IChatMessageResponse[];
+      streamState: StreamingMessageState;
+      streamingMessage: string;
+      abortController: AbortController | null;
+    };
+  };
 
-  setMessage(message: string): void;
-  setIsNewMessage(isNewMessage: boolean): void;
-  setChatSessionId(chatSessionId: string): void;
+  initChatSessionIfNotExist(chatSessionId: string): void;
+  addMessage(chatSessionId: string, message: IChatMessageResponse): void;
+  setStreamState(chatSessionId: string, streamState: StreamingMessageState): void;
+  setStreamingMessage(chatSessionId: string, messageChunk: string): void;
+  setStreamAbortController(chatSessionId: string, abortController: AbortController | null): void;
+  cancelStream(chatSessionId: string): void;
 
-  clearChatStore(): void;
+  setUserMessage(message: string): void;
+  setIsNewChat(isNewChat: boolean): void;
+
+  clearUserNewChat(): void;
 }
 
-const DEFAULT_CHAT_STORE_VALUES = {
-  message: '',
-  isNewMessage: false,
-  chatSessionId: '',
+const DEFAULT_USER_CHAT_VALUES = {
+  userMessage: '',
+  isNewChat: false,
 };
 
-export const useChatStore = create<IChatStore>(set => ({
-  ...DEFAULT_CHAT_STORE_VALUES,
+export const useChatStore = create<IChatStore>((set, get) => ({
+  ...DEFAULT_USER_CHAT_VALUES,
+  chatSession: {},
 
-  setMessage(message) {
-    set({ message });
+  initChatSessionIfNotExist(chatSessionId) {
+    const { chatSession } = get();
+
+    if (chatSession[chatSessionId]) {
+      return;
+    }
+
+    chatSession[chatSessionId] = {
+      messages: [],
+      streamState: StreamingMessageState.IDLE,
+      streamingMessage: '',
+      abortController: null,
+    };
+
+    set({ chatSession });
   },
-  setIsNewMessage(isNewMessage) {
-    set({ isNewMessage });
+  addMessage(chatSessionId, message) {
+    const { chatSession } = get();
+
+    if (!chatSession[chatSessionId]) {
+      throw new Error();
+    }
+
+    const messages = chatSession[chatSessionId].messages;
+
+    chatSession[chatSessionId].messages = [...messages, message];
+
+    set({ chatSession });
   },
-  setChatSessionId(chatSessionId) {
-    set({ chatSessionId });
+  setStreamState(chatSessionId, streamState) {
+    const { chatSession } = get();
+
+    if (!chatSession[chatSessionId]) {
+      throw new Error();
+    }
+
+    chatSession[chatSessionId].streamState = streamState;
+
+    set({ chatSession });
+  },
+  setStreamingMessage(chatSessionId, messageChunk) {
+    const { chatSession } = get();
+
+    if (!chatSession[chatSessionId]) {
+      throw new Error();
+    }
+
+    chatSession[chatSessionId].streamingMessage = messageChunk;
+
+    set({ chatSession });
+  },
+  setStreamAbortController(chatSessionId, abortController) {
+    const { chatSession } = get();
+
+    if (!chatSession[chatSessionId]) {
+      throw new Error();
+    }
+
+    chatSession[chatSessionId].abortController = abortController;
+
+    set({ chatSession });
+  },
+  cancelStream(chatSessionId) {
+    const { chatSession } = get();
+    const abortController = chatSession[chatSessionId].abortController;
+
+    if (!chatSession[chatSessionId] || !abortController) {
+      throw new Error();
+    }
+
+    abortController.abort();
+    chatSession[chatSessionId].abortController = null;
+
+    set({ chatSession });
   },
 
-  clearChatStore() {
-    set({ ...DEFAULT_CHAT_STORE_VALUES });
+  setUserMessage(message) {
+    set({ userMessage: message });
+  },
+  setIsNewChat(isNewChat) {
+    set({ isNewChat });
+  },
+
+  clearUserNewChat() {
+    set({ ...DEFAULT_USER_CHAT_VALUES });
   },
 }));

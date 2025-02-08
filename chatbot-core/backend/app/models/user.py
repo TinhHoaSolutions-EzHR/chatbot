@@ -15,6 +15,7 @@ from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import ForeignKey
+from sqlalchemy import NVARCHAR
 from sqlalchemy import String
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import Mapped
@@ -52,7 +53,7 @@ class User(Base):
         UNIQUEIDENTIFIER(as_uuid=True), primary_key=True, default=uuid4
     )
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    name: Mapped[Optional[str]] = mapped_column(NVARCHAR(255), nullable=True)
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     hashed_password: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     role: Mapped[UserRole] = mapped_column(

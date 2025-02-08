@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { SidebarMenuButton, SidebarMenuSubButton } from '../ui/sidebar';
 
 interface IChatSessionButtonProps {
+  id: string;
   subItem?: boolean;
   isOpenDropdown: boolean;
   isDropdownHovered: boolean;
@@ -20,7 +21,6 @@ export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
   onClick,
 }) => {
   const SidebarButton = subItem ? SidebarMenuSubButton : SidebarMenuButton;
-
   return (
     <SidebarButton asChild onClick={onClick}>
       <div

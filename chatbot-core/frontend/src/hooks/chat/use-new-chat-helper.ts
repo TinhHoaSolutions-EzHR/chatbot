@@ -1,4 +1,4 @@
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { QueryParams, Route } from '@/constants/misc';
@@ -6,27 +6,33 @@ import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
 import { useCreateChatSession } from '@/hooks/chat/use-create-chat-session';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
 
-export const useNewChatHelper = (clearUserInput: () => void) => {
+interface INewChatHelperProps {
+  chatSessionId: string | null;
+  disabled?: boolean;
+  onSuccess?(): void;
+}
+
+export const useNewChatHelper = (props?: INewChatHelperProps) => {
+  const { disabled, onSuccess, chatSessionId } = props || {};
   const router = useRouter();
 
-  const setMessage = useChatStore(state => state.setMessage);
-  const setIsNewMessage = useChatStore(state => state.setIsNewMessage);
-  const setChatSessionId = useChatStore(state => state.setChatSessionId);
-
-  const searchParams = useSearchParams();
-  const chatSessionId = searchParams.get(QueryParams.CHAT_SESSION_ID);
+  const setUserMessage = useChatStore(state => state.setUserMessage);
+  const setIsNewChat = useChatStore(state => state.setIsNewChat);
 
   const selectedAgent = useGetSelectedAgent();
 
   const { mutate } = useCreateChatSession();
 
-  const updateNewChat = (userInput: string, chatSessionId: string) => {
-    setMessage(userInput);
-    setIsNewMessage(true);
-    setChatSessionId(chatSessionId);
+  const updateNewChat = (userInput: string, isNewChat: boolean) => {
+    setUserMessage(userInput);
+    setIsNewChat(isNewChat);
   };
 
   const onNewChat = async (userInput: string) => {
+    if (disabled) {
+      return;
+    }
+
     if (!userInput) {
       toast.error('Please enter your input first.');
       return;
@@ -40,8 +46,9 @@ export const useNewChatHelper = (clearUserInput: () => void) => {
 
       mutate(selectedAgent.id, {
         onSuccess(newChatSession) {
-          updateNewChat(userInput, newChatSession.id);
-          clearUserInput();
+          // User creating a new chat
+          updateNewChat(userInput, true);
+          onSuccess?.();
           router.push(`${Route.CHAT}/?${QueryParams.CHAT_SESSION_ID}=${newChatSession.id}`);
         },
         onError() {
@@ -55,8 +62,8 @@ export const useNewChatHelper = (clearUserInput: () => void) => {
     }
 
     // Case when user is in a chat session
-    updateNewChat(userInput, chatSessionId);
-    clearUserInput();
+    updateNewChat(userInput, false);
+    onSuccess?.();
   };
 
   return {

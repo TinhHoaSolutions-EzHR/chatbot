@@ -10,6 +10,7 @@ class Secrets:
     MSSQL_USER = os.getenv("MSSQL_USER", "SA")
     MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "P&ssword123")
     MSSQL_DB = os.getenv("MSSQL_DB", "chatbot_core")
+    MSSQL_PORT = int(os.getenv("MSSQL_PORT", 1433))
 
     # Minio Credentials
     MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "127.0.0.1:9000")

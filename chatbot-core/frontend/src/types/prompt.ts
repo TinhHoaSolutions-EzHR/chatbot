@@ -1,8 +1,7 @@
-export interface IPrompt {
+import { ITimestampResponse } from './common';
+
+export interface IPrompt extends ITimestampResponse {
   id: string;
   name: string;
   prompt: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string;
 }

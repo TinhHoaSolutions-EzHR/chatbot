@@ -1,13 +1,15 @@
-from collections.abc import Generator
+import asyncio
+from collections.abc import AsyncGenerator
+from collections.abc import Callable
 from typing import List
 from typing import Optional
 from typing import Tuple
 
-from llama_index.core.chat_engine import SimpleChatEngine
+from llama_index.core.chat_engine import CondensePlusContextChatEngine
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
-from llama_index.llms.openai import OpenAI
 from sqlalchemy.orm import Session
 
+from app.databases.qdrant import QdrantConnector
 from app.integrations.llama_index.utils import llamaify_messages
 from app.models import ChatFeedback
 from app.models import ChatMessage
@@ -28,19 +30,89 @@ from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
 
+SYSTEM_PROMPT = """
+You are a human resources professional at a company that needs to quickly find information in its policy documents.
+
+Guidelines:
+- Provide information explicitly stated in policy documents
+- For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
+- No assumptions or interpretations about policy details
+- Do not explain
+- Your primary language is Vietnamese
+- If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0919 397 169 (Ms. Nhã) hoặc email hr@giaiphaptinhhoa.com"
+- If the response is empty, please answer with the knowledge you have
+
+Let's work this out in a step by step way to be sure we have the right answer.
+Answer as the tone of a human resources professional, be polite and helpful."""
+
+CONTEXT_PROMPT = """
+The following is a friendly conversation between an employee and a human resources professional.
+The professional is talkative and provides lots of specific details from her context.
+If the professional does not know the answer to a question, she truthfully says she does not know.
+
+Here are the relevant documents for the context:
+'''
+{context_str}
+'''
+
+## Instruction
+Based on the above documents, provide a detailed answer for the employee question below.
+Answer "don't know" if not present in the document."""
+
+CONTEXT_REFINE_PROMPT = """
+The following is a friendly conversation between an employee and a human resources professional.
+The professional is talkative and provides lots of specific details from her context.
+If the professional does not know the answer to a question, she truthfully says she does not know.
+
+Here are the relevant documents for the context:
+'''
+{context_msg}
+'''
+
+Existing Answer:
+'''
+{existing_answer}
+'''
+
+## Instruction
+Refine the existing answer using the provided context to assist the user.
+If the context isn't helpful, just repeat the existing answer and nothing more."""
+
+CONDENSE_PROMPT = """
+Given the following conversation between an employee and a human resources professional and a follow up question from the employee.
+Your task is to firstly summarize the chat history and secondly condense the follow up question into a standalone question.
+
+Chat History:
+'''
+{chat_history}
+'''
+
+Follow Up Input:
+'''
+{question}
+'''
+
+Output format: a standalone question.
+
+Your response:"""
+
 
 class ChatService(BaseService):
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session: Session, qdrant_connector: Optional[QdrantConnector] = None):
         """
         Chat service class for handling chat-related operations.
 
         Args:
             db_session(Session): Database session
+            qdrant_connector(QdrantConnector): Vector database connection. Defaults to None.
         """
         super().__init__(db_session=db_session)
 
         # Define repositories
         self._chat_repository = ChatRepository(db_session=self._db_session)
+
+        # Define external storage's connectors
+        self._qdrant_connector = qdrant_connector
 
     def get_chat_sessions(self, user_id: str) -> Tuple[List[ChatSession], Optional[APIError]]:
         """
@@ -260,14 +332,15 @@ class ChatService(BaseService):
 
         return new_chat_request, None
 
-    def _generate_chat_response(
+    async def _generate_chat_response(
         self,
         chat_message_request: ChatMessageRequest,
         chat_session_id: str,
         current_request_id: str,
         pre_register_chat_response: ChatMessage,
         chat_history: List[LlamaIndexChatMessage],
-    ) -> Generator[str, None, None]:
+        is_client_disconnected: Callable[[], bool],
+    ) -> AsyncGenerator[str, None, None]:
         """
         Generate a streaming chat response message.
         Uses the input message to query the LLM model and generate a streaming response message.
@@ -278,6 +351,7 @@ class ChatService(BaseService):
             current_request_id (str): Current request message ID.
             pre_register_chat_response (ChatMessage): Pre-registered chat response message.
             chat_history (List[LlamaIndexChatMessage]): The LlamaIndex chat history of the chat session.
+            is_client_disconnected (Callable[[], bool]): Function to check if the client is disconnected.
 
         Yields:
             str: A chunk of the response message generated by the LLM model.
@@ -286,14 +360,30 @@ class ChatService(BaseService):
             # Convert chat history to LlamaIndex chat messages
             chat_history = llamaify_messages(chat_messages=chat_history)
 
-            # TODO: Replace by own LLM retrieval process
-            chat_engine = SimpleChatEngine.from_defaults(
+            # TODO: Remove it as this is just a workaround solution
+            from app.main import index
+
+            # Define retriever
+            # index: VectorStoreIndex = VectorStoreIndex.from_vector_store(
+            #     vector_store=QdrantVectorStore(
+            #         client=self._qdrant_connector.client,
+            #         collection_name=Constants.LLM_QDRANT_COLLECTION,
+            #     )
+            # )
+            retriever = index.as_retriever()
+
+            # Define chat engine
+            chat_engine = CondensePlusContextChatEngine.from_defaults(
+                retriever=retriever,
                 chat_history=chat_history,
-                system_prompt="You are a helpful assistant that can provide information about the company and its privacy policy.",
-                llm=OpenAI(model="gpt-4o-mini", temperature=0.2, max_tokens=250),
+                system_prompt=SYSTEM_PROMPT,
+                context_prompt=CONTEXT_PROMPT,
+                context_refine_prompt=CONTEXT_REFINE_PROMPT,
+                condense_prompt=CONDENSE_PROMPT,
+                verbose=True,
             )
 
-            response_streaming = chat_engine.stream_chat(
+            response_streaming = await chat_engine.astream_chat(
                 message=chat_message_request.message,
             )
 
@@ -301,10 +391,26 @@ class ChatService(BaseService):
             accumulated_response = []
 
             # Stream each chunk as it arrives
-            for chunk in response_streaming.response_gen:
-                accumulated_response.append(chunk)
+            try:
+                async for chunk in response_streaming.async_response_gen():
+                    if await is_client_disconnected():
+                        break
+
+                    accumulated_response.append(chunk)
+                    yield ChatStreamResponse(
+                        event=ChatMessageStreamEvent.DELTA, content=chunk
+                    ).as_json()
+            except asyncio.CancelledError:
+                logger.warning(
+                    f"Client disconnected - Chat session: {chat_session_id}, Chat request: {current_request_id}"
+                )
+            except Exception as e:
+                logger.error(
+                    f"Error streaming chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
+                )
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.DELTA, content=chunk
+                    event=ChatMessageStreamEvent.ERROR,
+                    content=f"Error streaming chat response: {e}",
                 ).as_json()
 
             # Create final response message with complete text
@@ -318,7 +424,7 @@ class ChatService(BaseService):
                 ).as_json()
 
             # Create final response message with complete text
-            complete_response = "".join(accumulated_response)
+            complete_response = "".join(accumulated_response) if accumulated_response else ""
             pre_register_chat_response.message = complete_response
 
             # Store the complete message in the database
@@ -507,13 +613,14 @@ class ChatService(BaseService):
 
         return current_chat_request, None
 
-    def _handle_new_chat_message(
+    async def _handle_new_chat_message(
         self,
         chat_message_request: ChatMessageRequest,
         chat_session: ChatSession,
         chat_session_id: str,
         user_id: str,
-    ) -> Generator[str, None, None]:
+        is_client_disconnected: Callable[[], bool],
+    ) -> AsyncGenerator[str, None, None]:
         """
         Handle a new chat message in the chat session with streaming support.
 
@@ -522,6 +629,7 @@ class ChatService(BaseService):
             chat_session (ChatSession): Chat session object.
             chat_session_id (str): Chat session ID.
             user_id (str): User ID.
+            is_client_disconnected (Callable[[], bool]): Function to check if the client is disconnected.
 
         Yields:
             str: A chunk of the response message generated by the LLM model.
@@ -576,12 +684,13 @@ class ChatService(BaseService):
             ).as_json()
 
             # Generate and stream chat response message in chunks
-            for chunk in self._generate_chat_response(
+            async for chunk in self._generate_chat_response(
                 chat_message_request=chat_message_request,
                 chat_session_id=chat_session_id,
                 current_request_id=chat_request.id,
                 pre_register_chat_response=chat_response,
                 chat_history=chat_history,
+                is_client_disconnected=is_client_disconnected,
             ):
                 yield chunk
 
@@ -640,9 +749,13 @@ class ChatService(BaseService):
 
         return None
 
-    def generate_stream_chat_message(
-        self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
-    ) -> Generator[str, None, None]:
+    async def generate_stream_chat_message(
+        self,
+        chat_message_request: ChatMessageRequest,
+        chat_session_id: str,
+        user_id: str,
+        is_client_disconnected: Callable[[], bool],
+    ) -> AsyncGenerator[str, None, None]:
         """
         Generate a streaming chat message for the new message request.
 
@@ -650,6 +763,7 @@ class ChatService(BaseService):
             chat_message_request (ChatMessageRequest): Chat message request object.
             chat_session_id (str): Chat session ID.
             user_id (str): User ID.
+            is_client_disconnected (Callable[[], bool]): Function to check if the client is disconnected.
 
         Yields:
             str: A chunk of the response message generated by the LLM model.
@@ -681,11 +795,12 @@ class ChatService(BaseService):
             logger.info("Handling new chat message")
 
             # Handle new streaming response message
-            for chunk in self._handle_new_chat_message(
+            async for chunk in self._handle_new_chat_message(
                 chat_message_request=chat_message_request,
                 chat_session=chat_session,
                 chat_session_id=chat_session_id,
                 user_id=user_id,
+                is_client_disconnected=is_client_disconnected,
             ):
                 yield chunk
 

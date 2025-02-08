@@ -37,6 +37,7 @@ class MSSQLConnector(BaseConnector[Engine]):
                 user=Secrets.MSSQL_USER,
                 password=Secrets.MSSQL_SA_PASSWORD,
                 host=Secrets.MSSQL_HOST,
+                port=Secrets.MSSQL_PORT,
                 db_name=Secrets.MSSQL_DB,
                 driver=Constants.MSSQL_DRIVER,
             )

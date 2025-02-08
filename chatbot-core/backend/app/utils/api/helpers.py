@@ -1,24 +1,27 @@
-import hashlib
+import asyncio
 import logging.handlers
 import os
 import sys
+from collections.abc import Callable
 from datetime import datetime
-from io import BytesIO
 from typing import Annotated
 from typing import List
 from typing import Optional
 from typing import Type
 
 import pdfplumber
-import pydenticon
 from celery import current_task
 from fastapi import File
+from fastapi import Request
 from fastapi import UploadFile
 from llama_index.core import Document
 
 from app.settings import Constants
 from app.settings import Secrets
 from app.utils.api.error_handler import PdfParsingError
+
+# TODO: Replace this logger by own logger after moving logger logic to separate module
+logger = logging.getLogger(__name__)
 
 
 def remove_vietnamese_accents(input_str: str) -> str:
@@ -314,38 +317,6 @@ def construct_file_path(object_name: str, user_id: str = None) -> str:
     return file_path
 
 
-def generate_avatar_image(data: str) -> BytesIO:
-    """
-    Generate an avatar image.
-
-    Args:
-        data (str): Data to generate the avatar.
-
-    Returns:
-        BytesIO: Avatar image.
-    """
-    generator = pydenticon.Generator(
-        rows=5,
-        columns=5,
-        digest=hashlib.sha1,
-        foreground=Constants.AGENT_AVATAR_IDENTICON_FOREGROUND_COLOR,
-        background=Constants.AGENT_AVATAR_IDENTICON_BACKGROUND_COLOR,
-    )
-
-    # Generate the image
-    image_data = generator.generate(
-        data=data,
-        width=Constants.AGENT_AVATAR_IDENTICON_WIDTH,
-        height=Constants.AGENT_AVATAR_IDENTICON_HEIGHT,
-        output_format=Constants.AGENT_AVATAR_IDENTICON_OUTPUT_FORMAT,
-    )
-
-    # Convert to BinaryIO
-    agent_avatar = BytesIO(image_data)
-
-    return agent_avatar
-
-
 def get_database_url() -> str:
     """
     Get the database URL.
@@ -364,8 +335,35 @@ def get_database_url() -> str:
             user=Secrets.MSSQL_USER,
             password=Secrets.MSSQL_SA_PASSWORD,
             host=Secrets.MSSQL_HOST,
+            port=Secrets.MSSQL_PORT,
             db_name=Secrets.MSSQL_DB,
             driver=Constants.MSSQL_DRIVER,
         )
 
     return database_url
+
+
+def check_client_disconnected(request: Request) -> Callable[[], bool]:
+    """
+    Check if the client is disconnected when streaming response.
+
+    Args:
+        request (Request): Request object.
+
+    Returns:
+        Callable[[], bool]: Function to check if the client is disconnected.
+    """
+
+    async def is_client_disconnected() -> bool:
+        try:
+            return await request.is_disconnected()
+        except asyncio.TimeoutError:
+            logger.warning("Timeout error while checking if the client is disconnected")
+            return True
+        except Exception as e:
+            logger.error(
+                f"An unexpected error occurred while checking if the client is disconnected: {str(e)}"
+            )
+            return True
+
+    return is_client_disconnected
