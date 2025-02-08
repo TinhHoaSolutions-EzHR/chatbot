@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from app.databases.mssql import get_db_session
 from app.models.agent import Agent
 from app.models.user import User
+from app.settings.constants import Constants
 from app.utils.api.helpers import get_logger
 from app.utils.api.helpers import load_yaml
 from app.utils.user.uuid import generate_uuid
@@ -19,7 +20,7 @@ logger = get_logger(__name__)
 
 
 class SeederConfig(BaseSettings):
-    SEED_ON_STARTUP: bool = os.getenv("SEED_ON_STARTUP", False)
+    SEED_ON_STARTUP: bool = Constants.SEED_ON_STARTUP
 
 
 class DatabaseSeeder:

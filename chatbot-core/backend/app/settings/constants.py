@@ -38,6 +38,10 @@ class Constants:
     LOGGER_MAX_BYTES = 10485760
     LOGGER_BACKUP_COUNT = 5
 
+    # Seeding Configuration
+    SEED_CONFIG_DIR = os.getenv("SEED_CONFIG_DIR", "/app/data/seeds")
+    SEED_ON_STARTUP = os.getenv("SEED_ON_STARTUP", False)
+
     # Minio Configuration
     MINIO_DOCUMENT_BUCKET = os.getenv("MINIO_DOCUMENT_BUCKET", "documents")
     MINIO_IMAGE_BUCKET = os.getenv("MINIO_IMAGE_BUCKET", "images")
