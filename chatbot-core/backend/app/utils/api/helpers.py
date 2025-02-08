@@ -1,13 +1,16 @@
 import asyncio
-import logging
+import logging.handlers
 import os
 import sys
 from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated
 from typing import List
+from typing import Optional
+from typing import Type
 
 import pdfplumber
+from celery import current_task
 from fastapi import File
 from fastapi import Request
 from fastapi import UploadFile
@@ -60,6 +63,7 @@ def parse_pdf(
     return documents
 
 
+# TODO: Separate the logger configuration into a separate module
 class ColoredFormatter(logging.Formatter):
     COLORS = {
         "DEBUG": "\033[36m",  # Cyan
@@ -73,7 +77,7 @@ class ColoredFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """
-        Format the log record.
+        Format the log record when logging to the console.
 
         Args:
             record (logging.LogRecord): Log record.
@@ -81,80 +85,207 @@ class ColoredFormatter(logging.Formatter):
         Returns:
             str: Formatted log message.
         """
-        # Get the log level name
         levelname = record.levelname
         if levelname in self.COLORS:
             prefix = self.COLORS[levelname]
             suffix = "\033[0m"
 
-            # Format the log message
             formatted_message = super().format(record)
             level_display = f"{prefix}{levelname}{suffix}:"
-            return f"{level_display.ljust(18)} {formatted_message}"
+            return f"{level_display.ljust(4)} {formatted_message}"
 
         return super().format(record)
 
 
+class PlainFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record when logging to a file.
+
+        Args:
+            record (logging.LogRecord): Log record.
+
+        Returns:
+            str: Formatted log message.
+        """
+        levelname = record.levelname
+        level_display = f"{levelname}:"
+        formatted_message = super().format(record)
+        return f"{level_display.ljust(4)} {formatted_message}"
+
+
+class CeleryTaskColoredFormatter(ColoredFormatter):
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record of a Celery task when logging to the console.
+
+        Args:
+            record (logging.LogRecord): Log record.
+
+        Returns:
+            str: Formatted log message.
+        """
+        task = current_task
+        if task and task.request:
+            record.__dict__.update(task_id=task.request.id, task_name=task.name)
+            record.msg = f"[{task.name}({task.request.id})] {record.msg}"
+
+        return super().format(record)
+
+
+class CeleryTaskPlainFormatter(PlainFormatter):
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format the log record of a Celery task when logging to a file.
+
+        Args:
+            record (logging.LogRecord): Log record.
+
+        Returns:
+            str: Formatted log message.
+        """
+        task = current_task
+        if task and getattr(task, "request", None):
+            record.__dict__.update(task_id=task.request.id, task_name=task.name)
+            record.msg = f"[{task.name}({task.request.id})] {record.msg}"
+
+        return super().format(record)
+
+
+def setup_logging_handler(
+    logger: logging.Logger,
+    handler: logging.Handler,
+    formatter: logging.Formatter,
+    log_level: str | int,
+    include_uvicorn: bool = True,
+    uvicorn_logger: Optional[logging.Logger] = None,
+) -> None:
+    """
+    Set up a logging handler.
+
+    Args:
+        logger (logging.Logger): Logger instance.
+        handler (logging.Handler): Logging handler.
+        formatter (logging.Formatter): Logging formatter.
+        log_level (str | int): Log level.
+        log_file_path (str): Log file path. Defaults to None.
+        include_uvicorn (bool): Include Uvicorn logs. Defaults to True.
+        uvicorn_logger (logging.Logger): Uvicorn logger. Defaults to None.
+    """
+    # Set the log level and formatter for the handler
+    handler.setLevel(log_level)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    # If Uvicorn logs should be included, configure the Uvicorn logger.
+    if include_uvicorn and uvicorn_logger:
+        uvicorn_logger.addHandler(handler)
+
+
 def get_logger(
-    name: str,
+    name: Optional[str] = None,
+    from_logger: Optional[logging.Logger] = None,
     log_level: str | int = Constants.LOGGER_LOG_LEVEL,
     log_to_console: bool = Constants.LOGGER_LOG_TO_CONSOLE,
     log_to_file: bool = Constants.LOGGER_LOG_TO_FILE,
     log_file_path: str = Constants.LOGGER_LOG_FILE_PATH,
     max_bytes: int = Constants.LOGGER_MAX_BYTES,
     backup_count: int = Constants.LOGGER_BACKUP_COUNT,
+    console_formatter: Type[logging.Formatter] = ColoredFormatter,
+    file_formatter: Type[logging.Formatter] = PlainFormatter,
+    include_uvicorn: bool = True,
 ) -> logging.Logger:
     """
-    Get the logger instance
+    Get a logger instance with optional console and file handlers.
 
     Args:
         name (str): Name of the logger.
-        log_level (str | int): Log level.
-        log_to_console (bool): Log to console.
-        log_to_file (bool): Log to file.
-        log_file_path (str): Log file path.
-        max_bytes (int): Max bytes.
-        backup_count (int): Backup count.
+        from_logger (logging.Logger): Existing logger instance to inherit from. Defaults to None.
+        log_level (str | int): Log level. Defaults to INFO.
+        log_to_console (bool): Log to console. Defaults to True.
+        log_to_file (bool): Log to file. Defaults to False.
+        log_file_path (str): Log file path. Defaults to /var/log/{PROJECT_NAME}.log.
+        max_bytes (int): Max bytes. Defaults to 10MB.
+        backup_count (int): Backup count. Defaults to 5.
+        console_formatter (logging.Formatter): Console formatter. Defaults to ColoredFormatter.
+        file_formatter (logging.Formatter): File formatter. Defaults to PlainFormatter.
+        include_uvicorn (bool): Include uvicorn logs. Defaults to True.
 
     Returns:
         logging.Logger: Logger instance.
     """
-    logger = logging.getLogger(name=name)
-    logger.setLevel(log_level)
+    # Get the logger instance either from the existing logger or create a new one.
+    logger: logging.Logger = None
+    if not from_logger:
+        name = name or __name__
+        logger = logging.getLogger(name=name)
+        logger.setLevel(log_level)
+    else:
+        logger = from_logger
 
-    uvicorn_logger = logging.getLogger("uvicorn.access")
-    uvicorn_logger.handlers = []
-    uvicorn_logger.setLevel(log_level)
+    # If Uvicorn logs should be included, configure the Uvicorn logger.
+    if include_uvicorn:
+        uvicorn_logger = logging.getLogger("uvicorn.access")
+        uvicorn_logger.handlers = []
+        uvicorn_logger.setLevel(log_level)
 
+    # Check if the logger already has handlers configured.
     if not logger.hasHandlers():
-        formatter = ColoredFormatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%m/%d/%Y %I:%M:%S %p",
-        )
-
+        # Set up a console handler.
         if log_to_console:
             console_handler = logging.StreamHandler(sys.stdout)
-            console_handler.setLevel(log_level)
-            console_handler.setFormatter(formatter)
-            logger.addHandler(console_handler)
-
-            if uvicorn_logger:
-                uvicorn_logger.addHandler(console_handler)
-
-        if log_to_file:
-            file_handler = logging.handlers.RotatingFileHandler(
-                log_file_path,
-                maxBytes=max_bytes,
-                backupCount=backup_count,
+            setup_logging_handler(
+                logger=logger,
+                handler=console_handler,
+                formatter=console_formatter(
+                    fmt="%(asctime)s %(filename)30s %(lineno)4s: %(message)s",
+                    datefmt="%m/%d/%Y %I:%M:%S %p",
+                ),
+                log_level=log_level,
+                include_uvicorn=include_uvicorn,
+                uvicorn_logger=uvicorn_logger,
             )
-            file_handler.setLevel(log_level)
-            file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
 
-            if uvicorn_logger:
-                uvicorn_logger.addHandler(console_handler)
+        # Set up a file handler.
+        if log_to_file and log_file_path:
+            # Verify the log file path exists
+            verify_path_exists(path=os.path.dirname(log_file_path), create=True)
+
+            file_handler = logging.handlers.RotatingFileHandler(
+                filename=log_file_path, maxBytes=max_bytes, backupCount=backup_count
+            )
+            setup_logging_handler(
+                logger=logger,
+                handler=file_handler,
+                formatter=file_formatter(
+                    "%(asctime)s %(filename)30s %(lineno)4s: %(message)s",
+                    datefmt="%m/%d/%Y %I:%M:%S %p",
+                ),
+                log_level=log_level,
+                include_uvicorn=include_uvicorn,
+                uvicorn_logger=uvicorn_logger,
+            )
 
     return logger
+
+
+def verify_path_exists(path: str, create: bool = False) -> None:
+    """
+    Verify if a path exists.
+
+    Args:
+        path (str): Path to verify.
+        create (bool): Create the path if it does not exist. Defaults to False.
+    """
+    path_exists = os.path.exists(path)
+    if not path_exists and create:
+        try:
+            os.makedirs(path)
+            return
+        except OSError as e:
+            raise OSError(f"Failed to create directory '{path}'") from e
+
+    raise FileNotFoundError(f"Directory '{path}' does not exist")
 
 
 def construct_file_path(object_name: str, user_id: str = None) -> str:

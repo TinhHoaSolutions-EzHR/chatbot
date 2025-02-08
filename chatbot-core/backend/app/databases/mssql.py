@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Generator
 
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine import Engine
@@ -51,10 +51,24 @@ class MSSQLConnector(BaseConnector[Engine]):
         except Exception as e:
             logger.error(f"Error initializing database: {e}", exc_info=True)
 
+    @classmethod
+    def get_engine(cls) -> Engine:
+        """
+        Get the database connection instance
+
+        Returns:
+            Engine: Database connection instance
+        """
+        if not cls._client:
+            with cls._lock:
+                cls._client = cls._create_client()
+
+        return cls._client
+
 
 # Create a session maker
 SessionLocal = sessionmaker(
-    bind=MSSQLConnector().client,
+    bind=MSSQLConnector.get_engine(),
     expire_on_commit=False,
     class_=Session,
     autoflush=False,
@@ -62,7 +76,7 @@ SessionLocal = sessionmaker(
 )
 
 
-def get_db_session() -> Iterator[Session]:
+def get_db_session() -> Generator[Session]:
     """
     Provides a transactional scope around a series of operations.
 

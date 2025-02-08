@@ -1,5 +1,7 @@
 import logging
 import os
+from enum import auto
+from enum import Enum
 
 
 class Constants:
@@ -32,10 +34,10 @@ class Constants:
 
     # Logger Configuration
     LOGGER_LOG_LEVEL = os.getenv("LOGGER_LOG_LEVEL", logging.INFO)
-    LOGGER_LOG_TO_CONSOLE = True
-    LOGGER_LOG_TO_FILE = False
-    LOGGER_LOG_FILE_PATH = "api.log"
-    LOGGER_MAX_BYTES = 10485760
+    LOGGER_LOG_TO_CONSOLE = os.getenv("LOGGER_LOG_TO_CONSOLE", True)
+    LOGGER_LOG_TO_FILE = os.getenv("LOGGER_LOG_TO_FILE", False)
+    LOGGER_LOG_FILE_PATH = os.getenv("LOGGER_LOG_FILE_PATH", f"/var/log/{PROJECT_NAME}.log")
+    LOGGER_MAX_BYTES = 10 * 1024 * 1024
     LOGGER_BACKUP_COUNT = 5
 
     # Minio Configuration
@@ -43,8 +45,14 @@ class Constants:
     MINIO_IMAGE_BUCKET = os.getenv("MINIO_IMAGE_BUCKET", "images")
 
     # Redis Configuration
+    REDIS_SCHEME = "redis"
     REDIS_DB_NUM = 0
     REDIS_MAX_CONNECTIONS = 10
+    REDIS_DB_NUMBER_CELERY = int(os.environ.get("REDIS_DB_NUMBER_CELERY", 15))
+    REDIS_DB_NUMBER_CELERY_RESULT_BACKEND = int(
+        os.environ.get("REDIS_DB_NUMBER_CELERY_RESULT_BACKEND", 14)
+    )
+    REDIS_HEALTH_CHECK_INTERVAL = int(os.environ.get("REDIS_HEALTH_CHECK_INTERVAL", 60))
 
     # Llama Index Configuration
     # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
@@ -97,3 +105,20 @@ class Constants:
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
     JWT_EXPIRATION = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 3600))
     EZHR_ACCESS_TOKEN = "ezhr_access_token"
+
+    # Celery
+    RUN_INDEXING = "run_indexing"
+    CELERY_BROKER_POOL_LIMIT = int(os.environ.get("CELERY_BROKER_POOL_LIMIT", 10))
+    CELERY_SEPARATOR = ":"
+    CELERY_RESULT_EXPIRES = int(os.environ.get("CELERY_RESULT_EXPIRES", 86400))
+    CELERY_WORKER_CONCURRENCY = 4
+    CELERY_WORKER_POOL = "threads"
+    CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+
+
+class CeleryPriority(int, Enum):
+    HIGHEST = 0
+    HIGH = auto()
+    MEDIUM = auto()
+    LOW = auto()
+    LOWEST = auto()
