@@ -8,7 +8,6 @@ from typing import Optional
 from typing import Type
 
 import pdfplumber
-import yaml
 from celery import current_task
 from fastapi import File
 from fastapi import UploadFile
