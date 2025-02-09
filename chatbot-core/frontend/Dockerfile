@@ -19,6 +19,10 @@ RUN yarn build
 # Stage 2: Serve the app with nginx
 FROM nginx:1.23.4-alpine AS serve
 
+# Set label to push to GitHub Container Registry
+LABEL org.opencontainers.image.source "https://github.com/TinhHoaSolutions-EzHR/chatbot"
+LABEL org.opencontainers.image.descripiton "Docker image for frontend web-server"
+
 # Copy the build output to replace the default nginx contents
 COPY --from=build /app/out /var/www/out
 

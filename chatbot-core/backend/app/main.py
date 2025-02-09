@@ -17,6 +17,8 @@ from app.routers.v1 import connector
 from app.routers.v1 import folder
 from app.routers.v1 import provider
 from app.routers.v1 import user
+from app.seeds import get_seeder_config
+from app.seeds import seed_db
 from app.settings import Constants
 from app.utils.api.helpers import get_logger
 from app.utils.llm.helpers import init_llm_configurations
@@ -34,6 +36,11 @@ async def lifespan(app: FastAPI):
     Args:
         app (FastAPI): FastAPI application instance
     """
+    # Seed the database on startup if the configuration is set
+    config = get_seeder_config()
+    if config.SEED_ON_STARTUP:
+        seed_db()
+
     # Initialize the Minio, Qdrant, and Redis connectors
     app.state.minio_conn = MinioConnector()
     app.state.qdrant_conn = QdrantConnector()
@@ -84,11 +91,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    logger.info(
-        f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"
-    )
-
     # Include application routers
+    logger.info("Including routers")
     app.include_router(router=base.router)
     app.include_router(router=auth.router)
     app.include_router(router=connector.router, prefix=Constants.FASTAPI_PREFIX)
@@ -98,6 +102,10 @@ def create_app() -> FastAPI:
     app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=provider.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=background.router, prefix=Constants.FASTAPI_PREFIX)
+
+    logger.info(
+        f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"
+    )
 
     return app
 

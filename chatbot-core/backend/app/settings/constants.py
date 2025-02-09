@@ -9,7 +9,7 @@ class Constants:
 
     # API Configuration
     FASTAPI_NAME = "EzHR Chatbot"
-    FASTAPI_VERSION = os.getenv("API_VERSION", "1.0.0")
+    FASTAPI_VERSION = os.getenv("API_VERSION", "1")
     FASTAPI_DESCRIPTION = ("This is an API for the LLM-based assistant chatbot",)
     FASTAPI_PREFIX = "/api/v1"
 
@@ -39,6 +39,10 @@ class Constants:
     LOGGER_LOG_FILE_PATH = os.getenv("LOGGER_LOG_FILE_PATH", f"/var/log/{PROJECT_NAME}.log")
     LOGGER_MAX_BYTES = 10 * 1024 * 1024
     LOGGER_BACKUP_COUNT = 5
+
+    # Seeding Configuration
+    SEED_CONFIG_DIR = os.getenv("SEED_CONFIG_DIR", "/app/data/seeds")
+    SEED_ON_STARTUP = os.getenv("SEED_ON_STARTUP", False)
 
     # Minio Configuration
     MINIO_DOCUMENT_BUCKET = os.getenv("MINIO_DOCUMENT_BUCKET", "documents")

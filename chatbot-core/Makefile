@@ -10,7 +10,7 @@ SERVICES ?=  # List of services to start, default is empty (all services)
 COMMAND ?= sh  # Command to run in the container, default is sh
 
 # Docker Compose commands
-.PHONY: up down exec restart build logs ps stop start clean alembic-revision alembic-upgrade-head test shell help
+.PHONY: up down pause unpause exec restart build logs ps stop start clean alembic-revision alembic-upgrade-head test shell help
 
 up:  ## Start services in detached mode
 	@echo "Services are starting..."
@@ -23,6 +23,14 @@ up:  ## Start services in detached mode
 down:  ## Stop and remove containers
 	@echo "Services are stopping..."
 	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core down
+
+pause:  ## Pause services
+	@echo "Services are paused..."
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core pause
+
+unpause:  ## Unpause services
+	@echo "Services are unpaused..."
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot-core unpause
 
 exec:  ## Run a command in a running container
 	@echo "Running command in container..."
