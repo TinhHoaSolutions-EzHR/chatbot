@@ -1,5 +1,3 @@
-from collections.abc import Callable
-
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -22,7 +20,6 @@ from app.settings import Constants
 from app.utils.api.api_response import APIResponse
 from app.utils.api.api_response import BackendAPIResponse
 from app.utils.api.error_handler import ErrorCodesMappingNumber
-from app.utils.api.helpers import check_client_disconnected
 from app.utils.api.helpers import get_logger
 from app.utils.user.authentication import get_current_user_from_token
 
@@ -240,7 +237,6 @@ def handle_new_chat_message(
     db_session: Session = Depends(get_db_session),
     user: User = Depends(get_current_user_from_token),
     qdrant_connector: QdrantConnector = Depends(get_qdrant_connector),
-    is_client_disconnected: Callable[[], bool] = Depends(check_client_disconnected),
 ) -> StreamingResponse:
     """
     This endpoint is both used for all the following purposes:
@@ -254,7 +250,6 @@ def handle_new_chat_message(
         db_session (Session): Database session. Defaults to relational database session.
         user (User): Current user object.
         qdrant_connector (QdrantConnector): Qdrant connector object.
-        is_client_disconnected (Callable[[], bool]): Check if the client is disconnected when streaming response.
 
     Returns:
         StreamingResponse: Streams the response with chat request and new chat response.
@@ -274,7 +269,6 @@ def handle_new_chat_message(
         chat_message_request=chat_message_request,
         chat_session_id=chat_session_id,
         user_id=user.id,
-        is_client_disconnected=is_client_disconnected,
     )
 
     return EventSourceResponse(content=content)

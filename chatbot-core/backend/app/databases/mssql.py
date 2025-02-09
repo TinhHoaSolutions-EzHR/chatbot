@@ -87,4 +87,10 @@ def get_db_session() -> Generator[Session]:
         Exception: Any exception that occurs during the database session
     """
     with SessionLocal() as session:
-        yield session
+        try:
+            yield session
+        except Exception as e:
+            logger.error(f"An unexpected error during database session: {str(e)}")
+            raise e
+        finally:
+            session.close()
