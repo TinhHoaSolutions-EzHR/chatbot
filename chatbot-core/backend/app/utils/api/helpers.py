@@ -8,6 +8,7 @@ from typing import Optional
 from typing import Type
 
 import pdfplumber
+import yaml
 from celery import current_task
 from fastapi import File
 from fastapi import UploadFile
@@ -339,3 +340,15 @@ def get_database_url() -> str:
         )
 
     return database_url
+
+
+def load_yaml(file_path: str) -> dict:
+    """
+    Load a YAML file.
+    Args:
+        file_path (str): Path to the YAML file.
+    Returns:
+        dict: Loaded YAML file.
+    """
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)
