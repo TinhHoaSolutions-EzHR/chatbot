@@ -1,14 +1,18 @@
 # You can refer README of this repo for future mantainances: https://github.com/actions/labeler
-automerge:
+autosquash:
   - changed-files:
       - any-glob-to-any-file:
           - .github/**/*
           - chatbot-core/**/*
           - deployment/**/*
           - docs/**/*
+          - .gitignore
+          - .pr_agent.toml
+          - .pre-commit-config.yaml
+          - .tool-versions
           - Makefile
           - README.md
-          - .pre-commit-config.yaml
+          - ruff.toml
 
 chatbot:
   - changed-files:
