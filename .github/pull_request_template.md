@@ -1,20 +1,26 @@
-## Description
+### Description
 
 <!-- Provide a brief description of the changes in this PR -->
 
-## How Has This Been Tested?
+### How Has This Been Tested?
 
 <!-- Describe the tests you ran to verify your changes -->
 
-## Accepted Risk
+### Accepted Risk
 
 <!-- Any know risks or failure modes to point out to reviewers -->
 
-## Related Issue(s)
+### Related Issue(s)
 
-<!-- If applicable, link to the issue(s) this PR addresses -->
+<!--
+If applicable, link to the issue(s) this PR addresses
+You can link a pull request to an issue by using a supported keyword in the pull request's description or in a commit message. The pull request must be on the default branch.
+- closes
+- fixes
+- resolves
+-->
 
-## Checklist:
+### Checklist:
 
 - [ ] Author has done a final read through of the PR right before merge
 - [ ] All tests passed
