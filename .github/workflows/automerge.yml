@@ -19,9 +19,9 @@ jobs:
         uses: "pascalgn/automerge-action@v0.16.4"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge"
+          MERGE_LABELS: "automerge,autosquash"
           MERGE_REMOVE_LABELS: "automerge,autorebase,autosquash"
-          MERGE_METHOD: "merge"
+          MERGE_METHOD: "squash"
           MERGE_METHOD_LABELS: "automerge=merge,autorebase=rebase,autosquash=squash"
           MERGE_METHOD_LABEL_REQUIRED: "true"
           MERGE_DELETE_BRANCH: "true"
