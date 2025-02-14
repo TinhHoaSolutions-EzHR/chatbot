@@ -229,7 +229,7 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
-      - ../../chatbot-core/.env.${ENV} # INFO: can be .env.development or .env.production
+      - ../../chatbot-core/${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
