@@ -492,10 +492,10 @@ class ChatService(BaseService):
         accumulated_name = []
         try:
             response_streaming = await Settings.llm.astream_complete(prompt=prompt)
-            async for response in response_streaming:
-                accumulated_name.append(response.delta)
+            async for paritital_response in response_streaming:
+                accumulated_name.append(paritital_response.delta)
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.NAMING, content=response.delta
+                    event=ChatMessageStreamEvent.NAMING, content=paritital_response.delta
                 ).as_json()
         except Exception as e:
             yield ChatStreamResponse(
