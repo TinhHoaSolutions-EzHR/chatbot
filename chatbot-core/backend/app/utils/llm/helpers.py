@@ -15,6 +15,7 @@ from llama_index.llms.openai import OpenAI
 
 from app.models.provider import ProviderType
 from app.settings import Constants
+from app.settings.secrets import Secrets
 
 
 def init_llm_configurations(
@@ -59,9 +60,9 @@ def get_openai_api_key() -> str:
     Raises:
         ValueError: OpenAI API key not found.
     """
-    api_key = os.getenv("OPENAI_API_KEY")
-    if api_key is None:
-        raise ValueError("OpenAI API key not found")
+    api_key = os.getenv("OPENAI_API_KEY") or Secrets.LLM_API_KEY
+    if not api_key:
+        raise ValueError("OpenAI API key not found.")
     return api_key
 
 
