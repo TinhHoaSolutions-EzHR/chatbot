@@ -18,7 +18,7 @@ from app.models.chat import ChatFeedbackRequest
 from app.models.chat import ChatMessageRequest
 from app.models.chat import ChatMessageRequestType
 from app.models.chat import ChatMessageResponse
-from app.models.chat import ChatMessageStreamEvent
+from app.models.chat import ChatMessageStreamEventType
 from app.models.chat import ChatMessageType
 from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatStreamResponse
@@ -328,7 +328,7 @@ class ChatService(BaseService):
                 async for chunk in response_streaming.async_response_gen():
                     accumulated_response.append(chunk)
                     yield ChatStreamResponse(
-                        event=ChatMessageStreamEvent.DELTA, content=chunk
+                        event=ChatMessageStreamEventType.DELTA, content=chunk
                     ).as_json()
             except asyncio.CancelledError:
                 logger.warning(
@@ -339,7 +339,7 @@ class ChatService(BaseService):
                     f"Error streaming chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
                 )
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Error streaming chat response: {e}",
                 ).as_json()
 
@@ -349,7 +349,7 @@ class ChatService(BaseService):
                     f"No content received from agent for session {chat_session_id} for request {current_request_id}"
                 )
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content="No content received from agent",
                 ).as_json()
 
@@ -363,7 +363,7 @@ class ChatService(BaseService):
                 chat_message=pre_register_chat_response
             ):
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Error during response creation: {err}",
                 ).as_json()
 
@@ -374,7 +374,7 @@ class ChatService(BaseService):
                 f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
             )
             yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.ERROR,
+                event=ChatMessageStreamEventType.ERROR,
                 content=f"Error generating chat response: {e}",
             ).as_json()
 
@@ -489,32 +489,22 @@ class ChatService(BaseService):
             user_message=chat_request_message, agent_message=chat_response_message
         )
 
-        accumulated_name = []
-        try:
-            response_streaming = await Settings.llm.astream_complete(prompt=prompt)
-            async for partial_response in response_streaming:
-                accumulated_name.append(partial_response.delta)
-                yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.NAMING, content=partial_response.delta
-                ).as_json()
-        except Exception as e:
-            yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.ERROR,
-                content=f"Error during chat session naming: {e}",
-            ).as_json()
-
-        # Finalize session name
-        final_name = "".join(accumulated_name).strip() or "Untitled Chat"
+        # Generate a name for the chat session
+        session_name_response = await Settings.llm.acomplete(prompt=prompt)
+        session_name = session_name_response.text or "Untitled Chat"
+        yield ChatStreamResponse(
+            event=ChatMessageStreamEventType.TITLE_GENERATION, content=session_name
+        ).as_json()
 
         # Rename the chat session with the generated name
-        updated_chat_session = ChatSessionRequest(description=final_name).model_dump(
+        updated_chat_session = ChatSessionRequest(description=session_name).model_dump(
             exclude_unset=True
         )
         if err := self._chat_repository.update_chat_session(
             chat_session_id=chat_session_id, chat_session=updated_chat_session, user_id=user_id
         ):
             yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.ERROR,
+                event=ChatMessageStreamEventType.ERROR,
                 content=f"Error during chat session naming: {err}",
             ).as_json()
 
@@ -632,7 +622,7 @@ class ChatService(BaseService):
             )
             if err:
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Error during request creation: {err}",
                 ).as_json()
 
@@ -644,7 +634,7 @@ class ChatService(BaseService):
             )
             if err := self._chat_repository.create_chat_message(chat_message=chat_response):
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Error during response creation: {err}",
                 ).as_json()
 
@@ -660,7 +650,7 @@ class ChatService(BaseService):
 
             # Stream the chat request message object
             yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.METADATA,
+                event=ChatMessageStreamEventType.METADATA,
                 content=ChatMessageResponse.model_validate(chat_request).model_dump(mode="json"),
             ).as_json()
 
@@ -690,7 +680,7 @@ class ChatService(BaseService):
 
             # Stream the chat response message object. We don't include the message content in the response.
             yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.STREAM_COMPLETE,
+                event=ChatMessageStreamEventType.STREAM_COMPLETE,
                 content=ChatMessageResponse.model_validate(chat_response).model_dump(
                     mode="json", exclude={"message"}
                 ),
@@ -699,7 +689,7 @@ class ChatService(BaseService):
         except Exception as e:
             logger.error(f"Error handling new chat message: {e}")
             yield ChatStreamResponse(
-                event=ChatMessageStreamEvent.ERROR,
+                event=ChatMessageStreamEventType.ERROR,
                 content=f"Error handling new chat message: {e}",
             ).as_json()
 
@@ -766,7 +756,7 @@ class ChatService(BaseService):
             )
             if err or not chat_session:
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Chat session not found: {err}",
                 ).as_json()
                 return
@@ -779,7 +769,7 @@ class ChatService(BaseService):
             )
             if err:
                 yield ChatStreamResponse(
-                    event=ChatMessageStreamEvent.ERROR,
+                    event=ChatMessageStreamEventType.ERROR,
                     content=f"Error during request handling: {err}",
                 ).as_json()
                 return
