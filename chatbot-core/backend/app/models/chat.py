@@ -56,7 +56,7 @@ class ChatMessageType(str, Enum):
     ASSISTANT = "assistant"
 
 
-class ChatMessageStreamEvent(str, Enum):
+class ChatMessageStreamEventType(str, Enum):
     """
     Enumeration of stream message types in a chat session.
 
@@ -64,12 +64,14 @@ class ChatMessageStreamEvent(str, Enum):
         - METADATA: This is the chat request object.
         - DELTA: This is the chat message part object that is sent under chunks.
         - STREAM_COMPLETE: This is the final chat message object that is sent to the client to indicate the end of the stream.
+        - TITLE_GENERATION: This is the title generation object indicating the name of the chat session.
         - ERROR: This is the error message object indicating an error in the chat stream.
     """
 
     METADATA = "metadata"
     DELTA = "delta"
     STREAM_COMPLETE = "stream_complete"
+    TITLE_GENERATION = "title_generation"
     ERROR = "error"
 
 
@@ -404,10 +406,10 @@ class ChatStreamResponse(BaseModel):
     Pydantic model for standardizing final response format for chat stream.
     """
 
-    event: ChatMessageStreamEvent = Field(..., description="Type of the chat event")
+    event: ChatMessageStreamEventType = Field(..., description="Type of the chat event")
     data: ChatStreamContent = Field(..., description="Data returning from the event")
 
-    def __init__(self, event: ChatMessageStreamEvent, content: Any):
+    def __init__(self, event: ChatMessageStreamEventType, content: Any):
         """
         Initialize the response object.
 
