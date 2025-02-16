@@ -5,12 +5,13 @@ from typing import List
 from typing import Optional
 
 from llama_index.core import Settings
+from llama_index.core.base.llms.base import BaseLLM
 from llama_index.core.callbacks import CallbackManager
 from llama_index.core.callbacks import CBEventType
 from llama_index.core.callbacks import EventPayload
 from llama_index.core.schema import Document
 from llama_index.core.utils import get_tqdm_iterable
-from openai import BaseModel
+from pydantic import BaseModel
 from pydantic import Field
 from pydantic import SerializeAsAny
 
@@ -19,10 +20,10 @@ from app.utils.api.helpers import get_logger
 logger = get_logger(__name__)
 
 
-class Translator(ABC):
+class Translator(ABC, BaseModel):
     """Base interface for all translators."""
 
-    llm: SerializeAsAny[BaseModel] = Field(
+    llm: SerializeAsAny[BaseLLM] = Field(
         default=None,
         description="The LLM model used for translation.",
         exclude=True,
@@ -41,12 +42,12 @@ class Translator(ABC):
 
     def __init__(
         self,
-        llm: BaseModel,
+        llm: BaseLLM,
         source_language: str,
         target_language: str,
         callback_manager: CallbackManager,
     ) -> None:
-        self.llm = llm
+        self.llm = llm or Settings.llm
         self.source_language = source_language
         self.target_language = target_language
         self.callback_manager = callback_manager
@@ -58,7 +59,7 @@ class Translator(ABC):
     @classmethod
     def from_defaults(
         cls,
-        llm: Optional[BaseModel] = None,
+        llm: Optional[BaseLLM] = None,
         source_language: Optional[str] = "vietnamese",
         target_language: Optional[str] = "english",
         callback_manager: Optional[CallbackManager] = None,
