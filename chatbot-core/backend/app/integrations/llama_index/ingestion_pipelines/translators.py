@@ -147,3 +147,8 @@ class Translator(ABC, BaseModel):
             event.on_end({EventPayload.DOCUMENTS: translated_documents})
 
         return translated_documents
+
+    def translate_text(cls, text: str, **kwargs: Any) -> str:
+        """Translate a text from source language to target language."""
+        translated_result = asyncio.run(cls._translate_chunk(text, **kwargs))
+        return translated_result
