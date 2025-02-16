@@ -70,6 +70,7 @@ class ChatMessageStreamEvent(str, Enum):
     METADATA = "metadata"
     DELTA = "delta"
     STREAM_COMPLETE = "stream_complete"
+    NAMING = "naming"
     ERROR = "error"
 
 

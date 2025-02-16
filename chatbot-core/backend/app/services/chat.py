@@ -4,6 +4,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from llama_index.core import Settings
 from llama_index.core.chat_engine import CondensePlusContextChatEngine
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
 from sqlalchemy.orm import Session
@@ -23,77 +24,12 @@ from app.models.chat import ChatSessionRequest
 from app.models.chat import ChatStreamResponse
 from app.repositories.chat import ChatRepository
 from app.services.base import BaseService
+from app.settings import Constants
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ConversationError
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
-
-SYSTEM_PROMPT = """
-You are a human resources professional at a company that needs to quickly find information in its policy documents.
-
-Guidelines:
-- Provide information explicitly stated in policy documents
-- For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
-- No assumptions or interpretations about policy details
-- Do not explain
-- Your primary language is Vietnamese
-- If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0919 397 169 (Ms. Nhã) hoặc email hr@giaiphaptinhhoa.com"
-- If the response is empty, please answer with the knowledge you have
-
-Let's work this out in a step by step way to be sure we have the right answer.
-Answer as the tone of a human resources professional, be polite and helpful."""
-
-CONTEXT_PROMPT = """
-The following is a friendly conversation between an employee and a human resources professional.
-The professional is talkative and provides lots of specific details from her context.
-If the professional does not know the answer to a question, she truthfully says she does not know.
-
-Here are the relevant documents for the context:
-'''
-{context_str}
-'''
-
-## Instruction
-Based on the above documents, provide a detailed answer for the employee question below.
-Answer "don't know" if not present in the document."""
-
-CONTEXT_REFINE_PROMPT = """
-The following is a friendly conversation between an employee and a human resources professional.
-The professional is talkative and provides lots of specific details from her context.
-If the professional does not know the answer to a question, she truthfully says she does not know.
-
-Here are the relevant documents for the context:
-'''
-{context_msg}
-'''
-
-Existing Answer:
-'''
-{existing_answer}
-'''
-
-## Instruction
-Refine the existing answer using the provided context to assist the user.
-If the context isn't helpful, just repeat the existing answer and nothing more."""
-
-CONDENSE_PROMPT = """
-Given the following conversation between an employee and a human resources professional and a follow up question from the employee.
-Your task is to firstly summarize the chat history and secondly condense the follow up question into a standalone question.
-
-Chat History:
-'''
-{chat_history}
-'''
-
-Follow Up Input:
-'''
-{question}
-'''
-
-Output format: a standalone question.
-
-Your response:"""
 
 
 class ChatService(BaseService):
@@ -373,10 +309,10 @@ class ChatService(BaseService):
             chat_engine = CondensePlusContextChatEngine.from_defaults(
                 retriever=retriever,
                 chat_history=chat_history,
-                system_prompt=SYSTEM_PROMPT,
-                context_prompt=CONTEXT_PROMPT,
-                context_refine_prompt=CONTEXT_REFINE_PROMPT,
-                condense_prompt=CONDENSE_PROMPT,
+                system_prompt=Constants.CHAT_ENGINE_SYSTEM_PROMPT,
+                context_prompt=Constants.CHAT_ENGINE_CONTEXT_PROMPT,
+                context_refine_prompt=Constants.CHAT_ENGINE_CONTEXT_PROMPT,
+                condense_prompt=Constants.CHAT_ENGINE_CONDENSE_PROMPT,
                 verbose=True,
             )
 
@@ -528,6 +464,59 @@ class ChatService(BaseService):
             return err
 
         return None
+
+    async def _handle_naming_chat_session(
+        self,
+        chat_session_id: str,
+        user_id: str,
+        chat_request_message: str = "",
+        chat_response_message: str = "",
+    ) -> AsyncGenerator[str, None, None]:
+        """
+        Handle naming chat session.
+
+        Args:
+            chat_session_id(str): Chat session id
+            user_id(str): User id
+            chat_request_message(str): Chat request message. Defaults to "".
+            chat_response_message(str): Chat response message. Defaults to "".
+
+        Returns:
+            AsyncGenerator[str, None, None]: Async generator of chat session naming response.
+        """
+        # Construct prompt
+        prompt = Constants.CHAT_SESSION_NAMING_PROMPT.format(
+            user_message=chat_request_message, agent_message=chat_response_message
+        )
+
+        accumulated_name = []
+        try:
+            response_streaming = await Settings.llm.astream_complete(prompt=prompt)
+            async for partial_response in response_streaming:
+                accumulated_name.append(partial_response.delta)
+                yield ChatStreamResponse(
+                    event=ChatMessageStreamEvent.NAMING, content=partial_response.delta
+                ).as_json()
+        except Exception as e:
+            yield ChatStreamResponse(
+                event=ChatMessageStreamEvent.ERROR,
+                content=f"Error during chat session naming: {e}",
+            ).as_json()
+
+        # Finalize session name
+        final_name = "".join(accumulated_name).strip() or "Untitled Chat"
+
+        # Rename the chat session with the generated name
+        updated_chat_session = ChatSessionRequest(description=final_name).model_dump(
+            exclude_unset=True
+        )
+        if err := self._chat_repository.update_chat_session(
+            chat_session_id=chat_session_id, chat_session=updated_chat_session, user_id=user_id
+        ):
+            yield ChatStreamResponse(
+                event=ChatMessageStreamEvent.ERROR,
+                content=f"Error during chat session naming: {err}",
+            ).as_json()
 
     def _handle_existing_chat_message(
         self, chat_message_request: ChatMessageRequest, chat_session_id: str, user_id: str
@@ -684,6 +673,20 @@ class ChatService(BaseService):
                 chat_history=chat_history,
             ):
                 yield chunk
+
+            # Name chat session if it is newly created
+            if (
+                chat_request.parent_message_id is None
+                and chat_message_request.request_type == ChatMessageRequestType.NEW
+            ):
+                logger.info("Chat session is newly created. Naming the chat session...")
+                async for chunk in self._handle_naming_chat_session(
+                    chat_session_id=chat_session_id,
+                    user_id=user_id,
+                    chat_request_message=chat_request.message,
+                    chat_response_message=chat_response.message,
+                ):
+                    yield chunk
 
             # Stream the chat response message object. We don't include the message content in the response.
             yield ChatStreamResponse(

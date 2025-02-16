@@ -18,11 +18,11 @@ class Secrets:
     MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "P&ssword123")
 
     # Qdrant Credentials
-    QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+    QDRANT_HOST = os.getenv("QDRANT_HOST", "127.0.0.1")
     QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 
     # Redis Credentials
-    REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+    REDIS_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
     REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
     # Ferment API Key
