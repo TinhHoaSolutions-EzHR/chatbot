@@ -31,14 +31,22 @@ def init_llm_configurations(
         embedding_model (str, optional): Embedding model. Defaults to "text-embedding-3-small".
         callback_manager (CallbackManager, optional): Manager for handling callbacks. Defaults to None.
     """
+    api_key = get_openai_api_key()
+
     # Set the tokenizer for model
     Settings.tokenizer = tiktoken.encoding_for_model(model_name=llm_model).encode
 
     # Set the LLM model with specified parameters
-    Settings.llm = OpenAI(model=llm_model, temperature=0, callback_manager=callback_manager)
+    Settings.llm = OpenAI(
+        api_key=api_key,
+        model=llm_model,
+        temperature=0,
+        callback_manager=callback_manager,
+    )
 
     # Set the embedding model with specified parameters
     Settings.embed_model = OpenAIEmbedding(
+        api_key=api_key,
         mode=OpenAIEmbeddingMode.TEXT_SEARCH_MODE,
         model=embedding_model,
         embed_batch_size=Constants.EMBEDDING_BATCH_SIZE,

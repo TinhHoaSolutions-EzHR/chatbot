@@ -3,16 +3,15 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from llama_index.core import Settings
 from llama_index.core.readers.base import BaseReader
 from llama_index.core.schema import Document
 from markitdown import MarkItDown
-from openai import OpenAI
 from tenacity import retry
 from tenacity import stop_after_delay
 
 from app.settings.constants import Constants
 from app.utils.api.helpers import get_logger
-from app.utils.llm.helpers import get_openai_api_key
 
 logger = get_logger(__name__)
 
@@ -21,9 +20,9 @@ class MarkitdownReader(BaseReader):
     """ """
 
     def __init__(self) -> None:
-        # Try to get the OpenAI API key, if it fails, do not setup the OpenAI client
+        # Try to create an MarkItDown with OpenAI client, if not found, use default MarkItDown
         try:
-            self.openai_client = OpenAI(api_key=get_openai_api_key())
+            self.openai_client = Settings.llm
             self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
         except Exception:
             logger.warning("OpenAI API key not found, use default MarkItDown.")
