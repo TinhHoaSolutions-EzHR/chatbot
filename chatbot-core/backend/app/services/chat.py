@@ -491,7 +491,7 @@ class ChatService(BaseService):
 
         # Generate a name for the chat session
         session_name_response = await Settings.llm.acomplete(prompt=prompt)
-        session_name = session_name_response.text or "Untitled Chat"
+        session_name = session_name_response.text.strip() or "Untitled Chat"
         yield ChatStreamResponse(
             event=ChatMessageStreamEventType.TITLE_GENERATION, content=session_name
         ).as_json()
