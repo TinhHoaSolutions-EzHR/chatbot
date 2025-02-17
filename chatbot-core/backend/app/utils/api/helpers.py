@@ -8,6 +8,7 @@ from typing import Optional
 from typing import Type
 
 import pdfplumber
+import yaml
 from celery import current_task
 from fastapi import File
 from fastapi import UploadFile
@@ -275,14 +276,15 @@ def verify_path_exists(path: str, create: bool = False) -> None:
         create (bool): Create the path if it does not exist. Defaults to False.
     """
     path_exists = os.path.exists(path)
-    if not path_exists and create:
-        try:
-            os.makedirs(path)
-            return
-        except OSError as e:
-            raise OSError(f"Failed to create directory '{path}'") from e
-
-    raise FileNotFoundError(f"Directory '{path}' does not exist")
+    if not path_exists:
+        if create:
+            try:
+                os.makedirs(path)
+                return
+            except OSError as e:
+                raise OSError(f"Failed to create directory '{path}'") from e
+        else:
+            raise FileNotFoundError(f"Directory '{path}' does not exist")
 
 
 def construct_file_path(object_name: str, user_id: str = None) -> str:
@@ -338,3 +340,15 @@ def get_database_url() -> str:
         )
 
     return database_url
+
+
+def load_yaml(file_path: str) -> dict:
+    """
+    Load a YAML file.
+    Args:
+        file_path (str): Path to the YAML file.
+    Returns:
+        dict: Loaded YAML file.
+    """
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)

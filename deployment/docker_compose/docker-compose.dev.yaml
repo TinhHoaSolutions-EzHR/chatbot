@@ -229,7 +229,7 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
-      - ../../chatbot-core/.env.${ENV} # INFO: can be .env.development or .env.production
+      - ../../chatbot-core/${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
@@ -255,6 +255,8 @@ volumes:
 networks:
   chatbot-core:
     driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
 
 configs:
   qdrant_config:

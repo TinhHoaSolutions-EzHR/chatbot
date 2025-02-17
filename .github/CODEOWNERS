@@ -1,12 +1,9 @@
 # Chatbot-core team owns chatbot-core directory
 chatbot-core/ @TinhHoaSolutions-EzHR/chat-bot
 
-# Vanphongso team owns vanphongso directory
-vanphongso/ @TinhHoaSolutions-EzHR/van-phong-so
-
 # Both teams collaborate on shared resources
-deployment/ @TinhHoaSolutions-EzHR/chat-bot @TinhHoaSolutions-EzHR/van-phong-so
-docs/ @TinhHoaSolutions-EzHR/chat-bot @TinhHoaSolutions-EzHR/van-phong-so
+deployment/ @TinhHoaSolutions-EzHR/chat-bot
+docs/ @TinhHoaSolutions-EzHR/chat-bot
 
 # lelouvincx is code owner of chatbot-core/backend/alembic
 chatbot-core/backend/alembic/ @lelouvincx

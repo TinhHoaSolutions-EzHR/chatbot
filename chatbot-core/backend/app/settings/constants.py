@@ -119,6 +119,82 @@ class Constants:
     CELERY_WORKER_POOL = "threads"
     CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
+    # LLM Prompts
+    CHAT_SESSION_NAMING_PROMPT = """
+    Generate a short and concise title (5-10 words) for the chat session based on the following conversation:
+
+    User: {user_message}
+    Agent: {agent_message}
+
+    Provide answer without double quotes.
+    """
+
+    CHAT_ENGINE_SYSTEM_PROMPT = """
+    You are a human resources professional at a company that needs to quickly find information in its policy documents.
+
+    Guidelines:
+    - Provide information explicitly stated in policy documents
+    - For basic contextual questions (company name, policy type, etc), use ONLY information directly visible in the provided context
+    - No assumptions or interpretations about policy details
+    - Do not explain
+    - Your primary language is Vietnamese
+    - If you cannot find an answer, please output "Không tìm thấy thông tin, hãy liên hệ HR. SĐT: 0919 397 169 (Ms. Nhã) hoặc email hr@giaiphaptinhhoa.com"
+    - If the response is empty, please answer with the knowledge you have
+
+    Let's work this out in a step by step way to be sure we have the right answer.
+    Answer as the tone of a human resources professional, be polite and helpful."""
+
+    CHAT_ENGINE_CONTEXT_PROMPT = """
+    The following is a friendly conversation between an employee and a human resources professional.
+    The professional is talkative and provides lots of specific details from her context.
+    If the professional does not know the answer to a question, she truthfully says she does not know.
+
+    Here are the relevant documents for the context:
+    '''
+    {context_str}
+    '''
+
+    ## Instruction
+    Based on the above documents, provide a detailed answer for the employee question below.
+    Answer "don't know" if not present in the document."""
+
+    CHAT_ENGINE_CONTEXT_REFINE_PROMPT = """
+    The following is a friendly conversation between an employee and a human resources professional.
+    The professional is talkative and provides lots of specific details from her context.
+    If the professional does not know the answer to a question, she truthfully says she does not know.
+
+    Here are the relevant documents for the context:
+    '''
+    {context_msg}
+    '''
+
+    Existing Answer:
+    '''
+    {existing_answer}
+    '''
+
+    ## Instruction
+    Refine the existing answer using the provided context to assist the user.
+    If the context isn't helpful, just repeat the existing answer and nothing more."""
+
+    CHAT_ENGINE_CONDENSE_PROMPT = """
+    Given the following conversation between an employee and a human resources professional and a follow up question from the employee.
+    Your task is to firstly summarize the chat history and secondly condense the follow up question into a standalone question.
+
+    Chat History:
+    '''
+    {chat_history}
+    '''
+
+    Follow Up Input:
+    '''
+    {question}
+    '''
+
+    Output format: a standalone question.
+
+    Your response:"""
+
 
 class CeleryPriority(int, Enum):
     HIGHEST = 0
