@@ -47,6 +47,15 @@ class Translator(ABC, BaseModel):
         target_language: str,
         callback_manager: CallbackManager,
     ) -> None:
+        """
+        Initializes the translator with a language model, source and target languages, and a callback manager.
+
+        Args:
+            llm (BaseLLM): The language model to be used. If None, defaults to Settings.llm.
+            source_language (str): The language code of the source text.
+            target_language (str): The language code of the target text.
+            callback_manager (CallbackManager): Manages callbacks during translation.
+        """
         self.llm = llm or Settings.llm
         self.source_language = source_language
         self.target_language = target_language
@@ -64,6 +73,18 @@ class Translator(ABC, BaseModel):
         target_language: Optional[str] = "english",
         callback_manager: Optional[CallbackManager] = None,
     ):
+        """
+        Create an instance using default settings.
+
+         Args:
+             llm (Optional[BaseLLM]): Language model. Defaults to Settings.llm if not provided.
+             source_language (Optional[str]): Source language. Defaults to "vietnamese".
+             target_language (Optional[str]): Target language. Defaults to "english".
+             callback_manager (Optional[CallbackManager]): Callback manager for handling events. Defaults to an empty CallbackManager.
+
+         Returns:
+             An instance of the class with the provided or default parameters.
+        """
         callback_manager = callback_manager or CallbackManager([])
         llm = llm or Settings.llm
 
