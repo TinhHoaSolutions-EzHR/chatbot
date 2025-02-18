@@ -47,16 +47,19 @@ async def lifespan(app: FastAPI):
     app.state.redis_conn = RedisConnector()
 
     # Initialize the LlamaIndex configuration (LLM and Embedding models)
-    init_llm_configurations(
-        llm_model=Constants.LLM_MODEL,
-        embedding_model=Constants.EMBEDDING_MODEL,
-    )
+    try:
+        init_llm_configurations(
+            llm_model=Constants.LLM_MODEL,
+            embedding_model=Constants.EMBEDDING_MODEL,
+        )
 
-    # TODO: Remove it as this is just a work around
-    global index
+        # TODO: Remove it as this is just a work around
+        global index
 
-    documents = SimpleDirectoryReader("examples/").load_data()
-    index = VectorStoreIndex.from_documents(documents=documents)
+        documents = SimpleDirectoryReader("examples/").load_data()
+        index = VectorStoreIndex.from_documents(documents=documents)
+    except Exception as e:
+        logger.error(f"Failed to initialize LlamaIndex configurations: {e}", exc_info=True)
 
     try:
         yield
