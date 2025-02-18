@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.1.0](https://github.com/TinhHoaSolutions-EzHR/chatbot/compare/v1.0.0...v1.1.0) (2025-02-15)
+
+
+### Features
+
+* **backend:** configure celery background task queue ([#187](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/187)) ([c6cfcfd](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/c6cfcfd080f3be477cd800bed43b74c49fdd8e89))
+* **backend:** seed agent and user to the database ([#240](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/240)) ([6b0b49a](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/6b0b49a6385ca53662f58d942176f84633021570))
+* **backend:** update app startup with seeding function ([4375951](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/43759519a9d198f9b05ea34b74afcce9885d780f))
+* **backend:** update seeding implementation ([6b2c919](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/6b2c91956a7bb0fc08e4a87917fb6a8c1c494261))
+* **database:** set transaction isolation level for chatbot_core database ([a9199db](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/a9199dbd21264359c468464fe3c344bcddc01a32))
+
+
+### Bug Fixes
+
+* **backend:** fix `verify_path_exist` function's logic ([7902cdf](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/7902cdff05d868ae1bb8fc762868b19af7454a5c))
+* **backend:** investigate fix backend concurrency issues chat streaming ([#250](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/250)) ([30ed4f0](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/30ed4f03208b01b5d620409d6d9c2b7d7203bfbd))
+* **backend:** revert helper load_yaml ([a56d0a9](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/a56d0a93e46ac43e6f5edd2325e7fc75af1e6849))
+* **backend:** revert helper load_yaml ([#253](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/253)) ([1571c7b](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/1571c7b09b2a7c2b0fcb11a7987b2a14501e772e))
+* **database:** add error logging and session closure in get_db_session ([9415f7b](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/9415f7bfa9b3434aba6e8ca7fe8d29d7886b156e))
+* **database:** remove unnecessary rollback from transaction isolation setting ([cf8886f](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/cf8886f64ab94d28dda8060ec337928512baffe2))
+* **docker:** fix docker compose dev error in frontend ([3b4cdb0](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/3b4cdb08cb7e432bf9013a369159379c6476ae0d))
+* **docker:** wrong env configuration in docker compose dev ([3be4181](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/3be4181e13fd3e22113f57474b23ab5e0a27df0f))
+
 ## 1.0.0 (2025-02-02)
 
 

@@ -81,7 +81,9 @@ def create_app() -> FastAPI:
         description=Constants.FASTAPI_DESCRIPTION,
         lifespan=lifespan,
     )
-    origins = ["http://localhost:3000"]  # WARN: Update this to the actual frontend URL
+    origins = [
+        "http://127.0.0.1:3000",
+    ]  # WARN: Update this to the actual frontend URL
 
     app.add_middleware(
         CORSMiddleware,
