@@ -12,12 +12,17 @@ from llama_index.embeddings.openai import OpenAIEmbeddingMode
 from llama_index.llms.cohere import Cohere
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.openai import OpenAI
+from openai import APIStatusError
+from openai import OpenAIError
+from tenacity import retry
+from tenacity import stop_after_attempt
 
 from app.models.provider import ProviderType
 from app.settings import Constants
 from app.settings import Secrets
 
 
+@retry(stop=stop_after_attempt(Constants.RETRY_TIMES))
 def init_llm_configurations(
     llm_model: str,
     embedding_model: str,
@@ -36,16 +41,28 @@ def init_llm_configurations(
     # Set the tokenizer for model
     Settings.tokenizer = tiktoken.encoding_for_model(model_name=llm_model).encode
 
-    # Set the LLM model with specified parameters
-    Settings.llm = OpenAI(
+    # INFO: Try to create request to OpenAI to check it is working
+    # If this works, that means the below embedding model will work
+    llm_client = OpenAI(
         api_key=api_key,
         model=llm_model,
         temperature=0,
         callback_manager=callback_manager,
     )
+    try:
+        llm_client.complete("Hello, world!")
+    except OpenAIError as e:
+        raise ValueError(f"There're something wrong with the API key: {e}")
+    except APIStatusError as e:
+        raise ValueError(f"Failed to create LLM with OpenAI client: {e}")
+
+    # Set the LLM model with specified parameters
+    # TODO: add support for other LLM providers
+    Settings.llm = llm_client
 
     # Set the embedding model with specified parameters
-    Settings.embed_model = OpenAIEmbedding(
+    # TODO: add support for other embedding providers
+    embedding_client = OpenAIEmbedding(
         api_key=api_key,
         mode=OpenAIEmbeddingMode.TEXT_SEARCH_MODE,
         model=embedding_model,
@@ -53,6 +70,8 @@ def init_llm_configurations(
         dimensions=Constants.DIMENSIONS,
         callback_manager=callback_manager,
     )
+    Settings.embed_model = embedding_client
+
     Settings.num_output = Constants.LLM_MAX_OUTPUT_LENGTH
     Settings.context_window = Constants.LLM_MAX_CONTEXT_WINDOW
     Settings.callback_manager = callback_manager

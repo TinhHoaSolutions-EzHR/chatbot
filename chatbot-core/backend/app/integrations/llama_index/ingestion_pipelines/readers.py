@@ -25,12 +25,7 @@ class MarkitdownReader(BaseReader):
             self.openai_client = Settings.llm
             self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
         except Exception as e:
-            if isinstance(e, ValueError):
-                logger.warning("OpenAI API key is not set, use default MarkItDown.")
-            else:
-                logger.warning(
-                    "Failed to create MarkItDown with OpenAI client, use default MarkItDown."
-                )
+            logger.warning(f"Failed to create MarkItDown with OpenAI client: {e}")
             self.openai_client = None
             self.md = MarkItDown()
 
