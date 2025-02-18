@@ -17,15 +17,20 @@ logger = get_logger(__name__)
 
 
 class MarkitdownReader(BaseReader):
-    """ """
+    """Reads content from a pdf file and returns a list of documents under markdown format."""
 
     def __init__(self) -> None:
-        # Try to create an MarkItDown with OpenAI client, if not found, use default MarkItDown
+        """Try to create an MarkItDown with OpenAI client, if not found, use default MarkItDown."""
         try:
             self.openai_client = Settings.llm
             self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
-        except Exception:
-            logger.warning("OpenAI API key not found, use default MarkItDown.")
+        except Exception as e:
+            if isinstance(e, ValueError):
+                logger.warning("OpenAI API key is not set, use default MarkItDown.")
+            else:
+                logger.warning(
+                    "Failed to create MarkItDown with OpenAI client, use default MarkItDown."
+                )
             self.openai_client = None
             self.md = MarkItDown()
 
