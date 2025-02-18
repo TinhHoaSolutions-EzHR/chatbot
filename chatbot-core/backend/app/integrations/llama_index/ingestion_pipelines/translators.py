@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from pydantic import Field
 from pydantic import SerializeAsAny
 
+from app.integrations.llama_index.prompts.translator import TRANSLATOR_PROMPT_TMPL
 from app.utils.api.helpers import get_logger
 
 logger = get_logger(__name__)
@@ -107,14 +108,7 @@ class Translator(ABC, BaseModel):
 
     async def _translate_chunk(cls, chunk: str) -> str:
         """Translate a chunk of text from source language to target language."""
-        prompt_template = """\
-            Translate the following documents from {source_language} to {target_language}:
-            '''
-            {document}
-            '''
-        """
-
-        prompt = prompt_template.format(
+        prompt = TRANSLATOR_PROMPT_TMPL.format(
             source_language=cls.source_language, target_language=cls.target_language, document=chunk
         )
         translated_text = await cls.llm.acomplete(prompt)
