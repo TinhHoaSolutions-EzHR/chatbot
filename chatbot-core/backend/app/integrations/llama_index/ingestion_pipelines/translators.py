@@ -1,6 +1,5 @@
 import asyncio
 from abc import ABC
-from typing import Any
 from typing import List
 from typing import Optional
 
@@ -21,7 +20,18 @@ logger = get_logger(__name__)
 
 
 class Translator(ABC, BaseModel):
-    """Base interface for all translators."""
+    """Base interface for all translators.
+
+    Attributes:
+        llm (BaseLLM): The LLM model used for translation.
+        source_language (str): The source language of the text to be translated.
+        target_language (str): The target language of the translated text.
+
+    Public Methods:
+        from_defaults: Create an instance using default settings.
+        get_translated_documents: Translate a list of documents from source language to target language.
+        translate_text: Translate a text from source language to target language.
+    """
 
     llm: SerializeAsAny[BaseLLM] = Field(
         default=None,
@@ -61,7 +71,7 @@ class Translator(ABC, BaseModel):
         self.target_language = target_language
         self.callback_manager = callback_manager
 
-    @classmethod
+    @property
     def class_name(cls):
         return cls.__name__
 
@@ -95,7 +105,7 @@ class Translator(ABC, BaseModel):
             callback_manager=callback_manager,
         )
 
-    async def _translate_chunk(cls, chunk: str, **kwargs: Any) -> str:
+    async def _translate_chunk(cls, chunk: str) -> str:
         """Translate a chunk of text from source language to target language."""
         prompt_template = """\
             Translate the following documents from {source_language} to {target_language}:
@@ -111,9 +121,7 @@ class Translator(ABC, BaseModel):
 
         return translated_text.text
 
-    async def _translate_document(
-        cls, document: Document, show_progress: bool = False, **kwargs: Any
-    ) -> Document:
+    async def _translate_document(cls, document: Document, show_progress: bool = False) -> Document:
         """Translate a list of documents from source language to target language.
         Default: English -> Vietnamese
 
@@ -132,14 +140,14 @@ class Translator(ABC, BaseModel):
         chunks_with_progress = get_tqdm_iterable(chunks, show_progress, "Translating chunks")
 
         translated_chunks = await asyncio.gather(
-            *(cls._translate_chunk(chunk, **kwargs) for chunk in chunks_with_progress)
+            *(cls._translate_chunk(chunk) for chunk in chunks_with_progress)
         )
 
         translated_text = "\n".join(translated_chunks)
         return Document(text=translated_text, metadata=document.metadata)
 
     def get_translated_documents(
-        cls, documents: List[Document], show_progress: bool = False, **kwargs: Any
+        cls, documents: List[Document], show_progress: bool = False
     ) -> List[Document]:
         """Translate a list of documents from source language to target language.
         Default: English -> Vietnamese
@@ -147,6 +155,13 @@ class Translator(ABC, BaseModel):
         Args:
             documents (Sequence[Document]): List of documents to be translated.
             show_progress (bool): Flag to show progress bar. Defaults to False.
+
+        Returns:
+            List[Document]: List of translated documents.
+
+        Examples:
+            >>> get_translated_documents([Document(text="Hello, how are you?", metadata=metadata)])
+            [Document(text="Xin chào, bạn có khỏe không?", metadata=metadata)]
         """
         translated_documents = []
         documents_with_progress = get_tqdm_iterable(
@@ -158,9 +173,7 @@ class Translator(ABC, BaseModel):
         ) as event:
             for document in documents_with_progress:
                 try:
-                    translated_doc = asyncio.run(
-                        cls._translate_document(document, show_progress, **kwargs)
-                    )
+                    translated_doc = asyncio.run(cls._translate_document(document, show_progress))
                     translated_documents.append(translated_doc)
                 except Exception as e:
                     logger.error(f"Failed to translate document {document.id_}: {e}", exc_info=True)
@@ -169,7 +182,18 @@ class Translator(ABC, BaseModel):
 
         return translated_documents
 
-    def translate_text(cls, text: str, **kwargs: Any) -> str:
-        """Translate a text from source language to target language."""
-        translated_result = asyncio.run(cls._translate_chunk(text, **kwargs))
+    def translate_text(cls, text: str) -> str:
+        """Translate a text from source language to target language.
+
+        Args:
+            text (str): The text to be translated.
+
+        Returns:
+            str: The translated text.
+
+        Examples:
+            >>> translate_text("Hello, how are you?")
+            "Xin chào, bạn có khỏe không?"
+        """
+        translated_result = asyncio.run(cls._translate_chunk(text))
         return translated_result

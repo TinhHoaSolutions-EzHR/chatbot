@@ -36,7 +36,19 @@ class MarkitdownReader(BaseReader):
 
     @retry(stop=stop_after_delay(Constants.RETRY_TIMES))
     def load_data(self, file: str | Path, extra_info: Optional[Dict] = None) -> List[Document]:
-        """ """
+        """
+        Load data from a pdf file and return a list of documents under markdown format.
+
+        Args:
+            file (str | Path): The path to the pdf file.
+            extra_info (Optional[Dict]): Extra information to be added to the metadata of the document.
+
+        Returns:
+            List[Document]: A list of documents under markdown format.
+
+        Raises:
+            Exception: If the file is not found or failed to convert the file
+        """
         logger.info(f"Reading content from file: {file}")
         try:
             content = self.md.convert(file)
