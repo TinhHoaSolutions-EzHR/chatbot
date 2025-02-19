@@ -1,5 +1,6 @@
 'use client';
-import { DndContext, DragEndEvent, UniqueIdentifier, useDndContext } from '@dnd-kit/core';
+
+import { DndContext, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import React, { FC, ReactNode, useState } from 'react';
 import { toast } from 'sonner';
@@ -7,43 +8,43 @@ import { toast } from 'sonner';
 import { SIDEBAR_CHAT_HISTORY } from '@/constants/sidebar-items';
 import { useEditChatSession } from '@/hooks/chat/use-edit-chat-session';
 
-const useHandleDragStart = () => {
-  const { over } = useDndContext();
-  const [previousOver, setPreviousOver] = useState<UniqueIdentifier | null>(null);
-  return () => {
-    if (previousOver) {
-      toast.error('Move chat failed.', {
-        description: "There's something wrong with your request. Please try again later!",
-      });
-    }
-    setPreviousOver(over?.id ?? null);
-  };
-};
-
-const useHandleDragEnd = () => {
+const useHandleDrag = () => {
   const { mutate } = useEditChatSession();
-  const [previousOver] = useState<UniqueIdentifier | null>(null);
+  const [initialOverId, setInitialOverId] = useState<string | null>(null); // Store the initial drop zone
 
-  return (event: DragEndEvent) => {
-    if (event.over !== null && event.over.id != previousOver) {
-      mutate(
-        {
-          chatSessionId: `${event.active.id}`,
-          data: { folder_id: `${event.over.id}` === SIDEBAR_CHAT_HISTORY ? null : `${event.over.id}` },
-        },
-        {
-          onSuccess() {
-            toast.success('Move chat successfully!');
-          },
-          onError() {
-            toast.error('Move chat failed.', {
-              description: "There's something wrong with your request. Please try again later!",
-            });
-          },
-        },
-      );
-    }
+  const handleDragStart = (event: DragStartEvent) => {
+    setInitialOverId(event.active.data.current?.parentId ?? null); // Track the initial droppable ID
   };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const finalOverId = event.over?.id ?? null; // Get final drop location
+
+    if (finalOverId === initialOverId) {
+      console.log('Dropped in the same place, no action needed.');
+      return; // Stop execution if it's dropped in the same place
+    }
+
+    mutate(
+      {
+        chatSessionId: `${event.active.id}`,
+        data: { folder_id: finalOverId === SIDEBAR_CHAT_HISTORY ? null : `${finalOverId}` },
+      },
+      {
+        onSuccess() {
+          toast.success('Move chat successfully!');
+          setInitialOverId(null);
+        },
+        onError() {
+          toast.error('Move chat failed.', {
+            description: "There's something wrong with your request. Please try again later!",
+          });
+          setInitialOverId(null);
+        },
+      }
+    );
+  };
+
+  return { handleDragStart, handleDragEnd };
 };
 
 type Props = {
@@ -51,10 +52,14 @@ type Props = {
 };
 
 const ChatSidebarDndProvider: FC<Props> = ({ children }) => {
-  const handleDragEnd = useHandleDragEnd();
+  const { handleDragStart, handleDragEnd } = useHandleDrag();
 
   return (
-    <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={handleDragEnd} onDragStart={useHandleDragStart}>
+    <DndContext
+      modifiers={[restrictToVerticalAxis]}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       {children}
     </DndContext>
   );
