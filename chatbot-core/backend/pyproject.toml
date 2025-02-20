@@ -50,6 +50,7 @@ dependencies = [
   "sse-starlette>=2.2.1",
   "pydantic-settings>=2.7.1",
   "celery>=5.4.0",
+  "spacy>=3.8.4",
 ]
 
 [project.optional-dependencies]
@@ -83,7 +84,7 @@ indent-width = 4
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
 select = ["F"]
-ignore = ["W", "F401", "F841"]
+ignore = ["W", "F401"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -133,4 +134,5 @@ dev = [
   "commitizen>=4.0.0",
   "ipykernel>=6.29.5",
   "pre-commit>=4.1.0",
+  "pip>=25.0.1",
 ]
