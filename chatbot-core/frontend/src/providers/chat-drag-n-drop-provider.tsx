@@ -20,7 +20,6 @@ const useHandleDrag = () => {
     const finalOverId = event.over?.id ?? null; // Get final drop location
 
     if (finalOverId === initialOverId) {
-      console.log('Dropped in the same place, no action needed.');
       return; // Stop execution if it's dropped in the same place
     }
 
