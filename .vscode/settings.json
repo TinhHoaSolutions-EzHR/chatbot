@@ -1,5 +1,5 @@
 {
-  "python.formatting.provider": "black",
+  "python.formatting.provider": "ruff",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
