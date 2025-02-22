@@ -1,9 +1,0 @@
-export PROJECT_NAME=chatbot-core
-
-# Can be development or production
-export ENV=
-
-# INFO: Source the .env file coresponding to the environment
-# E.g .env.development or .env.production
-# So you have to copy the .env.example to .env.development or .env.production
-[ -f ".env.${ENV}" ] && dotenv ".env.${ENV}"
