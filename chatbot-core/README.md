@@ -24,17 +24,18 @@ cd chatbot-core
 2. Create the environment file from example
 
 ```bash
-cp .env.example .env.development
+cp .env.example .env
 ```
 
 (Optional) If you want to use [direnv](https://direnv.net/), you can use the .envrc file
 
 ```bash
-cp .envrc.sample .envrc
 direnv allow
 ```
 
-Then the environment variables from `.env.development` will be loaded and unloaded when you enter and exit the directory.
+Then the environment variables from `.env` will be loaded and unloaded when you enter and exit the directory.
+
+If you don't want to use direnv, you can go ahead with the `.env` file.
 
 3. Build the docker image:
 

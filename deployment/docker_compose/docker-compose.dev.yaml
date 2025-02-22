@@ -152,7 +152,7 @@ services:
     # WARN: cannot start this service without both files
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+      - ../../${ENV_FILE:-.env} # default to .env
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
@@ -201,7 +201,7 @@ services:
     # WARN: cannot start this service without both files
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+      - ../../${ENV_FILE:-.env} # default to .env
     logging:
       driver: json-file
       options:
@@ -229,7 +229,7 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
+      - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../chatbot-core/backend/alembic/:/app/alembic
       - ../../chatbot-core/backend/app/:/app/app
