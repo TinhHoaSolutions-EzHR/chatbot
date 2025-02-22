@@ -1,4 +1,4 @@
-# NOTE: pwd must be chatbot-core
+# NOTE: pwd must be chatbot (root directory of the project)
 
 services:
   database:
@@ -20,7 +20,7 @@ services:
       - mssql_log_volume:/var/opt/mssql/log
       - mssql_backup_volume:/var/opt/mssql/backup
     networks:
-      - chatbot-core
+      - chatbot
     healthcheck:
       test:
         [
@@ -50,7 +50,7 @@ services:
       database:
         condition: service_healthy
     networks:
-      - chatbot-core
+      - chatbot
     command: >
       /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
       echo 'Database configured!'"
@@ -63,7 +63,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - chatbot-core
+      - chatbot
     # docker silently mounts /data even without an explicit volume mount, which enables
     # persistence. explicitly setting save and appendonly forces ephemeral behavior.
     command: redis-server --save "" --appendonly no
@@ -95,7 +95,7 @@ services:
     volumes:
       - qdrant_data_volume:/qdrant/storage
     networks:
-      - chatbot-core
+      - chatbot
     healthcheck:
       test: curl -s http://localhost:6333/healthz | grep -q 'healthz check passed' || exit 1
       interval: 10s
@@ -117,7 +117,7 @@ services:
     volumes:
       - minio_data:/data
     networks:
-      - chatbot-core
+      - chatbot
     command: server --console-address ":9001" /data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -128,7 +128,7 @@ services:
   # NOTE: Official port for api-server is 5000
   api-server:
     build:
-      context: ../../chatbot-core/backend/
+      context: ../../backend/
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: api-server
@@ -147,19 +147,19 @@ services:
       - "5000:5000"
     #INFO: require 2 env files
     # 1) .env file located in deployment/docker_compose
-    # 2) .env/.env.development/.env.production file located in chatbot-core
-    # The first file store general variables for both projects, the second file store project-specific variables for chatbot-core
+    # 2) .env file located in chatbot (root directory)
+    # The first file store general variables for both projects, the second file store project-specific variables for chatbot
     # WARN: cannot start this service without both files
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+      - ../../${ENV_FILE:-.env} # default to .env
     volumes: # INFO: Mount for auto-reload code changes
-      - ../../chatbot-core/backend/alembic/:/app/alembic
-      - ../../chatbot-core/backend/app/:/app/app
-      - ../../chatbot-core/backend/tests/:/app/tests
+      - ../../backend/alembic/:/app/alembic
+      - ../../backend/app/:/app/app
+      - ../../backend/tests/:/app/tests
       - ../data/api_server/seeds/:/app/data/seeds # INFO: default to /app/data/seeds, if change this path, remember to change SEED_CONFIG_DIR
     networks:
-      - chatbot-core
+      - chatbot
     extra_hosts:
       - "host.docker.internal:host-gateway"
     logging:
@@ -177,7 +177,7 @@ services:
   # NOTE: Official port for web-server is 3000
   web-server:
     build:
-      context: ../../chatbot-core/frontend
+      context: ../../frontend
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: web-server
@@ -193,15 +193,15 @@ services:
       - ../data/nginx:/etc/nginx/conf.d
       - /app/node_modules # Avoid node_modules conflicts
     networks:
-      - chatbot-core
+      - chatbot
     #INFO: require 2 env files
     # 1) .env file located in deployment/docker_compose
-    # 2) .env/.env.development/.env.production file located in chatbot-core
-    # The first file store general variables for both projects, the second file store project-specific variables for chatbot-core
+    # 2) .env file located in chatbot (root directory)
+    # The first file store general variables for both projects, the second file store project-specific variables for chatbot
     # WARN: cannot start this service without both files
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # default to .env
+      - ../../${ENV_FILE:-.env} # default to .env
     logging:
       driver: json-file
       options:
@@ -214,7 +214,7 @@ services:
 
   background:
     build:
-      context: ../../chatbot-core/backend/
+      context: ../../backend/
       dockerfile: Dockerfile
     platform: linux/amd64
     container_name: worker
@@ -229,13 +229,13 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
-      - ../../chatbot-core/${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
+      - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes: # INFO: Mount for auto-reload code changes
-      - ../../chatbot-core/backend/alembic/:/app/alembic
-      - ../../chatbot-core/backend/app/:/app/app
-      - ../../chatbot-core/backend/tests/:/app/tests
+      - ../../backend/alembic/:/app/alembic
+      - ../../backend/app/:/app/app
+      - ../../backend/tests/:/app/tests
     networks:
-      - chatbot-core
+      - chatbot
     logging:
       driver: json-file
       options:
@@ -253,7 +253,7 @@ volumes:
   minio_data:
 
 networks:
-  chatbot-core:
+  chatbot:
     driver: bridge
     driver_opts:
       com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"

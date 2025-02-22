@@ -1,5 +1,3 @@
-### Description
-
 <!-- Provide a brief description of the changes in this PR -->
 
 ### How Has This Been Tested?
