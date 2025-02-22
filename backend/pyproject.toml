@@ -5,11 +5,8 @@ build-backend = "hatchling.build"
 [project]
 authors = [
   { name = "lelouvincx", email = "dinhminhchinh3357@gmail.com" },
-  { name = "greyyT" },
-  { name = "ImTrungLe" },
-  { name = "lekiet1214" },
-  { name = "TranThang0801" },
   { name = "tuantran0910" },
+  { name = "greyyT" },
 ]
 name = "backend"
 version = "1.0.0"
@@ -135,4 +132,5 @@ dev = [
   "ipykernel>=6.29.5",
   "pre-commit>=4.1.0",
   "pip>=25.0.1",
+  "matplotlib>=3.10.0",
 ]
