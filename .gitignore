@@ -26,3 +26,9 @@ docs/node_modules
 # Tools
 **/.ruff_cache/
 .DS_Store
+
+# Backend ignores
+backend/**/*.pyc
+
+# Frontend ignores
+frontend/.next
