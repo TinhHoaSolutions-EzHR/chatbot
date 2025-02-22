@@ -15,11 +15,7 @@ This is the LLM-based assistant for the EzHr-Chatbot project. It makes use of RA
 
 For developing and testing purposes, we can use the Docker compose to run the API server.
 
-1. Go to the chatbot-core directory
-
-```bash
-cd chatbot-core
-```
+1. Go to the root directory
 
 2. Create the environment file from example
 
@@ -42,7 +38,7 @@ If you don't want to use direnv, you can go ahead with the `.env` file.
 ```bash
 make build
 # Or this command
-docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbot-core build
+docker compose -f ../deployment/docker_compose/docker-compose.dev.yaml -p chatbot build
 ```
 
 4. Run the docker container
@@ -57,7 +53,7 @@ make up
 curl http://localhost:5000/health | jq
 ```
 
-6. For more commands, you can use the Makefile in `chatbot-core`
+6. For more commands, you can use the [Makefile](./Makefile)
 
 ```bash
 make help
