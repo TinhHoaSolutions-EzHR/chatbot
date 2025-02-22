@@ -30,3 +30,4 @@ backend/**/*.pyc
 
 # Frontend ignores
 frontend/.next
+backend/notebooks/storage
