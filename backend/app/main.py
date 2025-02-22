@@ -86,6 +86,7 @@ def create_app() -> FastAPI:
     )
     origins = [
         "http://127.0.0.1:3000",
+        "http://localhost:3000",
     ]  # WARN: Update this to the actual frontend URL
 
     app.add_middleware(
