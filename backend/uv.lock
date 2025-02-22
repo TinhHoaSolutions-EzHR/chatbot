@@ -284,6 +284,7 @@ dependencies = [
     { name = "fastembed" },
     { name = "llama-index" },
     { name = "llama-index-embeddings-cohere" },
+    { name = "llama-index-embeddings-fastembed" },
     { name = "llama-index-embeddings-gemini" },
     { name = "llama-index-embeddings-openai" },
     { name = "llama-index-llms-cohere" },
@@ -346,6 +347,7 @@ requires-dist = [
     { name = "fastembed", specifier = ">=0.4.2" },
     { name = "llama-index", specifier = ">=0.12.14" },
     { name = "llama-index-embeddings-cohere", specifier = ">=0.4.0" },
+    { name = "llama-index-embeddings-fastembed", specifier = ">=0.3.0" },
     { name = "llama-index-embeddings-gemini", specifier = ">=0.3.0" },
     { name = "llama-index-embeddings-openai", specifier = ">=0.3.1" },
     { name = "llama-index-llms-cohere", specifier = ">=0.4.0" },
@@ -2136,6 +2138,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/7a/b1980d768a9c281c6a68dae32bb849de1691a888a2c39907586c1d5d3621/llama_index_embeddings_cohere-0.4.0.tar.gz", hash = "sha256:a52b8dc2e02ad8676a7db6c8b604e8150e57766cd4430186bb52b7b4cec90b40", size = 4507 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2f/99/3e946ece78169bf3d766ed705337b100babc060d8d7f2fe488c0c3a4114a/llama_index_embeddings_cohere-0.4.0-py3-none-any.whl", hash = "sha256:62fc63391a81553f6b6bdbada1812c654c1462c51159d58cd5c3601de6f69fcf", size = 4725 },
+]
+
+[[package]]
+name = "llama-index-embeddings-fastembed"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastembed" },
+    { name = "llama-index-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e7/78/39b40a489d247164811ca530938c8070a629251a99b77e2feca9885b3937/llama_index_embeddings_fastembed-0.3.0.tar.gz", hash = "sha256:aad36a12209151dfa28276ad1dc2a0aaa86c57a3730fb11f42750a5b129ec4eb", size = 2395 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ac/13/f2826f17297d52752e9ec2fe48cedaeb2a155a88853a1148c4019d8fa157/llama_index_embeddings_fastembed-0.3.0-py3-none-any.whl", hash = "sha256:d71dd5ecec38aeddd008f688c9ebe448b5171436897d945735f5f92de5e491ea", size = 2688 },
 ]
 
 [[package]]

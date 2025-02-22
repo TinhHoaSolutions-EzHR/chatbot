@@ -22,6 +22,7 @@ dependencies = [
   "llama-index-vector-stores-qdrant>=0.4.0",
   "llama-index-storage-chat-store-redis>=0.4.0",
   "llama-index-storage-kvstore-redis>=0.3.0",
+  "llama-index-embeddings-fastembed>=0.3.0",
   "redis>=5.2.0",
   "fastembed>=0.4.2",
   "pdfplumber>=0.11.4",
