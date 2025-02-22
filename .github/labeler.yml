@@ -19,11 +19,6 @@ chatbot:
       - any-glob-to-any-file:
           - chatbot-core/**/*
 
-vanphongso:
-  - changed-files:
-      - any-glob-to-any-file:
-          - vanphongso/**/*
-
 documentation:
   - changed-files:
       - any-glob-to-any-file:
