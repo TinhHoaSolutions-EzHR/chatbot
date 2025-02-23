@@ -67,6 +67,38 @@ class MinioConnector(BaseConnector[Minio]):
         except Exception as e:
             logger.error(f"Unexpected error creating bucket {bucket_name}: {e}", exc_info=True)
 
+    def get_file(self, object_name: str, bucket_name: str, length: int = None) -> BinaryIO:
+        """
+        Get files from object storage
+
+        Args:
+            object_name (str): Object name
+            bucket_name (str): Bucket name
+            length (int, optional): File length. Defaults to None.
+
+        Returns:
+            BinaryIO: File data
+
+        Raises:
+            S3Error: If there's an error with the S3 operation
+            ValueError: If the required attributes are missing
+        """
+        if not object_name or not bucket_name:
+            raise ValueError("Missing required attributes: object_name, bucket_name")
+
+        try:
+            # Get the file from the bucket
+            response = self.client.get_object(
+                bucket_name=bucket_name, object_name=object_name, length=length
+            )
+            return response.read()
+        except S3Error as e:
+            logger.error(f"S3 error getting file {object_name}: {e}", exc_info=True)
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error getting file {object_name}: {e}", exc_info=True)
+            return None
+
     def upload_file(
         self, object_name: str, data: BinaryIO, bucket_name: str, length: int = None
     ) -> bool:
