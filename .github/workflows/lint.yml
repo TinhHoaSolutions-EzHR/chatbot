@@ -11,7 +11,7 @@ on:
 
 jobs:
   lint-python:
-    name: lint python files
+    name: lint python
     runs-on: ubuntu-24.04
     defaults:
       run:
