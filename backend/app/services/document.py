@@ -11,8 +11,6 @@ from sqlalchemy.orm import Session
 
 from app.background.tasks.indexing import run_indexing
 from app.databases.minio import MinioConnector
-from app.databases.qdrant import QdrantConnector
-from app.databases.redis import RedisConnector
 from app.models import Document
 from app.repositories.document import DocumentRepository
 from app.services.base import BaseService
@@ -30,8 +28,6 @@ class DocumentService(BaseService):
         self,
         db_session: Session,
         minio_connector: Optional[MinioConnector] = None,
-        qdrant_connector: Optional[QdrantConnector] = None,
-        redis_connector: Optional[RedisConnector] = None,
     ) -> None:
         """
         Document service class for handling document-related operations.
@@ -39,8 +35,6 @@ class DocumentService(BaseService):
         Args:
             db_session (Session): Database session.
             minio_connector (Optional[MinioConnector]): Object storage connection. Defaults to None.
-            qdrant_connector (Optional[QdrantConnector]): Vector database connection. Defaults to None.
-            redis_connector (Optional[RedisConnector]): Cache store connection. Defaults to None.
         """
         super().__init__(db_session=db_session)
 
@@ -49,8 +43,6 @@ class DocumentService(BaseService):
 
         # Define external storage's connectors
         self._minio_connector = minio_connector
-        self._qdrant_connector = qdrant_connector
-        self._redis_connector = redis_connector
 
     def _validate_documents(self, documents: List[UploadFile]) -> Optional[APIError]:
         """
@@ -92,7 +84,7 @@ class DocumentService(BaseService):
         with self._transaction():
             document = Document(
                 name=uploaded_document.filename,
-                url=file_path,
+                document_url=file_path,
             )
             if err := self._document_repo.create_document(document=document):
                 return None, err
@@ -111,11 +103,10 @@ class DocumentService(BaseService):
             "issue_date": issue_date.strftime(Constants.DATETIME_FORMAT),
             "is_outdated": False,
         }
+
         # Run indexing task
         task_result = run_indexing.delay(
-            document=uploaded_document,
-            qdrant_connector=self._qdrant_connector,
-            redis_connector=self._redis_connector,
+            file_path=file_path,
             metadata=metadata,
         )
 
@@ -156,7 +147,7 @@ class DocumentService(BaseService):
 
                     uploaded_document_results.append((document_url, task_id))
 
-            return uploaded_document_results
+            return uploaded_document_results, None
         except Exception as e:
             logger.error(f"Error uploading documents: {e}")
             return [], APIError(kind=ErrorCodesMappingNumber.INTERNAL_SERVER_ERROR.value)

@@ -1,10 +1,8 @@
 from typing import Any
 from typing import Dict
-from typing import Optional
-
-from fastapi import UploadFile
 
 from app.background.celery_worker import background_app
+from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.integrations.llama_index.ingestion_pipelines import IndexingPipeline
@@ -16,23 +14,29 @@ logger = get_logger(__name__)
 
 @background_app.task(name=Constants.RUN_INDEXING)
 def run_indexing(
-    document: UploadFile,
-    qdrant_connector: Optional[QdrantConnector] = None,
-    redis_connector: Optional[RedisConnector] = None,
+    file_path: str,
     metadata: Dict[str, Any] = {},
 ):
     """
     Run indexing task to embed documents into vector database.
 
     Args:
-        document (UploadFile): Document file to be indexed.
-        qdrant_connector (Optional[QdrantConnector]): Vector database connection. Defaults to None.
-        redis_connector (Optional[RedisConnector]): Cache store connection. Defaults to None.
+        file_path (str): Path to the document file to be indexed.
         metadata (Dict[str, Any]): Metadata for the embedding vector.
     """
-    # Log the task start
-    logger.info(f"Indexing task for document {document.filename} starting...")
+    minio_connector = MinioConnector()
+    qdrant_connector = QdrantConnector()
+    redis_connector = RedisConnector()
 
+    logger.info(f"Indexing task for document {file_path} started.")
+
+    # Get the document from the object storage
+    document = minio_connector.get_file(
+        object_name=file_path,
+        bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
+    )
+
+    # Run the indexing pipeline to embed the document into the vector database
     indexing_pipeline = IndexingPipeline(
         qdrant_connector=qdrant_connector,
         redis_connector=redis_connector,
@@ -40,4 +44,4 @@ def run_indexing(
     indexing_pipeline.run(document=document, metadata=metadata)
 
     # Log the task end
-    logger.info(f"Indexing task for document {document.filename} completed.")
+    logger.info(f"Indexing task for document {file_path} completed.")

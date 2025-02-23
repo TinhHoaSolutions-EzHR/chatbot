@@ -13,10 +13,6 @@ from sqlalchemy.orm import Session
 from app.databases.minio import get_minio_connector
 from app.databases.minio import MinioConnector
 from app.databases.mssql import get_db_session
-from app.databases.qdrant import get_qdrant_connector
-from app.databases.qdrant import QdrantConnector
-from app.databases.redis import get_redis_connector
-from app.databases.redis import RedisConnector
 from app.models.document import DocumentUploadResponse
 from app.services.document import DocumentService
 from app.settings import Constants
@@ -34,18 +30,16 @@ def upload_documents(
     uploaded_documents: List[UploadFile] = File(...),
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
-    qdrant_connector: QdrantConnector = Depends(get_qdrant_connector),
-    redis_connector: RedisConnector = Depends(get_redis_connector),
 ) -> BackendAPIResponse:
     """
     Upload documents to object storage. Then, trigger the indexing pipeline into the vector database.
+
     Args:
         issue_date (datetime): Issue date of the document. Defaults to the current date.
         uploaded_documents (List[UploadFile]): List of documents to upload.
         db_session (Session): Database session. Defaults to relational database session.
         minio_connector (MinioConnector): MinIO connector.
-        qdrant_connector (QdrantConnector): Qdrant connector.
-        redis_connector (RedisConnector): Redis connector.
+
     Returns:
         BackendAPIResponse: API response with the uploaded document URLs.
     """
@@ -53,8 +47,6 @@ def upload_documents(
     uploaded_document_results, err = DocumentService(
         db_session=db_session,
         minio_connector=minio_connector,
-        qdrant_connector=qdrant_connector,
-        redis_connector=redis_connector,
     ).upload_documents(issue_date=issue_date, uploaded_documents=uploaded_documents)
     if err:
         status_code, detail = err.kind
