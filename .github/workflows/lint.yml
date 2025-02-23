@@ -48,11 +48,11 @@ jobs:
         run: |
           uvx ruff@0.9.5 check \
           --output-format=github \
-          ${{ env.CHANGED_FILES }} | tee annotations.txt || true
+          ${{ env.CHANGED_FILES }} | tee annotations.txt
 
       # Final step to check if annotations.txt exists and comment on the PR
       - name: Check for annotations and comment
-        if: success() && env.CHANGED_FILES != ''
+        if: always() && env.CHANGED_FILES != ''
         id: check_annotations
         run: |
           if test -f "./annotations.txt"; then
@@ -63,13 +63,14 @@ jobs:
 
       - name: Run lint summarization
         id: summarize_linting
-        if: env.CHANGED_FILES != ''
+        if: always() && env.CHANGED_FILES != ''
         env:
           CHANGED_FILES: ${{ env.CHANGED_FILES }}
         run: |
           uv run .github/scripts/summarize_linting.py >> SUMMARY.md
 
       - name: Comment on PR
+        if: always() && env.CHANGED_FILES != ''
         uses: actions/github-script@v7
         with:
           # Read the file SUMMARY.md and comment on the PR
@@ -88,6 +89,7 @@ jobs:
     name: cleanup old bot's comments
     runs-on: ubuntu-24.04
     needs: lint-python
+    if: ${{ always() }}
     steps:
       - name: Remove old bot comments
         uses: actions/github-script@v7
