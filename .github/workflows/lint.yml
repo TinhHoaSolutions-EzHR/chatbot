@@ -46,4 +46,39 @@ jobs:
       - name: Lint python files
         if: env.CHANGED_FILES != ''
         run: |
-          uvx ruff@0.9.5 check --output-format=github ${{ env.CHANGED_FILES }} || true
+          uvx ruff@0.9.5 check \
+          --output-format=github \
+          ${{ env.CHANGED_FILES }} | tee annotations.txt || true
+
+      # Final step to check if annotations.txt exists and comment on the PR
+      - name: Check for annotations and comment
+        if: success() && env.CHANGED_FILES != ''
+        id: check_annotations
+        run: |
+          if test -f "./annotations.txt"; then
+            echo "ANNOTATIONS_FOUND=true" >> $GITHUB_ENV
+          else
+            echo "ANNOTATIONS_FOUND=false" >> $GITHUB_ENV
+          fi
+
+      - name: Run lint summarization
+        id: summarize_linting
+        if: env.CHANGED_FILES != ''
+        env:
+          CHANGED_FILES: ${{ env.CHANGED_FILES }}
+        run: |
+          uv run .github/scripts/summarize_linting.py >> SUMMARY.md
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          # Read the file SUMMARY.md and comment on the PR
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('SUMMARY.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
