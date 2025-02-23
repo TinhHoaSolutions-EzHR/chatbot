@@ -6,8 +6,6 @@ from typing import Optional
 from fastapi import UploadFile
 from llama_index.core import Settings
 from llama_index.core.extractors import KeywordExtractor
-from llama_index.core.extractors import QuestionsAnsweredExtractor
-from llama_index.core.extractors import SummaryExtractor
 from llama_index.core.ingestion import IngestionCache
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import HierarchicalNodeParser
@@ -46,8 +44,8 @@ class IndexingPipeline:
         """
         # Define node postprocessor methods
         extractors = [
-            SummaryExtractor(llm=Settings.llm, summaries=["prev", "self"]),
-            QuestionsAnsweredExtractor(llm=Settings.llm, questions=2),
+            # SummaryExtractor(llm=Settings.llm, summaries=["prev", "self"]),
+            # QuestionsAnsweredExtractor(llm=Settings.llm, questions=2),
             KeywordExtractor(llm=Settings.llm, keywords=5),
         ]
 
