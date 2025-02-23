@@ -119,6 +119,9 @@ class Constants:
     CELERY_WORKER_POOL = "threads"
     CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
+    # Datetime Format
+    DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
     # LLM Prompts
     CHAT_SESSION_NAMING_PROMPT = """
     Generate a short and concise title (5-10 words) for the chat session based on the following conversation:
