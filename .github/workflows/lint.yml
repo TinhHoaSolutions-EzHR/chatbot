@@ -82,3 +82,41 @@ jobs:
               repo: context.repo.repo,
               body: summary
             });
+
+  # Cleanup old comments made by the bot, only keep the most recent
+  cleanup-old-comments:
+    name: cleanup old bot's comments
+    runs-on: ubuntu-24.04
+    needs: lint-models
+    steps:
+      - name: Remove old bot comments
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Filter comments made by github-actions[bot]
+            const botComments = comments.filter(
+              (comment) => comment.user.login === 'github-actions[bot]'
+            );
+
+            // Sort comments by creation date in descending order
+            botComments.sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            // Determine the comments to delete (all except the most recent)
+            const commentsToDelete = botComments.slice(1);
+
+            // Delete the older comments
+            for (const comment of commentsToDelete) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
+            }
