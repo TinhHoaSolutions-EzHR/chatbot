@@ -88,6 +88,8 @@ jobs:
   cleanup-old-comments:
     name: cleanup old bot's comments
     runs-on: ubuntu-24.04
+    needs: lint-python
+    if: ${{ always() }}
     steps:
       - name: Remove old bot comments
         uses: actions/github-script@v7
