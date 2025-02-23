@@ -24,3 +24,6 @@ docs/node_modules
 # Tools
 **/.ruff_cache/
 .DS_Store
+
+# Vscode
+.vscode/settings.json
