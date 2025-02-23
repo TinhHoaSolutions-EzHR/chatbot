@@ -27,7 +27,10 @@ def parse_annotation(content: str) -> Dict[str, int]:
     Example annotation:
     ::error title=Ruff (F821),file=/Developer/chatbot/backend/app/main.py,line=51,col=23,endLine=51,endColumn=32::backend/app/main.py:51:23: F821 Undefined name `Constants`
     """
+    changed_files = get_changed_files()
     stats = {}
+    for files in changed_files:
+        stats[files] = {"error": 0, "warning": 0}
 
     for line in content.strip().split("\n"):
         match = re.search(r"file=([^,]+)", line)
@@ -51,7 +54,7 @@ def parse_annotation(content: str) -> Dict[str, int]:
 
 
 def generate_markdown_report(stats):
-    total_files = len(get_changed_files())
+    total_files = len(stats)
     files_with_issues = sum(1 for s in stats.values() if s["error"] > 0 or s["warning"] > 0)
     clean_files = total_files - files_with_issues
 
