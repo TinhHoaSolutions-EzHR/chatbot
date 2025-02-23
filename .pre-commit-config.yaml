@@ -54,14 +54,14 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: [
-            "--application-directories=chatbot-core/backend",
+            "--application-directories=backend",
             "--unclassifiable-application-module=app", # app is the main module
             "--py311-plus",
           ]
         # need to ignore alembic files, since reorder-python-imports gets confused
         # and thinks that alembic is a local package since there is a folder
         # in the backend directory called `alembic`
-        exclude: ^chatbot-core/backend/alembic
+        exclude: ^backend/alembic
 
   # The repo currently does not and should not have imports with side effects
   # These settings will remove unused imports with side effects
