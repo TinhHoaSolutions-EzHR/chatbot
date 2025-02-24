@@ -13,6 +13,8 @@ Read more documentation: https://tinhhoasolutions-ezhr.github.io/chatbot/
 - Docker and Docker Compose V2. [Installation guide](https://docs.docker.com/get-docker/)
 - NodeJS >= 22.12.0 (specified at `.tool-versions`) and yarn 1.22.22 (optional)
 
+To easier install and manage all of them, recommend to use [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/).
+
 ### Setup installation
 
 For developing and testing purposes, we can use the docker compose to run the API server.
@@ -78,6 +80,19 @@ make clean
 ```
 
 Every necessary commands are in the Makefile. You can use `make help` to see all available commands.
+
+9. Install `pre-commit` hooks
+
+Since you've installed `uv` or `nodejs`, can install pre-commit by one of these commands:
+
+```bash
+uvx pre-commit@4.1.0 install
+# Equivalent command in npm
+npm install pre-commit@4.1.0
+pre-commit install
+```
+
+This will initialize the pre-commit hooks for the project. From now, everytime making a new commit, the pre-commit hooks will be run to check the code quality.
 
 ## Components
 
