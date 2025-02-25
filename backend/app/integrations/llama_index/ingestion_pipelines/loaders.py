@@ -14,7 +14,10 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.settings import Constants
+from app.utils.api.helpers import get_logger
 from app.utils.api.helpers import parse_pdf
+
+logger = get_logger(__name__)
 
 
 class IndexingPipeline:
@@ -65,40 +68,44 @@ class IndexingPipeline:
             document (UploadFile): Document to be indexed.
             metadata (Dict[str, Any]): Additional metadata for the document. Defaults to {}.
         """
-        # Parse PDF file into LlamaIndex Document objects
-        documents = parse_pdf(document=document, metadata=metadata)
+        try:
+            # Parse PDF file into LlamaIndex Document objects
+            documents = parse_pdf(document=document, metadata=metadata)
 
-        # Create a collection in the vector database
-        self._qdrant_connector.create_collection(
-            collection_name=Constants.LLM_QDRANT_COLLECTION,
-        )
+            # Create a collection in the vector database
+            self._qdrant_connector.create_collection(
+                collection_name=Constants.LLM_QDRANT_COLLECTION,
+            )
 
-        # Initialize the vector store for the ingestion pipeline
-        qdrant_client = self._qdrant_connector.client
-        vector_store = QdrantVectorStore(
-            client=qdrant_client,
-            collection_name=Constants.LLM_QDRANT_COLLECTION,
-        )
+            # Initialize the vector store for the ingestion pipeline
+            qdrant_client = self._qdrant_connector.client
+            vector_store = QdrantVectorStore(
+                client=qdrant_client,
+                collection_name=Constants.LLM_QDRANT_COLLECTION,
+            )
 
-        # Initialize the cache store for the ingestion pipeline
-        redis_cache = self._redis_connector.get_cache_store()
-        ingest_cache = IngestionCache(
-            cache=redis_cache,
-            collection=Constants.LLM_REDIS_CACHE_COLLECTION,
-        )
+            # Initialize the cache store for the ingestion pipeline
+            redis_cache = self._redis_connector.get_cache_store()
+            ingest_cache = IngestionCache(
+                cache=redis_cache,
+                collection=Constants.LLM_REDIS_CACHE_COLLECTION,
+            )
 
-        # Define transformation components (chunking + node post-processors)
-        transformations = self._get_transformations()
+            # Define transformation components (chunking + node post-processors)
+            transformations = self._get_transformations()
 
-        # Ingestion pipeline to vector database
-        pipeline = IngestionPipeline(
-            name="EzHR Chatbot Indexing Pipeline",
-            transformations=transformations,
-            vector_store=vector_store,
-            cache=ingest_cache,
-            # TODO: Remove this parameter after finishing the development
-            disable_cache=True,
-        )
-        pipeline.run(
-            documents=documents, show_progress=True, batch_size=Constants.INGESTION_BATCH_SIZE
-        )
+            # Ingestion pipeline to vector database
+            pipeline = IngestionPipeline(
+                name="EzHR Chatbot Indexing Pipeline",
+                transformations=transformations,
+                vector_store=vector_store,
+                cache=ingest_cache,
+                # TODO: Remove this parameter after finishing the development
+                disable_cache=True,
+            )
+            pipeline.run(
+                documents=documents, show_progress=True, batch_size=Constants.INGESTION_BATCH_SIZE
+            )
+        except Exception as e:
+            logger.error(f"Failed to run indexing pipeline for document {document.filename}.")
+            raise e
