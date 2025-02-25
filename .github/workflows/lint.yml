@@ -1,0 +1,125 @@
+name: Lint
+
+# Runs on every commit in pull request to main
+# Path including all .py files
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**/*.py"
+
+jobs:
+  lint-python:
+    name: lint python
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out ${{ github.head_ref }}
+        uses: actions/checkout@v4
+
+      # INFO: Use uv as a python installation & dependency manager
+      # https://docs.astral.sh/uv/guides/integration/github/
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.20"
+          enable-cache: true
+
+      # Get changes python files and save to github env
+      - name: Get changed python files
+        id: get_changed_files
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD | tr -s ' ' '\n' | grep -E '.*[.]py$' | tr -s '\n' ' ') || true
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "No python files changed."
+            CHANGED_FILES=""
+          fi
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+          echo "Linting $CHANGED_FILES"
+
+      # INFO: ruff version 0.9.5 is matched with pyproject.toml
+      - name: Lint python files
+        if: env.CHANGED_FILES != ''
+        run: |
+          uvx ruff@0.9.5 check \
+          --output-format=github \
+          ${{ env.CHANGED_FILES }} | tee annotations.txt
+
+      # Final step to check if annotations.txt exists and comment on the PR
+      - name: Check for annotations and comment
+        if: always() && env.CHANGED_FILES != ''
+        id: check_annotations
+        run: |
+          if test -f "./annotations.txt"; then
+            echo "ANNOTATIONS_FOUND=true" >> $GITHUB_ENV
+          else
+            echo "ANNOTATIONS_FOUND=false" >> $GITHUB_ENV
+          fi
+
+      - name: Run lint summarization
+        id: summarize_linting
+        if: always() && env.CHANGED_FILES != ''
+        env:
+          CHANGED_FILES: ${{ env.CHANGED_FILES }}
+        run: |
+          uv run .github/scripts/summarize_linting.py >> SUMMARY.md
+
+      - name: Comment on PR
+        if: always() && env.CHANGED_FILES != ''
+        uses: actions/github-script@v7
+        with:
+          # Read the file SUMMARY.md and comment on the PR
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('SUMMARY.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+  # Cleanup old comments made by the bot, only keep the most recent
+  cleanup-old-comments:
+    name: cleanup old bot's comments
+    runs-on: ubuntu-24.04
+    needs: lint-python
+    if: ${{ always() }}
+    steps:
+      - name: Remove old bot comments
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CI_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Filter comments made by github-actions[bot]
+            const botComments = comments.filter(
+              (comment) => comment.user.login === 'github-actions[bot]'
+            );
+
+            // Sort comments by creation date in descending order
+            botComments.sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            // Determine the comments to delete (all except the most recent)
+            const commentsToDelete = botComments.slice(1);
+
+            // Delete the older comments
+            for (const comment of commentsToDelete) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
+            }

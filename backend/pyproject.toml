@@ -105,4 +105,5 @@ dev = [
   "commitizen>=4.0.0",
   "ipykernel>=6.29.5",
   "pre-commit>=4.1.0",
+  "ruff>=0.9.5",
 ]

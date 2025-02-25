@@ -1,0 +1,92 @@
+name: PR Agent
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, review_requested]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr-agent:
+    name: run pr agent
+    if: ${{ github.event.sender.type != 'Bot' }} && ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: qodo-ai/pr-agent@main
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Cleanup old comments from users that contain command prefixes: /
+  cleanup-old-comments:
+    name: cleanup old user command comments
+    runs-on: ubuntu-24.04
+    needs: pr-agent
+    if: ${{ always() }}
+    steps:
+      - name: Remove old user command comments
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CI_TOKEN }}
+          script: |
+            const commandPrefixes = ['/describe', '/review', '/improve', '/ask', '/update_changelog',
+                                    '/similar_issue', '/help', '/generate_labels', '/analyze', '/test',
+                                    '/custom_prompt', '/test', '/improve_component', '/checks', '/implement'];
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Group comments by user
+            const userCommentGroups = {};
+
+            for (const comment of comments) {
+              // Skip bot comments
+              if (comment.user.login === 'github-actions[bot]') {
+                continue;
+              }
+
+              // Check if comment contains any of the command prefixes
+              const hasCommand = commandPrefixes.some(prefix =>
+                comment.body.includes(prefix)
+              );
+
+              if (hasCommand) {
+                const user = comment.user.login;
+                if (!userCommentGroups[user]) {
+                  userCommentGroups[user] = [];
+                }
+                userCommentGroups[user].push(comment);
+              }
+            }
+
+            // For each user, sort their command comments by date and delete all but the latest
+            for (const user in userCommentGroups) {
+              const userComments = userCommentGroups[user];
+
+              // Sort comments by creation date in descending order (newest first)
+              userComments.sort(
+                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+              );
+
+              // Keep the most recent comment, delete the rest
+              const commentsToDelete = userComments.slice(1);
+
+              // Delete the older comments
+              for (const comment of commentsToDelete) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+              }
+            }
