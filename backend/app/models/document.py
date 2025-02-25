@@ -63,3 +63,6 @@ class DocumentUploadResponse(BaseModel):
 
     task_id: str = Field(..., description="Indexing background task ID")
     document_url: str = Field(..., description="Uploaded document url")
+
+    class Config:
+        from_attributes = True
