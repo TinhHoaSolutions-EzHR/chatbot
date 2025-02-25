@@ -186,6 +186,8 @@ services:
       - /app/node_modules # Avoid node_modules conflicts
     networks:
       - chatbot
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     #INFO: require 2 env files
     # 1) .env file located in deployment/docker_compose
     # 2) .env file located in chatbot (root directory)
@@ -233,7 +235,7 @@ services:
         max-file: "6"
     command: >
       /bin/sh -c "echo 'starting worker' &&
-      uv run celery -A app.background.celery_worker worker --loglevel=INFO"
+      uv run celery -A app.background.celery_worker worker --loglevel=DEBUG"
 
 volumes:
   mssql_data_volume:
