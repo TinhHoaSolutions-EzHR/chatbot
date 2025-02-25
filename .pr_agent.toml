@@ -1,8 +1,8 @@
 [config]
 # models
-model = "o3-mini-2025-01-31"
+model = "o3-mini"
 fallback_models = ["gpt-4o-mini"]
-#model_weak="gpt-4o-mini-2024-07-18" # optional, a weaker model to use for some easier tasks
+model_weak = "gpt-4o-mini"        # optional, a weaker model to use for some easier tasks
 # CLI
 git_provider = "github"
 publish_output = true
@@ -15,25 +15,25 @@ use_wiki_settings_file = true
 use_repo_settings_file = true
 use_global_settings_file = true
 disable_auto_feedback = false
-ai_timeout = 120                # 2minutes
+ai_timeout = 600                # 5 minutes
 skip_keys = []
 # token limits
-max_description_tokens = 500
-max_commits_tokens = 500
-max_model_tokens = 32000     # Limits the maximum number of tokens that can be used by any model, regardless of the model's default capabilities.
-custom_model_max_tokens = -1 # for models not in the default list
+max_description_tokens = 10000
+max_commits_tokens = 10000
+max_model_tokens = 204800      # Limits the maximum number of tokens that can be used by any model, regardless of the model's default capabilities.
+custom_model_max_tokens = -1   # for models not in the default list
 # patch extension logic
-patch_extension_skip_types = [".md", ".txt"]
+patch_extension_skip_types = [".txt"]
 allow_dynamic_context = true
-max_extra_lines_before_dynamic_context = 8   # will try to include up to 10 extra lines before the hunk in the patch, until we reach an enclosing function or class
-patch_extra_lines_before = 3                 # Number of extra lines (+3 default ones) to include before each hunk in the patch
-patch_extra_lines_after = 1                  # Number of extra lines (+3 default ones) to include after each hunk in the patch
+max_extra_lines_before_dynamic_context = 10 # will try to include up to 10 extra lines before the hunk in the patch, until we reach an enclosing function or class
+patch_extra_lines_before = 3                # Number of extra lines (+3 default ones) to include before each hunk in the patch
+patch_extra_lines_after = 1                 # Number of extra lines (+3 default ones) to include after each hunk in the patch
 secret_provider = ""
 cli_mode = false
-ai_disclaimer_title = ""                     # Pro feature, title for a collapsible disclaimer to AI outputs
-ai_disclaimer = ""                           # Pro feature, full text for the AI disclaimer
+ai_disclaimer_title = ""                    # Pro feature, title for a collapsible disclaimer to AI outputs
+ai_disclaimer = ""                          # Pro feature, full text for the AI disclaimer
 output_relevant_configurations = false
-large_patch_policy = "clip"                  # "clip", "skip"
+large_patch_policy = "clip"                 # "clip", "skip"
 duplicate_prompt_examples = false
 # seed
 seed = -1         # set positive value to fix the seed (and ensure temperature=0)
@@ -55,15 +55,15 @@ enable_ai_metadata = false # will enable adding ai metadata
 
 [pr_reviewer] # /review #
 # enable/disable features
-require_score_review = false
+require_score_review = true
 require_tests_review = true
-require_estimate_effort_to_review = true
-require_can_be_split_review = false
+require_estimate_effort_to_review = false
+require_can_be_split_review = true
 require_security_review = true
 require_ticket_analysis_review = true
 # general options
 persistent_comment = true
-extra_instructions = ""
+extra_instructions = "Think step by step."
 final_update_message = true
 # review labels
 enable_review_labels_security = true
@@ -80,16 +80,16 @@ enable_auto_approval = false
 
 [pr_description] # /describe #
 publish_labels = false
-add_original_user_description = true
+add_original_user_description = false
 generate_ai_title = false
 use_bullet_points = true
-extra_instructions = ""
-enable_pr_type = true
+extra_instructions = "Write short and concise."
+enable_pr_type = false
 final_update_message = true
 enable_help_text = false
 enable_help_comment = true
 # describe as comment
-publish_description_as_comment = false
+publish_description_as_comment = true
 publish_description_as_comment_persistent = true
 ## changes walkthrough section
 enable_semantic_files_types = true
@@ -101,7 +101,7 @@ use_description_markers = false
 include_generated_by_header = true
 # large pr mode 💎
 enable_large_pr_handling = true
-max_ai_calls = 4
+max_ai_calls = 8
 async_ai_calls = true
 #custom_labels = ['Bug fix', 'Tests', 'Bug fix with tests', 'Enhancement', 'Documentation', 'Other']
 
@@ -110,18 +110,18 @@ enable_help_text = false
 
 
 [pr_code_suggestions] # /improve #
-max_context_tokens = 16000
+max_context_tokens = 204800
 #
 commitable_code_suggestions = false
 dual_publishing_score_threshold = -1 # -1 to disable, [0-10] to set the threshold (>=) for publishing a code suggestion both in a table and as commitable
 focus_only_on_problems = true
 #
-extra_instructions = ""
+extra_instructions = "Think step by step. Write short and concise."
 enable_help_text = false
-enable_chat_text = false
+enable_chat_text = true
 enable_intro_text = true
 persistent_comment = true
-max_history_len = 4
+max_history_len = 8
 # enable to apply suggestion 💎
 apply_suggestions_checkbox = true
 # suggestions scoring
@@ -130,9 +130,9 @@ new_score_mechanism = true
 new_score_mechanism_th_high = 9
 new_score_mechanism_th_medium = 7
 # params for '/improve --extended' mode
-auto_extended_mode = true
+auto_extended_mode = false
 num_code_suggestions_per_chunk = 4
-max_number_of_calls = 3
+max_number_of_calls = 4
 parallel_calls = true
 
 final_clip_factor = 0.8
@@ -214,9 +214,9 @@ app_name = "pr-agent"
 ignore_bot_pr = true
 
 [github_action_config]
-# auto_review = true    # set as env var in .github/workflows/pr-agent.yaml
-# auto_describe = true  # set as env var in .github/workflows/pr-agent.yaml
-# auto_improve = true   # set as env var in .github/workflows/pr-agent.yaml
+auto_review = true   # set as env var in .github/workflows/pr-agent.yaml
+auto_describe = true # set as env var in .github/workflows/pr-agent.yaml
+auto_improve = true  # set as env var in .github/workflows/pr-agent.yaml
 # pr_actions = ['opened', 'reopened', 'ready_for_review', 'review_requested']
 
 [github_app]
