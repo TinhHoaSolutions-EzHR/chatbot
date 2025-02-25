@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timezone
 from typing import List
 
 from fastapi import APIRouter
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 
 @router.post("/upload", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def upload_documents(
-    issue_date: datetime = Form(default_factory=datetime.now),
+    issue_date: datetime = Form(default_factory=lambda: datetime.now(timezone.utc)),
     uploaded_documents: List[UploadFile] = File(...),
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
