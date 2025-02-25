@@ -3,7 +3,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from fastapi import UploadFile
 from llama_index.core import Settings
 from llama_index.core.extractors import KeywordExtractor
 from llama_index.core.ingestion import IngestionCache
@@ -60,12 +59,12 @@ class IndexingPipeline:
 
         return transformations
 
-    def run(self, document: UploadFile, metadata: Dict[str, Any] = {}):
+    def run(self, document: bytes, metadata: Dict[str, Any] = {}):
         """
         Run the indexing pipeline.
 
         Args:
-            document (UploadFile): Document to be indexed.
+            document (bytes): Document to be indexed.
             metadata (Dict[str, Any]): Additional metadata for the document. Defaults to {}.
         """
         try:
