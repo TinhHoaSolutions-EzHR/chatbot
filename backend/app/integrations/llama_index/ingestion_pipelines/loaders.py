@@ -106,5 +106,5 @@ class IndexingPipeline:
                 documents=documents, show_progress=True, batch_size=Constants.INGESTION_BATCH_SIZE
             )
         except Exception as e:
-            logger.error(f"Failed to run indexing pipeline for document {document.filename}.")
+            logger.error("Failed to run indexing pipeline for document.")
             raise e
