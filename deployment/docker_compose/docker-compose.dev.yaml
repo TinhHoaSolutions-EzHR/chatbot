@@ -10,11 +10,8 @@ services:
     restart: always
     ports:
       - "1433:1433"
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Developer"
-      MSSQL_USER: ${MSSQL_USER}
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    env_file:
+      - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
       - mssql_data_volume:/var/opt/mssql/data
       - mssql_log_volume:/var/opt/mssql/log
@@ -39,11 +36,8 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
     platform: linux/amd64
     user: root
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Developer"
-      MSSQL_USER: ${MSSQL_USER}
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    env_file:
+      - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
       - ../data/mssql/:/docker-entrypoint-initdb.d
     depends_on:
@@ -111,9 +105,8 @@ services:
     ports:
       - "9000:9000" # for web interface
       - "9001:9001" # for S3 API
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    env_file:
+      - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
       - minio_data:/data
     networks:
@@ -151,7 +144,6 @@ services:
     # The first file store general variables for both projects, the second file store project-specific variables for chatbot
     # WARN: cannot start this service without both files
     env_file:
-      - ./.env
       - ../../${ENV_FILE:-.env} # default to .env
     volumes: # INFO: Mount for auto-reload code changes
       - ../../backend/alembic/:/app/alembic
@@ -200,7 +192,6 @@ services:
     # The first file store general variables for both projects, the second file store project-specific variables for chatbot
     # WARN: cannot start this service without both files
     env_file:
-      - ./.env
       - ../../${ENV_FILE:-.env} # default to .env
     logging:
       driver: json-file
@@ -228,7 +219,6 @@ services:
       index:
         condition: service_healthy
     env_file:
-      - ./.env
       - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes: # INFO: Mount for auto-reload code changes
       - ../../backend/alembic/:/app/alembic
