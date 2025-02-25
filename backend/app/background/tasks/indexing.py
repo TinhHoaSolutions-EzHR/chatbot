@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 def run_indexing(
     file_path: str,
     metadata: Dict[str, Any] = {},
-):
+) -> None:
     """
     Run indexing task to embed documents into vector database.
 
@@ -35,6 +35,9 @@ def run_indexing(
         object_name=file_path,
         bucket_name=Constants.MINIO_DOCUMENT_BUCKET,
     )
+    if document is None:
+        logger.error(f"Failed to retrieve document {file_path} from Minio.")
+        return
 
     # Run the indexing pipeline to embed the document into the vector database
     indexing_pipeline = IndexingPipeline(
