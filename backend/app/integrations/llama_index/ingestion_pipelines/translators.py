@@ -11,8 +11,9 @@ from llama_index.core.callbacks import EventPayload
 from llama_index.core.schema import Document
 from llama_index.core.utils import get_tqdm_iterable
 from pydantic import BaseModel
+from pydantic import computed_field
+from pydantic import ConfigDict
 from pydantic import Field
-from pydantic import SerializeAsAny
 
 from app.integrations.llama_index.prompts.translator import TRANSLATOR_PROMPT_TMPL
 from app.utils.api.helpers import get_logger
@@ -20,7 +21,7 @@ from app.utils.api.helpers import get_logger
 logger = get_logger(__name__)
 
 
-class Translator(ABC, BaseModel):
+class Translator(BaseModel, ABC):
     """Base interface for all translators.
 
     Attributes:
@@ -34,16 +35,16 @@ class Translator(ABC, BaseModel):
         translate_text: Translate a text from source language to target language.
     """
 
-    llm: SerializeAsAny[BaseLLM] = Field(
-        default=None,
-        description="The LLM model used for translation.",
-        exclude=True,
-    )
+    # WARN: Used only on pydantic v2, computed field to get the Settings.llm
+    # Because Settings.llm is a singleton object, with python's RLock
+    # So it cannot be picked during the class creation (pydantic serialization)
+    @computed_field(description="The LLM model used for translation.")
+    def llm(self) -> BaseLLM:
+        return Settings.llm  # FIX: when exporting the model, this will contain a api key => risky
 
     source_language: str = Field(
         default="vietnamese",
         description="The source language of the text to be translated.",
-        exclude=True,
     )
 
     target_language: str = Field(
@@ -51,26 +52,13 @@ class Translator(ABC, BaseModel):
         description="The target language of the translated text.",
     )
 
-    def __init__(
-        self,
-        llm: BaseLLM,
-        source_language: str,
-        target_language: str,
-        callback_manager: CallbackManager,
-    ) -> None:
-        """
-        Initializes the translator with a language model, source and target languages, and a callback manager.
+    callback_manager: CallbackManager = Field(
+        default_factory=CallbackManager,
+        description="Manages callbacks during translation.",
+        exclude=True,
+    )
 
-        Args:
-            llm (BaseLLM): The language model to be used. If None, defaults to Settings.llm.
-            source_language (str): The language code of the source text.
-            target_language (str): The language code of the target text.
-            callback_manager (CallbackManager): Manages callbacks during translation.
-        """
-        self.llm = llm or Settings.llm
-        self.source_language = source_language
-        self.target_language = target_language
-        self.callback_manager = callback_manager
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @property
     def class_name(cls):

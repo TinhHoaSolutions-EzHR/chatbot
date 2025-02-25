@@ -8,15 +8,7 @@ from llama_index.core import VectorStoreIndex
 from app.databases.minio import MinioConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
-from app.routers import auth
-from app.routers import base
-from app.routers.v1 import agent
-from app.routers.v1 import background
-from app.routers.v1 import chat
-from app.routers.v1 import connector
-from app.routers.v1 import folder
-from app.routers.v1 import provider
-from app.routers.v1 import user
+from app.main_router import api_router as main_router
 from app.seeds import get_seeder_config
 from app.seeds import seed_db
 from app.settings import Constants
@@ -97,17 +89,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Include application routers
-    logger.info("Including routers")
-    app.include_router(router=base.router)
-    app.include_router(router=auth.router)
-    app.include_router(router=connector.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=chat.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=folder.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=agent.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=provider.router, prefix=Constants.FASTAPI_PREFIX)
-    app.include_router(router=background.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(main_router)
 
     logger.info(
         f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"

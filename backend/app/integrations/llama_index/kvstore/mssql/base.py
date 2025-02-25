@@ -46,15 +46,6 @@ class MSSQLKVStore(BaseKVStore):
             perform_setup (bool): Whether to create the table on initialization. Defaults to True.
             debug (bool): Whether to print debug information. Defaults to False.
         """
-        try:
-            import pyodbc  # noqa
-            import aioodbc  # noqa
-            import sqlalchemy
-            import sqlalchemy.ext.asyncio  # noqa
-        except ImportError:
-            raise ImportError(
-                "`sqlalchemy[asyncio]`, `pyodbc` and `aioodbc` packages should be pre installed"
-            )
 
         table_name = table_name.lower()
         self.connection_string = connection_string
