@@ -1,0 +1,3 @@
+# Mark all jupyter notebooks as linguist-documentation
+# for RAG explanation purpose only
+*.ipynb linguist-documentation=true
