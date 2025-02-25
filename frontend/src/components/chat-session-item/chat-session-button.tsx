@@ -1,3 +1,4 @@
+import { useDraggable } from '@dnd-kit/core';
 import { FC, ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -10,10 +11,12 @@ interface IChatSessionButtonProps {
   isOpenDropdown: boolean;
   isDropdownHovered: boolean;
   children: ReactNode;
+
   onClick?(): void;
 }
 
 export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
+  id,
   subItem,
   isOpenDropdown,
   isDropdownHovered,
@@ -21,9 +24,21 @@ export const ChatSessionButton: FC<IChatSessionButtonProps> = ({
   onClick,
 }) => {
   const SidebarButton = subItem ? SidebarMenuSubButton : SidebarMenuButton;
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: id,
+  });
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
   return (
     <SidebarButton asChild onClick={onClick}>
       <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
         className={cn(
           'relative whitespace-nowrap group/chat-item',
           (isOpenDropdown || isDropdownHovered) && 'bg-sidebar-accent',

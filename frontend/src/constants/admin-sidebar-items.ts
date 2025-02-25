@@ -49,6 +49,8 @@ export const ADMIN_ITEM_DETAIL: Record<string, IAdminItemDetail> = {
   },
 };
 
+export const SIDEBAR_CHAT_HISTORY = 'chat-history';
+
 export const ADMIN_SIDEBAR_ITEMS: IAdminSidebarItems[] = [
   {
     label: 'Connectors',
