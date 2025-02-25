@@ -1,8 +1,10 @@
+import io
 import logging.handlers
 import os
 import sys
 from datetime import datetime
-from typing import Annotated
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
@@ -10,8 +12,6 @@ from typing import Type
 import pdfplumber
 import yaml
 from celery import current_task
-from fastapi import File
-from fastapi import UploadFile
 from llama_index.core import Document
 
 from app.settings import Constants
@@ -39,24 +39,33 @@ def remove_vietnamese_accents(input_str: str) -> str:
 
 
 def parse_pdf(
-    document: Annotated[UploadFile, File(description="PDF file")],
+    document: bytes,
+    metadata: Dict[str, Any] = {},
 ) -> List[Document] | None:
     """
     Parse a PDF file into Llamaindex Document objects.
 
     Args:
-        document (UploadFile): PDF file to parse.
+        document (bytes): PDF file to parse.
+        metadata (Dict[str, Any]): Additional metadata for the document.
 
     Returns:
         List[Document]: List of Llamaindex Document objects.
     """
     try:
         documents = []
-        with pdfplumber.open(document.file) as pdf:
+        with pdfplumber.open(io.BytesIO(document)) as pdf:
             for page in pdf.pages:
-                documents.append(Document(text=page.extract_text()))
+                # Extract text from the page
+                page_text = page.extract_text()
+                if not page_text:
+                    continue
+
+                # Create a Llamaindex Document object
+                doc = Document(text=page_text, metadata=metadata)
+                documents.append(doc)
     except Exception as e:
-        raise PdfParsingError(message="Error parsing PDF", detail=str(e))
+        raise PdfParsingError(f"Error parsing PDF file: {e}")
 
     return documents
 

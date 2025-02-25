@@ -4,8 +4,7 @@ from app.models.chat import ChatFeedback
 from app.models.chat import ChatMessage
 from app.models.chat import ChatSession
 from app.models.connector import Connector
-from app.models.document import DocumentMetadata
-from app.models.document import DocumentMetadataTag
+from app.models.document import Document
 from app.models.folder import Folder
 from app.models.provider import EmbeddingProvider
 from app.models.provider import LLMProvider
@@ -18,8 +17,7 @@ __all__ = [
     "ChatSession",
     "ChatFeedback",
     "Connector",
-    "DocumentMetadata",
-    "DocumentMetadataTag",
+    "Document",
     "StarterMessage",
     "User",
     "Folder",

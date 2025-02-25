@@ -68,7 +68,7 @@ class Constants:
     EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     INGESTION_BATCH_SIZE = 32
     EMBEDDING_BATCH_SIZE = 50
-    DIMENSIONS = 768
+    DIMENSIONS = 1536
     DISTANCE_METRIC_TYPE = "Cosine"
     LLM_MAX_OUTPUT_LENGTH = 512
     LLM_MAX_CONTEXT_WINDOW = 128_000  # max context window of gpt-4o-mini
@@ -118,6 +118,12 @@ class Constants:
     CELERY_WORKER_CONCURRENCY = 4
     CELERY_WORKER_POOL = "threads"
     CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+
+    # Datetime Format
+    DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+    # Document
+    MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB
 
     # LLM Prompts
     CHAT_SESSION_NAMING_PROMPT = """

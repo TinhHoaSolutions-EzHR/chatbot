@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.models.document import DocumentMetadata
+from app.models.document import Document
 from app.repositories.base import BaseRepository
 from app.utils.api.api_response import APIError
 from app.utils.api.error_handler import ErrorCodesMappingNumber
@@ -17,22 +17,22 @@ class DocumentRepository(BaseRepository):
         Document repository class for handling document-related database operations.
 
         Args:
-            db_session (Session): Database session
+            db_session (Session): Database session.
         """
         super().__init__(db_session=db_session)
 
-    def create_document_metadata(self, document_metadata: DocumentMetadata) -> Optional[APIError]:
+    def create_document(self, document: Document) -> Optional[APIError]:
         """
-        Create document metadata
+        Create a new document.
 
         Args:
-            document(DocumentMetadata): Document metadata object
+            document(Document): Document object.
 
         Returns:
-            Optional[APIError]: APIError object if any error
+            Optional[APIError]: APIError object if any error.
         """
         try:
-            self._db_session.add(document_metadata)
+            self._db_session.add(document)
             return None
         except Exception as e:
             logger.error(f"Error creating document: {e}", exc_info=True)
