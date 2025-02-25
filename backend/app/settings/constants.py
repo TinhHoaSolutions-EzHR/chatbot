@@ -122,6 +122,9 @@ class Constants:
     # Datetime Format
     DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+    # Document
+    MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB
+
     # LLM Prompts
     CHAT_SESSION_NAMING_PROMPT = """
     Generate a short and concise title (5-10 words) for the chat session based on the following conversation:

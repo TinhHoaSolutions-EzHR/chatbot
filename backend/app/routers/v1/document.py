@@ -28,7 +28,7 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 @router.post("/upload", response_model=APIResponse, status_code=status.HTTP_201_CREATED)
 def upload_documents(
     issue_date: datetime = Form(default_factory=lambda: datetime.now(timezone.utc)),
-    uploaded_documents: List[UploadFile] = File(...),
+    uploaded_documents: List[UploadFile] = File(..., max_length=Constants.MAX_FILE_SIZE),
     db_session: Session = Depends(get_db_session),
     minio_connector: MinioConnector = Depends(get_minio_connector),
 ) -> BackendAPIResponse:
