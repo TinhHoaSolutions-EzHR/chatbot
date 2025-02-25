@@ -1,8 +1,9 @@
 # Makefile for Docker Compose commands
+include .env
 
 # Variables
-DEEPEVAL := ${PWD}/backend/.venv/bin/deepeval
-DOCKER_COMPOSE ?= $(shell command -v docker-compose 2>/dev/null || echo docker compose)  # Allows overriding the docker-compose executable
+# DEEPEVAL := ${PWD}/backend/.venv/bin/deepeval
+DOCKER_COMPOSE ?= docker compose
 COMPOSE_FILE := deployment/docker_compose/docker-compose.dev.yaml
 YARN ?= yarn
 UV ?= uv
@@ -101,7 +102,7 @@ alembic-revision:
 alembic-upgrade-head:
 	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot exec api-server uv run alembic upgrade head
 
-test:  ## TODO: Run tests
+test:  ## TODO: not completed
 	@echo "Running tests..."
 
 shell:  ## Open a shell in a specified service
@@ -115,10 +116,10 @@ shell:  ## Open a shell in a specified service
 
 help:  ## Show this help
 	@echo "Available commands:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo
 	@echo "Environment variables:"
-	@echo "  SERVICES     List of services to start (default: all)"
+	@echo "  SERVICES     List of services to start (default: all). E.g SERVICES='api-server web-server'"
 	@echo "  COMMAND      Command to execute within a service (default: sh)"
 
 %: ## Prevents make from throwing an error when a target is not found
