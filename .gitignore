@@ -31,3 +31,6 @@ backend/**/*.pyc
 # Frontend ignores
 frontend/.next
 backend/notebooks/storage
+
+# Vscode
+.vscode/settings.json

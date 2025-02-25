@@ -44,7 +44,7 @@ extend-exclude = ["*.ipynb"]
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
 select = ["F"]
-ignore = ["W", "F401", "F841"]
+ignore = ["W", "F401"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
