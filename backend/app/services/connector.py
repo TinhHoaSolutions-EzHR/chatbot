@@ -35,7 +35,20 @@ class ConnectorService(BaseService):
         Returns:
             Tuple[List[Connector], Optional[APIError]]: List of connector objects and APIError object if any error.
         """
-        return self._connector_repo.get_connectors()
+        connectors, err = self._connector_repo.get_connectors()
+        if err:
+            return [], err
+
+        try:
+            for connector in connectors:
+                connector.connector_specific_config = json.loads(
+                    connector.connector_specific_config
+                )
+        except Exception as e:
+            logger.error(f"Failed to load connector specific config: {e}", exc_info=True)
+            return [], APIError(status_code=500, detail="Failed to load connector specific config")
+
+        return connectors, None
 
     def get_connector(self, connector_id: str) -> Tuple[Optional[Connector], Optional[APIError]]:
         """
@@ -47,7 +60,19 @@ class ConnectorService(BaseService):
         Returns:
             Tuple[Optional[Connector], Optional[APIError]]: Connector object and APIError object if any error.
         """
-        return self._connector_repo.get_connector(connector_id=connector_id)
+        connector, err = self._connector_repo.get_connector(connector_id=connector_id)
+        if err:
+            return None, err
+
+        try:
+            connector.connector_specific_config = json.loads(connector.connector_specific_config)
+        except Exception as e:
+            logger.error(f"Failed to load connector specific config: {e}", exc_info=True)
+            return None, APIError(
+                status_code=500, detail="Failed to load connector specific config"
+            )
+
+        return connector, None
 
     def create_connector(self, connector_request: ConnectorRequest) -> Optional[APIError]:
         """
