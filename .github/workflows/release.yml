@@ -11,6 +11,12 @@ on:
   # Schedule every 2 weeks
   schedule:
     - cron: "0 0 */14 * *"
+  # Pull request name contains "release-please"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/release-please-manifest.json"
 
 permissions:
   contents: write
