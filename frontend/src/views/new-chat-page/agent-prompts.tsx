@@ -10,7 +10,7 @@ interface IAgentPromptsProps {
 
 export const AgentPrompts: FC<IAgentPromptsProps> = ({ agentId }) => {
   const { data: agent, isPending } = useGetAgentDetail(agentId);
-  const { onNewChat } = useNewChatHelper();
+  const createNewChat = useNewChatHelper();
 
   if (isPending) {
     return (
@@ -35,7 +35,7 @@ export const AgentPrompts: FC<IAgentPromptsProps> = ({ agentId }) => {
         <div
           key={`${starterMessage.id}`}
           className="w-full rounded-2xl px-3 py-2 justify-normal items-start h-24 border border-solid border-zinc-400/30 cursor-pointer hover:bg-zinc-200/30 transition"
-          onClick={() => onNewChat(starterMessage.message)}
+          onClick={() => createNewChat(starterMessage.message)}
         >
           <p className="line-clamp-3 h-full flex">{starterMessage.name}</p>
         </div>

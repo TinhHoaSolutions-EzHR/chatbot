@@ -16,7 +16,6 @@ interface IChatFolderItemProps {
 
 export const ChatFolderItem: FC<IChatFolderItemProps> = ({ folder, chatSessions, isDefaultOpen }) => {
   const [isFolderOpen, setIsFolderOpen] = useState<boolean>(!!isDefaultOpen);
-
   return (
     <Collapsible
       defaultOpen={isDefaultOpen}

@@ -13,20 +13,22 @@ export const ChatHistory: FC = () => {
     [chatSessions],
   );
   return (
-    <div>
-      <h3 className="text-xs font-bold text-zinc-600 ml-4 mt-2">History</h3>
-      {groupedChatSessions?.map(group => (
-        <SidebarGroup key={group.title}>
-          <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {group.chatSessions.map(chatSession => (
-                <ChatSessionItem key={chatSession.id} chatSession={chatSession} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      ))}
-    </div>
+    <>
+      <div>
+        <h3 className="text-xs font-bold text-zinc-600 ml-4 mt-2">History</h3>
+        {groupedChatSessions?.map(group => (
+          <SidebarGroup key={group.title}>
+            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.chatSessions.map(chatSession => (
+                  <ChatSessionItem key={chatSession.id} chatSession={chatSession} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </div>
+    </>
   );
 };

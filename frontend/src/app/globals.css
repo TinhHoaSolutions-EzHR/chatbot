@@ -90,6 +90,23 @@
   body {
     @apply antialiased h-full;
   }
+
+  html .prose {
+    color: #404040;
+    line-height: 1.5;
+    font-size: 16px;
+  }
+
+  .prose pre:has(code.code) {
+    background-color: #fafafa;
+    margin: 7px 0;
+    padding: 14px;
+    border: 1px solid #e5e5e5;
+  }
+
+  .prose pre .code {
+    color: #383a42;
+  }
 }
 
 @layer components {

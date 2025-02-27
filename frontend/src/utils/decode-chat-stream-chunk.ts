@@ -15,43 +15,48 @@ function parseJSONDataChunk<T>(data: string) {
   return parsedValue[CHAT_STREAM_DATA_CONTENT];
 }
 
-export const decodeChatStreamChunk = (chunk: string): ChatStreamChunk => {
+const decodeChunk = (event: string, chunk: string): ChatStreamChunk => {
+  switch (event) {
+    case ChatMessageStreamEvent.METADATA:
+      return {
+        event: ChatMessageStreamEvent.METADATA,
+        data: parseJSONDataChunk<IChatMessageResponse>(chunk),
+      };
+    case ChatMessageStreamEvent.DELTA:
+    case ChatMessageStreamEvent.TITLE_GENERATION:
+      return {
+        event,
+        data: parseJSONDataChunk<string>(chunk),
+      };
+    case ChatMessageStreamEvent.STREAM_COMPLETE:
+      return {
+        event: ChatMessageStreamEvent.STREAM_COMPLETE,
+        data: parseJSONDataChunk<Omit<IChatMessageResponse, 'message'>>(chunk),
+      };
+    default:
+      return {
+        event: ChatMessageStreamEvent.ERROR,
+        data: parseJSONDataChunk<string>(chunk),
+      };
+  }
+};
+
+export const decodeChatStreamChunks = (chunk: string): ChatStreamChunk[] => {
   const lines = chunk.trim().split('\n');
 
   try {
-    let currentEvent = '';
+    const events: string[] = [];
     const receivedChunks: string[] = [];
 
     for (const line of lines) {
       if (line.startsWith(CHAT_STREAM_EVENT_KEY)) {
-        currentEvent = line.slice(CHAT_STREAM_EVENT_KEY_LENGTH).trim();
+        events.push(line.slice(CHAT_STREAM_EVENT_KEY_LENGTH).trim());
       } else if (line.startsWith(CHAT_STREAM_DATA_KEY)) {
         receivedChunks.push(line.slice(CHAT_STREAM_DATA_KEY_LENGTH).trim());
       }
     }
 
-    switch (currentEvent) {
-      case ChatMessageStreamEvent.METADATA:
-        return {
-          event: ChatMessageStreamEvent.METADATA,
-          data: parseJSONDataChunk<IChatMessageResponse>(receivedChunks[0]),
-        };
-      case ChatMessageStreamEvent.DELTA:
-        return {
-          event: ChatMessageStreamEvent.DELTA,
-          data: receivedChunks.reduce<string>((acc, cur) => acc + parseJSONDataChunk<string>(cur), ''),
-        };
-      case ChatMessageStreamEvent.STREAM_COMPLETE:
-        return {
-          event: ChatMessageStreamEvent.STREAM_COMPLETE,
-          data: parseJSONDataChunk<Omit<IChatMessageResponse, 'message'>>(receivedChunks[0]),
-        };
-      default:
-        return {
-          event: ChatMessageStreamEvent.ERROR,
-          data: parseJSONDataChunk<string>(receivedChunks[0]),
-        };
-    }
+    return events.map((ev, idx) => decodeChunk(ev, receivedChunks[idx]));
   } catch (error) {
     console.error('[DecodeChatStreamChunk]: ', error);
     throw error;
