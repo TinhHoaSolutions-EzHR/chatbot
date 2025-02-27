@@ -5,8 +5,11 @@ from typing import Optional
 from typing import Tuple
 
 from llama_index.core import Settings
+from llama_index.core import VectorStoreIndex
 from llama_index.core.chat_engine import CondensePlusContextChatEngine
 from llama_index.core.types import ChatMessage as LlamaIndexChatMessage
+from llama_index.vector_stores.qdrant import QdrantVectorStore
+from qdrant_client.http.models import VectorParams
 from sqlalchemy.orm import Session
 
 from app.databases.qdrant import QdrantConnector
@@ -294,16 +297,20 @@ class ChatService(BaseService):
             chat_history = llamaify_messages(chat_messages=chat_history)
 
             # TODO: Remove it as this is just a workaround solution
-            from app.main import index
+            # from app.main import index
 
             # Define retriever
-            # index: VectorStoreIndex = VectorStoreIndex.from_vector_store(
-            #     vector_store=QdrantVectorStore(
-            #         client=self._qdrant_connector.client,
-            #         collection_name=Constants.LLM_QDRANT_COLLECTION,
-            #     )
-            # )
-            retriever = index.as_retriever()
+            vector_params = VectorParams(
+                size=Constants.DIMENSIONS, distance=Constants.DISTANCE_METRIC_TYPE
+            )
+            vector_store = QdrantVectorStore(
+                collection_name=Constants.QDRANT_COLLECTION,
+                client=self._qdrant_connector.get_client(),
+                aclient=self._qdrant_connector.get_aclient(),
+                dense_config=vector_params,
+            )
+            index: VectorStoreIndex = VectorStoreIndex.from_vector_store(vector_store=vector_store)
+            retriever = index.as_retriever(similarity_top_k=Constants.SIMILARITY_TOP_K)
 
             # Define chat engine
             chat_engine = CondensePlusContextChatEngine.from_defaults(
@@ -371,7 +378,8 @@ class ChatService(BaseService):
             self._db_session.flush()
         except Exception as e:
             logger.error(
-                f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}"
+                f"Error generating chat response - Chat session: {chat_session_id}, Chat request: {current_request_id}, Error: {e}",
+                exc_info=True,
             )
             yield ChatStreamResponse(
                 event=ChatMessageStreamEventType.ERROR,

@@ -72,6 +72,7 @@ class Constants:
     LLM_MAX_OUTPUT_LENGTH = 512
     LLM_MAX_CONTEXT_WINDOW = 128_000  # max context window of gpt-4o-mini
     QDRANT_COLLECTION = "ezhr_chatbot"
+    SIMILARITY_TOP_K = 5
 
     # Unit Test
     MINIO_TEST_BUCKET = "test-bucket"
