@@ -9,7 +9,9 @@ export interface IConnector extends ITimestampResponse {
   id: string;
   name: string;
   source: DocumentSource;
-  connector_specific_config?: string | null;
+  connector_specific_config?: {
+    file_paths: string[];
+  } | null;
 }
 
 export interface IConnectorRequest {

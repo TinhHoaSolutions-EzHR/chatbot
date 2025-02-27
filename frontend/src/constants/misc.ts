@@ -35,3 +35,7 @@ export enum Route {
 }
 
 export const DEFAULT_NEW_CHAT_NAME = 'New chat';
+
+export enum StoreName {
+  INDEX_STORE = 'index-store',
+}

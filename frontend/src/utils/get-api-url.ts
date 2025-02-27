@@ -6,6 +6,8 @@ export enum ApiEndpointPrefix {
   FOLDER = '/folders',
   AGENTS = '/agents',
   CONNECTORS = '/connectors',
+  DOCUMENTS = '/documents',
+  BACKGROUND_TASKS = '/background/tasks',
 }
 
 export enum AuthEndpoint {

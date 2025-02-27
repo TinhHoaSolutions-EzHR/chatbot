@@ -14,6 +14,7 @@ from app.routers.v1 import agent
 from app.routers.v1 import background
 from app.routers.v1 import chat
 from app.routers.v1 import connector
+from app.routers.v1 import document
 from app.routers.v1 import folder
 from app.routers.v1 import provider
 from app.routers.v1 import user
@@ -108,6 +109,7 @@ def create_app() -> FastAPI:
     app.include_router(router=user.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=provider.router, prefix=Constants.FASTAPI_PREFIX)
     app.include_router(router=background.router, prefix=Constants.FASTAPI_PREFIX)
+    app.include_router(router=document.router, prefix=Constants.FASTAPI_PREFIX)
 
     logger.info(
         f"API {Constants.FASTAPI_NAME} version {Constants.FASTAPI_VERSION} started successfully"

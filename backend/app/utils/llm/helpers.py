@@ -46,7 +46,7 @@ def init_llm_configurations(
     llm_client = OpenAI(
         api_key=api_key,
         model=llm_model,
-        temperature=0,
+        temperature=0.3,
         callback_manager=callback_manager,
     )
     try:
@@ -64,7 +64,7 @@ def init_llm_configurations(
     # TODO: add support for other embedding providers
     embedding_client = OpenAIEmbedding(
         api_key=api_key,
-        mode=OpenAIEmbeddingMode.TEXT_SEARCH_MODE,
+        mode=OpenAIEmbeddingMode.SIMILARITY_MODE,
         model=embedding_model,
         embed_batch_size=Constants.EMBEDDING_BATCH_SIZE,
         dimensions=Constants.DIMENSIONS,

@@ -14,6 +14,8 @@ export enum ReactQueryKey {
   USER_ACCESS_TOKEN = 'user-access-token',
   USER_SETTINGS = 'user-settings',
 
+  GET_INDEX_STATUS = 'get-index-status',
+
   CONNECTORS = 'connectors',
 }
 
@@ -29,5 +31,6 @@ export enum ReactMutationKey {
   CREATE_CHAT_MESSAGE = 'create-chat-message',
 
   UPLOAD_CONNECTOR_DOCUMENTS = 'upload-connector-documents',
+
   CREATE_CONNECTOR = 'create-connector',
 }

@@ -1,5 +1,8 @@
+from typing import Optional
+
 import requests
 from fastapi import Request
+from qdrant_client import AsyncQdrantClient
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams
 
@@ -21,6 +24,7 @@ class QdrantConnector(BaseConnector[QdrantClient]):
 
     _o = Secrets
     _required_keys = ["QDRANT_HOST", "QDRANT_PORT"]
+    _async_client: Optional[AsyncQdrantClient] = None
 
     @classmethod
     def _create_client(cls) -> QdrantClient | None:
@@ -34,6 +38,39 @@ class QdrantConnector(BaseConnector[QdrantClient]):
             return QdrantClient(host=Secrets.QDRANT_HOST, port=Secrets.QDRANT_PORT)
         except Exception as e:
             logger.error(f"Error initializing vector database: {e}", exc_info=True)
+
+    @property
+    def async_client(self) -> AsyncQdrantClient:
+        """
+        Get the async client instance
+
+        Returns:
+            AsyncQdrantClient: Async client instance
+        """
+        if self._async_client is None:
+            self._async_client = AsyncQdrantClient(
+                host=Secrets.QDRANT_HOST, port=Secrets.QDRANT_PORT
+            )
+
+        return self._async_client
+
+    def get_client(self) -> QdrantClient:
+        """
+        Get the client instance
+
+        Returns:
+            QdrantClient: Client instance
+        """
+        return self.client
+
+    def get_aclient(self) -> AsyncQdrantClient:
+        """
+        Get the async client instance
+
+        Returns:
+            AsyncQdrantClient: Async client instance
+        """
+        return self.async_client
 
     def create_collection(
         self,

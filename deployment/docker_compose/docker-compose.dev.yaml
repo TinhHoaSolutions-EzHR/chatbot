@@ -225,7 +225,6 @@ services:
     volumes: # INFO: Mount for auto-reload code changes
       - ../../backend/alembic/:/app/alembic
       - ../../backend/app/:/app/app
-      - ../../backend/tests/:/app/tests
     networks:
       - chatbot
     logging:

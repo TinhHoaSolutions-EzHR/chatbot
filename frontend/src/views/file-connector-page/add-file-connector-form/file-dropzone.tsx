@@ -17,7 +17,7 @@ export const FileDropzone: FC<IFileDropzoneProps> = ({ files, setFiles }) => {
     }
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: false });
 
   return (
     <div className="space-y-4">
