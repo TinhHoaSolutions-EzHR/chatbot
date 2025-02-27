@@ -62,7 +62,6 @@ class Constants:
     # NOTE: the EMBEDDING_BATCH_SIZE is 50, and LLM_MAX_OUTPUT_LENGTH is 512
     # should be small under development, to reduce costs
     RETRY_TIMES = 3
-    LLM_QDRANT_COLLECTION = "ezhr_chatbot"
     LLM_REDIS_CACHE_COLLECTION = "ezhr_chatbot_cache"
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
     EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
@@ -72,6 +71,7 @@ class Constants:
     DISTANCE_METRIC_TYPE = "Cosine"
     LLM_MAX_OUTPUT_LENGTH = 512
     LLM_MAX_CONTEXT_WINDOW = 128_000  # max context window of gpt-4o-mini
+    QDRANT_COLLECTION = "ezhr_chatbot"
 
     # Unit Test
     MINIO_TEST_BUCKET = "test-bucket"

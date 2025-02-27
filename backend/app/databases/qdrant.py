@@ -35,6 +35,15 @@ class QdrantConnector(BaseConnector[QdrantClient]):
         except Exception as e:
             logger.error(f"Error initializing vector database: {e}", exc_info=True)
 
+    def create_client(self) -> QdrantClient:
+        """
+        Create the vector database connection
+
+        Returns:
+            QdrantClient: Vector database connection instance
+        """
+        return self._create_client()
+
     def create_collection(
         self,
         collection_name: str,
