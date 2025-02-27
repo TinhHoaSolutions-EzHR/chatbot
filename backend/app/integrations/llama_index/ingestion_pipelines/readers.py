@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -23,19 +22,19 @@ class MarkitdownReader(BaseReader):
         """Try to create an MarkItDown with OpenAI client, if not found, use default MarkItDown."""
         try:
             self.openai_client = Settings.llm
-            self.md = MarkItDown(mlm_client=self.openai_client, mlm_model=Constants.LLM_MODEL)
+            self.md = MarkItDown(llm_client=self.openai_client, llm_model=Constants.LLM_MODEL)
         except Exception as e:
             logger.warning(f"Failed to create MarkItDown with OpenAI client: {e}")
             self.openai_client = None
             self.md = MarkItDown()
 
     @retry(stop=stop_after_delay(Constants.RETRY_TIMES))
-    def load_data(self, file: str | Path, extra_info: Optional[Dict] = None) -> List[Document]:
+    def load_data(self, file: str, extra_info: Optional[Dict] = None) -> List[Document]:
         """
         Load data from a pdf file and return a list of documents under markdown format.
 
         Args:
-            file (str | Path): The path to the pdf file.
+            file (str): The path to the pdf file.
             extra_info (Optional[Dict]): Extra information to be added to the metadata of the document.
 
         Returns:
@@ -53,7 +52,8 @@ class MarkitdownReader(BaseReader):
 
         documents = []
 
-        metadata = {"file_name": content.title}
+        title = content.title or file.split("/")[-1]
+        metadata = {"file_name": title}
         if extra_info:
             metadata.update(extra_info)
 

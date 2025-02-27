@@ -8,7 +8,7 @@ class Secrets:
     # Relational Database Credentials
     MSSQL_HOST = os.getenv("MSSQL_HOST", "127.0.0.1")
     MSSQL_USER = os.getenv("MSSQL_USER", "SA")
-    MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "")
+    MSSQL_SA_PASSWORD = os.getenv("MSSQL_SA_PASSWORD", "P.ssword123")
     MSSQL_DB = os.getenv("MSSQL_DB", "chatbot")
     MSSQL_PORT = int(os.getenv("MSSQL_PORT", 1433))
 
