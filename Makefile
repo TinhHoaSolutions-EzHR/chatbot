@@ -102,6 +102,9 @@ alembic-revision:
 alembic-upgrade-head:
 	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot exec api-server uv run alembic upgrade head
 
+alembic-downgrade:
+	@$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -p chatbot exec api-server uv run alembic downgrade $(filter-out $@,$(MAKECMDGOALS))
+
 test:  ## TODO: not completed
 	@echo "Running tests..."
 
