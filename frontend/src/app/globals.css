@@ -125,4 +125,21 @@
   .bg-more-gradient-hover {
     background: linear-gradient(90deg, rgba(9, 9, 121, 0) 0%, rgba(244, 244, 245, 1) 60%);
   }
+
+  .grid-connectors-table {
+    display: grid;
+    grid-template-columns: 1fr 150px 150px 150px 150px;
+    gap: 20px;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

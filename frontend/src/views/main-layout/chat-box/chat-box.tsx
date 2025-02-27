@@ -2,19 +2,25 @@
 
 import { useIsMutating } from '@tanstack/react-query';
 import { ArrowUpIcon, PlusCircle, Search, Square } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { QueryParams, SupportedKeys } from '@/constants/misc';
+import WillRender from '@/components/will-render';
+import { QueryParams, Route, SupportedKeys } from '@/constants/misc';
 import { ReactMutationKey } from '@/constants/react-query-key';
 import { useNewChatHelper } from '@/hooks/chat/use-new-chat-helper';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
+import { useGetUserInfo } from '@/hooks/user/use-get-user-info';
 import { ChatMessageRequestType } from '@/types/chat';
+import { UserRole } from '@/types/user';
 
 import { AutoHeightTextarea } from './auto-height-textarea/auto-height-textarea';
 
 export const ChatBox = () => {
+  const { data: userInfo } = useGetUserInfo();
+  const router = useRouter();
+
   const [userInput, setUserInput] = useState<string>('');
   const searchParams = useSearchParams();
   const chatSessionId = searchParams.get(QueryParams.CHAT_SESSION_ID);
@@ -49,7 +55,7 @@ export const ChatBox = () => {
         value={userInput}
         onChange={e => setUserInput(e.target.value)}
         onKeyDown={async e => {
-          if ((e.ctrlKey || e.metaKey) && e.key === SupportedKeys.ENTER) {
+          if (e.key === SupportedKeys.ENTER) {
             await createNewChat(userInput);
             setUserInput('');
           }
@@ -57,10 +63,17 @@ export const ChatBox = () => {
         placeholder="Chat something..."
       />
       <div className="px-4 pb-2 flex items-center gap-3">
-        <Button size="sm" variant="ghost" className="p-[6px] hover:bg-zinc-400/15">
-          <PlusCircle size={14} />
-          <p className="text-sm">File</p>
-        </Button>
+        <WillRender when={userInfo?.role === UserRole.ADMIN}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="p-[6px] hover:bg-zinc-400/15"
+            onClick={() => router.push(Route.ADD_FILE_CONNECTOR)}
+          >
+            <PlusCircle size={14} />
+            <p className="text-sm">File</p>
+          </Button>
+        </WillRender>
         <Button size="sm" variant="ghost" className="p-[6px] hover:bg-zinc-400/15">
           <Search size={14} />
           <p className="text-sm">Filters</p>

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { ReactMutationKey } from '@/constants/react-query-key';
-import { uploadDocuments } from '@/services/connectors/upload-documents';
+import { uploadDocuments } from '@/services/documents/upload-documents';
 
 export const useUploadDocuments = () => {
   return useMutation({

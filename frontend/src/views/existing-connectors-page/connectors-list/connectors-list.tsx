@@ -9,8 +9,8 @@ import WillRender from '@/components/will-render';
 import { Route } from '@/constants/misc';
 import { useGetAllConnectors } from '@/hooks/connectors/use-get-all-connectors';
 
-import { ConnectorItem } from './connector-item';
 import { ConnectorSkeleton } from './connector-skeleton';
+import ConnectorsTable from './connectors-table';
 
 interface IConnectorsListProps {
   searchValue: string;
@@ -23,6 +23,10 @@ export const ConnectorsList: FC<IConnectorsListProps> = ({ searchValue }) => {
   const filteredConnectors = useMemo(() => {
     if (!connectors) {
       return undefined;
+    }
+
+    if (!searchValue) {
+      return connectors;
     }
 
     const cleanedSearchValue = searchValue.trim().toLowerCase();
@@ -63,9 +67,7 @@ export const ConnectorsList: FC<IConnectorsListProps> = ({ searchValue }) => {
           ))}
         </WillRender.If>
         <WillRender.Else>
-          {filteredConnectors.map(connector => (
-            <ConnectorItem key={connector.id} connector={connector} />
-          ))}
+          <ConnectorsTable connectors={filteredConnectors} />
         </WillRender.Else>
       </WillRender>
     </div>

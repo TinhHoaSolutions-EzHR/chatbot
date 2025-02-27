@@ -1,13 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { ReactQueryKey } from '@/constants/react-query-key';
 import { useCreateConnector } from '@/hooks/connectors/use-create-connector';
-import { useUploadDocuments } from '@/hooks/connectors/use-upload-documents';
+import { useUploadDocuments } from '@/hooks/documents/use-upload-documents';
+import { useIndexStore } from '@/hooks/stores/use-index-store';
 
 export const useCreateConnectorHelper = () => {
   const [progress, setProgress] = useState<number>(0);
   const [progressLabel, setProgressLabel] = useState('');
   const [isError, setIsError] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const addConnector = useIndexStore(state => state.addConnector);
 
   const { mutateAsync: uploadDocuments } = useUploadDocuments();
   const { mutateAsync: createConnector } = useCreateConnector();
@@ -18,7 +25,7 @@ export const useCreateConnectorHelper = () => {
       setProgressLabel('Uploading your documents...');
       setIsError(false);
 
-      const filePaths = await uploadDocuments(files, {
+      const documents = await uploadDocuments(files, {
         onError() {
           toast.error('Upload documents failed', {
             description: "There's something wrong with your request. Please try again later!",
@@ -31,10 +38,10 @@ export const useCreateConnectorHelper = () => {
       setProgress(66);
       setProgressLabel('Preparing your connector...');
 
-      await createConnector(
+      const connector = await createConnector(
         {
           name: connectorName,
-          file_paths: filePaths,
+          file_paths: documents.map(({ document_url }) => document_url),
         },
         {
           onError() {
@@ -46,8 +53,16 @@ export const useCreateConnectorHelper = () => {
         },
       );
 
+      // TODO: Remove this in the future, since get all connectors will also return
+      // all task_id
+      addConnector(connector.id, documents[0].task_id);
+
       setProgress(100);
       setProgressLabel("You're all set.");
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryKey.CONNECTORS],
+        refetchType: 'all',
+      });
     } catch {
       setIsError(true);
       return;
