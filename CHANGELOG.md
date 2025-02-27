@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.2.0](https://github.com/TinhHoaSolutions-EzHR/chatbot/compare/v1.1.0...v1.2.0) (2025-02-27)
+## [2.0.0](https://github.com/TinhHoaSolutions-EzHR/chatbot/compare/v1.1.0...v2.0.0) (2025-02-27)
 
 ### ⚠ BREAKING CHANGES
 
