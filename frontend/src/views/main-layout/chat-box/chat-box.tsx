@@ -10,6 +10,7 @@ import { QueryParams, SupportedKeys } from '@/constants/misc';
 import { ReactMutationKey } from '@/constants/react-query-key';
 import { useNewChatHelper } from '@/hooks/chat/use-new-chat-helper';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
+import { ChatMessageRequestType } from '@/types/chat';
 
 import { AutoHeightTextarea } from './auto-height-textarea/auto-height-textarea';
 
@@ -22,18 +23,17 @@ export const ChatBox = () => {
     mutationKey: [ReactMutationKey.CREATE_CHAT_MESSAGE, chatSessionId],
   });
 
-  const { onNewChat } = useNewChatHelper({
+  const createNewChat = useNewChatHelper({
     chatSessionId,
-    onSuccess() {
-      setUserInput('');
-    },
     disabled: !!isCreatingMessage,
+    chatRequestType: ChatMessageRequestType.NEW,
   });
   const cancelStream = useChatStore(state => state.cancelStream);
 
-  const onButtonClick = () => {
+  const onButtonClick = async () => {
     if (!isCreatingMessage) {
-      onNewChat(userInput);
+      await createNewChat(userInput);
+      setUserInput('');
       return;
     }
 
@@ -48,7 +48,12 @@ export const ChatBox = () => {
         className="w-full text-[#262626] placeholder:text-[#666666] bg-[#f5f5f5]"
         value={userInput}
         onChange={e => setUserInput(e.target.value)}
-        onKeyDown={e => (e.ctrlKey || e.metaKey) && e.key === SupportedKeys.ENTER && onNewChat(userInput)}
+        onKeyDown={async e => {
+          if ((e.ctrlKey || e.metaKey) && e.key === SupportedKeys.ENTER) {
+            await createNewChat(userInput);
+            setUserInput('');
+          }
+        }}
         placeholder="Chat something..."
       />
       <div className="px-4 pb-2 flex items-center gap-3">

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { ChatMessage } from '@/components/chat-message/chat-message';
+import ChatMessage from '@/components/chat-message/chat-message';
 import WillRender from '@/components/will-render';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
 import { ChatMessageType, StreamingMessageState } from '@/types/chat';
@@ -10,11 +10,11 @@ interface IStreamingMessageProps {
 }
 
 export const StreamingMessage: FC<IStreamingMessageProps> = ({ chatSessionId }) => {
-  const streamingMessage = useChatStore(state => state.chatSession[chatSessionId ?? '']?.streamingMessage);
+  const streamingMessage = useChatStore(state => state.chatSession[chatSessionId ?? '']?.streamingMessage) ?? '';
   const streamState = useChatStore(state => state.chatSession[chatSessionId ?? '']?.streamState);
 
   return (
-    <WillRender when={streamState !== StreamingMessageState.IDLE}>
+    <WillRender when={!!streamState && streamState !== StreamingMessageState.IDLE}>
       <ChatMessage
         isThinking={streamState === StreamingMessageState.PENDING}
         chatMessage={{

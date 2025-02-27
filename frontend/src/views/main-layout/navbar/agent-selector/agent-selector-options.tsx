@@ -17,7 +17,7 @@ interface IOptionProps {
 
 const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
   const { mutate } = useSelectAgent();
-  const { setSelectedAgent } = useAgentStore();
+  const setSelectedAgent = useAgentStore(state => state.setSelectedAgent);
 
   return (
     <div
@@ -52,7 +52,7 @@ const Option: FC<IOptionProps> = ({ agent, avatar, isSelected }) => {
 
 export const AgentSelectorOptions = () => {
   const { agentsList } = useGetAgentsList().data ?? {};
-  const { searchContent } = useAgentStore();
+  const searchContent = useAgentStore(state => state.searchContent);
   const selectedAgent = useGetSelectedAgent();
 
   const filteredAgents = useMemo(() => {

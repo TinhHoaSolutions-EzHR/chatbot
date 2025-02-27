@@ -33,3 +33,5 @@ export enum Route {
   NOT_SUPPORTED = '/not-supported',
   SUPPORTS = '/supports',
 }
+
+export const DEFAULT_NEW_CHAT_NAME = 'New chat';

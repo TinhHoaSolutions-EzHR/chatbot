@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import WillRender from '@/components/will-render';
 import { useGetAllChatFolders } from '@/hooks/chat/use-get-all-chat-folders';
 import { useGetAllChatSessions } from '@/hooks/chat/use-get-all-chat-sessions';
 import { IChatSession } from '@/types/chat';
@@ -45,20 +46,24 @@ export const ChatFolders: FC = () => {
       <SidebarGroupLabel className="font-bold text-zinc-600">Chat folders</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {isLoading || !chatFolders ? (
-            <Skeleton className="w-full h-12 rounded" />
-          ) : chatFolders.length === 0 ? (
-            <SidebarMenuItem>No folder created yet.</SidebarMenuItem>
-          ) : (
-            chatFolders.map((folder, idx) => (
-              <ChatFolderItem
-                key={folder.id}
-                folder={folder}
-                chatSessions={mappedFolderToChatSessions[folder.id]}
-                isDefaultOpen={idx === 0}
-              />
-            ))
-          )}
+          <WillRender>
+            <WillRender.If when={isLoading || !chatFolders}>
+              <Skeleton className="w-full h-12 rounded" />
+            </WillRender.If>
+            <WillRender.If when={chatFolders?.length === 0}>
+              <SidebarMenuItem>No folder created yet.</SidebarMenuItem>
+            </WillRender.If>
+            <WillRender.Else>
+              {chatFolders?.map((folder, idx) => (
+                <ChatFolderItem
+                  key={folder.id}
+                  folder={folder}
+                  chatSessions={mappedFolderToChatSessions[folder.id]}
+                  isDefaultOpen={idx === 0}
+                />
+              ))}
+            </WillRender.Else>
+          </WillRender>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

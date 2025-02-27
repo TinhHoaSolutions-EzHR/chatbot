@@ -60,12 +60,14 @@ export interface IChatSessionDetail extends IChatSession {
  * These events can be:
  * - metadata: the user's request message.
  * - delta: the server's encoding chat response.
+ * - title_generation: the chat title after complete
  * - stream_complete: the signal indicating the SSE close, and return the chat response object but exclude the message field.
  * - error: error occurred on the server side.
  */
 export enum ChatMessageStreamEvent {
   METADATA = 'metadata',
   DELTA = 'delta',
+  TITLE_GENERATION = 'title_generation',
   STREAM_COMPLETE = 'stream_complete',
   ERROR = 'error',
 }
@@ -77,6 +79,10 @@ export type ChatStreamChunk =
     }
   | {
       event: ChatMessageStreamEvent.DELTA;
+      data: string;
+    }
+  | {
+      event: ChatMessageStreamEvent.TITLE_GENERATION;
       data: string;
     }
   | {
@@ -92,6 +98,7 @@ export enum StreamingMessageState {
   IDLE = 'idle',
   PENDING = 'pending',
   STREAMING = 'streaming',
+  GENERATING_TITLE = 'generating-title',
 }
 
 export interface IFolder {
