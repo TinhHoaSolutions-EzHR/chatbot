@@ -5,7 +5,7 @@ on:
 
 jobs:
   labeler:
-    name: Auto
+    name: auto label
     permissions:
       contents: read
       pull-requests: write
