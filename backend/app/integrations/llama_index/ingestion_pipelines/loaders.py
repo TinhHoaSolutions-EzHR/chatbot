@@ -109,16 +109,16 @@ class IndexingPipeline:
             documents = parse_pdf(document=document, metadata=metadata)
 
             # Initialize the translator and translate the document
-            logger.info("Translating the document into Vietnamese")
-            translator = Translator.from_defaults(
-                source_language="english", target_language="vietnamese"
-            )
-            translated_documents = translator.get_translated_documents(documents)
+            # logger.info("Translating the document into Vietnamese")
+            # translator = Translator.from_defaults(
+            #     source_language="english", target_language="vietnamese"
+            # )
+            # translated_documents = translator.get_translated_documents(documents)
 
             logger.info("Running the indexing pipeline")
             pipeline = self._get_ingestion_pipeline()
             nodes = pipeline.run(
-                documents=translated_documents,
+                documents=documents,
                 show_progress=True,
                 batch_size=Constants.INGESTION_BATCH_SIZE,
             )
