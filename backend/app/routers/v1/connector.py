@@ -99,7 +99,7 @@ def create_connector(
         BackendAPIResponse: API response with the created connector information.
     """
     # Create connector
-    err = ConnectorService(db_session=db_session).create_connector(
+    connector, err = ConnectorService(db_session=db_session).create_connector(
         connector_request=connector_request
     )
     if err:
@@ -107,7 +107,10 @@ def create_connector(
         raise HTTPException(status_code=status_code, detail=detail)
 
     # Parse response
-    data = connector_request.model_dump(exclude_unset=True)
+    if connector:
+        data = ConnectorResponse.model_validate(connector)
+    else:
+        data = None
 
     return (
         BackendAPIResponse()

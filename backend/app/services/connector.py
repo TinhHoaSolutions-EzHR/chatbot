@@ -74,7 +74,9 @@ class ConnectorService(BaseService):
 
         return connector, None
 
-    def create_connector(self, connector_request: ConnectorRequest) -> Optional[APIError]:
+    def create_connector(
+        self, connector_request: ConnectorRequest
+    ) -> Tuple[Optional[Connector], Optional[APIError]]:
         """
         Create new connector.
 
@@ -82,7 +84,7 @@ class ConnectorService(BaseService):
             connector_request(ConnectorRequest): ConnectorRequest object.
 
         Returns:
-            Optional[APIError]: APIError object if any error.
+            Tuple[Optional[Connector], Optional[APIError]]: Connector object and APIError object if any error.
         """
         with self._transaction():
             # Define to-be-created connector
@@ -95,8 +97,10 @@ class ConnectorService(BaseService):
             # Create connector
             connector = Connector(**connector)
             err = self._connector_repo.create_connector(connector=connector)
+            if err:
+                return None, err
 
-        return err
+        return connector, None
 
     def update_connector(
         self, connector_id: str, connector_request: ConnectorRequest
