@@ -5,7 +5,7 @@ on:
 
 jobs:
   add-reviews:
-    name: Auto
+    name: auto assign
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
