@@ -1,6 +1,8 @@
 from datetime import datetime
 from datetime import timezone
 from enum import Enum
+from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from uuid import UUID
@@ -83,7 +85,7 @@ class ConnectorResponse(BaseModel):
     id: UUID = Field(..., description="Connector ID")
     name: str = Field(..., description="Connector name")
     source: DocumentSource = Field(..., description="Document source")
-    connector_specific_config: Optional[str] = Field(
+    connector_specific_config: Optional[Dict[str, Any]] = Field(
         None, description="Connector specific configuration"
     )
     created_at: datetime = Field(..., description="Created at timestamp")
