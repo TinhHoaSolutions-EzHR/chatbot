@@ -25,5 +25,12 @@ docs/node_modules
 **/.ruff_cache/
 .DS_Store
 
+# Backend ignores
+backend/**/*.pyc
+
+# Frontend ignores
+frontend/.next
+backend/notebooks/storage
+
 # Vscode
 .vscode/settings.json
