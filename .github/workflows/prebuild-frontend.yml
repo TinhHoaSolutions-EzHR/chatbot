@@ -1,0 +1,54 @@
+name: Pre-build frontend
+
+# Runs on every commit in pull request to main
+# Path including all files in frontend directory
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: build frontend
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out ${{ github.head_ref }}
+        uses: actions/checkout@v4
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install yarn
+        run: npm install -g yarn@1.22
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile --non-interactive
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          yarn build
+
+      # Verify the out directory exists
+      - name: Verify Build Output
+        run: |
+          if [ -d "frontend/out" ]; then
+            echo "Build successful" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Build failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
