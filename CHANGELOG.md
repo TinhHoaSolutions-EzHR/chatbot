@@ -1,5 +1,44 @@
 # Changelog
 
+## [2.0.0](https://github.com/TinhHoaSolutions-EzHR/chatbot/compare/v1.1.0...v2.0.0) (2025-02-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* move chatbot-core to the root directory
+
+### Features
+
+* **backend:** add feature to rename chat session based on user request and agent response ([1d22aaf](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/1d22aafd65f428fb5cf8bc8ee6eff5b3d1268704))
+* **backend:** add translator module to process documents ([#258](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/258)) ([089c274](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/089c2743d988b9d05e8604001ea7c65986c08562))
+* **backend:** document chunking and indexing ([#278](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/278)) ([967d4d0](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/967d4d0d4d103a5797a58305e552d2d3873485bc))
+* **backend:** initialize feature to name the chat session based on the user question and agent response ([da132e2](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/da132e2d99388b16994a0343a3aacdf1bfedb10f))
+* **backend:** load documents under a background task ([#256](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/256)) ([49db068](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/49db068456d74753d41aea2e22f43d86991b9ff3))
+* **backend:** rename chat session instead of UUID ([#236](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/236)) ([d34405f](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/d34405f067aac77245998e4a089668aa9a97dd3d))
+* **frontend:** fix drag-and-drop functionality with improved event handling ([316f053](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/316f053423da21c224df0e3e1af1498933cc05fd))
+* **frontend:** fix drag-and-drop functionality with improved event handling ([e92e537](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/e92e5370034c77ba2148926a0a83997026ed853d))
+* **frontend:** implement drag-and-drop functionality for chat sessio… ([#264](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/264)) ([4baedf2](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/4baedf2cf9f77fc23f2346147b70998a893f7db2))
+* **frontend:** implement drag-and-drop functionality for chat sessions in sidebar ([6aa941c](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/6aa941c3c85965498c7be41252fcf09276bd1b7c))
+* **frontend:** rename chat session after created a new chat ([#281](https://github.com/TinhHoaSolutions-EzHR/chatbot/issues/281)) ([f0df64d](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/f0df64dff4e1ac9fec0f98ddfac76df5b10897e7))
+* **notebooks:** update persisting to vector store ([143b010](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/143b0105f25b0236a67c569049240d9db9bc3c06))
+* **notebooks:** update POC1 in loading section ([8e0f5e5](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/8e0f5e59e95f6689a9afbbe119860850393af8e8))
+* **notebooks:** update POC1 with chunking process ([148e414](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/148e41419c29c3054cae96d9e0e8b67f9c9cf261))
+
+
+### Bug Fixes
+
+* **backend:** fix translators module with pydantic base model ([896bed6](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/896bed63fd6a138c800e3bb7ff63be8696ca2d87))
+* **backend:** update the markitdown module ([08b830d](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/08b830d0f4a888cb41d35953a8dc1e15e8979a03))
+* **chat:** correct variable name for clarity in response streaming ([4b4de76](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/4b4de76a53d9fc97e581476051a09d77359832e2))
+* **chat:** rename variable for clarity in response streaming ([4d6cda7](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/4d6cda73c942d79571252c288a10ab8e02401a2f))
+* **frontend:** remove unnecessary console log in drag-and-drop handler ([0092d84](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/0092d84f0ad17da33e6b2e4869905a265449f34c))
+* **frontend:** remove unnecessary console log in drag-and-drop handler ([1a6aec8](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/1a6aec89e0311f10889cdde1b9967759dc45c880))
+
+
+### Miscellaneous Chores
+
+* move chatbot-core to the root directory ([0a1309a](https://github.com/TinhHoaSolutions-EzHR/chatbot/commit/0a1309a7539c9d674ea476103843a4de84030cc2))
+
 ## [1.1.0](https://github.com/TinhHoaSolutions-EzHR/chatbot/compare/v1.0.0...v1.1.0) (2025-02-15)
 
 
