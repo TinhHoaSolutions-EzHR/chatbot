@@ -2,7 +2,6 @@
 import React from 'react';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarSeparator } from '@/components/ui/sidebar';
-import ChatSidebarDndProvider from '@/providers/chat-drag-n-drop-provider';
 
 import { AppSidebarHeader } from './app-sidebar-header';
 import { ChatFolders } from './chat-folders/chat-folders';
@@ -13,13 +12,11 @@ export function AppSidebar() {
     <Sidebar>
       <AppSidebarHeader />
       <SidebarSeparator className="mt-1" />
-      <ChatSidebarDndProvider>
-        <SidebarContent>
-          <ChatFolders />
-          <SidebarSeparator />
-          <ChatHistory />
-        </SidebarContent>
-      </ChatSidebarDndProvider>
+      <SidebarContent>
+        <ChatFolders />
+        <SidebarSeparator />
+        <ChatHistory />
+      </SidebarContent>
       <SidebarFooter />
     </Sidebar>
   );

@@ -1,13 +1,12 @@
 import { create } from 'zustand';
 
-import { IChatMessageResponse, StreamingMessageState } from '@/types/chat';
+import { StreamingMessageState } from '@/types/chat';
 
 interface IChatStore {
   userMessage: string;
   isNewChat: boolean;
   chatSession: {
     [id: string]: {
-      messages: IChatMessageResponse[];
       streamState: StreamingMessageState;
       streamingMessage: string;
       abortController: AbortController | null;
@@ -15,7 +14,6 @@ interface IChatStore {
   };
 
   initChatSessionIfNotExist(chatSessionId: string): void;
-  addMessage(chatSessionId: string, message: IChatMessageResponse): void;
   setStreamState(chatSessionId: string, streamState: StreamingMessageState): void;
   setStreamingMessage(chatSessionId: string, messageChunk: string): void;
   setStreamAbortController(chatSessionId: string, abortController: AbortController | null): void;
@@ -44,24 +42,10 @@ export const useChatStore = create<IChatStore>((set, get) => ({
     }
 
     chatSession[chatSessionId] = {
-      messages: [],
       streamState: StreamingMessageState.IDLE,
       streamingMessage: '',
       abortController: null,
     };
-
-    set({ chatSession });
-  },
-  addMessage(chatSessionId, message) {
-    const { chatSession } = get();
-
-    if (!chatSession[chatSessionId]) {
-      throw new Error();
-    }
-
-    const messages = chatSession[chatSessionId].messages;
-
-    chatSession[chatSessionId].messages = [...messages, message];
 
     set({ chatSession });
   },

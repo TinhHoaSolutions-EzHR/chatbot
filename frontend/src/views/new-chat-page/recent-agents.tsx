@@ -15,7 +15,8 @@ interface IAgentButtonProps {
 
 const AgentButton: FC<IAgentButtonProps> = ({ agent }) => {
   const { mutate } = useSelectAgent();
-  const { setSelectedAgent, selectedAgent } = useAgentStore();
+  const selectedAgent = useAgentStore(state => state.selectedAgent);
+  const setSelectedAgent = useAgentStore(state => state.setSelectedAgent);
 
   return (
     <Button

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FC, useMemo } from 'react';
 
+import WillRender from '@/components/will-render';
 import { Route } from '@/constants/misc';
 import { useGetAllConnectors } from '@/hooks/connectors/use-get-all-connectors';
 
@@ -55,9 +56,18 @@ export const ConnectorsList: FC<IConnectorsListProps> = ({ searchValue }) => {
 
   return (
     <div className="mt-8 flex flex-col gap-4">
-      {isLoading || !filteredConnectors
-        ? Array.from({ length: 3 }).map((_, idx) => <ConnectorSkeleton key={idx} />)
-        : filteredConnectors.map(connector => <ConnectorItem key={connector.id} connector={connector} />)}
+      <WillRender>
+        <WillRender.If when={isLoading || !filteredConnectors}>
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <ConnectorSkeleton key={idx} />
+          ))}
+        </WillRender.If>
+        <WillRender.Else>
+          {filteredConnectors.map(connector => (
+            <ConnectorItem key={connector.id} connector={connector} />
+          ))}
+        </WillRender.Else>
+      </WillRender>
     </div>
   );
 };

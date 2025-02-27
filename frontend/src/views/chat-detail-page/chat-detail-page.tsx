@@ -3,13 +3,11 @@
 import { Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
+import ChatMessage from '@/components/chat-message/chat-message';
 import { QueryParams } from '@/constants/misc';
 import { useGetChatSessionDetail } from '@/hooks/chat/use-get-chat-session-detail';
 import { useChatStore } from '@/hooks/stores/use-chat-store';
 
-import { NewChatHandler } from './new-chat-handler';
-import { NewMessages } from './new-messages';
-import { PreviousMessages } from './previous-messages';
 import { StreamingMessage } from './streaming-message';
 
 export default function ChatDetailPage() {
@@ -30,9 +28,10 @@ export default function ChatDetailPage() {
 
   return (
     <div className="chat-width h-full space-y-4 pb-8">
-      <NewChatHandler />
-      <PreviousMessages chatSessionDetail={chatSessionDetail} />
-      <NewMessages chatSessionId={chatSessionId} />
+      <div className="space-y-4">
+        {chatSessionDetail?.chat_messages.map(message => <ChatMessage key={message.id} chatMessage={message} />)}
+      </div>
+
       <StreamingMessage chatSessionId={chatSessionId} />
     </div>
   );
