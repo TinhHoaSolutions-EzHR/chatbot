@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter
 from fastapi import status
 
@@ -25,11 +27,21 @@ def get_task_status(task_id: str) -> BackendAPIResponse:
     # Get task result
     task_result = background_app.AsyncResult(id=task_id)
 
+    status = task_result.status
+    result = None
+    if task_result.ready():
+        # Ensure result is serializable
+        try:
+            result = json.dumps(task_result.result)
+        except Exception as e:
+            logger.warning(f"Failed to serialize result for task {task_id}: {e}")
+            result = str(task_result.result)
+
     # Construct the response
     data = {
         "task_id": task_id,
-        "status": task_result.status,
-        "result": task_result.result if task_result.ready() else None,
+        "status": status,
+        "result": result,
     }
 
     return (

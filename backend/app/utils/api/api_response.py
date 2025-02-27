@@ -1,6 +1,4 @@
-import json
 from typing import Any
-from typing import Dict
 from typing import Optional
 
 from pydantic import BaseModel
@@ -10,36 +8,6 @@ class APIResponse(BaseModel):
     message: str = "Success"
     headers: Optional[Any] = None
     data: Optional[Any] = None
-
-    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
-        """
-        Dump the Pydantic model to a dictionary with JSON serializable values.
-
-        Returns:
-            Dict[str, Any]: The dictionary with JSON serializable values.
-        """
-        data = super().model_dump(**kwargs)
-        return {key: self._serialize_value(value) for key, value in data.items()}
-
-    @staticmethod
-    def _serialize_value(value: Any) -> Any:
-        """
-        Serialize the value to JSON serializable format.  If the value is a dictionary,
-        recursively serialize its contents.
-
-        Args:
-            value (Any): The value to serialize.
-
-        Returns:
-            Any: The serialized value.
-        """
-        if isinstance(value, dict):
-            return {k: APIResponse._serialize_value(v) for k, v in value.items()}
-        try:
-            json.dumps(value)
-            return value
-        except (TypeError, ValueError):
-            return str(value)
 
 
 class APIError(BaseModel):
