@@ -100,6 +100,8 @@ class ConnectorService(BaseService):
             if err:
                 return None, err
 
+        # Jsonify connector_specific_config
+        connector.connector_specific_config = json.loads(connector.connector_specific_config)
         return connector, None
 
     def update_connector(
