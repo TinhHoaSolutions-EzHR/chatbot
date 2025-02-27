@@ -1,6 +1,6 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
-import { SupportedKeys } from '@/constants/misc';
+import { DEFAULT_NEW_CHAT_NAME, SupportedKeys } from '@/constants/misc';
 import { cn } from '@/lib/utils';
 import { IChatSession } from '@/types/chat';
 
@@ -12,19 +12,13 @@ interface IChatSessionInputProps {
 
 export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) => {
   const {
-    isEditingChatSession,
-    setIsEditingChatSession,
-    chatSessionDescription,
-    setChatSessionDescription,
-    onEditChatSession,
     isPending,
+    isEditingChatSession,
+    chatSessionDescription,
+    onEditChatSession,
+    setIsEditingChatSession,
+    setChatSessionDescription,
   } = useChatSessionContext();
-
-  useEffect(() => {
-    if (isEditingChatSession) {
-      setChatSessionDescription(chatSession.description ?? chatSession.id);
-    }
-  }, [isEditingChatSession]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === SupportedKeys.ESCAPE) {
@@ -52,5 +46,5 @@ export const ChatSessionInput: FC<IChatSessionInputProps> = ({ chatSession }) =>
     );
   }
 
-  return <>{chatSession.description ?? chatSession.id}</>;
+  return <>{chatSession.description ?? DEFAULT_NEW_CHAT_NAME}</>;
 };

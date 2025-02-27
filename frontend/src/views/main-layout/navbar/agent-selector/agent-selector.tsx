@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import WillRender from '@/components/will-render';
 import { useGetAgentsList } from '@/hooks/agents/use-get-agents-list';
 import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -28,27 +29,28 @@ export const AgentSelector = () => {
     setIsAgentSelectorOpen(isOpen);
   };
 
-  if (isMobile) {
-    return (
-      <Sheet open={isAgentSelectorOpen} onOpenChange={onOpenChange}>
-        <SheetTrigger asChild>
-          <div>
-            <AgentSelectorButton isAgentSelectorOpen={isAgentSelectorOpen} />
-          </div>
-        </SheetTrigger>
-        <AgentSelectorSheet />
-      </Sheet>
-    );
-  }
-
   return (
-    <DropdownMenu open={isAgentSelectorOpen} onOpenChange={onOpenChange}>
-      <DropdownMenuTrigger asChild>
-        <div>
-          <AgentSelectorButton isAgentSelectorOpen={isAgentSelectorOpen} />
-        </div>
-      </DropdownMenuTrigger>
-      <AgentSelectorDropdown />
-    </DropdownMenu>
+    <WillRender>
+      <WillRender.If when={isMobile}>
+        <Sheet open={isAgentSelectorOpen} onOpenChange={onOpenChange}>
+          <SheetTrigger asChild>
+            <div>
+              <AgentSelectorButton isAgentSelectorOpen={isAgentSelectorOpen} />
+            </div>
+          </SheetTrigger>
+          <AgentSelectorSheet />
+        </Sheet>
+      </WillRender.If>
+      <WillRender.Else>
+        <DropdownMenu open={isAgentSelectorOpen} onOpenChange={onOpenChange}>
+          <DropdownMenuTrigger asChild>
+            <div>
+              <AgentSelectorButton isAgentSelectorOpen={isAgentSelectorOpen} />
+            </div>
+          </DropdownMenuTrigger>
+          <AgentSelectorDropdown />
+        </DropdownMenu>
+      </WillRender.Else>
+    </WillRender>
   );
 };

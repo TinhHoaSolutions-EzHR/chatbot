@@ -29,7 +29,6 @@ const ChatSessionItemComponent: FC<IChatSessionItemProps> = ({ chatSession, subI
   return (
     <SidebarItem className={cn('group/chat-action cursor-pointer relative')}>
       <ChatSessionButton
-        id={chatSession.id}
         subItem={subItem}
         isDropdownHovered={isDropdownHovered}
         isOpenDropdown={isOpenDropdown}

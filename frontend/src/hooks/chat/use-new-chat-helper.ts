@@ -4,29 +4,25 @@ import { toast } from 'sonner';
 import { QueryParams, Route } from '@/constants/misc';
 import { useGetSelectedAgent } from '@/hooks/agents/use-get-selected-agent';
 import { useCreateChatSession } from '@/hooks/chat/use-create-chat-session';
-import { useChatStore } from '@/hooks/stores/use-chat-store';
+import { ChatMessageRequestType } from '@/types/chat';
+import ToastService from '@/utils/default-toasts';
+
+import { useCreateChatMessage } from './use-create-chat-message';
 
 interface INewChatHelperProps {
   chatSessionId: string | null;
   disabled?: boolean;
-  onSuccess?(): void;
+  chatRequestType: ChatMessageRequestType;
 }
 
 export const useNewChatHelper = (props?: INewChatHelperProps) => {
-  const { disabled, onSuccess, chatSessionId } = props || {};
+  const { disabled, chatSessionId, chatRequestType } = props || {};
   const router = useRouter();
-
-  const setUserMessage = useChatStore(state => state.setUserMessage);
-  const setIsNewChat = useChatStore(state => state.setIsNewChat);
 
   const selectedAgent = useGetSelectedAgent();
 
-  const { mutate } = useCreateChatSession();
-
-  const updateNewChat = (userInput: string, isNewChat: boolean) => {
-    setUserMessage(userInput);
-    setIsNewChat(isNewChat);
-  };
+  const { mutateAsync: createChatSession } = useCreateChatSession();
+  const { mutate: createChatMessage } = useCreateChatMessage({ chatSessionId });
 
   const onNewChat = async (userInput: string) => {
     if (disabled) {
@@ -44,29 +40,31 @@ export const useNewChatHelper = (props?: INewChatHelperProps) => {
         return;
       }
 
-      mutate(selectedAgent.id, {
-        onSuccess(newChatSession) {
-          // User creating a new chat
-          updateNewChat(userInput, true);
-          onSuccess?.();
-          router.push(`${Route.CHAT}/?${QueryParams.CHAT_SESSION_ID}=${newChatSession.id}`);
-        },
+      // User creating a new chat
+      const chatSession = await createChatSession(selectedAgent.id, {
         onError() {
-          toast.error('Something went wrong', {
-            description: "There's something wrong with your request. Please try again later.",
-          });
+          ToastService.apiFail();
         },
       });
+
+      createNewChat(chatSession.id);
+      router.push(`${Route.CHAT}/?${QueryParams.CHAT_SESSION_ID}=${chatSession.id}`);
 
       return;
     }
 
-    // Case when user is in a chat session
-    updateNewChat(userInput, false);
-    onSuccess?.();
+    createNewChat(chatSessionId);
+
+    function createNewChat(chatSessionId: string) {
+      createChatMessage({
+        chatSessionId,
+        data: {
+          message: userInput,
+          chat_message_request_type: chatRequestType,
+        },
+      });
+    }
   };
 
-  return {
-    onNewChat,
-  };
+  return onNewChat;
 };
