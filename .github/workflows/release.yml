@@ -38,8 +38,6 @@ jobs:
             echo "config-file=.github/release-please-config.json" >> $GITHUB_OUTPUT
             [ -f .github/release-please-manifest.json ] &&
               echo "manifest-file=.github/release-please-manifest.json" >> $GITHUB_OUTPUT
-            [ -f .github/.release-please-manifest.json ] &&
-              echo "manifest-file=.github/.release-please-manifest.json" >> $GITHUB_OUTPUT
           else
             echo "release-type=simple" >> $GITHUB_OUTPUT
           fi
@@ -50,9 +48,9 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.CI_TOKEN }}
-          config-file: ${{ steps.release-please-config.outputs.config-file }}
-          manifest-file: ${{ steps.release-please-config.outputs.manifest-file }}
-          release-type: ${{ steps.release-please-config.outputs.release-type }}
+          config-file: ${{ steps.config-release-please.outputs.config-file }}
+          manifest-file: ${{ steps.config-release-please.outputs.manifest-file }}
+          release-type: ${{ steps.config-release-please.outputs.release-type }}
           include-component-in-tag: true
 
       - name: Tag stable versions
