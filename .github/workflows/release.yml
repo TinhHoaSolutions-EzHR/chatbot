@@ -28,9 +28,11 @@ jobs:
     if: ${{ inputs.release && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: release-please config
-        id: release-please-config
+        id: Config release-please
         run: |
           if [ -f .github/release-please-config.json ]; then
             echo "config-file=.github/release-please-config.json" >> $GITHUB_OUTPUT
@@ -42,13 +44,17 @@ jobs:
             echo "release-type=simple" >> $GITHUB_OUTPUT
           fi
           exit 0
-      - uses: googleapis/release-please-action@v4
+
+      - name: Release
         id: release
+        uses: googleapis/release-please-action@v4
         with:
+          token: ${{ secrets.CI_TOKEN }}
           config-file: ${{ steps.release-please-config.outputs.config-file }}
           manifest-file: ${{ steps.release-please-config.outputs.manifest-file }}
           release-type: ${{ steps.release-please-config.outputs.release-type }}
           include-component-in-tag: true
+
       - name: tag stable versions
         if: ${{ steps.release.outputs.release_created }}
         run: |
