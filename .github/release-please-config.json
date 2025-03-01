@@ -2,14 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "group-pull-request-title-pattern": "chore: release ${scope} - ${component} at ${version}",
   "separate-pull-requests": true,
+  "release-search-depth": 2000,
   "commit-search-depth": 2000,
-  "release-type": "simple",
   "packages": {
-    "backend": {
-      "release-type": "python"
-    },
-    "frontend": {
-      "release-type": "node"
+    ".": {
+      "release-type": "simple"
     }
   }
 }
