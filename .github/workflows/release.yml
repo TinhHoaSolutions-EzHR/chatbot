@@ -12,7 +12,7 @@ on:
   schedule:
     - cron: "0 0 */14 * *"
   # Pull request name contains "release-please"
-  pull_request:
+  push:
     branches:
       - main
     paths:
