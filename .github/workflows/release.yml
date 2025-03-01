@@ -31,8 +31,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: release-please config
-        id: Config release-please
+      - name: Config release-please
+        id: config-release-please
         run: |
           if [ -f .github/release-please-config.json ]; then
             echo "config-file=.github/release-please-config.json" >> $GITHUB_OUTPUT
@@ -55,7 +55,7 @@ jobs:
           release-type: ${{ steps.release-please-config.outputs.release-type }}
           include-component-in-tag: true
 
-      - name: tag stable versions
+      - name: Tag stable versions
         if: ${{ steps.release.outputs.release_created }}
         run: |
           git config user.name ubunchuu-admin[bot]
