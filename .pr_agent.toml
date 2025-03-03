@@ -80,7 +80,7 @@ enable_auto_approval = false
 
 [pr_description] # /describe #
 publish_labels = false
-add_original_user_description = false
+add_original_user_description = true
 generate_ai_title = false
 use_bullet_points = true
 extra_instructions = "Write short and concise."
