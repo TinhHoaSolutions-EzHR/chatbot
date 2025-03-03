@@ -86,8 +86,8 @@ use_bullet_points = true
 extra_instructions = "Write short and concise."
 enable_pr_type = false
 final_update_message = true
-enable_help_text = true
-enable_help_comment = true
+enable_help_text = false
+enable_help_comment = false
 # describe as comment
 publish_description_as_comment = false
 publish_description_as_comment_persistent = false
