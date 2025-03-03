@@ -2,9 +2,21 @@
 include .env
 
 # Variables
+ifeq ($(ENV),development)
+  COMPOSE_FILE := deployment/docker_compose/docker-compose.dev.yaml
+else ifeq ($(ENV),dev)
+  COMPOSE_FILE := deployment/docker_compose/docker-compose.dev.yaml
+else ifeq ($(ENV),production)
+  COMPOSE_FILE := deployment/docker_compose/docker-compose.prod.yaml
+else ifeq ($(ENV),prod)
+  COMPOSE_FILE := deployment/docker_compose/docker-compose.prod.yaml
+else
+  # Default if ENV is not set or doesn't match any condition
+  COMPOSE_FILE := deployment/docker_compose/docker-compose.dev.yaml
+endif
+
 # DEEPEVAL := ${PWD}/backend/.venv/bin/deepeval
 DOCKER_COMPOSE ?= docker compose
-COMPOSE_FILE := deployment/docker_compose/docker-compose.dev.yaml
 YARN ?= yarn
 UV ?= uv
 SERVICES ?=  # List of services to start, default is empty (all services)
