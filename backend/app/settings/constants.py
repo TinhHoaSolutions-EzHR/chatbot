@@ -10,7 +10,7 @@ class Constants:
     # API Configuration
     FASTAPI_NAME = "EzHR Chatbot"
     FASTAPI_VERSION = os.getenv("API_VERSION", "1")
-    FASTAPI_DESCRIPTION = ("This is an API for the LLM-based assistant chatbot",)
+    FASTAPI_DESCRIPTION = "This is an API for the LLM-based assistant chatbot"
     FASTAPI_PREFIX = "/api/v1"
 
     # Relational Database Connection Configuration
