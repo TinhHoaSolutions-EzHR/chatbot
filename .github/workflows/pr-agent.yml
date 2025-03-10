@@ -25,7 +25,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Cleanup old comments from users that contain command prefixes: /
-  cleanup-old-comments:
+  cleanup-user-comments:
     name: cleanup old user command comments
     runs-on: ubuntu-24.04
     needs: pr-agent
@@ -34,7 +34,7 @@ jobs:
       - name: Remove old user command comments
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.CI_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const commandPrefixes = ['/describe', '/review', '/improve', '/ask', '/update_changelog',
                                     '/similar_issue', '/help', '/generate_labels', '/analyze', '/test',
@@ -89,4 +89,46 @@ jobs:
                   comment_id: comment.id,
                 });
               }
+            }
+  # Cleanup persistent review bot comments
+  # Has pattern '**Persistent review** updated to latest commit' in the comment body
+  cleanup-persistent-review:
+    name: cleanup persistent review bot comments
+    runs-on: ubuntu-24.04
+    needs: pr-agent
+    if: ${{ always() }}
+    steps:
+      - name: Remove persistent review bot comments
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Filter bot comments containing the persistent review text
+            const persistentReviewComments = comments.filter(
+              (comment) =>
+                comment.user.login === 'github-actions[bot]' &&
+                comment.body.includes('**Persistent review**')
+            );
+
+            // Sort comments by creation date in descending order (newest first)
+            persistentReviewComments.sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            // Keep the most recent comment, delete the rest
+            const commentsToDelete = persistentReviewComments.slice(1);
+
+            // Delete the older comments
+            for (const comment of commentsToDelete) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
             }
