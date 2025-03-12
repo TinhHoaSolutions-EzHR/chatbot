@@ -33,7 +33,7 @@ class RefreshTokenExpiredException(BaseExceptionTest):
 
 class AccessDeniedException(BaseExceptionTest):
     def __init__(self, *args):
-        error_code = ErrorCodes.INTERNAL_SERVER_ERROR.value[1]
+        error_code = ErrorCodes.ACCESS_DENIED.value[1]
         super().__init__(error_code=error_code,*args)
 
 class PermissionDeniedException(BaseExceptionTest):

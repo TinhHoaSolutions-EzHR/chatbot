@@ -17,7 +17,7 @@ class ExceptionConstants:
     BAD_REQUEST = "Bad request."
     INVALID_REQUEST = "The server could not understand the request due to incorrect syntax."
     INVALID_QUERY_PARAMETER = "Invalid query parameter: {0}."
-    FORBIDDEN_REQUEST = "Unauthorized request. The client does not have access rights to the content.",
+    FORBIDDEN_REQUEST = "Unauthorized request. The client does not have access rights to the content."
     NOT_FOUND = "The requested resource was not found."
     REQUEST_TIMEOUT = "The server timed out waiting for the request."
     DUPLICATE_REQUEST = "Duplicate request detected. Please wait before trying again."
