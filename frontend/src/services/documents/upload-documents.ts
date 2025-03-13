@@ -3,13 +3,26 @@ import { IApiResponse } from '@/types/api-response';
 import { IDocumentUploadResponse } from '@/types/document';
 import { ApiEndpointPrefix, getApiUrl } from '@/utils/get-api-url';
 
-export const uploadDocuments = async (documents: File[]): Promise<IDocumentUploadResponse[]> => {
+interface UploadDocumentProps {
+  documents: File[];
+  issueDate: Date;
+}
+
+export const uploadDocuments = async ({
+  documents,
+  issueDate,
+}: UploadDocumentProps): Promise<IDocumentUploadResponse[]> => {
   try {
     const formData = new FormData();
 
     for (const document of documents) {
       formData.append('uploaded_documents', document);
     }
+
+    formData.append('issue_date', issueDate.toISOString());
+
+    // TODO: Integrate public feature later
+    formData.append('is_public', 'true');
 
     const res = await httpClient.post<IApiResponse<IDocumentUploadResponse[]>>(
       getApiUrl(ApiEndpointPrefix.DOCUMENTS, '/upload'),

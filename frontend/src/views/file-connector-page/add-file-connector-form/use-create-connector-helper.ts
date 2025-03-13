@@ -19,21 +19,27 @@ export const useCreateConnectorHelper = () => {
   const { mutateAsync: uploadDocuments } = useUploadDocuments();
   const { mutateAsync: createConnector } = useCreateConnector();
 
-  const createConnectorHelper = async (connectorName: string, files: File[]) => {
+  const createConnectorHelper = async (connectorName: string, files: File[], issueDate: Date) => {
     try {
       setProgress(33);
       setProgressLabel('Uploading your documents...');
       setIsError(false);
 
-      const documents = await uploadDocuments(files, {
-        onError() {
-          toast.error('Upload documents failed', {
-            description: "There's something wrong with your request. Please try again later!",
-          });
-          setProgressLabel('Upload documents failed. Please try again.');
+      const documents = await uploadDocuments(
+        {
+          documents: files,
+          issueDate,
         },
-        onSuccess() {},
-      });
+        {
+          onError() {
+            toast.error('Upload documents failed', {
+              description: "There's something wrong with your request. Please try again later!",
+            });
+            setProgressLabel('Upload documents failed. Please try again.');
+          },
+          onSuccess() {},
+        },
+      );
 
       setProgress(66);
       setProgressLabel('Preparing your connector...');
