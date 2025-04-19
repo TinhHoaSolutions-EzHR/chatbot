@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from fastapi import status
 from sqlalchemy.orm import Session
 
-from app.databases.mssql import get_db_session
+from app.databases.postgres import get_db_session
 from app.models import User
 from app.models.user import UserResponse
 from app.models.user import UserSettingsRequest

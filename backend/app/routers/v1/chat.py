@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sse_starlette import EventSourceResponse
 
-from app.databases.mssql import get_db_session
+from app.databases.postgres import get_db_session
 from app.databases.qdrant import get_qdrant_connector
 from app.databases.qdrant import QdrantConnector
 from app.models import User

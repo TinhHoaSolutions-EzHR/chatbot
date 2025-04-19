@@ -23,7 +23,7 @@ from sqlalchemy import Integer
 from sqlalchemy import NVARCHAR
 from sqlalchemy import String
 from sqlalchemy import Text
-from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
+from sqlalchemy.dialects.postgresql import UUID as UNIQUEIDENTIFIER
 from sqlalchemy.engine import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Mapped

@@ -1197,7 +1197,7 @@ paths:
                   - $ref: '#/components/schemas/ConnectorSnapshot'
                   - $ref: '#/components/schemas/StatusResponse_int_'
                 title: >-
-                  Response Update Connector From Model Manage Admin Connector 
+                  Response Update Connector From Model Manage Admin Connector
                   Connector Id  Patch
         '422':
           description: Validation Error
@@ -1386,7 +1386,7 @@ paths:
                   - $ref: '#/components/schemas/ConnectorSnapshot'
                   - $ref: '#/components/schemas/StatusResponse_int_'
                 title: >-
-                  Response Get Connector By Id Manage Connector  Connector Id 
+                  Response Get Connector By Id Manage Connector  Connector Id
                   Get
         '422':
           description: Validation Error
@@ -1583,7 +1583,7 @@ paths:
                   - $ref: '#/components/schemas/CredentialSnapshot'
                   - $ref: '#/components/schemas/StatusResponse_int_'
                 title: >-
-                  Response Update Credential From Model Manage Credential 
+                  Response Update Credential From Model Manage Credential
                   Credential Id  Patch
         '422':
           description: Validation Error
@@ -1784,7 +1784,7 @@ paths:
     get:
       summary: Document Set Public
       operationId: document_set_public_manage_document_set_public_get
-      
+
       responses:
         '200':
           description: Successful Response
