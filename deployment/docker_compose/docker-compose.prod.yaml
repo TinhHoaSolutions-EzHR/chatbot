@@ -2,31 +2,23 @@
 
 services:
   database:
-    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
-    platform: linux/amd64
+    image: postgres:16-alpine
     container_name: database
     hostname: database
-    user: root
     restart: always
     ports:
-      - "1433:1433"
-    # Ensure the .env files include ACCEPT_EULA, MSSQL_PID, MSSQL_USER, and MSSQL_SA_PASSWORD
+      - "5432:5432"
+    # Ensure the .env files include POSTGRES_USER, POSTGRES_PASSWORD, and POSTGRES_DB
     env_file:
       - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
-      - mssql_data_volume:/var/opt/mssql/data
-      - mssql_log_volume:/var/opt/mssql/log
-      - mssql_backup_volume:/var/opt/mssql/backup
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - chatbot
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          '/opt/mssql-tools18/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P $$MSSQL_SA_PASSWORD -d master -C -Q "SELECT 1;" || exit 1',
-        ]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB || exit 1"]
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 3
       start_period: 3s
 
@@ -34,20 +26,19 @@ services:
   # After the database is up and running, this service will auto exit
   # Ignore it
   database.configurator:
-    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
-    platform: linux/amd64
+    image: postgres:16-alpine
     user: root
     env_file:
       - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
-      - ../data/mssql/:/docker-entrypoint-initdb.d
+      - ../data/postgres/:/docker-entrypoint-initdb.d
     depends_on:
       database:
         condition: service_healthy
     networks:
       - chatbot
     command: >
-      /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
+      /bin/sh -c "PGPASSWORD=$$POSTGRES_PASSWORD psql -h database -U $$POSTGRES_USER -d $$POSTGRES_DB -f /docker-entrypoint-initdb.d/init.sql &&
       echo 'Database configured!'"
 
   cache:
@@ -232,9 +223,7 @@ services:
       uv run celery -A app.background.celery_worker worker --loglevel=DEBUG"
 
 volumes:
-  mssql_data_volume:
-  mssql_log_volume:
-  mssql_backup_volume:
+  postgres_data:
   qdrant_data_volume:
   minio_data:
 

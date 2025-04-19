@@ -13,16 +13,16 @@ from app.utils.api.helpers import get_logger
 logger = get_logger(__name__)
 
 
-class MSSQLConnector(BaseConnector[Engine]):
+class PostgresConnector(BaseConnector[Engine]):
     """
-    MSSQL connector class
+    PostgreSQL connector class
 
     Pattern: Singleton
     Purpose: Create a single instance of the database connection
     """
 
     _o = Secrets
-    _required_keys = ["MSSQL_USER", "MSSQL_SA_PASSWORD", "MSSQL_HOST", "MSSQL_DB"]
+    _required_keys = ["POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST", "POSTGRES_DB"]
 
     @classmethod
     def _create_client(cls) -> Engine:
@@ -33,20 +33,20 @@ class MSSQLConnector(BaseConnector[Engine]):
             Engine: Database connection instance
         """
         try:
-            url = Constants.MSSQL_CONNECTOR_URI.format(
-                user=Secrets.MSSQL_USER,
-                password=Secrets.MSSQL_SA_PASSWORD,
-                host=Secrets.MSSQL_HOST,
-                port=Secrets.MSSQL_PORT,
-                db_name=Secrets.MSSQL_DB,
-                driver=Constants.MSSQL_DRIVER,
+            url = Constants.POSTGRES_CONNECTOR_URI.format(
+                user=Secrets.POSTGRES_USER,
+                password=Secrets.POSTGRES_PASSWORD,
+                host=Secrets.POSTGRES_HOST,
+                port=Secrets.POSTGRES_PORT,
+                db_name=Secrets.POSTGRES_DB,
             )
+
             return create_engine(
                 url=url,
-                pool_size=Constants.MSSQL_POOL_SIZE,
-                max_overflow=Constants.MSSQL_MAX_OVERFLOW,
-                pool_timeout=Constants.MSSQL_POOL_TIMEOUT,
-                pool_recycle=Constants.MSSQL_POOL_RECYCLE,
+                pool_size=Constants.DATABASE_POOL_SIZE,
+                max_overflow=Constants.DATABASE_MAX_OVERFLOW,
+                pool_timeout=Constants.DATABASE_POOL_TIMEOUT,
+                pool_recycle=Constants.DATABASE_POOL_RECYCLE,
             )
         except Exception as e:
             logger.error(f"Error initializing database: {e}", exc_info=True)
@@ -68,7 +68,7 @@ class MSSQLConnector(BaseConnector[Engine]):
 
 # Create a session maker
 SessionLocal = sessionmaker(
-    bind=MSSQLConnector.get_engine(),
+    bind=PostgresConnector.get_engine(),
     expire_on_commit=False,
     class_=Session,
     autoflush=False,

@@ -2,30 +2,22 @@
 
 services:
   database:
-    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
-    platform: linux/amd64
+    image: postgres:16-alpine
     container_name: database
     hostname: database
-    user: root
     restart: always
     ports:
-      - "1433:1433"
+      - "5432:5432"
     env_file:
       - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
-      - mssql_data_volume:/var/opt/mssql/data
-      - mssql_log_volume:/var/opt/mssql/log
-      - mssql_backup_volume:/var/opt/mssql/backup
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - chatbot
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          '/opt/mssql-tools18/bin/sqlcmd -S localhost -U "$$MSSQL_USER" -P $$MSSQL_SA_PASSWORD -d master -C -Q "SELECT 1;" || exit 1',
-        ]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB || exit 1"]
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 3
       start_period: 3s
 
@@ -33,20 +25,19 @@ services:
   # After the database is up and running, this service will auto exit
   # Ignore it
   database.configurator:
-    image: mcr.microsoft.com/mssql/server:2019-CU29-GDR1-ubuntu-20.04
-    platform: linux/amd64
+    image: postgres:16-alpine
     user: root
     env_file:
       - ../../${ENV_FILE:-.env} # INFO: can be .env.development or .env.production
     volumes:
-      - ../data/mssql/:/docker-entrypoint-initdb.d
+      - ../data/postgres/:/docker-entrypoint-initdb.d
     depends_on:
       database:
         condition: service_healthy
     networks:
       - chatbot
     command: >
-      /bin/bash -c "/opt/mssql-tools18/bin/sqlcmd -S database -U $$MSSQL_USER -P $$MSSQL_SA_PASSWORD -d master -C -i /docker-entrypoint-initdb.d/init.sql &&
+      /bin/sh -c "PGPASSWORD=$$POSTGRES_PASSWORD psql -h database -U $$POSTGRES_USER -d $$POSTGRES_DB -f /docker-entrypoint-initdb.d/init.sql &&
       echo 'Database configured!'"
 
   cache:
@@ -167,43 +158,43 @@ services:
       uv run fastapi dev --host 0.0.0.0 --port 5000"
 
   # NOTE: Official port for web-server is 3000
-  web-server:
-    build:
-      context: ../../frontend
-      dockerfile: Dockerfile
-    platform: linux/amd64
-    container_name: web-server
-    hostname: web-server
-    restart: on-failure
-    depends_on:
-      - api-server
-    environment:
-      - DOMAIN=localhost
-    ports:
-      - "3000:80"
-    volumes:
-      - ../data/nginx:/etc/nginx/conf.d
-      - /app/node_modules # Avoid node_modules conflicts
-    networks:
-      - chatbot
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    #INFO: require 2 env files
-    # 1) .env file located in deployment/docker_compose
-    # 2) .env file located in chatbot (root directory)
-    # The first file store general variables for both projects, the second file store project-specific variables for chatbot
-    # WARN: cannot start this service without both files
-    env_file:
-      - ../../${ENV_FILE:-.env} # default to .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "50m"
-        max-file: "6"
-    command: >
-      /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
-      && dos2unix /etc/nginx/conf.d/run-nginx.sh
-      && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
+  # web-server:
+  #   build:
+  #     context: ../../frontend
+  #     dockerfile: Dockerfile
+  #   platform: linux/amd64
+  #   container_name: web-server
+  #   hostname: web-server
+  #   restart: on-failure
+  #   depends_on:
+  #     - api-server
+  #   environment:
+  #     - DOMAIN=localhost
+  #   ports:
+  #     - "3000:80"
+  #   volumes:
+  #     - ../data/nginx:/etc/nginx/conf.d
+  #     - /app/node_modules # Avoid node_modules conflicts
+  #   networks:
+  #     - chatbot
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   #INFO: require 2 env files
+  #   # 1) .env file located in deployment/docker_compose
+  #   # 2) .env file located in chatbot (root directory)
+  #   # The first file store general variables for both projects, the second file store project-specific variables for chatbot
+  #   # WARN: cannot start this service without both files
+  #   env_file:
+  #     - ../../${ENV_FILE:-.env} # default to .env
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: "50m"
+  #       max-file: "6"
+  #   command: >
+  #     /bin/sh -c "chmod +x /etc/nginx/conf.d/run-nginx.sh
+  #     && dos2unix /etc/nginx/conf.d/run-nginx.sh
+  #     && /etc/nginx/conf.d/run-nginx.sh app.conf.template.dev"
 
   background:
     build:
@@ -237,9 +228,7 @@ services:
       uv run celery -A app.background.celery_worker worker --loglevel=DEBUG"
 
 volumes:
-  mssql_data_volume:
-  mssql_log_volume:
-  mssql_backup_volume:
+  postgres_data:
   qdrant_data_volume:
   minio_data:
 

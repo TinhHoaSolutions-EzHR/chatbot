@@ -14,13 +14,15 @@ class Constants:
     FASTAPI_PREFIX = "/api/v1"
 
     # Relational Database Connection Configuration
-    MSSQL_POOL_SIZE = 10
-    MSSQL_MAX_OVERFLOW = 20
-    MSSQL_POOL_TIMEOUT = 30
-    MSSQL_POOL_RECYCLE = 3600
-    MSSQL_DRIVER = "ODBC+Driver+17+for+SQL+Server"
-    MSSQL_CONNECTOR_URI = "mssql+pyodbc://{user}:{password}@{host}:{port}/{db_name}?driver={driver}&TrustServerCertificate=yes"
-    MSSQL_ASYNC_CONNECTOR_URI = "mssql+aioodbc://{user}:{password}@{host}:{port}/{db_name}?driver={driver}&TrustServerCertificate=yes"
+    # General Configuration
+    DATABASE_POOL_SIZE = 10
+    DATABASE_MAX_OVERFLOW = 20
+    DATABASE_POOL_TIMEOUT = 30
+    DATABASE_POOL_RECYCLE = 3600
+
+    # PostgreSQL Configuration
+    POSTGRES_CONNECTOR_URI = "postgresql://{user}:{password}@{host}:{port}/{db_name}"
+    POSTGRES_ASYNC_CONNECTOR_URI = "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}"
 
     # Error Handler
     API_SUCCESS = "Success"
@@ -86,7 +88,7 @@ class Constants:
     REDIS_TEST_KEY = "test-key"
     REDIS_TEST_VALUE = "test-value"
 
-    MSSQL_TEST_DB_NAME = "tempdb"
+    POSTGRES_TEST_DB_NAME = "tempdb"
 
     # Chat Message
     MAX_USER_MESSAGE_LENGTH = 2000

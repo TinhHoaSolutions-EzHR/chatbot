@@ -143,7 +143,7 @@ make exec SERVICES=api-server COMMAND="<your command here>"
 This project uses Alembic for database migrations. To work with Alembic, first you need to ensure these requirements are met:
 
 1. Develop under docker compose environment.
-2. The database connection string is set in the `.env.development` file: `DATABASE_URL`. Default value to `DATABASE_URL="mssql+pyodbc://SA:P%%26ssword123@database:1433/chatbot_core?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes"`
+2. The database connection string is set in the `.env.development` file: `DATABASE_URL`. Default value to the database connection string created by database credentials like `POSTGRES_USER`, `POSTGRES_PASSWORD`, ...
 3. Running and healthy database service.
 4. The `api-server` service is running.
 5. Edited one of those models in `backend/app/models/` directory.

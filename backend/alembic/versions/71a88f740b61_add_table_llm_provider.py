@@ -11,7 +11,7 @@ from typing import Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import mssql
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = "71a88f740b61"
@@ -25,7 +25,7 @@ def upgrade() -> None:
     op.create_table(
         "llm_provider",
         sa.Column("temperature", sa.Float(), nullable=False),
-        sa.Column("id", mssql.UNIQUEIDENTIFIER(), nullable=False),
+        sa.Column("id", postgresql.UUID(), nullable=False),
         sa.Column(
             "name",
             sa.Enum("OPENAI", "GEMINI", "COHERE", name="providertype", native_enum=False),

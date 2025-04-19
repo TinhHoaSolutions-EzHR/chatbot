@@ -11,7 +11,7 @@ from typing import Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import mssql
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = "0e8338e6a569"
@@ -26,7 +26,7 @@ def upgrade() -> None:
         "embedding_provider",
         sa.Column("dimensions", sa.Integer(), nullable=False),
         sa.Column("embed_batch_size", sa.Integer(), nullable=False),
-        sa.Column("id", mssql.UNIQUEIDENTIFIER(), nullable=False),
+        sa.Column("id", postgresql.UUID(), nullable=False),
         sa.Column(
             "name",
             sa.Enum("OPENAI", "GEMINI", "COHERE", name="providertype", native_enum=False),

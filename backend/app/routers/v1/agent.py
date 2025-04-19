@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.databases.minio import get_minio_connector
 from app.databases.minio import MinioConnector
-from app.databases.mssql import get_db_session
+from app.databases.postgres import get_db_session
 from app.models import User
 from app.models.agent import AgentRequest
 from app.models.agent import AgentResponse

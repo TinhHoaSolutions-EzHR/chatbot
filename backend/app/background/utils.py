@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 from app.background.helpers import ProbeConfig
 from app.background.helpers import timeout_context
-from app.databases.mssql import MSSQLConnector
+from app.databases.postgres import PostgresConnector
 from app.databases.qdrant import QdrantConnector
 from app.databases.redis import RedisConnector
 from app.utils.api.error_handler import ResourceProbeError
@@ -85,7 +85,7 @@ def wait_for_db(sender: Any, **kwargs: Any) -> None:  # NOSONAR
             while True:
                 try:
                     # Check if the database server is ready
-                    with Session(MSSQLConnector.get_engine()) as session:
+                    with Session(PostgresConnector.get_engine()) as session:
                         result = session.execute(text("SELECT 1")).scalar()
                         if result:
                             logger.info("Database: Readiness probe succeeded")

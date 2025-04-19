@@ -11,15 +11,8 @@ LABEL org.opencontainers.image.descripiton "Docker image for backend api-server"
 # Set this to avoid buffering stdout and stderr
 ENV PYTHONUNBUFFERED=1
 
-# Install required system packages, Microsoft ODBC Driver for SQL Server
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  curl=7.88.1-10+deb12u8 \
-  ca-certificates=20230311 \
-  unixodbc=2.3.11-2+deb12u1 \
-  odbcinst=2.3.11-2+deb12u1 && \
-  curl -sSL https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.6.1-1_amd64.deb -o msodbcsql17_17.10.6.1-1_amd64.deb && \
-  ACCEPT_EULA=Y dpkg --install ./msodbcsql17_17.10.6.1-1_amd64.deb && \
-  rm ./msodbcsql17_17.10.6.1-1_amd64.deb && \
+# Install required system packages
+RUN apt-get update && apt-get install -y --no-install-recommends && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean
 
@@ -27,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Install uv and dependencies
-COPY --from=ghcr.io/astral-sh/uv:0.5.26 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
 RUN --mount=type=cache,target=/root/.cache/uv \
   --mount=type=bind,source=uv.lock,target=uv.lock \
   --mount=type=bind,source=pyproject.toml,target=pyproject.toml \

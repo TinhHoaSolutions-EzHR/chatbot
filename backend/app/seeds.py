@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 from sqlalchemy.orm import Session
 
-from app.databases.mssql import get_db_session
+from app.databases.postgres import get_db_session
 from app.models.agent import Agent
 from app.models.user import User
 from app.settings.constants import Constants

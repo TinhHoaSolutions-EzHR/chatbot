@@ -334,18 +334,17 @@ def get_database_url() -> str:
 
     Example:
         >>> get_database_url()
-        'mssql+pyodbc://sa:password@localhost/db_name?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes
+        'postgresql://postgres:postgres@localhost:5432/chatbot'
     """
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
         # Try create the database URL from the environment variables
-        database_url = Constants.MSSQL_CONNECTOR_URI.format(
-            user=Secrets.MSSQL_USER,
-            password=Secrets.MSSQL_SA_PASSWORD,
-            host=Secrets.MSSQL_HOST,
-            port=Secrets.MSSQL_PORT,
-            db_name=Secrets.MSSQL_DB,
-            driver=Constants.MSSQL_DRIVER,
+        database_url = Constants.POSTGRES_CONNECTOR_URI.format(
+            user=Secrets.POSTGRES_USER,
+            password=Secrets.POSTGRES_PASSWORD,
+            host=Secrets.POSTGRES_HOST,
+            port=Secrets.POSTGRES_PORT,
+            db_name=Secrets.POSTGRES_DB,
         )
 
     return database_url

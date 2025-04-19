@@ -1,5 +1,5 @@
 Project "EzHR-Chatbot" {
-  database_type: 'MSSQL'
+  database_type: 'PostgreSQL'
   Note: '''
 # Database schema for EzHR Chatbot.
 ## Details
